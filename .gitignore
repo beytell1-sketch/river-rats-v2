@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+*.json
+!.claude/settings.json
+!river-rats-complete/.claude/settings.json
+training_data_37feat*/
+run_training.py
+run_sizing_training.py
+.pytest_cache/
