@@ -12,6 +12,25 @@ based on findings.
 
 ---
 
+## 0. Phase Transitions — STOP AND DECOMPOSE
+
+**At every phase transition (generation → labelling → training →
+gating → next iteration), STOP and do this before proceeding:**
+
+1. Re-read Section 1 (Resource Allocation)
+2. Decompose the next phase into specialist agents
+3. Present the team plan for review
+4. Only proceed after team plan is approved
+
+**The most common failure:** Treating a multi-agent task as a
+single-agent "just run it" step. Training is NOT one step.
+Labelling is NOT one step. Each requires ML-architect, architect,
+programmer, and reviewer agents per the CLAUDE.md decomposition
+table. If you catch yourself saying "ready to [verb] on your go"
+without specifying the team, you've skipped this rule.
+
+---
+
 ## 1. Resource Allocation
 
 ### 1.1 Agent batch sizes
