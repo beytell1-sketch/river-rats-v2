@@ -56,7 +56,26 @@ without specifying the team, you've skipped this rule.
 - Don't wait for batch 1 results before dispatching batch 2
   unless batch 2 depends on batch 1 output.
 
-### 1.4 The stinginess trap
+### 1.4 Experts recommend, owner decides scope
+- Technical agents (ML-architect, architect, GTO expert) must
+  make **clear recommendations with reasoning** — not present
+  menus of options for the owner.
+- The owner decides WHAT to build and WHETHER to proceed.
+- The experts decide HOW (hyperparameters, CV strategy, class
+  weighting, feature handling, warm-start vs from-scratch).
+- If a plan contains "open questions" that are technical choices,
+  the expert failed to do their job. Send them back to commit
+  to a recommendation.
+- Exception: genuine trade-offs where both options have real
+  costs (e.g., "add data vs add features"). Those are owner
+  decisions. But "RAISE weight 2.5 vs 3.0" is NOT an owner
+  decision — the ML-architect should pick one and explain why.
+
+**Reviewer check:** Does the plan contain open technical questions
+that should have been answered by the expert? Flag as SHOULD_FIX
+and push the builder to get their experts to commit.
+
+### 1.5 The stinginess trap
 - When in doubt, use MORE agents, not fewer.
 - The cost of too many agents is near-zero (some redundancy).
 - The cost of too few is quality degradation, context overload,
@@ -220,7 +239,62 @@ Recommend verification for any flagged labels.
 
 ---
 
-## 6. Common Mistakes (Learned From Experience)
+## 6. Training Protocol — MANDATORY TEAM
+
+**Training is NEVER a single-agent task.** When the data is ready
+and leakage gate (2.2) has passed, training requires this team:
+
+### Step 1 — ML-architect (design)
+- Read the training CSV (row count, feature count, label distribution)
+- Read the current `train_model.py`
+- Design training config: hyperparameters, CV strategy, class
+  weighting (especially for minority classes like RAISE), number
+  of rounds, early stopping, warm-start vs from-scratch decision
+- Identify any code changes needed for new feature counts or
+  label sets
+- Present training plan to `review/` for owner approval
+
+### Step 2 — Owner approves training plan
+Nothing proceeds until the plan is approved.
+
+### Step 3 — Architect (blueprint)
+- Read `train_model.py` and any files the ML-architect flagged
+- Produce exact insertion points for any code changes
+- Blueprint goes to `review/`
+
+### Step 4 — Programmer (implement + run)
+- Implement from blueprint only
+- Run training with approved config
+- Model file goes to `models/`
+- Training report (CV scores, feature importance, class-level
+  metrics) goes to `review/`
+
+### Step 5 — Reviewer (quality gate)
+- Independent reviewer checks Gate 2.3 (feature importance)
+- Checks Gate 2.4 (reference set evaluation with baselines)
+- Checks for regressions vs previous best
+- Reviews the training report in `review/`, not the model file
+- Review report to `review/`
+
+### Step 6 — Owner approves model
+Model is promoted to production only after owner reviews the
+training report and reviewer findings.
+
+**Why this exists:** On 7 April 2026, the process guide terminal
+cleared the leakage gate and said "ready to train on your go" —
+handing a single terminal permission to run the entire training
+pipeline without decomposition. The owner had to intervene.
+Training involves ML design + code changes + computation +
+evaluation — four distinct work types that must never be collapsed.
+
+**Reviewer check:** Was each step performed by the correct agent
+type? Was the training plan reviewed before training ran? Did the
+training report go to `review/` with CV scores and feature
+importance? Was an independent reviewer used for gate checks?
+
+---
+
+## 7. Common Mistakes (Learned From Experience)
 
 These are traps this project has fallen into. Watch for them.
 
@@ -237,27 +311,29 @@ These are traps this project has fallen into. Watch for them.
 | Unit confusion | Deals vs games vs situations | Write out unit conversion explicitly |
 | Targeting individual failures | Overfits to reference set | Train general principles, not patches |
 | Solver output as direct training label | Model features may not capture what solver exploits | Expert review of feature compatibility |
+| Open technical questions to owner | Owner can't answer "RAISE weight 2.5 or 3.0?" | Expert must recommend, not present menu |
+| Training as single-agent task | ML design + code + run + eval collapsed, no review | Check Section 6 team was followed |
 
 **Reviewer check:** Scan for any of these patterns in the session.
 Flag with specific evidence. Recommend corrective action.
 
 ---
 
-## 7. Reviewer Recommendations
+## 8. Reviewer Recommendations
 
 After reviewing a working terminal's session, the reviewer produces:
 
-### 7.1 Protocol compliance report
+### 8.1 Protocol compliance report
 | Rule | Followed? | Evidence | Recommendation |
 |------|-----------|----------|----------------|
-| (each rule from sections 1-6) | Yes/No | (specific reference) | (if No, what to do) |
+| (each rule from sections 1-7) | Yes/No | (specific reference) | (if No, what to do) |
 
-### 7.2 Quality assessment
+### 8.2 Quality assessment
 - What went well (specific examples)
 - What was missed (specific gaps)
 - What should change next session
 
-### 7.3 Recommendations for next session
+### 8.3 Recommendations for next session
 - Priority-ordered list of actions
 - Process improvements to carry forward
 - Unresolved questions that need attention
@@ -274,7 +350,7 @@ and presents it to the owner.
 | Task has > 10 expert items | Split across multiple agents |
 | Design is ready | Get independent review first |
 | About to label | Run calibration exam first |
-| About to train | Run leakage check first |
+| About to train | Run leakage check first, then Section 6 team |
 | Solver showed something new | Log it, don't act on it yet |
 | Agent says "I can handle this alone" | Split it anyway |
 | Feature importance looks wrong | Check for data issues first |
