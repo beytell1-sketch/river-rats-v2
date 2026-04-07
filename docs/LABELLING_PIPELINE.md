@@ -209,8 +209,8 @@ Gates:
 
 ```bash
 md5sum knowledge/three_way_gto.md prompts/gto_labeller_v1.md
-# Expected (as of 7 Apr 2026):
-# 9e83f7feffa41bf0d565cd4c7df1973a  knowledge/three_way_gto.md
+# Expected (as of 7 Apr 2026, v1.2):
+# 78dd5008d39d1388bcb428faaa4d3869  knowledge/three_way_gto.md
 # ddccb338b59123086f3f5a57857a886a  prompts/gto_labeller_v1.md
 ```
 

@@ -1,7 +1,7 @@
 # 3-Way Postflop GTO Knowledge Base
 
-**Version:** 1.0
-**Date:** 6 April 2026
+**Version:** 1.2
+**Date:** 7 April 2026
 **Purpose:** Reference document for the 3-way labelling agent.
 Contains quantified facts (as reasoning inputs), a decision
 framework, preflop range construction, board texture interactions,
@@ -95,6 +95,54 @@ account for the full remaining tree at compressed SPR. Same numeric
 SPR requires tighter stack-off thresholds multiway (more opponents
 who could have you beat).
 
+### 1.7 Semi-Bluff Conditions 3-Way (Solver-Verified)
+
+Semi-bluffing 3-way is rarely profitable — but "rarely" is not
+"never." GTO Wizard solves (April 2026) identify a narrow carve-out.
+
+| Condition | Required? | Why |
+|-----------|-----------|-----|
+| Nut draw (nut flush draw, nut straight draw) | YES | Non-nut draws don't generate enough equity when called |
+| Blocker to opponent's continuing range | YES | As on flush board blocks nut flush combos in villain's range, increasing fold equity |
+| Side equity (overcards, gutshot, backdoor) | Strongly preferred | Nut draw alone is marginal; side outs push EV clearly positive |
+| Position | Any (even OOP) | Blocker + draw equity compensate for positional disadvantage |
+
+**Example:** AsQs on Ks Jd 5s facing bet — nut flush draw + As
+blocker + two overcards + gutshot = ~44% equity + fold equity.
+Solver: RAISE. (See Worked Example 9.)
+
+**What does NOT qualify:**
+- Non-nut flush draws (e.g., Ts9s on the same board) — call or fold
+- Nut draw without blocker (e.g., 8s7s for nut flush) — call
+- Gutshot-only or backdoor-only — check/fold
+- Any draw on a paired board (set over set risk) — call at best
+
+**Default for non-set made hands at mixed SPR:** When the solver
+shows a hand mixing between raise and call (e.g., AT on A94 mixes
+21-65% raise depending on suit), default to CALL in training labels.
+The model cannot express mixed strategies. Only sets and the pure
+nuts are labelled RAISE.
+
+### 1.8 Blocker Effects on Action Selection (Solver-Verified)
+
+Blockers have two distinct roles. They differ in multiway impact:
+
+| Role | HU effect | 3-way effect | Example |
+|------|-----------|-------------|---------|
+| **Bluff selection** (which bluffs to choose) | Strong | Weaker (~40% less) | Choosing to bluff with Ah on heart board |
+| **Action selection** (raise vs call with strong draw/made hand) | Strong | **Still strong** | AT with diamond raises 65%, AT without raises 21% |
+
+The solver shows suit holdings swing raise frequency by 40+
+percentage points for the SAME hand on the SAME board. This is not
+a marginal effect — it's the primary driver of raise/call decisions
+for non-set hands.
+
+**Implication for labelling:** The labelling agent must consider
+hero's specific suit holdings when deciding RAISE vs CALL. Using
+worse_hand_pct (a suitless metric) as a raise signal is wrong.
+Blockers and backdoor equity drive raise frequency, not raw hand
+strength.
+
 ---
 
 ## 2. Decision Framework
@@ -172,13 +220,36 @@ From the pipeline: `danger_score`, `flush_danger`,
 and another calls in a 3-way pot, both ranges have narrowed. The
 bettor is representing strength. The caller is confirming with a
 hand strong enough to continue against the bet AND the remaining
-player. Facing bet-and-call, only strong hands continue.
+player.
+
+**IMPORTANT CORRECTION (solver-verified, April 2026):** The
+bet-and-call signal narrows ranges but does NOT automatically mean
+fold. The fold applies ONLY when BOTH conditions are met:
+1. Hero's equity against the narrowed ranges is close to break-even
+   (within ~5pp of pot odds), AND
+2. Hero's specific holding is dominated by the calling range (e.g.,
+   weak kicker on a paired board where better kickers abound).
+
+When hero has equity well above pot odds (e.g., 40% vs 18% pot
+odds) AND holds a made hand (not just overcards), the correct
+action is CALL even facing bet-and-call. The MW-30 solver
+verification showed KT top pair on KJ6 is a pure CALL despite
+bet-and-call — 40% equity vs 18% pot odds, and KT still beats
+significant portions of both opponents' continuing ranges. See
+corrected Example 3.
 
 **The check-raise signal (MW-31 pattern):** A check-raise into
 two opponents in a 3-way pot is almost exclusively the nuts or
 near-nuts. The raiser must beat not only the bettor's range but
 also the third player's calling range. Even top pair top kicker
 folds to a 3-way check-raise.
+
+**Exception (solver-verified):** Trips or better facing a river
+check-raise is still a CALL. The solver shows opponents include
+enough bluffs and thin value that trips is never a fold unless the
+board makes a higher full house virtually certain AND hero has no
+blocker. (MW-46: K7 trips on 775-9-J, solver says 100% CALL even
+with worse trips.)
 
 ---
 
@@ -287,11 +358,32 @@ hero's kicker. The raw equity is computed against full preflop ranges,
 not the narrowed post-action ranges. This is where action history
 overrides equity.
 
-**Action:** FOLD
-**Confidence:** HIGH
-**Alternative:** CALL — rejected. Equity against the ACTION-IMPLIED
-ranges (not the preflop ranges) is much lower than 39.9%. Hero is
-dominated by better Kx and crushed by sets/two-pair.
+**Original action (pre-solver):** FOLD
+**Original confidence:** HIGH
+**Original reasoning:** CALL rejected — equity against the
+ACTION-IMPLIED ranges (not the preflop ranges) is much lower than
+39.9%. Hero is dominated by better Kx and crushed by sets/two-pair.
+
+**⚠ SOLVER CORRECTION (April 2026):** GTO Wizard shows KT on KJ6
+facing bet-and-call is a **pure CALL** for all KT combos. Only
+KcTs raises (66%). The "action narrows ranges → fold despite
+equity" reasoning was over-applied here. While bet-and-call does
+narrow ranges, KT still has 40% equity vs 18% pot odds — the
+equity surplus is too large for folding to be correct. KT beats
+significant portions of both opponents' continuing ranges (worse
+Kx, middle pairs, draws).
+
+**Corrected action:** CALL
+**Confidence:** HIGH (solver-verified)
+
+**Teaching point:** This example demonstrates a dangerous reasoning
+trap. The bet-and-call signal FEELS like it should override equity,
+and the logic is internally consistent. But the solver shows that
+when equity exceeds pot odds by 20+ percentage points with a made
+hand, the action-implied range narrowing is insufficient to flip the
+decision from CALL to FOLD. Reserve the "bet-and-call = fold" pattern
+for hands where equity is genuinely close to break-even AND hero's
+specific holding is dominated (e.g., bottom pair, no draw).
 
 ### Example 4: Must bet monster — don't slowplay 3-way
 
@@ -461,6 +553,48 @@ dominated hands with no outs. When hero has significant draw equity
 (8+ outs to a strong hand), the draw equity survives range
 narrowing. Don't conflate "villain is strong" with "always fold."
 
+### Example 9: Nut draw with blocker — RAISE, not call (Solver-verified)
+
+**Setup:** Hero holds As Qs on Ks Jd 5s. SB (OOP), 3-way pot
+(CO opened, BTN called). Flop. Pot 90. CO bets 30. Hero faces 30.
+
+**Factors:**
+1. Equity: ~44% (nut flush draw + two overcards + gutshot to broadway)
+2. Position: OOP (SB) — normally argues against semi-bluffing
+3. Range composition: CO betting into 3-way = strong range, BTN
+   behind still to act
+4. Board: Ks Jd 5s — two spades, high cards favour raiser's range
+5. Action: facing a single bet from CO, BTN still to act
+
+**Factor interaction:** The default heuristic says "don't semi-bluff
+3-way OOP" (DO NOT Rule #2). That rule applies to MOST draws. But
+this hand has ALL four conditions from Section 1.7:
+- ✅ Nut draw (nut flush draw)
+- ✅ Blocker (As blocks villain's nut flush combos, reducing their
+  continuing range when facing a raise)
+- ✅ Side equity (two overcards = 6 outs to TPTK, gutshot to
+  broadway straight)
+- Combined: ~44% raw equity + fold equity from the semi-bluff
+
+The As blocker is critical. It removes AsXs combos from villain's
+range, meaning when hero raises, villain is less likely to hold a
+hand that can continue profitably. Without the As (e.g., 8s7s for
+nut flush draw), the raise becomes unprofitable because villain's
+continuing range includes the nut flush draw.
+
+**Action:** RAISE
+**Confidence:** HIGH (solver-verified — GTO Wizard shows even single
+spade holdings raise here)
+**Alternative:** CALL — the pre-correction default. Calling is not
+terrible (hero has odds), but it wastes the fold equity component.
+With the As blocker, raising is clearly +EV vs calling.
+
+**Key lesson:** "Don't semi-bluff 3-way" is a default, not an
+absolute. The solver carves out nut draws with blockers + side
+equity. The blocker is the key differentiator — without it, the
+same draw should call. With it, raise. This is the MW-47 pattern
+that was a shared blind spot between the expert and model.
+
 ---
 
 ## 5. DO NOT Rules
@@ -473,10 +607,16 @@ on the interaction of all 5 factors. 55% equity is a BET when IP +
 air-heavy villain + dry board, but a CHECK when OOP + strong villain
 range + wet board. Equity is an input, not a threshold.
 
-**2. DO NOT barrel draws into 2 opponents hoping for folds.** 3-way
-fold equity is ~36% (0.6 x 0.6). A flush draw semi-bluff that
-prints money HU (60% fold equity) loses money 3-way. Check and
-realize equity, or check-raise only with the nut draw.
+**2. DO NOT barrel draws into 2 opponents hoping for folds — UNLESS
+you hold the nut draw with a blocker.** 3-way fold equity is ~36%
+(0.6 x 0.6). A flush draw semi-bluff that prints money HU (60%
+fold equity) loses money 3-way. Check and realize equity for most
+draws. **Exception (solver-verified):** Nut draws (nut flush draw,
+nut straight draw) with a blocker to villain's continuing range
+AND side equity (overcards, gutshot) should RAISE. The blocker
+increases fold equity above the 3-way threshold, and the combined
+draw + side equity provides enough value when called. See Section
+1.7 and Worked Example 9 for the full conditions.
 
 **3. DO NOT assume the checking player has nothing.** 3-way, players
 trap more because a third opponent may bet for them. A check-raise
@@ -492,8 +632,13 @@ strength 3-way. The threshold for "strong enough to build a pot"
 shifts up by roughly one hand class: two pair+ to bet big, vs TP+
 in HU. Top pair good kicker is a pot-control hand.
 
-**6. DO NOT overweight blockers.** Blockers matter ~40% less 3-way
-because you'd need to block both opponents' ranges simultaneously.
+**6. DO NOT overweight blockers for bluff selection — but DO use
+them for action selection.** Blockers for choosing WHICH bluffs to
+run matter ~40% less 3-way (need to block both opponents). But
+blockers for deciding RAISE vs CALL with a strong draw or made hand
+are still critical — solver shows suit holdings swing raise
+frequency by 40+ percentage points for the same hand. See Section
+1.8.
 
 **7. DO NOT analyze streets in isolation.** A pot-sized flop bet
 3-way leaves SPR ~1.5 on the turn. The flop decision must account
@@ -539,6 +684,14 @@ with per-source classification.
 
 ## Version History
 
+- **v1.2 (7 Apr 2026):** Solver-verified corrections from 3 GTO
+  Wizard solves. Added: Section 1.7 (semi-bluff conditions), Section
+  1.8 (blocker action selection), Worked Example 9 (nut draw raise).
+  Corrected: Example 3 (MW-30 FOLD→CALL with teaching note), DO NOT
+  Rule #2 (semi-bluff carve-out for nut draws with blockers), DO NOT
+  Rule #6 (blockers still critical for action selection). Updated
+  Factor 5 (bet-and-call signal qualifier, check-raise exception for
+  trips+). 4 solver rules integrated, 5 labelling biases addressed.
 - **v1.1 (6 Apr 2026):** Added 3 worked examples from calibration
   exam failures. Fixes: OOP value betting exception (Example 6),
   overcard hidden equity (Example 7), draw equity surviving
