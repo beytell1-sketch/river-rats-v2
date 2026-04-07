@@ -48,9 +48,11 @@ FEATURE_COLUMNS = (
     "villain_top_pair_plus_pct", "villain_draw_pct", "villain_air_pct",
     "villain_range_capped", "board_favour",
     "num_callers_to_bet", "facing_raise",
+    # v9 features (45→48): blocker + outs + improvement
+    "flush_block_pct", "overcard_outs", "improvement_probability",
 )
 
-N_FEATURES = len(FEATURE_COLUMNS)  # 45
+N_FEATURES = len(FEATURE_COLUMNS)  # 48
 N_CLASSES = len(ACTION_CLASSES)     # 5
 
 

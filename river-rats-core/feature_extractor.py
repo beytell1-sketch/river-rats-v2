@@ -1036,6 +1036,8 @@ FEATURE_COLUMNS = [
     'villain_range_capped', 'board_favour',
     # Step 11: current-street action features (v9)
     'num_callers_to_bet', 'facing_raise',
+    # Step 12: new features 46-48
+    'flush_block_pct', 'overcard_outs', 'improvement_probability',
 ]
 
 LABEL_COLUMN = 'action'
@@ -1208,6 +1210,225 @@ def extract_range_composition(
     }
 
 
+# =============================================================================
+# Step 12: New features (46-48) — standalone functions
+# =============================================================================
+
+def compute_flush_block_pct(
+    hero_cards: List[str],
+    board_cards: List[str],
+    villain_range: Dict[str, float],
+    board_suit_counts: Dict[str, int],
+) -> float:
+    """
+    Feature 46: What fraction of villain's flush combos does hero block?
+
+    Hero holds cards of the flush suit that prevent certain villain combos
+    from existing. This is a blocker effect — holding Jh on a 3-heart board
+    eliminates villain combos like JhTh, Jh9h, etc.
+
+    Args:
+        hero_cards: ['Jh', '9s']
+        board_cards: ['Ah', '7h', '2h']
+        villain_range: {hand_notation: frequency} — already narrowed
+        board_suit_counts: {'h': 3, 's': 0, 'd': 0, 'c': 0}
+
+    Returns:
+        Float [0.0, 1.0] — blocked flush combos / total flush combos.
+        0.0 when no flush threat, or when hero has 2+ cards of the suit
+        (hero has the draw, not a blocker).
+    """
+    if not board_suit_counts:
+        return 0.0
+
+    # Identify the flush suit (highest count >= 2)
+    flush_suit = None
+    max_count = 0
+    for suit, count in board_suit_counts.items():
+        if count > max_count:
+            max_count = count
+            flush_suit = suit
+    if flush_suit is None or max_count < 2:
+        return 0.0
+
+    # Count hero's cards of the flush suit
+    hero_flush_suit_cards = [c for c in hero_cards if c[1].lower() == flush_suit.lower()]
+
+    # If hero has 2+ cards of the suit, hero HAS the draw — not a blocker
+    if len(hero_flush_suit_cards) >= 2:
+        return 0.0
+
+    # Build set of used cards (hero + board) for combo validity
+    used_cards = set(c.lower() for c in hero_cards) | set(c.lower() for c in board_cards)
+
+    # Hero's flush-suit cards as a set (lowercase) for blocking check
+    hero_flush_set = set(c.lower() for c in hero_flush_suit_cards)
+
+    total_flush_weight = 0.0
+    blocked_flush_weight = 0.0
+
+    for hand_notation, freq in villain_range.items():
+        if freq <= 0:
+            continue
+
+        combos = get_valid_combos(hand_notation, used_cards)
+        for combo in combos:
+            # Does this combo contain at least one card of the flush suit?
+            combo_flush_cards = [c for c in combo if c[1].lower() == flush_suit.lower()]
+            if not combo_flush_cards:
+                continue
+
+            total_flush_weight += freq
+
+            # Does hero block any card in this combo?
+            # A card is "blocked" when hero holds it — but it can't appear in
+            # villain's combo if hero holds it (get_valid_combos excludes used_cards).
+            # So blocking means: hero holds a card that IS in the combo's suit,
+            # which reduces the total pool of flush combos available to villain.
+            #
+            # Since get_valid_combos already removes hero's cards from combos,
+            # we measure blocking by checking whether ANY of hero's flush-suit cards
+            # share a rank+suit match with the combo's flush-suit cards.
+            # In practice: the combo already can't contain hero's exact card,
+            # but we want to know if hero's flush-suit holdings shrink the combos.
+            #
+            # Correct approach: a combo is "blocked" if at least one card in the
+            # combo is a card that hero holds. Since get_valid_combos already
+            # excludes hero's cards, we check the original combo pool without
+            # used-card filtering. Instead: check if hero's flush cards would
+            # have been in this combo's position.
+            #
+            # Simpler: iterate ALL suit combos (no card removal), count which ones
+            # contain hero's card. The ratio is the blocking percentage.
+            # We do this by checking if hero's flush-suit card is one of the
+            # rank+suit cards that appear in the NOTATED hand (before removal).
+            #
+            # Implementation: for each flush-suit card hero holds, check if it
+            # could be part of this combo's notation's suited expansion.
+            hero_blocks = False
+            for h_card in hero_flush_suit_cards:
+                h_lower = h_card.lower()
+                h_rank = h_lower[0]
+                h_suit = h_lower[1]
+                # Check if hero's card matches any card in the combo
+                # (The combo was generated without hero's cards, but we want
+                # to know if hero's card was supposed to be here)
+                # Check the hand notation: does the hand contain hero's rank
+                # with this suit?
+                r1 = hand_notation[0].upper()
+                r2 = hand_notation[1].upper()
+                is_suited = len(hand_notation) >= 3 and hand_notation[2].lower() == 's'
+                is_pair = r1 == r2
+
+                if is_pair:
+                    # e.g. 'JJ' — hero blocks if hero holds Js (any suit of J)
+                    if h_rank.upper() == r1.upper() and h_suit == flush_suit.lower():
+                        hero_blocks = True
+                elif is_suited:
+                    # Both cards same suit — hero blocks if hero holds either rank
+                    # of the flush suit
+                    if h_suit == flush_suit.lower() and h_rank.upper() in (r1.upper(), r2.upper()):
+                        hero_blocks = True
+                else:
+                    # Offsuit — hero blocks if hero holds either rank of the flush suit
+                    if h_suit == flush_suit.lower() and h_rank.upper() in (r1.upper(), r2.upper()):
+                        hero_blocks = True
+
+            if hero_blocks:
+                blocked_flush_weight += freq
+
+    if total_flush_weight <= 0:
+        return 0.0
+
+    return round(blocked_flush_weight / total_flush_weight, 6)
+
+
+def compute_overcard_outs(hero_cards: List[str], high_card_rank: int) -> int:
+    """
+    Feature 47: Number of outs from hero's overcards.
+
+    An overcard is a hole card ranked strictly above the highest board card.
+    Each overcard is worth approximately 3 outs (hitting top pair).
+
+    Args:
+        hero_cards: ['Ah', 'Kd']
+        high_card_rank: Highest board card rank as int (14=A, 13=K, ..., 2=2)
+
+    Returns:
+        Integer: 0, 3, or 6 (count of overcards × 3)
+    """
+    # Inline rank parsing — no import dependency required
+    rank_map = {
+        'A': 14, 'K': 13, 'Q': 12, 'J': 11, 'T': 10,
+        '9': 9, '8': 8, '7': 7, '6': 6, '5': 5, '4': 4, '3': 3, '2': 2,
+    }
+    overcard_count = 0
+    for card in hero_cards:
+        card_rank = rank_map.get(card[0].upper(), 0)
+        if card_rank > high_card_rank:
+            overcard_count += 1
+    return overcard_count * 3
+
+
+def compute_improvement_probability(
+    hero_cards: List[str],
+    board_cards: List[str],
+    current_hand_category: int,
+) -> float:
+    """
+    Feature 48: Fraction of unseen deck cards that improve hero to two-pair+.
+
+    Does NOT count improvements only to top pair (those are covered by
+    overcard_outs). Counts two-pair, trips, set, straight, flush, full house,
+    quads, straight flush.
+
+    Args:
+        hero_cards: ['Jh', '9s']
+        board_cards: ['As', '7h', '2d']  — 3 or 4 cards (not river)
+        current_hand_category: Integer from HAND_CATEGORY_ENCODING
+
+    Returns:
+        Float [0.0, 1.0]. 0.0 on river. 1.0 if already two-pair+.
+    """
+    # River: no cards left to improve
+    if len(board_cards) >= 5:
+        return 0.0
+
+    # Two-pair threshold: category >= 10 in HAND_CATEGORY_ENCODING
+    TWO_PAIR_THRESHOLD = HAND_CATEGORY_ENCODING['two_pair']
+
+    # Already two-pair or better
+    if current_hand_category >= TWO_PAIR_THRESHOLD:
+        return 1.0
+
+    # Build set of used cards (lowercase)
+    used_cards = set(c.lower() for c in hero_cards) | set(c.lower() for c in board_cards)
+
+    # All 52 cards
+    all_ranks = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2']
+    all_suits = ['s', 'h', 'd', 'c']
+    deck = [f"{r}{s}" for r in all_ranks for s in all_suits]
+    unseen = [c for c in deck if c.lower() not in used_cards]
+
+    improved_count = 0
+    for card in unseen:
+        new_board = board_cards + [card]
+        try:
+            new_eval = evaluate_hand(hero_cards, new_board)
+            new_category_str = new_eval.category.lower()
+            new_category = HAND_CATEGORY_ENCODING.get(new_category_str, 0)
+            # Count if improved to two-pair or better
+            if new_category >= TWO_PAIR_THRESHOLD:
+                improved_count += 1
+        except Exception:
+            continue
+
+    if not unseen:
+        return 0.0
+
+    return round(improved_count / len(unseen), 6)
+
+
 def extract_all_features(hand: Dict) -> Dict:
     """
     Extract ALL features (Steps 1-8) for a single hand.
@@ -1269,6 +1490,45 @@ def extract_all_features(hand: Dict) -> Dict:
     # Step 11: Current-street action features (new for v9)
     features[F.NUM_CALLERS_TO_BET] = hand.get('_num_callers_to_bet', 0)
     features[F.FACING_RAISE] = hand.get('_facing_raise', 0)
+
+    # Step 12: New features 46-48 (flush_block_pct, overcard_outs,
+    #          improvement_probability)
+    # These are ADDITIVE — they do not touch any existing feature computation.
+    hero_cards = features.get('_hero_cards', [])
+    board_cards = features.get('_board_cards', [])
+
+    # Reconstruct villain range the same way extract_range_composition does,
+    # so flush_block_pct uses the narrowed (betting) range.
+    _s12_hero_pos = features.get('_hero_pos_raw', 'BTN')
+    _s12_villain_pos = features.get('_villain_pos_raw', 'BB')
+    _s12_facing_bet = bool(features.get('facing_bet', 0))
+    _s12_street_raw = features.get('_street_raw', 'f')
+    _s12_opener_pos = hand.get('_opener_position', None)
+    _s12_v_range = get_villain_range(
+        _s12_hero_pos, _s12_villain_pos, opener_pos=_s12_opener_pos
+    )
+    if _s12_facing_bet and _s12_v_range:
+        _s12_street_name = STREET_NAME_MAP.get(_s12_street_raw, 'flop')
+        _s12_v_range = narrow_to_betting_range(
+            _s12_v_range, board_cards, _s12_street_name
+        )
+
+    # Get board suit counts from analyzer (already cached from Step 3)
+    if board_cards:
+        _s12_analysis = analyze_board_cached(tuple(board_cards))
+        _s12_suit_counts = _s12_analysis.suit_counts
+    else:
+        _s12_suit_counts = {}
+
+    features[F.FLUSH_BLOCK_PCT] = compute_flush_block_pct(
+        hero_cards, board_cards, _s12_v_range, _s12_suit_counts
+    )
+    features[F.OVERCARD_OUTS] = compute_overcard_outs(
+        hero_cards, features.get('high_card_rank', 14)
+    )
+    features[F.IMPROVEMENT_PROBABILITY] = compute_improvement_probability(
+        hero_cards, board_cards, features.get('hand_category', 0)
+    )
 
     return features
 

@@ -64,6 +64,11 @@ class F:
     # had_preflop_open: removed — oracle always plays opened pots,
     # limped pots are out of scope. Feature would be constant=1.
 
+    # Step 12: new features 46-48
+    FLUSH_BLOCK_PCT = 'flush_block_pct'
+    OVERCARD_OUTS = 'overcard_outs'
+    IMPROVEMENT_PROBABILITY = 'improvement_probability'
+
     # Metadata fields (underscore prefix, not in model)
     META_NUM_OPPONENTS = '_num_opponents'
     META_NUM_RAISES = '_num_raises_this_street'
