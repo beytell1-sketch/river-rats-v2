@@ -1,0 +1,27 @@
+{
+  "model": "v9-3way",
+  "dataset": "../training-data/train_3way_45.csv",
+  "n_samples": 199,
+  "n_features": 45,
+  "classes": [
+    "FOLD",
+    "CALL",
+    "RAISE"
+  ],
+  "class_mapping": "FOLD=FOLD/CHECK, CALL=CALL, RAISE=RAISE/BET",
+  "test_accuracy": 0.95,
+  "cv_accuracy": 0.8995,
+  "best_iteration": 213,
+  "feature_importance_top10": {
+    "worse_hand_pct": 0.119,
+    "equity_margin": 0.1096,
+    "facing_bet": 0.0972,
+    "better_hand_pct": 0.0891,
+    "raw_equity": 0.0815,
+    "bet_to_pot": 0.0751,
+    "pot_odds": 0.0628,
+    "equity_vs_range": 0.0508,
+    "villain_top_pair_plus_pct": 0.0335,
+    "hand_category": 0.0276
+  }
+}

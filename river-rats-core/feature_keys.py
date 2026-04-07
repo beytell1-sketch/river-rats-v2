@@ -54,6 +54,15 @@ class F:
     VILLAIN_CHECKED_BACK = 'villain_checked_back'
     VILLAIN_CALL_COUNT = 'villain_call_count'
     NUM_OPPONENTS = 'num_opponents'
+    VILLAIN_TOP_PAIR_PLUS_PCT = 'villain_top_pair_plus_pct'
+    VILLAIN_DRAW_PCT = 'villain_draw_pct'
+    VILLAIN_AIR_PCT = 'villain_air_pct'
+    VILLAIN_RANGE_CAPPED = 'villain_range_capped'
+    BOARD_FAVOUR = 'board_favour'
+    NUM_CALLERS_TO_BET = 'num_callers_to_bet'
+    FACING_RAISE = 'facing_raise'
+    # had_preflop_open: removed — oracle always plays opened pots,
+    # limped pots are out of scope. Feature would be constant=1.
 
     # Metadata fields (underscore prefix, not in model)
     META_NUM_OPPONENTS = '_num_opponents'

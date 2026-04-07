@@ -280,8 +280,8 @@ def _decide_defend_call(hand: str, hero_pos: str, opener_pos: str,
         # Mixed call spot
         action = 'CALL'
         raw_freq = call_freq
-    # Step 3: implied odds safety net
-    elif _implied_odds_override(hand, opener_pos):
+    # Step 3: implied odds safety net (SB is 3-bet-or-fold, no cold-calls)
+    elif hero_pos.upper() != 'SB' and _implied_odds_override(hand, opener_pos):
         action = 'CALL'
         raw_freq = 0.45  # Fixed implied-odds confidence per design doc
     # Step 4: fold
@@ -379,8 +379,8 @@ def _decide_squeeze(hand: str, hero_pos: str, opener_pos: str,
     elif call_freq > 0.0:
         action = 'CALL'
         raw_freq = call_freq
-    # Step 3: Implied odds safety net
-    elif _implied_odds_override(hand, opener_pos):
+    # Step 3: Implied odds safety net (SB is 3-bet-or-fold, no cold-calls)
+    elif hero_pos.upper() != 'SB' and _implied_odds_override(hand, opener_pos):
         action = 'CALL'
         raw_freq = 0.45  # Fixed implied-odds confidence
     # Step 4: Fold

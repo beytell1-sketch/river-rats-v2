@@ -44,9 +44,13 @@ FEATURE_COLUMNS = (
     "is_3bet_pot", "villain_aggression_count",
     "villain_checked_back", "villain_call_count",
     "num_opponents",
+    # v9 features (38→45): range composition + current-street action
+    "villain_top_pair_plus_pct", "villain_draw_pct", "villain_air_pct",
+    "villain_range_capped", "board_favour",
+    "num_callers_to_bet", "facing_raise",
 )
 
-N_FEATURES = len(FEATURE_COLUMNS)  # 38
+N_FEATURES = len(FEATURE_COLUMNS)  # 45
 N_CLASSES = len(ACTION_CLASSES)     # 5
 
 
@@ -86,32 +90,44 @@ class GtoOracle:
         self._model = xgb.XGBClassifier()
         self._model.load_model(model_path)
 
-        # Validate
+        # Auto-detect feature width for backwards compatibility (v8=38, v9=45)
+        self._n_features = getattr(
+            self._model, 'n_features_in_', len(FEATURE_COLUMNS)
+        )
+
+        # All models are 5-class warm-start. 3-class code path is dead.
         assert self._model.n_classes_ == N_CLASSES, (
             f"Model has {self._model.n_classes_} classes, expected {N_CLASSES}"
         )
+        self._action_map = INT_TO_ACTION
+        self._action_names = ACTION_CLASSES
 
     def predict(self, features: np.ndarray) -> OraclePrediction:
         """
         Predict action for a single hand.
 
         Args:
-            features: numpy array of shape (37,) or (1, 37)
+            features: numpy array of shape (N,) or (1, N) where N matches model width.
 
         Returns:
             OraclePrediction with action, confidence, and probabilities.
         """
+        # Slice to model's expected width (v8=38, v9=45)
+        if features.ndim == 1:
+            features = features[:self._n_features]
+        else:
+            features = features[:, :self._n_features]
         X = self._ensure_2d(features)
         probs = self._model.predict_proba(X)[0]
         action_idx = int(np.argmax(probs))
-        action = INT_TO_ACTION[action_idx]
+        action = self._action_map[action_idx]
         confidence = float(probs[action_idx])
 
         return OraclePrediction(
             action=action,
             action_idx=action_idx,
             confidence=confidence,
-            probs={a: float(probs[i]) for i, a in enumerate(ACTION_CLASSES)},
+            probs={a: float(probs[i]) for i, a in enumerate(self._action_names)},
             prob_array=probs,
         )
 
@@ -120,22 +136,23 @@ class GtoOracle:
         Predict actions for multiple hands.
 
         Args:
-            features: numpy array of shape (n_hands, 37)
+            features: numpy array of shape (n_hands, N) where N >= model width.
 
         Returns:
             List of OraclePrediction.
         """
         X = features if features.ndim == 2 else features.reshape(1, -1)
+        X = X[:, :self._n_features]
         all_probs = self._model.predict_proba(X)
         results = []
         for i in range(X.shape[0]):
             probs = all_probs[i]
             action_idx = int(np.argmax(probs))
             results.append(OraclePrediction(
-                action=INT_TO_ACTION[action_idx],
+                action=self._action_map[action_idx],
                 action_idx=action_idx,
                 confidence=float(probs[action_idx]),
-                probs={a: float(probs[j]) for j, a in enumerate(ACTION_CLASSES)},
+                probs={a: float(probs[j]) for j, a in enumerate(self._action_names)},
                 prob_array=probs,
             ))
         return results
