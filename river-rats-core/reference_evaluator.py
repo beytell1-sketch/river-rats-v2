@@ -101,7 +101,7 @@ _ACTION_HISTORY = {
     'MW-40': (0, 0, 1, 0, 0),  # Flop. Checks to hero (BTN, deep).
     # Batch 7: Range Narrowing (MW-41 to MW-46)
     'MW-41': (2, 0, 0, 0, 0),  # Turn. CO double-barrels. Hero faces bet.
-    'MW-42': (2, 1, 1, 0, 0),  # River. CO: bet flop, checked+called turn, checks river.
+    'MW-42': (1, 1, 1, 0, 0),  # River. CO: bet flop (agg=1), checked+called turn (check=1, call=1), checks river.
     'MW-43': (1, 1, 0, 0, 0),  # River. CO: checked flop+turn, now bets river.
     'MW-44': (1, 0, 1, 0, 0),  # Turn. BB: called pf, donk-bet flop, leads turn again.
     'MW-45': (1, 1, 0, 0, 0),  # Turn. CO: opened pf, checked flop, now bets turn.

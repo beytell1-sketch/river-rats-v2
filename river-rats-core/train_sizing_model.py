@@ -64,6 +64,12 @@ FEATURE_COLUMNS = [
     'is_3bet_pot', 'villain_aggression_count',
     'villain_checked_back', 'villain_call_count',
     'num_opponents',
+    # v9 features (38->45): range composition + current-street action
+    'villain_top_pair_plus_pct', 'villain_draw_pct', 'villain_air_pct',
+    'villain_range_capped', 'board_favour',
+    'num_callers_to_bet', 'facing_raise',
+    # v9 features (45->48): blocker + outs + improvement
+    'flush_block_pct', 'overcard_outs', 'improvement_probability',
 ]
 
 

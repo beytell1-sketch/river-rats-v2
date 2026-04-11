@@ -39,6 +39,12 @@ FEATURE_COLUMNS = [
     'is_3bet_pot', 'villain_aggression_count',
     'villain_checked_back', 'villain_call_count',
     'num_opponents',
+    # v9 features (38->45): range composition + current-street action
+    'villain_top_pair_plus_pct', 'villain_draw_pct', 'villain_air_pct',
+    'villain_range_capped', 'board_favour',
+    'num_callers_to_bet', 'facing_raise',
+    # v9 features (45->48): blocker + outs + improvement
+    'flush_block_pct', 'overcard_outs', 'improvement_probability',
 ]
 
 
@@ -53,11 +59,18 @@ def load_csv(filepath: str):
 
     with open(filepath) as f:
         reader = csv.DictReader(f)
+        # Detect label column from header — fail loudly if not found
+        label_col = None
+        for candidate in ['label', 'action', 'action_label']:
+            if candidate in reader.fieldnames:
+                label_col = candidate
+                break
+        if label_col is None:
+            raise ValueError(f"No label column found. Headers: {reader.fieldnames}")
         for row in reader:
             features = [float(row[col]) for col in FEATURE_COLUMNS]
             X_rows.append(features)
-            action = row.get('action') or row.get('action_label')
-            y_rows.append(ACTION_TO_INT[action])
+            y_rows.append(ACTION_TO_INT[row[label_col]])
 
     X = np.array(X_rows, dtype=np.float32)
     y = np.array(y_rows, dtype=np.int32)
@@ -72,7 +85,7 @@ def load_csv(filepath: str):
 # Training
 # =============================================================================
 
-def train_and_evaluate(csv_path: str, output_dir: str = '/home/rupertbeytell/river-rats/river-rats-complete'):
+def train_and_evaluate(csv_path: str, output_dir: str = 'river-rats-core/models'):
     """
     Train XGBoost, run cross-validation, report results.
 
@@ -106,13 +119,13 @@ def train_and_evaluate(csv_path: str, output_dir: str = '/home/rupertbeytell/riv
     # ---- Train XGBoost ----
     print("\n--- Training XGBoost ---")
     model = xgb.XGBClassifier(
-        n_estimators=500,
-        max_depth=6,
-        learning_rate=0.1,
+        n_estimators=800,
+        max_depth=5,
+        learning_rate=0.05,
         subsample=0.8,
-        colsample_bytree=0.8,
-        min_child_weight=3,
-        gamma=0.1,
+        colsample_bytree=0.75,
+        min_child_weight=5,
+        gamma=0.2,
         reg_alpha=0.1,
         reg_lambda=1.0,
         objective='multi:softprob',
@@ -120,12 +133,21 @@ def train_and_evaluate(csv_path: str, output_dir: str = '/home/rupertbeytell/riv
         eval_metric='mlogloss',
         random_state=42,
         n_jobs=-1,
-        early_stopping_rounds=30,
+        early_stopping_rounds=50,
     )
+
+    # Inverse-frequency sample weights — RAISE capped at 3.0 (see training plan Section 5)
+    class_counts = Counter(y_train)
+    majority_count = float(class_counts[ACTION_TO_INT['CHECK']])
+    raw_weights = {cls: majority_count / count for cls, count in class_counts.items()}
+    RAISE_IDX = ACTION_TO_INT['RAISE']
+    raw_weights[RAISE_IDX] = min(raw_weights[RAISE_IDX], 3.0)
+    sample_weight_train = np.array([raw_weights[label] for label in y_train], dtype=np.float32)
 
     model.fit(
         X_train, y_train,
         eval_set=[(X_test, y_test)],
+        sample_weight=sample_weight_train,
         verbose=False,
     )
     best_iteration = model.best_iteration
@@ -161,12 +183,12 @@ def train_and_evaluate(csv_path: str, output_dir: str = '/home/rupertbeytell/riv
     # Train a fresh model for CV (no early stopping on external test set)
     cv_model = xgb.XGBClassifier(
         n_estimators=best_iteration,  # Use best iteration from above
-        max_depth=6,
-        learning_rate=0.1,
+        max_depth=5,
+        learning_rate=0.05,
         subsample=0.8,
-        colsample_bytree=0.8,
-        min_child_weight=3,
-        gamma=0.1,
+        colsample_bytree=0.75,
+        min_child_weight=5,
+        gamma=0.2,
         reg_alpha=0.1,
         reg_lambda=1.0,
         objective='multi:softprob',
@@ -176,7 +198,13 @@ def train_and_evaluate(csv_path: str, output_dir: str = '/home/rupertbeytell/riv
         n_jobs=-1,
     )
 
-    y_cv_pred = cross_val_predict(cv_model, X, y, cv=cv)
+    # Sample weights for CV must match the shipped model's weighting
+    cv_class_counts = Counter(y)
+    cv_majority = float(cv_class_counts[ACTION_TO_INT['CHECK']])
+    cv_weights = {cls: cv_majority / count for cls, count in cv_class_counts.items()}
+    cv_weights[ACTION_TO_INT['RAISE']] = min(cv_weights[ACTION_TO_INT['RAISE']], 3.0)
+    sample_weight_all = np.array([cv_weights[label] for label in y], dtype=np.float32)
+    y_cv_pred = cross_val_predict(cv_model, X, y, cv=cv, params={'sample_weight': sample_weight_all})
     cv_acc = accuracy_score(y, y_cv_pred)
     print(f"  5-Fold CV Accuracy: {cv_acc:.4f} ({cv_acc:.1%})")
 
@@ -207,16 +235,12 @@ def train_and_evaluate(csv_path: str, output_dir: str = '/home/rupertbeytell/riv
         bar = "â–ˆ" * int(imp * 200)
         print(f"  {name:>22}: {imp:.4f} {bar}")
 
-    # ---- Determine version from data path ----
-    if 'v3' in csv_path or '38feat_v3' in csv_path:
-        model_version = 'v8'
-    elif 'v2' in csv_path or '38feat_v2' in csv_path:
-        model_version = 'v7'
-    else:
-        model_version = 'v6'
+    # ---- Version (explicit — not derived from path) ----
+    model_version = 'v9_3way_v3'
 
     # ---- Export Model as JSON ----
-    model_path = os.path.join(output_dir, f'gto_model_{model_version}_38feat.json')
+    os.makedirs(output_dir, exist_ok=True)
+    model_path = os.path.join(output_dir, f'gto_model_{model_version}.json')
     model.save_model(model_path)
     model_size = os.path.getsize(model_path)
     print(f"\n--- Model Exported ---")
@@ -256,15 +280,120 @@ def train_and_evaluate(csv_path: str, output_dir: str = '/home/rupertbeytell/riv
     return model, report_data
 
 
+# Features to drop for the 45-feature diagnostic run (training plan Section 8 Run 2)
+FEATURES_48_ONLY = ['flush_block_pct', 'overcard_outs', 'improvement_probability']
+
+
+def train_45feat_diagnostic(csv_path: str, output_dir: str = 'river-rats-core/models'):
+    """
+    Diagnostic run on 45 features only (drops the 3 new v3 features).
+    Compares directly against the 48-feature primary run.
+    Output: gto_model_v9_3way_v3_45feat.json
+    """
+    import xgboost as xgb
+    from sklearn.model_selection import (
+        StratifiedKFold, cross_val_predict, train_test_split
+    )
+    from sklearn.metrics import accuracy_score, classification_report
+
+    print("=" * 60)
+    print("GTO Oracle V3 -- 45-Feature Diagnostic Run")
+    print("=" * 60)
+
+    feat_45 = [f for f in FEATURE_COLUMNS if f not in FEATURES_48_ONLY]
+    feat_idx = [FEATURE_COLUMNS.index(f) for f in feat_45]
+
+    X_full, y = load_csv(csv_path)
+    X = X_full[:, feat_idx]
+    print(f"  Using {X.shape[1]} features (dropped: {FEATURES_48_ONLY})")
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.20, random_state=42, stratify=y
+    )
+
+    class_counts = Counter(y_train)
+    majority_count = float(class_counts[ACTION_TO_INT['CHECK']])
+    raw_weights = {cls: majority_count / count for cls, count in class_counts.items()}
+    RAISE_IDX = ACTION_TO_INT['RAISE']
+    raw_weights[RAISE_IDX] = min(raw_weights[RAISE_IDX], 3.0)
+    sample_weight_train = np.array([raw_weights[label] for label in y_train], dtype=np.float32)
+
+    model = xgb.XGBClassifier(
+        n_estimators=800,
+        max_depth=5,
+        learning_rate=0.05,
+        subsample=0.8,
+        colsample_bytree=0.75,
+        min_child_weight=5,
+        gamma=0.2,
+        reg_alpha=0.1,
+        reg_lambda=1.0,
+        objective='multi:softprob',
+        num_class=5,
+        eval_metric='mlogloss',
+        random_state=42,
+        n_jobs=-1,
+        early_stopping_rounds=50,
+    )
+    model.fit(
+        X_train, y_train,
+        eval_set=[(X_test, y_test)],
+        sample_weight=sample_weight_train,
+        verbose=False,
+    )
+    best_iteration = model.best_iteration
+    print(f"  Best iteration: {best_iteration}")
+
+    y_pred = model.predict(X_test)
+    test_acc = accuracy_score(y_test, y_pred)
+    print(f"  Test Accuracy: {test_acc:.4f} ({test_acc:.1%})")
+    print(classification_report(y_test, y_pred, target_names=ACTION_CLASSES, digits=3))
+
+    cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+    cv_model = xgb.XGBClassifier(
+        n_estimators=best_iteration,
+        max_depth=5,
+        learning_rate=0.05,
+        subsample=0.8,
+        colsample_bytree=0.75,
+        min_child_weight=5,
+        gamma=0.2,
+        reg_alpha=0.1,
+        reg_lambda=1.0,
+        objective='multi:softprob',
+        num_class=5,
+        eval_metric='mlogloss',
+        random_state=42,
+        n_jobs=-1,
+    )
+    cv_class_counts = Counter(y)
+    cv_majority = float(cv_class_counts[ACTION_TO_INT['CHECK']])
+    cv_weights = {cls: cv_majority / count for cls, count in cv_class_counts.items()}
+    cv_weights[ACTION_TO_INT['RAISE']] = min(cv_weights[ACTION_TO_INT['RAISE']], 3.0)
+    sample_weight_all = np.array([cv_weights[label] for label in y], dtype=np.float32)
+    y_cv_pred = cross_val_predict(cv_model, X, y, cv=cv, params={'sample_weight': sample_weight_all})
+    cv_acc = accuracy_score(y, y_cv_pred)
+    print(f"  5-Fold CV Accuracy: {cv_acc:.4f} ({cv_acc:.1%})")
+    print(classification_report(y, y_cv_pred, target_names=ACTION_CLASSES, digits=3))
+
+    os.makedirs(output_dir, exist_ok=True)
+    model_path = os.path.join(output_dir, 'gto_model_v9_3way_v3_45feat.json')
+    model.save_model(model_path)
+    print(f"\n  Model saved: {model_path}")
+    return model
+
+
 if __name__ == '__main__':
-    csv_file = '/home/rupertbeytell/river-rats/training_data_38feat_v2/train_action_38.csv'
-    if '--full' in sys.argv or '--v1' in sys.argv:
-        csv_file = '/home/rupertbeytell/river-rats/training_data_38feat/train_action_38.csv'
-    elif '--v3' in sys.argv:
-        csv_file = '/home/rupertbeytell/river-rats/training_data_38feat_v3/train_action_38.csv'
+    csv_file = 'training-data/train_3way_v3_combined.csv'
 
     if not os.path.exists(csv_file):
-        print(f"ERROR: {csv_file} not found. Run feature extraction first.")
+        print(f"ERROR: {csv_file} not found.")
         sys.exit(1)
 
-    train_and_evaluate(csv_file)
+    if '--45feat' in sys.argv:
+        # Run 2: diagnostic 45-feature comparison (training plan Section 8)
+        train_45feat_diagnostic(csv_file)
+    else:
+        # Run 1: primary 48-feature training (training plan Section 8)
+        os.makedirs('river-rats-core/models', exist_ok=True)
+        train_and_evaluate(csv_file)
