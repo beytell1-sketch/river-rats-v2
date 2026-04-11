@@ -15,9 +15,10 @@ Verifies:
 
 import pytest
 from range_manager import (
-    RFI, THREE_BET, CALL_VS_OPEN, CALL_VS_3BET, FOURBET,
+    RFI, THREE_BET, CALL, CALL_VS_3BET, FOURBET,
     RangeManager,
 )
+CALL_VS_OPEN = CALL  # backward-compat alias for test assertions
 
 POSITIONS_6MAX = ['UTG', 'HJ', 'CO', 'BTN', 'SB', 'BB']
 

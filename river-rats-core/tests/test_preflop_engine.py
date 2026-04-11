@@ -252,38 +252,55 @@ class TestSqueeze:
         assert d.action == 'RAISE'
         assert d.scenario == 'squeeze'
 
-    def test_jts_sb_calls_squeeze_vs_co(self, rm):
-        """JTs from SB vs CO open — in CALL['SB']['vs_CO'] at 0.5, should CALL."""
-        d = decide_preflop('JTs', 'SB', 'squeeze', 'CO', 75.0, 25.0, rm)
-        assert d.action == 'CALL'
-        assert 0 < d.range_frequency <= 1.0
-        assert d.scenario == 'squeeze'
-
     def test_72o_sb_folds_squeeze(self, rm):
         """72o from SB — not in any range, folds."""
         d = decide_preflop('72o', 'SB', 'squeeze', 'CO', 75.0, 25.0, rm)
         assert d.action == 'FOLD'
-
-    def test_small_pair_calls_via_implied_odds(self, rm):
-        """44 from SB vs BTN open — not in CALL/THREEB but implied odds override fires."""
-        d = decide_preflop('44', 'SB', 'squeeze', 'BTN', 75.0, 25.0, rm)
-        assert d.action == 'CALL'
-        assert d.range_frequency == 0.45  # Fixed implied-odds confidence
 
     def test_98s_bb_calls_squeeze_vs_co(self, rm):
         """98s from BB vs CO open with caller — in CALL['BB']['vs_CO'], should CALL."""
         d = decide_preflop('98s', 'BB', 'squeeze', 'CO', 75.0, 25.0, rm)
         assert d.action == 'CALL'
 
-    def test_kts_sb_calls_squeeze_vs_co(self, rm):
-        """KTs from SB vs CO — in CALL['SB']['vs_CO'] at 0.5."""
-        d = decide_preflop('KTs', 'SB', 'squeeze', 'CO', 75.0, 25.0, rm)
-        assert d.action == 'CALL'
-
     def test_small_pair_folds_vs_tight_opener(self, rm):
         """44 from SB vs UTG — UTG is tight, implied odds override blocked."""
         d = decide_preflop('44', 'SB', 'squeeze', 'UTG', 75.0, 25.0, rm)
         assert d.action == 'FOLD'
+
+
+# ---------------------------------------------------------------------------
+# 4b. SB 3-bet-or-fold policy
+# ---------------------------------------------------------------------------
+
+class TestSBIs3BetOrFold:
+    def test_jts_sb_folds_vs_co_open(self, rm):
+        """
+        JTs from SB facing CO open — SB has no CALL range.
+        JTs is not in THREE_BET['SB']['vs_CO'] at any meaningful freq.
+        Expect FOLD.
+        """
+        d = decide_preflop('JTs', 'SB', 'squeeze', 'CO', 75.0, 25.0, rm)
+        assert d.action == 'FOLD'
+        assert d.scenario == 'squeeze'
+
+    def test_kts_sb_folds_vs_co_open(self, rm):
+        """
+        KTs from SB facing CO open — not in SB 3-bet range, should FOLD.
+        """
+        d = decide_preflop('KTs', 'SB', 'squeeze', 'CO', 75.0, 25.0, rm)
+        assert d.action == 'FOLD'
+
+    def test_small_pair_btn_calls_via_implied_odds_vs_utg(self, rm):
+        """
+        44 from BTN vs UTG open — BTN has a CALL range.
+        44 is in CALL['BTN']['vs_UTG'] at 1.0.
+        Implied odds path in engine also fires for BTN (non-SB, non-tight opener check differs).
+        Expect CALL.
+        (Replaces test_small_pair_calls_via_implied_odds which wrongly used SB hero.)
+        """
+        d = decide_preflop('44', 'BTN', 'defend_call', 'UTG', 4.0, 1.5, rm)
+        assert d.action == 'CALL'
+        assert d.scenario == 'defend_call'
 
 
 # ---------------------------------------------------------------------------
