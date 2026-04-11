@@ -1,0 +1,188 @@
+diff --git a/river-rats-core/multiway_adjuster.py b/river-rats-core/multiway_adjuster.py
+index 2869383..f6a338f 100644
+--- a/river-rats-core/multiway_adjuster.py
++++ b/river-rats-core/multiway_adjuster.py
+@@ -199,7 +199,38 @@ class AdjustedPrediction:
+     adjustment_confidence: float = 1.0  # 0.0-1.0, sigmoid confidence of adjustment
+ 
+ 
+-def adjust(pred, feat_dict: dict, num_opponents: int) -> AdjustedPrediction:
++def get_default_params() -> dict:
++    """Return the current baseline parameter set as a dict.
++
++    Keys match the override_thresholds() parameter names.
++    Use this to get the baseline, then override specific values
++    for self-play variant hypotheses.
++    """
++    return {
++        'bluff_eq_thresh': BLUFF_EQUITY_THRESHOLD,
++        'value_base': VALUE_BASE_THRESHOLD,
++        'value_per_opp': VALUE_PER_OPPONENT,
++        'raise_base': RAISE_BASE_THRESHOLD,
++        'raise_per_opp': RAISE_PER_OPPONENT,
++        'cold_call_base': COLD_CALL_BASE,
++        'cold_call_per_raise': COLD_CALL_PER_RAISE,
++        'cold_call_per_opp': COLD_CALL_PER_OPP,
++        'rule5_draw_bypass': RULE5_DRAW_BYPASS,
++        'pot_odds_thresh': POT_ODDS_THRESHOLD,
++        'rule1_draw_bypass': RULE1_DRAW_BYPASS,
++        'draw_outs_ip_base': DRAW_OUTS_IP_BASE,
++        'equity_realization_ip': EQUITY_REALIZATION_IP,
++        'equity_realization_oop': EQUITY_REALIZATION_OOP,
++        'sigmoid_temperature': SIGMOID_TEMPERATURE,
++        'rule4_monster_draw_outs': RULE4_MONSTER_DRAW_OUTS,
++        'rule4_monster_draw_equity': RULE4_MONSTER_DRAW_EQUITY,
++        'rule4_equity_exception': RULE4_EQUITY_EXCEPTION,
++        'draw_outs_ip_per_opp': DRAW_OUTS_IP_PER_OPPONENT,
++    }
++
++
++def adjust(pred, feat_dict: dict, num_opponents: int,
++           params: dict = None) -> AdjustedPrediction:
+     """
+     Adjust oracle prediction for multiway pots.
+ 
+@@ -207,10 +238,37 @@ def adjust(pred, feat_dict: dict, num_opponents: int) -> AdjustedPrediction:
+         pred: OraclePrediction with .action attribute
+         feat_dict: {feature_name: value} dict with the 37 model features
+         num_opponents: Number of opponents (1=HU, 2-5=multiway)
++        params: Optional parameter dict. When provided, thresholds are
++                read from this dict instead of module globals. Keys match
++                override_thresholds() names. Missing keys fall back to
++                module globals. Use get_default_params() to get the
++                baseline and override specific values.
+ 
+     Returns:
+         AdjustedPrediction with original and potentially adjusted action
+     """
++    # Resolve all thresholds: params dict > module globals
++    p = params or {}
++    bluff_eq_thresh = p.get('bluff_eq_thresh', BLUFF_EQUITY_THRESHOLD)
++    value_base = p.get('value_base', VALUE_BASE_THRESHOLD)
++    value_per_opp = p.get('value_per_opp', VALUE_PER_OPPONENT)
++    raise_base = p.get('raise_base', RAISE_BASE_THRESHOLD)
++    raise_per_opp = p.get('raise_per_opp', RAISE_PER_OPPONENT)
++    cold_call_base = p.get('cold_call_base', COLD_CALL_BASE)
++    cold_call_per_raise = p.get('cold_call_per_raise', COLD_CALL_PER_RAISE)
++    cold_call_per_opp = p.get('cold_call_per_opp', COLD_CALL_PER_OPP)
++    rule5_draw_bypass = p.get('rule5_draw_bypass', RULE5_DRAW_BYPASS)
++    pot_odds_thresh = p.get('pot_odds_thresh', POT_ODDS_THRESHOLD)
++    rule1_draw_bypass = p.get('rule1_draw_bypass', RULE1_DRAW_BYPASS)
++    draw_outs_ip_base = p.get('draw_outs_ip_base', DRAW_OUTS_IP_BASE)
++    eq_realization_ip = p.get('equity_realization_ip', EQUITY_REALIZATION_IP)
++    eq_realization_oop = p.get('equity_realization_oop', EQUITY_REALIZATION_OOP)
++    sigmoid_temp = p.get('sigmoid_temperature', SIGMOID_TEMPERATURE)
++    r4_monster_outs = p.get('rule4_monster_draw_outs', RULE4_MONSTER_DRAW_OUTS)
++    r4_monster_eq = p.get('rule4_monster_draw_equity', RULE4_MONSTER_DRAW_EQUITY)
++    r4_eq_exception = p.get('rule4_equity_exception', RULE4_EQUITY_EXCEPTION)
++    draw_outs_ip_per_opp = p.get('draw_outs_ip_per_opp', DRAW_OUTS_IP_PER_OPPONENT)
++
+     action = pred.action
+ 
+     # Passthrough for heads-up or invalid
+@@ -242,21 +300,21 @@ def adjust(pred, feat_dict: dict, num_opponents: int) -> AdjustedPrediction:
+ 
+         # Equity realization: OOP equity is worth less than IP equity
+         is_ip_flag = feat_dict.get(F.IS_IP, 0)
+-        realization_factor = EQUITY_REALIZATION_IP if is_ip_flag else EQUITY_REALIZATION_OOP
++        realization_factor = eq_realization_ip if is_ip_flag else eq_realization_oop
+         realized_equity = equity * realization_factor
+ 
+         # Threshold scales with number of raises
+-        cold_call_threshold = COLD_CALL_BASE + num_raises * COLD_CALL_PER_RAISE
++        cold_call_threshold = cold_call_base + num_raises * cold_call_per_raise
+         # Also scale with opponents
+-        cold_call_threshold += (n - 1) * COLD_CALL_PER_OPP
++        cold_call_threshold += (n - 1) * cold_call_per_opp
+ 
+         adjustment_confidence = _adjustment_probability(
+-            realized_equity, cold_call_threshold, temperature=SIGMOID_TEMPERATURE)
++            realized_equity, cold_call_threshold, temperature=sigmoid_temp)
+ 
+         if adjustment_confidence > 0.5:
+             # Check if hero has a draw worth continuing with
+             draw_outs = feat_dict.get(F.DRAW_OUTS, 0)
+-            if draw_outs < RULE5_DRAW_BYPASS:  # No strong draw
++            if draw_outs < rule5_draw_bypass:  # No strong draw
+                 return _adjusted(action, 'FOLD', 'cold_call_tightening',
+                                  num_opponents, adjustment_confidence)
+ 
+@@ -265,7 +323,7 @@ def adjust(pred, feat_dict: dict, num_opponents: int) -> AdjustedPrediction:
+     pot_size = feat_dict.get(F.POT_SIZE, 0)
+     if pot_size > 0 and to_call > 0:
+         price_ratio = to_call / pot_size
+-        if price_ratio < POT_ODDS_THRESHOLD:  # Getting better than ~7:1
++        if price_ratio < pot_odds_thresh:  # Getting better than ~7:1
+             draw_outs = feat_dict.get(F.DRAW_OUTS, 0)
+             has_flush_draw = feat_dict.get(F.HAS_FLUSH_DRAW, 0)
+             has_straight_draw = feat_dict.get(F.HAS_STRAIGHT_DRAW, 0)
+@@ -288,7 +346,7 @@ def adjust(pred, feat_dict: dict, num_opponents: int) -> AdjustedPrediction:
+ 
+     # Equity realization: OOP equity is worth less than IP equity
+     is_ip = feat_dict.get(F.IS_IP, 0) > 0.5
+-    realization_factor = EQUITY_REALIZATION_IP if is_ip else EQUITY_REALIZATION_OOP
++    realization_factor = eq_realization_ip if is_ip else eq_realization_oop
+     realized_equity = equity * realization_factor
+ 
+     draw_outs = feat_dict.get(F.DRAW_OUTS, 0)
+@@ -296,11 +354,11 @@ def adjust(pred, feat_dict: dict, num_opponents: int) -> AdjustedPrediction:
+ 
+     # Rule 1: Bluff suppression (highest priority for non-draw hands)
+     adjustment_confidence = _adjustment_probability(
+-        realized_equity, BLUFF_EQUITY_THRESHOLD, temperature=SIGMOID_TEMPERATURE)
++        realized_equity, bluff_eq_thresh, temperature=sigmoid_temp)
+     if adjustment_confidence > 0.5:
+         # Draw bypass: hands with 6+ outs are not pure bluffs
+         # They should fall through to Rule 4 (draw check) for proper evaluation
+-        if draw_outs >= RULE1_DRAW_BYPASS:
++        if draw_outs >= rule1_draw_bypass:
+             pass  # Skip bluff suppression, let Rule 4 handle
+         elif action == "BET":
+             return _adjusted(action, "CHECK", "bluff_suppression",
+@@ -311,21 +369,21 @@ def adjust(pred, feat_dict: dict, num_opponents: int) -> AdjustedPrediction:
+ 
+     # Rule 2: Value tightening (BET only)
+     if action == "BET":
+-        value_threshold = VALUE_BASE_THRESHOLD + (n - 1) * VALUE_PER_OPPONENT
++        value_threshold = value_base + (n - 1) * value_per_opp
+         adjustment_confidence = _adjustment_probability(
+-            realized_equity, value_threshold, temperature=SIGMOID_TEMPERATURE)
++            realized_equity, value_threshold, temperature=sigmoid_temp)
+         if adjustment_confidence > 0.5:
+             return _adjusted(action, "CHECK", "value_tightening",
+                              num_opponents, adjustment_confidence)
+ 
+     # Rule 3: Raise demotion (RAISE only)
+     if action == "RAISE":
+-        raise_threshold = RAISE_BASE_THRESHOLD + (n - 1) * RAISE_PER_OPPONENT
++        raise_threshold = raise_base + (n - 1) * raise_per_opp
+         adjustment_confidence = _adjustment_probability(
+-            realized_equity, raise_threshold, temperature=SIGMOID_TEMPERATURE)
++            realized_equity, raise_threshold, temperature=sigmoid_temp)
+         if adjustment_confidence > 0.5:
+             if facing_bet:
+-                if realized_equity < BLUFF_EQUITY_THRESHOLD:
++                if realized_equity < bluff_eq_thresh:
+                     # Sub-bluff equity: fold, don't call (consistent with Rule 1)
+                     return _adjusted(action, "FOLD", "raise_demotion_to_fold",
+                                      num_opponents, adjustment_confidence)
+@@ -340,16 +398,16 @@ def adjust(pred, feat_dict: dict, num_opponents: int) -> AdjustedPrediction:
+     if action == "BET" and draw_outs > 0:
+         if not is_ip:
+             # Monster draw exception: 12+ outs with 40%+ realized equity
+-            if draw_outs >= RULE4_MONSTER_DRAW_OUTS and realized_equity >= RULE4_MONSTER_DRAW_EQUITY:
++            if draw_outs >= r4_monster_outs and realized_equity >= r4_monster_eq:
+                 pass  # Skip OOP veto
+             # Equity exception: strong made hands (65%+) with incidental draws bet for value
+-            elif realized_equity >= RULE4_EQUITY_EXCEPTION:
++            elif realized_equity >= r4_eq_exception:
+                 pass  # Skip OOP veto — hand is primarily a value bet
+             else:
+                 return _adjusted(action, "CHECK", "draw_check", num_opponents)
+         else:
+             # IP with draws: need enough outs
+-            ip_threshold = DRAW_OUTS_IP_BASE + (n - 1) * DRAW_OUTS_IP_PER_OPPONENT
++            ip_threshold = draw_outs_ip_base + (n - 1) * draw_outs_ip_per_opp
+             if draw_outs < ip_threshold:
+                 return _adjusted(action, "CHECK", "draw_check", num_opponents)
+ 

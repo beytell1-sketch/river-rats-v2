@@ -1,0 +1,154 @@
+diff --git a/river-rats-core/poker_game.py b/river-rats-core/poker_game.py
+index e8c13a6..8275c3e 100644
+--- a/river-rats-core/poker_game.py
++++ b/river-rats-core/poker_game.py
+@@ -166,6 +166,7 @@ class Player:
+         self.is_all_in = False
+         self.bet_this_street = 0
+         self.total_invested = 0
++        self.decision_callback = None  # Optional callable — overrides ai_decision() when set
+ 
+     def reset_for_hand(self):
+         self.hole_cards = []
+@@ -961,24 +962,26 @@ class PokerGame:
+     BIG_BLIND = 10
+ 
+     def __init__(self, coaching_level: int = 2, starting_stack: int = 1000,
+-                 hero_callback=None, ai_callback=None):
++                 hero_callback=None, ai_callback=None, headless: bool = False):
+         self.coaching_level = coaching_level
+         self.starting_stack = starting_stack
+         self.hero_callback = hero_callback
+         self.ai_callback = ai_callback
++        self.headless = headless
+         self.stats = SessionStats()
+ 
+-        # Build 6 players; hero is BTN
++        # Build 6 players; hero is BTN unless headless
+         names = ['Alex', 'Blake', 'Casey', 'Hero', 'Dana', 'Ellis']
+         self.players: List[Player] = []
+         for i, pos in enumerate(POSITIONS):
+             name = names[i]
+-            is_hero = (pos == 'BTN')
++            is_hero = (not headless and pos == 'BTN')
+             p = Player(name, pos, starting_stack, is_hero)
+             p.personality = None
+             self.players.append(p)
+ 
+-        self.hero: Player = next(p for p in self.players if p.is_hero)
++        _hero_candidates = [p for p in self.players if p.is_hero]
++        self.hero: Optional[Player] = _hero_candidates[0] if _hero_candidates else None
+ 
+         self.deck: List[Card] = []
+         self.community_cards: List[Card] = []
+@@ -1013,14 +1016,15 @@ class PokerGame:
+                          for pos in current]
+         for p, pos in zip(self.players, new_positions):
+             p.position = pos
+-        self.hero = next(p for p in self.players if p.is_hero)
++        _hero_candidates = [p for p in self.players if p.is_hero]
++        self.hero = _hero_candidates[0] if _hero_candidates else None
+ 
+     # ─── Setup ──────────────────────────────────────────────────────────
+ 
+-    def deal_hand(self):
++    def deal_hand(self, deck_override=None):
+         self.hand_number += 1
+         self.stats.hands += 1
+-        self.deck = make_deck()
++        self.deck = deck_override if deck_override is not None else make_deck()
+         self.community_cards = []
+         self.pot = 0
+         self.current_bet = 0
+@@ -1097,7 +1101,7 @@ class PokerGame:
+ 
+             bet_before = self.current_bet
+ 
+-            if p.is_hero:
++            if p.is_hero and self.hero is not None:
+                 self._hero_turn(p)
+             else:
+                 self._ai_turn(p)
+@@ -1167,7 +1171,27 @@ class PokerGame:
+                 self.hero_has_raised_preflop = True
+ 
+     def _ai_turn(self, player: Player):
+-        if self.street == 'preflop':
++        if getattr(player, 'decision_callback', None) is not None:
++            # Per-player oracle or custom callback path
++            context = {
++                'current_bet': self.current_bet,
++                'to_call': self.current_bet - player.bet_this_street,
++                'pot': self.pot,
++                'board': list(self.community_cards),
++                'street': self.street,
++                'is_preflop': self.street == 'preflop',
++                'facing_bet': (self.current_bet - player.bet_this_street) > 0,
++                'personality': getattr(player, 'personality', None),
++                'num_raises_this_street': getattr(self, 'raises_this_street', 0),
++                'opener_position': self.opener_position or None,
++                'num_callers': self.callers_this_street,
++                'active_opponents': [
++                    p for p in self.players if not p.is_folded and p is not player
++                ],
++                'hand_number': self.hand_number,
++            }
++            action, amount = player.decision_callback(self, player, context)
++        elif self.street == 'preflop':
+             # Position-aware range-table decision preflop
+             preflop_state = {
+                 'num_raises_this_street': getattr(self, 'raises_this_street', 0),
+@@ -1764,11 +1788,11 @@ class PokerGame:
+ 
+     # ─── Play one hand ───────────────────────────────────────────────────
+ 
+-    def play_hand(self) -> bool:
+-        self.deal_hand()
++    def play_hand(self, deck_override=None) -> bool:
++        self.deal_hand(deck_override=deck_override)
+ 
+         hero = self.hero
+-        if self.hero_callback is None:
++        if self.hero_callback is None and hero is not None:
+             print(f"\n  Hand #{self.hand_number}  |  "
+                   f"Your cards: {fmt_cards_inline(hero.hole_cards)}  "
+                   f"  Stack: {hero.stack}")
+@@ -1786,7 +1810,7 @@ class PokerGame:
+             return True
+ 
+         # If hero folded, skip remaining streets but still award the pot
+-        if hero.is_folded:
++        if hero is not None and hero.is_folded:
+             self.showdown()
+             return True
+ 
+@@ -1797,7 +1821,7 @@ class PokerGame:
+             return True
+ 
+         survivors = [p for p in self.players if not p.is_folded]
+-        if len(survivors) < 2 or hero.is_folded:
++        if len(survivors) < 2 or (hero is not None and hero.is_folded):
+             self.showdown()
+             return True
+ 
+@@ -1808,7 +1832,7 @@ class PokerGame:
+             return True
+ 
+         survivors = [p for p in self.players if not p.is_folded]
+-        if len(survivors) < 2 or hero.is_folded:
++        if len(survivors) < 2 or (hero is not None and hero.is_folded):
+             self.showdown()
+             return True
+ 
+@@ -1900,7 +1924,10 @@ def main():
+ 
+         print()
+         print(ruler('─'))
+-        print(f"  Hand #{game.hand_number} complete  |  Your stack: {game.hero.stack}")
++        if game.hero is not None:
++            print(f"  Hand #{game.hand_number} complete  |  Your stack: {game.hero.stack}")
++        else:
++            print(f"  Hand #{game.hand_number} complete")
+         print(ruler('─'))
+         print()
+         print(f"  [Space = next hand  |  L = change level  |  q = quit]")
