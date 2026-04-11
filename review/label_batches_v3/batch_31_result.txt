@@ -1,0 +1,21 @@
+# Batch 31 Results
+
+{"situation_id":"TV_Board1_Qc8d4s2h_h4","action":"CHECK","confidence":"HIGH","reasoning":"Hero holds 4h3h (bottom pair) OOP with only 20.6% equity on a dry rainbow board. villain_aggression_count=2 signals a strong opposing range (villain_tp_plus=0.161). No facing bet — hero is first to act. OOP + marginal equity + strong villains means check for pot control; no value in leading."}
+
+{"situation_id":"TV_Board1_Qc8d4s2h_h5","action":"CHECK","confidence":"HIGH","reasoning":"AhKh is a complete air hand (equity 13%) on Qc8d4s2h with no pair, no draw (draw_outs=0), OOP. Villain aggression is high (count=2). Semi-bluffing is incorrect — no draw equity and OOP against two opponents who have already shown aggression. Check and fold to a bet."}
+
+{"situation_id":"TV_Board1_Qc8d4s2h_h6","action":"CHECK","confidence":"HIGH","reasoning":"JdTd is a gutshot-only draw (4 outs, 13.5% equity) OOP with no made hand. villain_aggression=2 narrows villain ranges. Per the framework, gutshot-only hands are check/fold candidates 3-way OOP — no fold equity, and the draw is not a nut draw. Check and fold to aggression."}
+
+{"situation_id":"TV_Board1_Qc8d4s2h_h7","action":"CHECK","confidence":"MEDIUM","reasoning":"QcJc is top pair second kicker (15.5% equity vs range seems low — but this is turn/river context with SPR 0.56) OOP against two players with villain_aggression=2. The equity margin is modest (0.155) and OOP position makes betting risky — villain range is narrowed by prior aggression. Check for pot control is safest."}
+
+{"situation_id":"TV_Board1_Qc8d4s2h_h8","action":"BET","confidence":"HIGH","reasoning":"KdQd has TPTK-level holding (top pair top kicker type, 53.6% equity) with 79% worse hands, OOP but villain_aggression=2 with villain_air=0.44 indicating the range still contains air. Equity of 53.6% is strong enough OOP on a dry board — similar to Example 6 where OOP value bet is correct when equity exceeds 50%+ and worse_hand_pct is very high. Small bet (33%) extracts value."}
+
+{"situation_id":"TV_Board1_Qc8d4s2h_h9","action":"CHECK","confidence":"MEDIUM","reasoning":"9c9d is an underpair (24.2% equity) on a Q-high board OOP. villain_aggression=2 with villain_tp_plus=0.161 means villain likely has a queen. Equity is well below 50% and the hand has no board connection. OOP + weak equity + prior villain aggression = check for pot control and showdown value."}
+
+{"situation_id":"TV_Board2_Jd7c3sAh_h1","action":"BET","confidence":"HIGH","reasoning":"Ac9c has TPTK (56.2% equity, 83.9% worse hands) OOP on a J-7-3-A board. villain_range_capped=1 (cold-caller, no AA/KK) and villain_air=0.16. Equity is strong (56%) and worse_hand_pct is very high (0.84). The board favours hero's Ace. OOP value bet is correct here — equity well exceeds 50% against a capped villain range with minimal air (comparable to Example 6)."}
+
+{"situation_id":"TV_Board2_Jd7c3sAh_h2","action":"CHECK","confidence":"HIGH","reasoning":"Ah5h has top pair weak kicker (9.5% equity margin, 37.9% worse hands) OOP. villain_range_capped=1 but villain_tp_plus=0.297 is significant. Equity at ~9.5% above range average is marginal for OOP value. With only 37.9% worse hands, too many callers beat this hand. Check for pot control."}
+
+{"situation_id":"TV_Board2_Jd7c3sAh_h3","action":"CHECK","confidence":"MEDIUM","reasoning":"JhTh is second pair (30.975% equity) OOP on an A-high board. villain_range_capped=1 but villain_tp_plus=0.297 means many have Ax hands that dominate. OOP with ~31% equity and a board heavily favouring Ax holdings — check is correct for pot control. No value in leading second pair into uncapped raiser range (villain_range_capped=1 only means no AA/KK, they still have Ax)."}
+
+{"situation_id":"TV_Board2_Jd7c3sAh_h4","action":"CHECK","confidence":"MEDIUM","reasoning":"Jc9c is second pair (29.1% equity) OOP on Jd7c3sAh. Similar to h3 — the ace on board shifts equity toward Ax holdings. villain_range_capped=1 but villain_tp_plus=0.297. With 55% of hands beating hero (better_hand_pct=0.432) and OOP position, checking is correct to avoid being dominated by the Ax portion of villain's range."}

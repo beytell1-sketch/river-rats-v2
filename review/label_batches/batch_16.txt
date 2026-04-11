@@ -1,0 +1,38 @@
+--- HAND: CALL_Board8_775_9_J_h9 ---
+Situation ID: CALL_Board8_775_9_J_h9
+Hero cards: AcJh
+Board: ['7h', '7d', '5s', '9c', 'Js']
+Street: r
+Hero position: BTN
+Villain positions: CO
+Num opponents: 2
+Pot: 500.0
+To call: 200.0
+Facing bet: True
+Action history: N/A
+
+Key features:
+  raw_equity: 0.4893
+  equity_vs_range: 0.4893
+  pot_odds: 0.2857
+  is_ip: 1
+  hand_category: 10
+  is_made_hand: 1
+  is_strong_made: 1
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.2700
+  spr: 0.2000
+  villain_top_pair_plus_pct: 0.6989
+  villain_air_pct: 0.3011
+  villain_range_capped: 1
+  board_favour: -0.3989
+  num_callers_to_bet: 0
+  facing_raise: 1
+  villain_aggression_count: 1
+  villain_checked_back: 1
+  better_hand_pct: 0.1378
+  worse_hand_pct: 0.8356
+

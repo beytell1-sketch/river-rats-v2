@@ -1,0 +1,380 @@
+--- HAND: CALL_Board5_KdJc6s_h6 ---
+Situation ID: CALL_Board5_KdJc6s_h6
+Hero cards: KhQh
+Board: ['Kd', 'Jc', '6s']
+Street: f
+Hero position: BB
+Villain positions: CO
+Num opponents: 2
+Pot: 155.0
+To call: 35.0
+Facing bet: True
+Action history: N/A
+
+Key features:
+  raw_equity: 0.4627
+  equity_vs_range: 0.4627
+  pot_odds: 0.1842
+  is_ip: 0
+  hand_category: 7
+  is_made_hand: 1
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.0000
+  spr: 0.6452
+  villain_top_pair_plus_pct: 0.3174
+  villain_air_pct: 0.1856
+  villain_range_capped: 0
+  board_favour: -0.0174
+  num_callers_to_bet: 1
+  facing_raise: 1
+  villain_aggression_count: 1
+  villain_checked_back: 0
+  better_hand_pct: 0.1384
+  worse_hand_pct: 0.8239
+
+--- HAND: CALL_Board5_KdJc6s_h7 ---
+Situation ID: CALL_Board5_KdJc6s_h7
+Hero cards: KsJd
+Board: ['Kd', 'Jc', '6s']
+Street: f
+Hero position: BB
+Villain positions: CO
+Num opponents: 2
+Pot: 155.0
+To call: 35.0
+Facing bet: True
+Action history: N/A
+
+Key features:
+  raw_equity: 0.7117
+  equity_vs_range: 0.7117
+  pot_odds: 0.1842
+  is_ip: 0
+  hand_category: 10
+  is_made_hand: 1
+  is_strong_made: 1
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.0000
+  spr: 0.6452
+  villain_top_pair_plus_pct: 0.3174
+  villain_air_pct: 0.1856
+  villain_range_capped: 0
+  board_favour: -0.0174
+  num_callers_to_bet: 1
+  facing_raise: 1
+  villain_aggression_count: 1
+  villain_checked_back: 0
+  better_hand_pct: 0.0309
+  worse_hand_pct: 0.9630
+
+--- HAND: CALL_Board5_KdJc6s_h8 ---
+Situation ID: CALL_Board5_KdJc6s_h8
+Hero cards: JhTs
+Board: ['Kd', 'Jc', '6s']
+Street: f
+Hero position: BB
+Villain positions: CO
+Num opponents: 2
+Pot: 155.0
+To call: 35.0
+Facing bet: True
+Action history: N/A
+
+Key features:
+  raw_equity: 0.3157
+  equity_vs_range: 0.3157
+  pot_odds: 0.1842
+  is_ip: 0
+  hand_category: 5
+  is_made_hand: 1
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.0000
+  spr: 0.6452
+  villain_top_pair_plus_pct: 0.3174
+  villain_air_pct: 0.1856
+  villain_range_capped: 0
+  board_favour: -0.0174
+  num_callers_to_bet: 1
+  facing_raise: 1
+  villain_aggression_count: 1
+  villain_checked_back: 0
+  better_hand_pct: 0.3474
+  worse_hand_pct: 0.6465
+
+--- HAND: CALL_Board5_KdJc6s_h9 ---
+Situation ID: CALL_Board5_KdJc6s_h9
+Hero cards: AcQc
+Board: ['Kd', 'Jc', '6s']
+Street: f
+Hero position: BB
+Villain positions: CO
+Num opponents: 2
+Pot: 155.0
+To call: 35.0
+Facing bet: True
+Action history: N/A
+
+Key features:
+  raw_equity: 0.2510
+  equity_vs_range: 0.2510
+  pot_odds: 0.1842
+  is_ip: 0
+  hand_category: 1
+  is_made_hand: 0
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 8
+  has_flush_draw: 0
+  has_straight_draw: 1
+  danger_score: 0.0000
+  spr: 0.6452
+  villain_top_pair_plus_pct: 0.3174
+  villain_air_pct: 0.1856
+  villain_range_capped: 0
+  board_favour: -0.0174
+  num_callers_to_bet: 1
+  facing_raise: 1
+  villain_aggression_count: 1
+  villain_checked_back: 0
+  better_hand_pct: 0.7120
+  worse_hand_pct: 0.2298
+
+--- HAND: CALL_Board6_Ts8h3s_h1 ---
+Situation ID: CALL_Board6_Ts8h3s_h1
+Hero cards: Kd2d
+Board: ['Ts', '8h', '3s']
+Street: f
+Hero position: BB
+Villain positions: CO
+Num opponents: 2
+Pot: 90.0
+To call: 25.0
+Facing bet: True
+Action history: N/A
+
+Key features:
+  raw_equity: 0.0800
+  equity_vs_range: 0.0800
+  pot_odds: 0.2174
+  is_ip: 0
+  hand_category: 1
+  is_made_hand: 0
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.2500
+  spr: 1.1111
+  villain_top_pair_plus_pct: 0.4049
+  villain_air_pct: 0.2794
+  villain_range_capped: 0
+  board_favour: -0.1049
+  num_callers_to_bet: 0
+  facing_raise: 1
+  villain_aggression_count: 1
+  villain_checked_back: 0
+  better_hand_pct: 0.8873
+  worse_hand_pct: 0.1127
+
+--- HAND: CALL_Board6_Ts8h3s_h2 ---
+Situation ID: CALL_Board6_Ts8h3s_h2
+Hero cards: Qd4d
+Board: ['Ts', '8h', '3s']
+Street: f
+Hero position: BB
+Villain positions: CO
+Num opponents: 2
+Pot: 90.0
+To call: 25.0
+Facing bet: True
+Action history: N/A
+
+Key features:
+  raw_equity: 0.0750
+  equity_vs_range: 0.0750
+  pot_odds: 0.2174
+  is_ip: 0
+  hand_category: 1
+  is_made_hand: 0
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.2500
+  spr: 1.1111
+  villain_top_pair_plus_pct: 0.4049
+  villain_air_pct: 0.2794
+  villain_range_capped: 0
+  board_favour: -0.1049
+  num_callers_to_bet: 0
+  facing_raise: 1
+  villain_aggression_count: 1
+  villain_checked_back: 0
+  better_hand_pct: 0.9263
+  worse_hand_pct: 0.0737
+
+--- HAND: CALL_Board6_Ts8h3s_h3 ---
+Situation ID: CALL_Board6_Ts8h3s_h3
+Hero cards: 7s6s
+Board: ['Ts', '8h', '3s']
+Street: f
+Hero position: BB
+Villain positions: CO
+Num opponents: 2
+Pot: 90.0
+To call: 25.0
+Facing bet: True
+Action history: N/A
+
+Key features:
+  raw_equity: 0.4417
+  equity_vs_range: 0.4417
+  pot_odds: 0.2174
+  is_ip: 0
+  hand_category: 0
+  is_made_hand: 0
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 13
+  has_flush_draw: 1
+  has_straight_draw: 1
+  danger_score: 0.2500
+  spr: 1.1111
+  villain_top_pair_plus_pct: 0.4049
+  villain_air_pct: 0.2794
+  villain_range_capped: 0
+  board_favour: -0.1049
+  num_callers_to_bet: 0
+  facing_raise: 1
+  villain_aggression_count: 1
+  villain_checked_back: 0
+  better_hand_pct: 0.9462
+  worse_hand_pct: 0.0376
+
+--- HAND: CALL_Board6_Ts8h3s_h4 ---
+Situation ID: CALL_Board6_Ts8h3s_h4
+Hero cards: AsKh
+Board: ['Ts', '8h', '3s']
+Street: f
+Hero position: BB
+Villain positions: CO
+Num opponents: 2
+Pot: 90.0
+To call: 25.0
+Facing bet: True
+Action history: N/A
+
+Key features:
+  raw_equity: 0.2762
+  equity_vs_range: 0.2762
+  pot_odds: 0.2174
+  is_ip: 0
+  hand_category: 2
+  is_made_hand: 0
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.2500
+  spr: 1.1111
+  villain_top_pair_plus_pct: 0.4049
+  villain_air_pct: 0.2794
+  villain_range_capped: 0
+  board_favour: -0.1049
+  num_callers_to_bet: 0
+  facing_raise: 1
+  villain_aggression_count: 1
+  villain_checked_back: 0
+  better_hand_pct: 0.5228
+  worse_hand_pct: 0.4225
+
+--- HAND: CALL_Board6_Ts8h3s_h5 ---
+Situation ID: CALL_Board6_Ts8h3s_h5
+Hero cards: 9h7h
+Board: ['Ts', '8h', '3s']
+Street: f
+Hero position: BB
+Villain positions: CO
+Num opponents: 2
+Pot: 90.0
+To call: 25.0
+Facing bet: True
+Action history: N/A
+
+Key features:
+  raw_equity: 0.3245
+  equity_vs_range: 0.3245
+  pot_odds: 0.2174
+  is_ip: 0
+  hand_category: 0
+  is_made_hand: 0
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 8
+  has_flush_draw: 0
+  has_straight_draw: 1
+  danger_score: 0.2500
+  spr: 1.1111
+  villain_top_pair_plus_pct: 0.4049
+  villain_air_pct: 0.2794
+  villain_range_capped: 0
+  board_favour: -0.1049
+  num_callers_to_bet: 0
+  facing_raise: 1
+  villain_aggression_count: 1
+  villain_checked_back: 0
+  better_hand_pct: 0.9407
+  worse_hand_pct: 0.0593
+
+--- HAND: CALL_Board6_Ts8h3s_h6 ---
+Situation ID: CALL_Board6_Ts8h3s_h6
+Hero cards: Jc9c
+Board: ['Ts', '8h', '3s']
+Street: f
+Hero position: BB
+Villain positions: CO
+Num opponents: 2
+Pot: 90.0
+To call: 25.0
+Facing bet: True
+Action history: N/A
+
+Key features:
+  raw_equity: 0.3317
+  equity_vs_range: 0.3317
+  pot_odds: 0.2174
+  is_ip: 0
+  hand_category: 1
+  is_made_hand: 0
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 8
+  has_flush_draw: 0
+  has_straight_draw: 1
+  danger_score: 0.2500
+  spr: 1.1111
+  villain_top_pair_plus_pct: 0.4049
+  villain_air_pct: 0.2794
+  villain_range_capped: 0
+  board_favour: -0.1049
+  num_callers_to_bet: 0
+  facing_raise: 1
+  villain_aggression_count: 1
+  villain_checked_back: 0
+  better_hand_pct: 0.9244
+  worse_hand_pct: 0.0672
+

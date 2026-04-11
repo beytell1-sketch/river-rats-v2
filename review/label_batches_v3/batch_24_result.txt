@@ -1,0 +1,19 @@
+{"situation_id":"FB_Board2_Kc9c5d3c_h5","action":"CALL","confidence":"MEDIUM","reasoning":"Hero holds 9h8c on Kc9c5d3c — second pair with flush draw (has_flush_draw=1, flush_draw_rank=8), equity=0.26, OOP. Villain_aggression=2; pot odds=28.6%. Equity=0.26 is just below pot odds on paper, but the flush draw adds improvement probability. Non-nut flush draw — no raise. The combined made hand + draw equity barely justifies a call despite OOP position."}
+
+{"situation_id":"FB_Board2_Kc9c5d3c_h6","action":"CALL","confidence":"MEDIUM","reasoning":"Hero holds Ac4d on Kc9c5d3c — nut flush draw + straight draw (draw_outs=13), raw_equity=0.296, OOP, villain_aggression=2. Nut flush draw with Ac blocker plus straight draw and overcard outs = strong semi-bluff candidate per Section 1.7. However, facing multi-street aggression (villain_aggression=2) rather than a single bet, raising becomes risky. The nut flush draw + blocker conditions are met but the aggression level argues for call over raise here."}
+
+{"situation_id":"FB_Board2_Kc9c5d3c_h7","action":"RAISE","confidence":"HIGH","reasoning":"Hero holds QcTc on Kc9c5d3c — is_monster=1, nut flush (hand_category=14), equity=0.88, worse_hand_pct=0.98. Monster hand facing a bet with SPR=0.50 and stacks nearly committed. Raise to build the pot with the nuts — do not slowplay a nut flush facing a bet in a 3-way pot."}
+
+{"situation_id":"FB_Board2_Kc9c5d3c_h8","action":"FOLD","confidence":"HIGH","reasoning":"Hero holds 5h4h on Kc9c5d3c — bottom pair only (hand_category=5), raw_equity=0.112, OOP, villain_aggression=2. Pot odds=28.6%; equity=0.11 is well below. No draw, no improvement path beyond runner-runner. Clear fold against multi-street aggression."}
+
+{"situation_id":"FB_Board2_Kc9c5d3c_h9","action":"FOLD","confidence":"HIGH","reasoning":"Hero holds AhQh on Kc9c5d3c — no made hand, no draws, raw_equity=0.043, OOP, villain_aggression=2. Pot odds=28.6%; equity is essentially zero. Overcards with no flush draw on a flush board with heavy aggression — clear fold."}
+
+{"situation_id":"FB_Board3_Td6d2s8h_h1","action":"CALL","confidence":"MEDIUM","reasoning":"Hero holds AdKd on Td6d2s8h (turn, street=1) — nut flush draw with 9 draw outs (flush_draw_rank=14), 6 overcard outs, IP, raw_equity=0.37. Pot odds=0.20, equity well above. Villain_checked_back=1 and villain_air=0.30 suggest weakness; IP with the nut flush draw. Non-nut raise rule: not applicable (no blocker check needed, flush not made yet). CALL."}
+
+{"situation_id":"FB_Board3_Td6d2s8h_h2","action":"FOLD","confidence":"MEDIUM","reasoning":"Hero holds Ad9c on Td6d2s8h — gutshot (draw_outs=4) + 3 overcard outs, raw_equity=0.156, IP. Villain_tp_plus=0.47 and villain_range_capped=1 (cold-caller). Equity barely clears 20% pot odds but the gutshot-only draw with low showdown value against a condensed range argues for folding; no made hand, improvement_probability=0.087 only."}
+
+{"situation_id":"FB_Board3_Td6d2s8h_h3","action":"FOLD","confidence":"HIGH","reasoning":"Hero holds KdJc on Td6d2s8h — no made hand, no draws (draw_outs=0), raw_equity=0.063, IP. Better_hand_pct=0.91. Far below 20% pot odds; clear fold despite IP position."}
+
+{"situation_id":"FB_Board3_Td6d2s8h_h4","action":"CALL","confidence":"MEDIUM","reasoning":"Hero holds ThJh on Td6d2s8h — top pair (hand_category=6, is_made_hand=1), equity=0.36, IP, pot odds=0.20. Villain_range_capped=1, villain_air=0.30, villain_checked_back=1 signals weakness. Made hand with equity well above pot odds and IP position; worse_hand_pct=0.67 means hero beats the majority of continuing hands. CALL."}
+
+{"situation_id":"FB_Board3_Td6d2s8h_h5","action":"CALL","confidence":"MEDIUM","reasoning":"Hero holds Td9d on Td6d2s8h — top pair with flush draw + straight draw (draw_outs=13, has_flush_draw=1), equity=0.28, IP, pot odds=0.20. Combined made hand equity + draw outs; worse_hand_pct=0.61. Equity above pot odds with strong draw. CALL — not a raise as the flush is not yet made."}

@@ -1,0 +1,19 @@
+{"situation_id":"OC_Board3_7c4d2s9hTc_h1","action":"CALL","confidence":"MEDIUM","reasoning":"Hero holds AhKh on 7c4d2s9hTc (turn, street=2) — no made hand, 6 overcard outs, raw_equity=0.134, IP. Pot odds=0.242; equity below pot odds but AK has hidden overcard equity per Example 7 framework. Villain_air=0.32, villain_range_capped=1. IP position + 6 hidden outs push this toward a marginal call; implied odds when hitting top pair."}
+
+{"situation_id":"OC_Board3_7c4d2s9hTc_h2","action":"FOLD","confidence":"MEDIUM","reasoning":"Hero holds AhQd on 7c4d2s9hTc — no made hand, 6 overcard outs, raw_equity=0.104, IP. Villain_tp_plus=0.62; board heavily favors villain. AQ overcards on a connected 7-4-2-9-T board are less valuable than AK. Equity=0.104 far below pot odds; fold."}
+
+{"situation_id":"OC_Board3_7c4d2s9hTc_h3","action":"FOLD","confidence":"HIGH","reasoning":"Hero holds KdQd on 7c4d2s9hTc — gutshot + 6 overcards, raw_equity=0.010, IP. Equity essentially zero on a board where KQ misses completely. Better_hand_pct=0.88; fold."}
+
+{"situation_id":"OC_Board3_7c4d2s9hTc_h4","action":"FOLD","confidence":"HIGH","reasoning":"Hero holds Ah6c on 7c4d2s9hTc — gutshot only (draw_outs=4), raw_equity=0.049, IP. Pot odds=0.242; equity far below threshold with no showdown value. Fold."}
+
+{"situation_id":"OC_Board3_7c4d2s9hTc_h5","action":"FOLD","confidence":"HIGH","reasoning":"Hero holds Kd8c on 7c4d2s9hTc — open-ended straight draw (draw_outs=8) but raw_equity=0.004, essentially zero. Better_hand_pct=0.95 on this board. Clear fold with near-zero equity."}
+
+{"situation_id":"OC_Board3_7c4d2s9hTc_h6","action":"RAISE","confidence":"HIGH","reasoning":"Hero holds Jd8d on 7c4d2s9hTc — is_monster=1 (straight, hand_category=13), equity=0.989, worse_hand_pct=0.999. Monster straight on the turn facing a bet; villain_air=0.32. Raise with the nut straight to build the pot and deny equity to any draws. Do not call with the near-nuts when raising is available."}
+
+{"situation_id":"OC_Board3_7c4d2s9hTc_h7","action":"FOLD","confidence":"HIGH","reasoning":"Hero holds 5c3c on 7c4d2s9hTc — straight draw (draw_outs=8) but raw_equity=0.0, better_hand_pct=1.0. Zero equity currently; even with draw outs the hand currently beats nothing and villain_tp_plus=0.62 is a strong range. Fold."}
+
+{"situation_id":"OC_Board3_7c4d2s9hTc_h8","action":"CALL","confidence":"MEDIUM","reasoning":"Hero holds Tc8c on 7c4d2s9hTc — top pair with straight draw (draw_outs=8, has_straight_draw=1), equity=0.201, IP. Pot odds=0.242. Equity below pot odds on its own but the 8 draw outs + top pair provide meaningful improvement path; villain_air=0.32 and villain_range_capped=1. Marginal call — draw outs + made hand equity approach the threshold IP."}
+
+{"situation_id":"OC_Board3_7c4d2s9hTc_h9","action":"FOLD","confidence":"HIGH","reasoning":"Hero holds QdJd on 7c4d2s9hTc — gutshot (draw_outs=4) but raw_equity=0.001, essentially zero. Better_hand_pct=0.96 on a connected board that crushed the cold-caller's range. Clear fold with near-zero equity."}
+
+{"situation_id":"OC_Board4_6s3h2cTs_h1","action":"CHECK","confidence":"MEDIUM","reasoning":"Hero holds AhKh on 6s3h2cTs (flop, not facing bet) — no made hand, 6 overcard outs, raw_equity=0.264, IP. Villain_aggression=1, villain_checked_back=1 showing weakness; villain_air=0.50. Not facing a bet, so the choice is bet or check. With no made hand and 6 overcards, checking to realize equity safely is preferred; villain_air=0.50 is high but AK has no pair on this board. Check is the default for no-pair hands."}

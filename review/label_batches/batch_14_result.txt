@@ -1,0 +1,39 @@
+```json
+{"situation_id":"CALL_Board6_Ts8h3s_h7","action":"RAISE","confidence":"HIGH","reasoning":"Bottom set (33) on Ts8h3s is a monster with 76.4% equity and only 3.16% better hands. SPR is 1.11 so stacks are effectively committed. Sets must raise 3-way to build the pot and protect against straight draws on this semi-connected board. Flatting risks giving the third player cheap odds with draws.","difficulty":1,"key_factors":["monster_hand","low_spr_committed","protection_needed"],"factor_conflicts":"None — monster equity, low SPR, and need to protect against draws all agree on RAISE.","alternatives_considered":["CALL: rejected — with SPR 1.11 we are committed anyway, and flatting lets draws in cheaply on a board with straight potential."]}
+```
+
+```json
+{"situation_id":"CALL_Board6_Ts8h3s_h8","action":"CALL","confidence":"MEDIUM","reasoning":"Top pair weak kicker (Td7d) on Ts8h3s with 40.3% equity well above pot odds of 21.7%. OOP and villain is uncapped with 40.5% TP+, but at SPR 1.11 stacks are nearly committed and future street decisions are minimal. Top pair is strong enough to call one bet at these odds even facing an uncapped range.","difficulty":2,"key_factors":["equity_exceeds_pot_odds","top_pair_medium_strength","low_spr"],"factor_conflicts":"OOP position and uncapped villain range argue for caution, but equity well above pot odds and compressed SPR override — folding top pair at these odds is too tight.","alternatives_considered":["FOLD: rejected — 40.3% equity vs 21.7% pot odds provides too large a margin to fold even accounting for OOP and range disadvantage."]}
+```
+
+```json
+{"situation_id":"CALL_Board6_Ts8h3s_h9","action":"CALL","confidence":"MEDIUM","reasoning":"Second pair (8d7d) on Ts8h3s with 35.5% equity vs 21.7% pot odds. While OOP and villain range is strong (40.5% TP+), equity exceeds pot odds by ~14pp. At SPR 1.11, remaining decisions are minimal. Second pair has sufficient showdown value to call at these compressed stacks.","difficulty":2,"key_factors":["equity_exceeds_pot_odds","second_pair_showdown","low_spr"],"factor_conflicts":"OOP and strong villain range argue for caution, but 35.5% equity vs 21.7% pot odds provides enough margin. Compressed SPR limits further damage.","alternatives_considered":["FOLD: rejected — equity exceeds pot odds by ~14pp, too large a margin to fold even with positional disadvantage."]}
+```
+
+```json
+{"situation_id":"CALL_Board7_AsQd5h_h1","action":"FOLD","confidence":"MEDIUM","reasoning":"KhJh has a gutshot (8 draw outs) on AsQd5h but only 20.8% equity, below pot odds of 22.2%. SPR is 0.48 meaning stacks are essentially committed — no implied odds exist when hitting the straight. Even with IP position and a draw, when equity is below pot odds and implied odds are zero, continuing is unprofitable.","difficulty":2,"key_factors":["equity_below_pot_odds","ultra_low_spr_no_implied_odds","draw_without_implied_odds"],"factor_conflicts":"IP position and 8 draw outs argue for continuing, but ultra-low SPR eliminates implied odds and equity falls short of pot odds. SPR dominates.","alternatives_considered":["CALL: rejected — equity 20.8% is below pot odds 22.2% and SPR 0.48 means virtually no implied odds when hitting. Draw hands need implied odds to compensate."]}
+```
+
+```json
+{"situation_id":"CALL_Board7_AsQd5h_h2","action":"FOLD","confidence":"HIGH","reasoning":"Th9h is complete air on AsQd5h with 7.65% equity, far below pot odds of 22.2%. No draws, no pair, no backdoor equity on this dry rainbow board. SPR is 0.48 so no implied odds. Clear fold.","difficulty":1,"key_factors":["no_equity","no_draws","clear_fold"],"factor_conflicts":"None — all factors agree on FOLD.","alternatives_considered":["CALL: rejected — 7.65% equity vs 22.2% pot odds is massively unprofitable with no improvement path."]}
+```
+
+```json
+{"situation_id":"CALL_Board7_AsQd5h_h3","action":"FOLD","confidence":"HIGH","reasoning":"Bottom pair (5c4c) on AsQd5h with 15.75% equity, well below pot odds of 22.2%. No draws, board heavily favours raiser's Ax/Qx-heavy range. SPR 0.48 means no implied odds. Bottom pair is essentially drawing to a two-outer set which is insufficient.","difficulty":1,"key_factors":["equity_below_pot_odds","bottom_pair_dominated","no_implied_odds"],"factor_conflicts":"None — all factors agree this is too weak to continue.","alternatives_considered":["CALL: rejected — 15.75% equity vs 22.2% pot odds is unprofitable with only two outs to improve."]}
+```
+
+```json
+{"situation_id":"CALL_Board7_AsQd5h_h4","action":"CALL","confidence":"LOW","reasoning":"Second pair QcJc on AsQd5h with 22.5% equity, barely above pot odds of 22.2%. IP position provides marginal realization edge. SPR is 0.48 so this is essentially a call-to-showdown decision with minimal future action. The hand is right at the break-even threshold — IP position tips a razor-thin margin toward calling.","difficulty":3,"key_factors":["equity_at_pot_odds","ip_position","second_pair_showdown","ultra_low_spr"],"factor_conflicts":"Equity barely meets pot odds which is marginal, and villain is uncapped on an ace-high board with many dominating hands. IP position and the fact that SPR 0.48 means near-showdown tip this to a thin call.","alternatives_considered":["FOLD: very defensible — equity is essentially at pot odds and villain range is strong on this board. A genuine break-even spot where folding is not a mistake."]}
+```
+
+```json
+{"situation_id":"CALL_Board7_AsQd5h_h5","action":"CALL","confidence":"HIGH","reasoning":"TPTK with AhJh on AsQd5h. Equity is 47.35%, far exceeding pot odds of 22.2%. Only 8.06% of villain range beats us. Dry rainbow board (danger 0.00) is completely static. IP position further supports continuing. At SPR 0.48 we are committed with top pair top kicker.","difficulty":1,"key_factors":["strong_equity","tptk_on_dry_board","ip_position","committed_spr"],"factor_conflicts":"None — all factors agree on CALL.","alternatives_considered":["RAISE: rejected — at SPR 0.48 we are near all-in, but TPTK is not the nuts. Raising folds out worse and only gets called by sets and AQ+. TPTK calls, does not raise."]}
+```
+
+```json
+{"situation_id":"CALL_Board7_AsQd5h_h6","action":"CALL","confidence":"HIGH","reasoning":"TPTK with AcJs on AsQd5h. Equity 45.3% far exceeds pot odds 22.2%, only 8.06% better hands. Dry static board, IP position. Nearly identical to h5. Clear call at this compressed SPR.","difficulty":1,"key_factors":["strong_equity","tptk_on_dry_board","ip_position","committed_spr"],"factor_conflicts":"None — all factors agree on CALL.","alternatives_considered":["RAISE: rejected — TPTK calls, does not raise. Only better hands call a raise at any SPR."]}
+```
+
+```json
+{"situation_id":"CALL_Board7_AsQd5h_h7","action":"CALL","confidence":"HIGH","reasoning":"TPBK with AcKc on AsQd5h. Equity 55%, only 5.72% better hands (sets AA/QQ/55 and AQ). Dry rainbow board, IP. Despite being the strongest top pair, at SPR 0.48 raising only gets called by the few hands that beat us (sets). AK is strong but not the nuts — it is a premium calling hand, not a raise. River polarization principle applies: if only better hands call the raise, it is a call not a raise.","difficulty":2,"key_factors":["strong_equity","tpbk_calls_not_raises","ip_position","committed_spr"],"factor_conflicts":"High equity and low better_hand_pct might suggest raising to get stacks in, but at SPR 0.48 villain only continues vs a raise with sets and AQ which all beat or chop. The raise folds out all worse hands. CALL extracts value from villain's entire betting range.","alternatives_considered":["RAISE: tempting at SPR 0.48, but villain's calling range vs a raise is only sets (AA/QQ/55) and AQ. All worse hands fold. This makes raising -EV compared to calling which keeps in the full betting range."]}
+```

@@ -1,0 +1,19 @@
+{"situation_id":"FB_Board4_As7s3cKs9d_h7","action":"FOLD","confidence":"HIGH","reasoning":"Hero holds 9s8c on As7s3cKs9d — second pair (hand_category=5), raw_equity=0.094, IP. Villain_tp_plus=0.66. Equity well below 25% pot odds; pair of nines is dominated on an A-K-9 board against a strong villain range. Fold."}
+
+{"situation_id":"FB_Board4_As7s3cKs9d_h8","action":"FOLD","confidence":"HIGH","reasoning":"Hero holds JhTc on As7s3cKs9d — gutshot only (draw_outs=4), no made hand, raw_equity=0.004, better_hand_pct=0.95. Essentially zero equity on the river; clear fold."}
+
+{"situation_id":"FB_Board4_As7s3cKs9d_h9","action":"CALL","confidence":"HIGH","reasoning":"Hero holds Ah7h on As7s3cKs9d — two pair (hand_category=10, is_strong_made=1), equity=0.54, IP, pot odds=0.25. Villain_range_capped=1, villain_air=0.22. Strong two pair with equity more than double the pot odds; worse_hand_pct=0.83. Clear CALL — not a raise as hand is not is_monster (no set/straight/flush)."}
+
+{"situation_id":"FB_Board5_8h5h2dQhJc_h1","action":"BET","confidence":"HIGH","reasoning":"Hero holds AhKh on 8h5h2dQhJc (turn) — is_monster=1, nut flush (hand_category=14), equity=1.0, OOP, not facing a bet (facing_bet=0). Must bet the monster — villain_aggression=3 means villain has been betting multiple streets; hero now holds the nuts and should bet for value. With SPR=0.42 stacks are nearly committed; check-raising a villain who has already bet 3 streets is also fine but betting out leads immediately."}
+
+{"situation_id":"FB_Board5_8h5h2dQhJc_h2","action":"FOLD","confidence":"HIGH","reasoning":"Hero holds Ah9c on 8h5h2dQhJc — no made hand, gutshot draw (draw_outs=4), raw_equity=0.20, OOP. Not facing a bet, but villain_aggression=3 means hero should check and fold to the inevitable bet. With equity=0.20 and villain_tp_plus=0.48, the hand is too weak to lead and too weak to call if villain bets. Check with intention to fold."}
+
+{"situation_id":"FB_Board5_8h5h2dQhJc_h3","action":"FOLD","confidence":"HIGH","reasoning":"Hero holds Kh9c on 8h5h2dQhJc — gutshot only (draw_outs=4), raw_equity=0.077, OOP, facing a villain with aggression_count=3. Equity=0.077 cannot support a call if villain bets; check and fold is the line. Not facing a bet currently so action is CHECK."}
+
+{"situation_id":"FB_Board5_8h5h2dQhJc_h4","action":"BET","confidence":"HIGH","reasoning":"Hero holds 9h7h on 8h5h2dQhJc — is_strong_made=1 (hand_category=14, flush), equity=0.955, OOP, not facing a bet. Strong flush with villain_aggression=3 (villain has shown strength) — but hero now has near-nut equity at SPR=0.42. Bet for value; do not check-call a villain who has been triple-barreling when holding a strong flush."}
+
+{"situation_id":"FB_Board5_8h5h2dQhJc_h5","action":"BET","confidence":"HIGH","reasoning":"Hero holds Th6h on 8h5h2dQhJc — is_strong_made=1 (flush, hand_category=14), equity=0.954, OOP, not facing a bet, villain_aggression=3. Strong flush; lead out for value at SPR=0.42 to get max value before showdown."}
+
+{"situation_id":"FB_Board5_8h5h2dQhJc_h6","action":"BET","confidence":"HIGH","reasoning":"Hero holds QdJd on 8h5h2dQhJc — two pair (hand_category=10, is_strong_made=1), equity=0.869, OOP, not facing a bet. Strong two pair with worse_hand_pct=0.86; villain_aggression=3 means villain's range is strong but hero's two pair is ahead of much of it. Bet for value at SPR=0.42."}
+
+{"situation_id":"FB_Board5_8h5h2dQhJc_h7","action":"CHECK","confidence":"MEDIUM","reasoning":"Hero holds 8c7c on 8h5h2dQhJc — second pair (hand_category=5), equity=0.42, OOP, villain_aggression=3. Not a strong hand on this dangerous board; villain has been firing 3 streets so villain's range is narrow and strong. With OOP and marginal equity (0.42), check and use pot control — do not bet into a multi-street aggressor with second pair."}

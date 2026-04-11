@@ -1,0 +1,1 @@
+{"situation_id":"BD_Board9_Qh9h4dTh_h9","reviewer_action":"FOLD","original_action":"FOLD","agree":true,"bias_flag":"none","reasoning":"Ah5d flush draw OOP, equity 20.6% barely at pot_odds 20%, villain_air=0 (pure value range), only 9% worse hands; at-breakeven draw against a value-only range with no implied odds, fold is correct."}

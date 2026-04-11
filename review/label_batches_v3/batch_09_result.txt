@@ -1,0 +1,21 @@
+# Batch 09 Results — 10 situations
+
+{"situation_id":"CALL_Board1_Jd8d4c_h3","action":"FOLD","confidence":"HIGH","reasoning":"9h7h is a gutshot-only draw (4 outs) with 18.6% equity against 26.8% pot odds — equity is below the break-even threshold with no made hand and no flush draw component. OOP against a single aggressor with no showdown value, this hand has insufficient equity and no path to a strong hand that justifies the call."}
+
+{"situation_id":"CALL_Board1_Jd8d4c_h5","action":"CALL","confidence":"HIGH","reasoning":"7d6d has a combo draw — flush draw plus straight draw — giving 13 outs and 41.6% equity against 26.8% pot odds, a large positive equity margin. Despite being OOP, a 13-out combo draw has too much equity and too many improvement paths to fold facing a single bet; the pot odds are comfortably met."}
+
+{"situation_id":"CALL_Board1_Jd8d4c_h7","action":"CALL","confidence":"HIGH","reasoning":"8c7c makes middle pair on Jd8d4c with 35% equity well above the 26.8% pot odds, and worse_hand_pct of 65% confirms this hand beats a large slice of villain's continuing range. A single-street aggressor, no bet-and-call, and clear equity surplus make this a straightforward call for showdown value despite being OOP."}
+
+{"situation_id":"CALL_Board1_Jd8d4c_h8","action":"CALL","confidence":"HIGH","reasoning":"Jc5h makes top pair on Jd8d4c with 40.7% equity versus 26.8% pot odds and worse_hand_pct of 77% — hero dominates a large fraction of villain's range. Facing only a single bet with no bet-and-call signal, the equity surplus is too large to fold; CALL for showdown value with pot control."}
+
+{"situation_id":"CALL_Board1_Jd8d4c_h9","action":"CALL","confidence":"HIGH","reasoning":"JsTh makes top pair with T kicker on Jd8d4c, 40.7% equity versus 26.8% pot odds, worse_hand_pct 78%. Virtually identical to h8 — strong equity surplus facing a single bet, no bet-and-call, made hand with clear showdown value. CALL is unambiguous."}
+
+{"situation_id":"CALL_Board2_Ks9h5d_h1","action":"FOLD","confidence":"HIGH","reasoning":"7c2h is complete air on Ks9h5d — 5% equity against 33.3% pot odds with no draw and no made hand. The bet-and-call signal (villain_call_count: 1) further narrows both opponents' ranges to Kx+ and sets; hero has essentially zero equity against the action-implied ranges and must fold."}
+
+{"situation_id":"CALL_Board2_Ks9h5d_h2","action":"FOLD","confidence":"HIGH","reasoning":"QhJh has 22.5% equity against 33.3% pot odds — equity is below break-even — with only a gutshot draw (4 outs) and no made hand on K95. The bet-and-call signal condenses both opponents' ranges onto strong holdings (Kx, pairs); QJ has no pair and no clean equity path to justify the call price."}
+
+{"situation_id":"CALL_Board2_Ks9h5d_h3","action":"FOLD","confidence":"HIGH","reasoning":"Th8h has 12.9% equity against 33.3% pot odds with no draws and no made hand on Ks9h5d. Combined with the bet-and-call signal tightening both opponents' ranges to Kx-plus and sets, there is no basis to continue; this is a straightforward fold by both equity and action-history criteria."}
+
+{"situation_id":"CALL_Board2_Ks9h5d_h4","action":"FOLD","confidence":"HIGH","reasoning":"6d4d has 10.3% equity against 33.3% pot odds, zero draws, zero showdown value, and zero worse hands (worse_hand_pct: 0.0) on Ks9h5d. The bet-and-call signal confirms both opponents hold strong ranges; this hand has no equity path and folds trivially."}
+
+{"situation_id":"CALL_Board2_Ks9h5d_h5","action":"FOLD","confidence":"MEDIUM","reasoning":"9cTc makes middle pair on Ks9h5d but equity (25.7%) is still below pot odds (33.3%), and the bet-and-call signal narrows both opponents' ranges heavily toward Kx, sets (99, 55), and strong pairs. With worse_hand_pct only 38.7% against the full preflop range — and that figure shrinking substantially against action-implied ranges — middle pair here lacks sufficient equity to call at this price."}

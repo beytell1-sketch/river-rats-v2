@@ -1,0 +1,21 @@
+# Batch 36 Results
+
+{"situation_id":"BD_Board3_Td8c3h6s_h2","action":"BET","confidence":"MEDIUM","reasoning":"8h7h has second pair + straight draw (43.3% equity, 67.6% worse hands) OOP with no facing bet on Td8c3h6s. villain_aggression=2 but villain_air=0.403 is high — significant air in villain's range. With 43.3% equity and 67.6% worse hands OOP, this is a borderline bet. The high villain air (40.3%) combined with moderate equity suggests a small bet for value/protection extracts value from villain's air hands. BET small (33%)."}
+
+{"situation_id":"BD_Board3_Td8c3h6s_h3","action":"CHECK","confidence":"HIGH","reasoning":"Jc9c has a gutshot (4 outs, 22.8% equity) OOP with no made hand (hand_category=1 is low) on Td8c3h6s. villain_aggression=2. No made hand + weak draw + OOP = check. Don't semi-bluff 3-way OOP with a non-nut draw. The 3% worse_hand_pct confirms hero is nearly drawing dead against most of villain's range."}
+
+{"situation_id":"BD_Board3_Td8c3h6s_h4","action":"CHECK","confidence":"MEDIUM","reasoning":"3c2c is bottom pair (29% equity, 52.5% worse hands) OOP on Td8c3h6s with no facing bet. villain_aggression=2 with villain_air=0.403. Despite moderate villain air, bottom pair OOP is a pot control situation. The equity (29%) is below the OOP value threshold. Check and take free cards."}
+
+{"situation_id":"BD_Board3_Td8c3h6s_h5","action":"BET","confidence":"HIGH","reasoning":"6d6c is a set (is_monster=1, 86.4% equity, 96.7% worse hands) OOP with no facing bet on Td8c3h6s. Sets must bet 3-way — protection against draws (connectivity=2 but straight_danger=0, still multiple draws possible) and value extraction. 96.7% worse hands confirms near-nut status. BET for value, typically 50%+ pot sizing with sets."}
+
+{"situation_id":"BD_Board3_Td8c3h6s_h6","action":"CHECK","confidence":"HIGH","reasoning":"AhKh has no pair and no draw on Td8c3h6s (equity 19.4%, overcard_outs=6). villain_aggression=2 with villain_air=0.403. AK completely missed this board. Despite high villain air, AK should check with only 19.4% equity OOP — the 6 overcard outs provide some implied value but not enough to lead into two opponents 3-way. Check and fold to aggression."}
+
+{"situation_id":"BD_Board3_Td8c3h6s_h7","action":"CHECK","confidence":"HIGH","reasoning":"5c4c has an open-ended straight draw (8 outs, 21.1% equity) OOP on Td8c3h6s — 0% worse hands, this is at the bottom of hero's range. villain_aggression=2. Gutshot/OESD without made hand OOP = check. Don't semi-bluff 3-way OOP. 0% worse hands means hero is drawing against villain's entire range."}
+
+{"situation_id":"BD_Board3_Td8c3h6s_h8","action":"BET","confidence":"HIGH","reasoning":"Tc8d is top two pair (hand_category=10, is_strong_made=1, 80.4% equity, 95.5% worse hands) OOP with no facing bet on Td8c3h6s. villain_aggression=2 with villain_air=0.403 — many hands villain can call with. Two pair with 80.4% equity and 95.5% worse hands is a clear value bet even OOP — comparable to set strength here. BET for value (50%+ pot)."}
+
+{"situation_id":"BD_Board4_Kh9d4c2sJc_h1","action":"CALL","confidence":"HIGH","reasoning":"KdQd is TPTK with gutshot (63.7% equity, 80.8% worse hands) OOP on Kh9d4c2sJc facing a bet (pot odds 28.6%). villain_aggression=2 but villain_checked_back=1 (showed weakness previously). Equity (63.7%) massively exceeds pot odds. villain_air=0.293 is moderate. Strong TPTK with 80% worse hands + OOP + prior villain check = CALL comfortably."}
+
+{"situation_id":"BD_Board4_Kh9d4c2sJc_h2","action":"CALL","confidence":"HIGH","reasoning":"KcTc is TPTK + gutshot (57.2% equity, 78.5% worse hands) OOP facing a bet (pot odds 28.6%). villain_checked_back=1. Equity (57.2%) comfortably exceeds pot odds. villain_aggression=2 but the prior check-back showed weakness. Strong top pair + draw = CALL."}
+
+{"situation_id":"BD_Board4_Kh9d4c2sJc_h3","action":"FOLD","confidence":"MEDIUM","reasoning":"9h8h is second pair (22.5% equity) OOP on Kh9d4c2sJc facing a bet (pot odds 28.6%). villain_aggression=2. Equity (22.5%) is below pot odds (28.6%). 51% of hands beat hero (better_hand_pct=0.510). Below pot odds equity + OOP + villain aggression = FOLD. The equity margin is negative (-0.060) confirming this is a losing call."}

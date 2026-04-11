@@ -1,0 +1,21 @@
+# Batch 33 Results
+
+{"situation_id":"TV_Board3_Kd9s5h2cQh_h6","action":"CALL","confidence":"MEDIUM","reasoning":"AhAd is an overpair (44.9% equity) IP facing a small bet (14% pot, odds 12.5%) with villain_aggression=3 and villain_tp_plus=0.594. Equity (44.9%) is well above pot odds. IP position + overpair means hero realises equity well. villain_tp_plus=0.594 is high but AA still beats a large portion of that range. CALL with comfortable equity margin."}
+
+{"situation_id":"TV_Board3_Kd9s5h2cQh_h7","action":"RAISE","confidence":"HIGH","reasoning":"5c5d is a set (is_monster=1, 72.4% equity) IP facing a bet (14% pot) with villain_aggression=3. Sets are the prototypical RAISE hand — need to build the pot, protect against draws on this somewhat connected board (connectivity=5), and extract value from villain's strong range. Middle set on a board with K/Q/9/5 must raise to deny equity to draws. Per the RAISE RULE, sets qualify."}
+
+{"situation_id":"TV_Board3_Kd9s5h2cQh_h8","action":"FOLD","confidence":"HIGH","reasoning":"7h6h has a straight draw but only 0.64% equity (raw_equity=0.006355) IP against multi-street aggression (villain_aggression=3). Equity (0.6%) is catastrophically below pot odds (12.5%). The board has run out K-9-5-2-Q and 76 has essentially no equity against villain's actual range. Clear fold."}
+
+{"situation_id":"TV_Board3_Kd9s5h2cQh_h9","action":"CALL","confidence":"HIGH","reasoning":"Kc9c has top two pair (is_strong_made=1, 62.8% equity) IP facing small bet (14% pot, 12.5% odds) with villain_aggression=3. Two pair is a very strong hand well above the CALL threshold. 62.4% of hands lose to hero (worse_hand_pct=0.624), equity massively exceeds pot odds. IP + strong two pair = clear call, potentially raise territory but is_monster=0 so CALL per the RAISE RULE."}
+
+{"situation_id":"TV_Board4_Tc7d4c8s_h1","action":"CALL","confidence":"MEDIUM","reasoning":"Ac9c has a nut flush draw + straight draw (17 outs, 35.4% equity) OOP on Tc7d4c8s facing a bet (pot odds 25.9%). Equity (35.4%) exceeds pot odds with a strong 17-out draw. villain_air=0.213 is moderate. OOP with this many outs — the draw equity is strong enough to call despite position. Equity exceeds pot odds and draw outs are genuine."}
+
+{"situation_id":"TV_Board4_Tc7d4c8s_h2","action":"RAISE","confidence":"HIGH","reasoning":"9c6c has made the nut straight (is_monster=1, 89.9% equity) OOP facing a bet (pot odds 25.9%) with num_opponents=2. Nut straight on a connected board (T-7-4-8) must raise — need to build the pot and protect against flush draws completing. Monster hand qualifies for RAISE per the RAISE RULE. 96.8% worse hands confirms this is the nuts."}
+
+{"situation_id":"TV_Board4_Tc7d4c8s_h3","action":"RAISE","confidence":"HIGH","reasoning":"Jh9h has made the nut straight (is_monster=1, 92.1% equity) OOP facing a bet on T-7-4-8. Identical logic to h2 — nut straight with 97.5% worse hands must raise to build the pot and deny equity to flush draws on this two-flush board. RAISE per the RAISE RULE."}
+
+{"situation_id":"TV_Board4_Tc7d4c8s_h4","action":"RAISE","confidence":"HIGH","reasoning":"9d6d has made the nut straight (is_monster=1, 86.2% equity) OOP facing a bet on Tc7d4c8s. Same pattern as h2/h3 — nut straight with 96.8% worse hands, must raise for value and protection against flush draws. RAISE per the RAISE RULE."}
+
+{"situation_id":"TV_Board4_Tc7d4c8s_h5","action":"CALL","confidence":"MEDIUM","reasoning":"Th9h is top pair + open-ended straight draw (49.2% equity, 8 outs) OOP facing a bet (pot odds 25.9%) with villain_aggression=2. Equity (49.2%) comfortably exceeds pot odds. Top pair + 8 draw outs provide good combined equity. The draw equity survives range narrowing (Example 8 principle). Call is correct — not a monster hand so no raise."}
+
+{"situation_id":"TV_Board4_Tc7d4c8s_h6","action":"CALL","confidence":"MEDIUM","reasoning":"TcJc has top pair + flush draw + straight draw (13 outs, 23.3% equity) OOP. However equity (23.3%) is below pot odds (25.9%). Despite the large number of outs, the current equity is marginally below pot odds. With flush draw + straight draw the implied odds argument is strong, but this is a marginal call — the draw outs make it barely acceptable at pot odds near breakeven. CALL for the drawing equity."}

@@ -1,0 +1,129 @@
+```json
+{
+  "situation_id": "d8473_BTN_turn",
+  "action": "BET",
+  "confidence": "HIGH",
+  "reasoning": "Hero has bottom pair plus nut flush draw plus straight draw (17 outs) IP on the turn with 45.8% equity. Both opponents checked, showing weakness (villain_checked_back=1, villain_air_pct=0.383). IP position with a massive combo draw and made hand on a board where both opponents have shown weakness makes this a clear bet for value and protection — 17 draw outs mean hero improves frequently even when called, and the high air percentage means worse hands will call.",
+  "difficulty": 1,
+  "key_factors": ["combo_draw_plus_made_hand", "ip_position", "opponents_showed_weakness"],
+  "factor_conflicts": "None — IP, strong draw equity, both opponents checked, high villain air all align for a bet.",
+  "alternatives_considered": ["CHECK: rejected — with 17 outs and a made hand IP, checking wastes massive equity advantage and gives free cards on a dangerous board (danger 0.88)."]
+}
+```
+
+```json
+{
+  "situation_id": "d8453_BTN_turn",
+  "action": "BET",
+  "confidence": "HIGH",
+  "reasoning": "Hero has 88 on 2h7s2c7h — a strong two-pair (eights full counterfeit-proof, effectively the board pairs help hero's full house potential). With 83.2% worse_hand_pct, IP, and both opponents checking through, hero should bet for value. The board is dry (danger 0.23), and villain_air_pct is only 0.184, but worse_hand_pct of 83% means plenty of hands call that hero beats. At SPR 1.25, a bet here sets up committing stacks.",
+  "difficulty": 2,
+  "key_factors": ["strong_made_hand", "ip_position", "opponents_showed_weakness", "low_danger_board"],
+  "factor_conflicts": "Villain air is relatively low (0.184) suggesting less thin value, but 83% worse_hand_pct and IP position override — hero's hand is strong enough that value betting is clearly correct even against tighter continuing ranges.",
+  "alternatives_considered": ["CHECK: rejected — hero has a strong hand (is_strong_made=1) IP with 83% worse hands. Slowplaying gives free cards unnecessarily at low SPR where stacks should go in."]
+}
+```
+
+```json
+{
+  "situation_id": "d6869_CO_turn",
+  "action": "CHECK",
+  "confidence": "HIGH",
+  "reasoning": "Hero has A8o for top pair weak kicker on QdAc9sKd — an extremely dangerous board (danger 0.88) with four broadway cards making straights very likely. Hero is OOP with only 41% equity and no draws. Villain_air_pct is very low (0.108) meaning opponents have connected with this board heavily (villain_tp_plus=0.297). Better_hand_pct is 28.25% which is high for a top pair hand, and the board heavily favours connected broadway hands that BTN and BB hold.",
+  "difficulty": 1,
+  "key_factors": ["oop_position", "dangerous_board", "weak_kicker_vulnerability", "low_villain_air"],
+  "factor_conflicts": "None — OOP, dangerous board, low villain air, and marginal equity all align for a check.",
+  "alternatives_considered": ["BET: rejected — OOP on QAK9 with a weak kicker, betting folds out worse and gets called/raised by better. Pot control is essential."]
+}
+```
+
+```json
+{
+  "situation_id": "d4312_CO_turn",
+  "action": "BET",
+  "confidence": "MEDIUM",
+  "reasoning": "Hero has K3s for top pair on 7d9h5sKc — a relatively safe board (danger 0.08). Hero is OOP with 53.8% equity, 81.25% worse_hand_pct, villain_range_capped=1, and villain_air_pct=0.297. This mirrors Example 6 from the knowledge base: OOP but with high equity (53%+), high worse_hand_pct (81%), dry board, capped villain range, and opponents showed weakness. The OOP penalty is insufficient to override the value from betting when so many worse hands exist and the board is static.",
+  "difficulty": 2,
+  "key_factors": ["high_worse_hand_pct", "dry_board", "capped_villain_range", "moderate_villain_air"],
+  "factor_conflicts": "OOP position argues for check, but 81% worse hands on a dry static board with capped villain range overrides the positional disadvantage per Example 6 reasoning. Equity is well above the OOP pot-control threshold.",
+  "alternatives_considered": ["CHECK: defensible as pot control, but with 81% worse hands, a dry board, and capped villain range, leaving value on the table against two opponents who showed weakness."]
+}
+```
+
+```json
+{
+  "situation_id": "d6342_BTN_turn",
+  "action": "BET",
+  "confidence": "HIGH",
+  "reasoning": "Hero has a set of threes (monster, hand_category=12) on 5s2c8c3s with 78% equity, IP, and 95% worse_hand_pct. Both opponents checked. The board has moderate danger (0.58) with flush and straight draws possible — giving free cards to two opponents with draws would be a serious mistake. Per Example 4 from the knowledge base, sets MUST bet multiway to protect against draws, especially when two opponents could be drawing.",
+  "difficulty": 1,
+  "key_factors": ["monster_hand", "ip_position", "protection_needed", "opponents_showed_weakness"],
+  "factor_conflicts": "None — monster hand, IP, high danger requiring protection, high villain air (0.56) all strongly support betting.",
+  "alternatives_considered": ["CHECK (slowplay): rejected — danger_score 0.58 with flush draws and straight draws on board means two opponents have too many outs combined. Must bet for protection and value."]
+}
+```
+
+```json
+{
+  "situation_id": "d3456_BTN_turn",
+  "action": "BET",
+  "confidence": "HIGH",
+  "reasoning": "Hero has top pair (aces) plus nut flush draw plus straight draw (13 outs) IP with 65% equity and 78% worse_hand_pct. Both opponents checked showing weakness, villain_air_pct is 0.368. This is a premium situation: strong made hand with massive draw backup, IP, and opponents displaying weakness. A bet extracts value from worse hands and protects against opponents who might improve on the river, while hero has the best hand most of the time already.",
+  "difficulty": 1,
+  "key_factors": ["top_pair_plus_draws", "ip_position", "high_equity", "opponents_showed_weakness"],
+  "factor_conflicts": "None — all five factors strongly align for a bet.",
+  "alternatives_considered": ["CHECK: rejected — leaving 65% equity and 13 draw outs uncapitalized with two opponents showing weakness wastes too much value and protection."]
+}
+```
+
+```json
+{
+  "situation_id": "d0976_BTN_turn",
+  "action": "BET",
+  "confidence": "HIGH",
+  "reasoning": "Hero has KQo for TPGK on Kc9h4s2d — a very dry board (danger 0.08), IP, with 64.7% equity and 91.6% worse_hand_pct. Villain_air_pct is 0.362 and board_favour is +0.13. Both opponents checked through, showing weakness. This is a textbook thin value spot IP: dry board, high worse_hand_pct, opponents showed weakness, and hero's hand is near the top of the range. Bet small for value against middle pairs, Kx worse kicker, and floats.",
+  "difficulty": 1,
+  "key_factors": ["ip_position", "dry_board", "high_worse_hand_pct", "opponents_showed_weakness"],
+  "factor_conflicts": "None — all factors align strongly for a value bet.",
+  "alternatives_considered": ["CHECK: rejected — 91.6% worse hands on a dry board IP with opponents showing weakness means too much value is left behind."]
+}
+```
+
+```json
+{
+  "situation_id": "d7640_BB_turn",
+  "action": "BET",
+  "confidence": "HIGH",
+  "reasoning": "Hero has QcJc for a turned flush on 7c4d4c9c — a very strong hand (hand_category=14, is_strong_made=1) with 80% equity and 96% worse_hand_pct. Despite being OOP, this hand is far too strong to check. The board has moderate danger (0.745) with a paired board meaning full houses are possible on the river. Hero must bet to extract value and deny equity to hands that could boat up. With villain_air_pct at 0.553, many opponents have hands that will fold to future streets, so betting now captures value before they check behind.",
+  "difficulty": 2,
+  "key_factors": ["strong_flush", "high_equity", "protection_from_board_pairing", "high_villain_air"],
+  "factor_conflicts": "OOP position argues for caution, but 80% equity with a flush on a paired board demands betting — the risk of free cards pairing the board and making a full house is too high. Value and protection both demand a bet.",
+  "alternatives_considered": ["CHECK: rejected — the board is already paired and could produce full houses on the river. Checking risks losing the pot when a 7, 4, or 9 pairs. With 96% worse hands, bet to extract value now."]
+}
+```
+
+```json
+{
+  "situation_id": "d6035_BB_turn",
+  "action": "BET",
+  "confidence": "HIGH",
+  "reasoning": "Hero has AQo for TPTK on Qc2d8s5c — a dry board (danger 0.08) with 75.5% equity and 93.3% worse_hand_pct. Despite being OOP, this is a clear value bet following Example 6 logic: equity is 75%+, worse_hand_pct is 93%, board is dry/static, villain_air_pct is 0.447 (very high, meaning many hands to extract from), and opponents have shown weakness. TPTK on a dry board with this equity level far exceeds the OOP pot-control threshold.",
+  "difficulty": 1,
+  "key_factors": ["tptk_high_equity", "dry_board", "very_high_villain_air", "opponents_showed_weakness"],
+  "factor_conflicts": "OOP position is overridden by 75% equity, 93% worse hands, and a dry static board — per Example 6, OOP check is for marginal equity spots, not dominant ones.",
+  "alternatives_considered": ["CHECK: rejected — with 93% worse hands and 45% villain air on a dry board, checking leaves massive value on the table. Hero's hand is too strong for pot control."]
+}
+```
+
+```json
+{
+  "situation_id": "d7516_HJ_turn",
+  "action": "BET",
+  "confidence": "MEDIUM",
+  "reasoning": "Hero has KhTh for trip tens with a king kicker plus a flush draw on 8hQhTsTd. This is a monster hand (is_monster=1) with 79% equity and 92.3% worse_hand_pct. Despite being OOP and the board heavily favouring villain ranges (board_favour=-0.41, villain_tp_plus=0.71), hero's specific hand is near the nuts — trip tens with top kicker plus a flush redraw. The villain ranges are strong on this board but hero beats the vast majority. With SPR 1.25, a bet commits stacks, but hero wants that with this hand. The key concern is the negative board_favour, but that reflects range-vs-range dynamics, not hero's specific holding which dominates.",
+  "difficulty": 2,
+  "key_factors": ["monster_hand", "protection_with_flush_draw_backup", "low_spr_stack_commitment", "high_worse_hand_pct"],
+  "factor_conflicts": "OOP position and negative board_favour argue for caution, but hero's specific hand (trip tens + king kicker + flush draw) is near the top of all ranges. With 92% worse hands and SPR 1.25, hero should bet to build the pot and deny equity to hands with straight or flush draws.",
+  "alternatives_considered": ["CHECK: could induce bets from villain's strong range (71% TP+), but with SPR 1.25 and a flush draw on board, giving free cards risks being outdrawn. Betting is more robust given the number of scare cards that could kill action on the river."]
+}
+```

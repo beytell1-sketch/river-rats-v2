@@ -1,0 +1,19 @@
+{"situation_id":"OC_Board1_9c6h3d_h9","action":"CALL","confidence":"HIGH","reasoning":"Hero holds 9dTd on 9c6h3d — top pair (hand_category=6, is_made_hand=1), equity=0.407, IP, pot odds=0.25. Villain_air=0.37, villain_aggression=1. Made hand with equity well above pot odds; worse_hand_pct=0.81 shows hero beats most of villain's continuing range. Standard CALL with top pair IP."}
+
+{"situation_id":"OC_Board2_8d5c2hJh_h1","action":"FOLD","confidence":"HIGH","reasoning":"Hero holds AhKc on 8d5c2hJh (flop) — no made hand, 6 overcard outs, raw_equity=0.163, OOP. Villain_aggression=2 (double-barrel on flop?), villain_tp_plus=0.32 but villain_draw_pct=0.47. Pot odds=0.26; equity below threshold OOP with no made hand and against multi-barrel pressure. Fold."}
+
+{"situation_id":"OC_Board2_8d5c2hJh_h2","action":"FOLD","confidence":"HIGH","reasoning":"Hero holds AhQd on 8d5c2hJh — no made hand, 6 overcard outs, raw_equity=0.103, OOP. Villain_aggression=2. Equity far below pot odds (26%); fold."}
+
+{"situation_id":"OC_Board2_8d5c2hJh_h3","action":"FOLD","confidence":"HIGH","reasoning":"Hero holds KcQd on 8d5c2hJh — no made hand, 6 overcard outs, raw_equity=0.069, OOP. Villain_aggression=2. Equity far below pot odds; fold."}
+
+{"situation_id":"OC_Board2_8d5c2hJh_h4","action":"FOLD","confidence":"HIGH","reasoning":"Hero holds Ah7c on 8d5c2hJh — no made hand, 3 overcard outs (A only), raw_equity=0.056, OOP. Villain_aggression=2. Equity far below pot odds; fold."}
+
+{"situation_id":"OC_Board2_8d5c2hJh_h5","action":"FOLD","confidence":"HIGH","reasoning":"Hero holds Qd9c on 8d5c2hJh — gutshot (draw_outs=4), raw_equity=0.132, OOP. Villain_aggression=2. Pot odds=0.26, equity below; gutshot OOP against multi-street aggression. Fold."}
+
+{"situation_id":"OC_Board2_8d5c2hJh_h6","action":"FOLD","confidence":"MEDIUM","reasoning":"Hero holds Td9d on 8d5c2hJh — open-ended straight draw (draw_outs=8), raw_equity=0.181, OOP. Villain_aggression=2; pot odds=0.26. Equity=0.18 is below pot odds; OOP with draws against a double-barrel villain. Despite 8 outs, villain_draw_pct=0.47 means villain's range has many draws that could outdraw hero. Fold OOP."}
+
+{"situation_id":"OC_Board2_8d5c2hJh_h7","action":"FOLD","confidence":"HIGH","reasoning":"Hero holds 6c4c on 8d5c2hJh — gutshot only, better_hand_pct=1.0, raw_equity=0.201, OOP. Villain_aggression=2. Even though equity approximates pot odds, hero beats literally nothing currently and folds under pressure OOP."}
+
+{"situation_id":"OC_Board2_8d5c2hJh_h8","action":"CALL","confidence":"HIGH","reasoning":"Hero holds JdTd on 8d5c2hJh — top pair (hand_category=6, is_made_hand=1), equity=0.447, OOP. Villain_aggression=2; pot odds=0.26. Equity=0.45 well above pot odds; worse_hand_pct=0.75, villain_draw_pct=0.47 means most of villain's range is draws. Top pair TPTK facing a double-barrel — equity easily clears. CALL."}
+
+{"situation_id":"OC_Board2_8d5c2hJh_h9","action":"CALL","confidence":"MEDIUM","reasoning":"Hero holds 8c7c on 8d5c2hJh — second pair (hand_category=5), equity=0.313, OOP. Villain_aggression=2; pot odds=0.26. Equity above pot odds; villain_draw_pct=0.47 means many villain hands are semi-bluffing draws. Second pair with equity above pot odds — marginal call OOP. Villain_tp_plus=0.32 means not all of villain's bets are for value; the high draw frequency supports calling."}

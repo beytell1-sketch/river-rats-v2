@@ -1,0 +1,151 @@
+--- HAND: MW-17 ---
+Situation ID: MW-17
+Hero cards: AdKs
+Board: Jd8d4c
+Street: flop
+Hero position: BB
+Villain positions: CO
+Num opponents: 2
+Pot: 90.0
+To call: 33.0
+Facing bet: True
+Action history: CO opens, BTN calls, BB (hero) calls. Flop Jd8d4c: CO bets 33 into 90.
+
+Key features:
+  raw_equity: 0.2485
+  equity_vs_range: 0.2485
+  pot_odds: 0.2683
+  is_ip: 0
+  hand_category: 2
+  is_made_hand: 0
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.2500
+  spr: 1.11
+  villain_top_pair_plus_pct: 0.4709
+  villain_air_pct: 0.2465
+  villain_range_capped: 0
+  board_favour: -0.1709
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 1
+  villain_checked_back: 0
+  better_hand_pct: 0.5133
+  worse_hand_pct: 0.4269
+
+--- HAND: MW-18 ---
+Situation ID: MW-18
+Hero cards: Qd3d
+Board: Jd8d4c
+Street: flop
+Hero position: BB
+Villain positions: CO
+Num opponents: 2
+Pot: 90.0
+To call: 33.0
+Facing bet: True
+Action history: CO opens, BTN calls, BB (hero) calls. Flop Jd8d4c: CO bets 33 into 90. Compare to MW-17 (nut draw).
+
+Key features:
+  raw_equity: 0.3655
+  equity_vs_range: 0.3655
+  pot_odds: 0.2683
+  is_ip: 0
+  hand_category: 1
+  is_made_hand: 0
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 9
+  has_flush_draw: 1
+  has_straight_draw: 0
+  danger_score: 0.2500
+  spr: 1.11
+  villain_top_pair_plus_pct: 0.4709
+  villain_air_pct: 0.2465
+  villain_range_capped: 0
+  board_favour: -0.1709
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 1
+  villain_checked_back: 0
+  better_hand_pct: 0.9538
+  worse_hand_pct: 0.0462
+
+--- HAND: MW-19 ---
+Situation ID: MW-19
+Hero cards: Tc9c
+Board: QhJs8d
+Street: flop
+Hero position: BTN
+Villain positions: BB
+Num opponents: 2
+Pot: 90.0
+To call: 0.0
+Facing bet: False
+Action history: CO opens, BTN (hero) calls, BB calls. Flop QhJs8d: checks to hero.
+
+Key features:
+  raw_equity: 0.8043
+  equity_vs_range: 0.8043
+  pot_odds: 0.0000
+  is_ip: 1
+  hand_category: 13
+  is_made_hand: 1
+  is_strong_made: 1
+  is_monster: 1
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.3000
+  spr: 1.11
+  villain_top_pair_plus_pct: 0.2721
+  villain_air_pct: 0.2857
+  villain_range_capped: 1
+  board_favour: 0.0279
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 0
+  villain_checked_back: 0
+  better_hand_pct: 0.0000
+  worse_hand_pct: 0.9815
+
+--- HAND: MW-23 ---
+Situation ID: MW-23
+Hero cards: QhJc
+Board: Qc8d3s
+Street: flop
+Hero position: BTN
+Villain positions: BB
+Num opponents: 2
+Pot: 90.0
+To call: 0.0
+Facing bet: False
+Action history: CO opens, BTN (hero) calls, BB calls. Flop Q83r: BB checks, CO checks, hero acts last.
+
+Key features:
+  raw_equity: 0.4510
+  equity_vs_range: 0.4510
+  pot_odds: 0.0000
+  is_ip: 1
+  hand_category: 6
+  is_made_hand: 1
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.0000
+  spr: 1.11
+  villain_top_pair_plus_pct: 0.2041
+  villain_air_pct: 0.4762
+  villain_range_capped: 1
+  board_favour: 0.0959
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 0
+  villain_checked_back: 0
+  better_hand_pct: 0.1799
+  worse_hand_pct: 0.8083

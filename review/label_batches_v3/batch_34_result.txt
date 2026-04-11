@@ -1,0 +1,21 @@
+# Batch 34 Results
+
+{"situation_id":"TV_Board4_Tc7d4c8s_h7","action":"CALL","confidence":"HIGH","reasoning":"8d7c has two pair (hand_category=10, 66.4% equity, is_strong_made=1) OOP facing a bet (pot odds 25.9%) on Tc7d4c8s. Equity (66.4%) massively exceeds pot odds. Two pair is not a monster (is_monster=0) so no raise, but calling with 66.4% equity and 92.2% worse hands is clear. CALL."}
+
+{"situation_id":"TV_Board4_Tc7d4c8s_h8","action":"RAISE","confidence":"HIGH","reasoning":"4d4h is a set (is_monster=1, 73.0% equity) OOP facing a bet (25.9% pot odds) on Tc7d4c8s. Sets on connected boards must raise to build the pot and protect against the many straight draws (J9, 96, 65, 56, etc.) on this T-7-4-8 board. 92.8% worse hands. RAISE per the RAISE RULE."}
+
+{"situation_id":"TV_Board4_Tc7d4c8s_h9","action":"FOLD","confidence":"HIGH","reasoning":"KdQd is a complete miss (8.1% equity) OOP on Tc7d4c8s — no pair, no draw on a connected board that heavily favours villain's range (connectivity=7). villain_aggression=2 confirms strength. Equity (8.1%) is far below pot odds (25.9%). Clear fold."}
+
+{"situation_id":"BD_Board1_AcKd7h_h1","action":"BET","confidence":"HIGH","reasoning":"AhQh is TPTK (65.7% equity, 91.9% worse hands) OOP on AcKd7h with no facing bet (flop). villain_range_capped=1 and villain_air=0.162. With 65.7% equity and 91.9% worse hands on an A-K-7 board (hero holds AQ), this mirrors Example 6: OOP value bet is correct when equity exceeds 60%+ with very high worse_hand_pct. Small bet (33%) is correct."}
+
+{"situation_id":"BD_Board1_AcKd7h_h2","action":"BET","confidence":"MEDIUM","reasoning":"KcJc is second pair (41.0% equity, 63.5% worse hands) OOP on AcKd7h. villain_range_capped=1 but villain_tp_plus=0.189 is relatively low. With 41% equity OOP this is marginal — borderline between CHECK and BET. 63.5% worse hands on a capped range with low air is moderate. A small bet extracts value from pocket pairs and weaker Kx, but risks being called by Ax. CALL the check/bet coin-flip toward bet given worse_hand_pct."}
+
+{"situation_id":"BD_Board1_AcKd7h_h3","action":"CHECK","confidence":"HIGH","reasoning":"TdTs is an underpair (21.2% equity) OOP on AcKd7h. Both overcards on board dominate TT. villain_range_capped=1 but villain_tp_plus=0.189 means many hold Ax or Kx. Equity (21.2%) is marginal and the board heavily disadvantages tens. OOP + dominated underpair = check for pot control."}
+
+{"situation_id":"BD_Board1_AcKd7h_h4","action":"CHECK","confidence":"HIGH","reasoning":"QdJd has a straight draw (8 outs, 24.8% equity) OOP on AcKd7h with no facing bet. Equity (24.8%) is weak, draw is not a nut draw on this board. OOP semi-bluffing into two opponents is incorrect (3-way fold equity ~36%). Check and realize draw equity cheaply. The draw requires calling two overcards to broadway which has implied value but no reason to lead."}
+
+{"situation_id":"BD_Board1_AcKd7h_h5","action":"CHECK","confidence":"HIGH","reasoning":"9h8h has only 10.7% equity OOP on AcKd7h — a complete miss with no pair and no relevant draw (draw_outs=0, straight_danger is present but 9-8 doesn't connect well to A-K-7). Essentially air. Check and surrender to any bet."}
+
+{"situation_id":"BD_Board1_AcKd7h_h6","action":"BET","confidence":"HIGH","reasoning":"Ad7d has two pair (hand_category=10, is_strong_made=1, 71.75% equity, 95.7% worse hands) OOP on AcKd7h. Two pair on a dry board with 95.7% worse hands is a clear value bet even OOP. villain_range_capped=1 limits villain to medium holdings. Strong made hand warrants small bet (33%) for value."}
+
+{"situation_id":"BD_Board1_AcKd7h_h7","action":"BET","confidence":"HIGH","reasoning":"7c7d is a set (is_monster=1, 85.9% equity, 98.4% worse hands) OOP on AcKd7h. Sets always bet for value and protection 3-way. 98.4% worse hands on villain's range. Villain_range_capped=1 limits the range but hero still wants to build the pot with the near-nuts. BET (50%+ pot) for value."}

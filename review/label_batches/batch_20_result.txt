@@ -1,0 +1,129 @@
+```json
+{
+  "situation_id": "d9418_UTG_flop",
+  "action": "CHECK",
+  "confidence": "HIGH",
+  "reasoning": "Hero has QhTh on Ad2sJc — a gutshot straight draw (4 outs) with no pair and 20% equity. OOP from UTG with 88% better hands in villain ranges. No made hand, low equity, OOP position, and semi-bluffing into two opponents with only a gutshot is unprofitable (fold equity ~36%). Check and hope to see a free card.",
+  "difficulty": 1,
+  "key_factors": ["low_equity", "oop_position", "weak_draw_only"],
+  "factor_conflicts": "None",
+  "alternatives_considered": ["BET: rejected — only 4 outs, not a nut draw. Semi-bluffing gutshots into 2 opponents is a losing play per DO NOT rule #2."]
+}
+```
+
+```json
+{
+  "situation_id": "d5730_BB_flop",
+  "action": "CHECK",
+  "confidence": "HIGH",
+  "reasoning": "Hero has 5h6h on 4dJc4c — no pair, no draw (draw_outs=0), 13% equity, 99% better hands in villain ranges. This is pure air OOP on a paired board. No bluffing opportunity exists 3-way with this hand. Check and give up.",
+  "difficulty": 1,
+  "key_factors": ["very_low_equity", "no_draws", "oop_position"],
+  "factor_conflicts": "None",
+  "alternatives_considered": ["BET: rejected — pure bluff into 2 opponents on a paired board with zero equity. Fold equity is insufficient 3-way."]
+}
+```
+
+```json
+{
+  "situation_id": "d9518_BB_flop",
+  "action": "CHECK",
+  "confidence": "MEDIUM",
+  "reasoning": "Hero has pocket 8s on 2d4dJs — an underpair below the jack with 36.5% equity and 78% worse hands. OOP from BB against UTG (uncapped, has all overpairs and Jx) and BTN. While worse_hand_pct is high, the board has a diamond draw (danger 0.25) and hero is OOP. UTG's uncapped range includes JJ, overpairs, and AJ that all dominate hero. Checking to pot-control the underpair OOP is standard — hero has good showdown value but building the pot risks running into the many hands that beat 88.",
+  "difficulty": 2,
+  "key_factors": ["oop_position", "underpair_below_top_card", "utg_uncapped_range", "showdown_value"],
+  "factor_conflicts": "Worse_hand_pct (78%) suggests value betting, but OOP position and UTG's uncapped range with overpairs/top pair argue for pot control. Position and range composition dominate over raw worse_hand_pct.",
+  "alternatives_considered": ["BET small: rejected — OOP with an underpair, betting folds out most worse hands (low pairs, air) and gets called/raised by better (Jx, overpairs, sets). Classic pot-control spot."]
+}
+```
+
+```json
+{
+  "situation_id": "d2410_BB_flop",
+  "action": "CHECK",
+  "confidence": "HIGH",
+  "reasoning": "Hero has 77 on Jd9d3h — underpair with 30% equity, OOP from BB against CO (uncapped) and BTN. No draws, 34% better hands. The board is semi-wet with a diamond flush draw and straight potential (J9 connected). CO's range includes all Jx, overpairs, and sets. Checking to pot-control a medium-strength underpair OOP on a board that favours the raiser is clearly correct.",
+  "difficulty": 1,
+  "key_factors": ["oop_position", "underpair", "raiser_range_advantage"],
+  "factor_conflicts": "None",
+  "alternatives_considered": ["BET: rejected — underpair below top card OOP with no draws. Betting accomplishes nothing productive against two opponents."]
+}
+```
+
+```json
+{
+  "situation_id": "d6709_BB_flop",
+  "action": "CHECK",
+  "confidence": "HIGH",
+  "reasoning": "Hero has Ad5s on 6h7hJs — no pair, no flush draw, no straight draw, only 16.5% equity OOP from BB. The board is connected and two-tone (hearts), favouring the cold-caller's suited connectors. Hero has ace-high with no draws and 53% better hands against villain ranges. This is a clear check with no viable bluffing or value betting opportunity.",
+  "difficulty": 1,
+  "key_factors": ["very_low_equity", "no_made_hand", "oop_position", "connected_wet_board"],
+  "factor_conflicts": "None",
+  "alternatives_considered": ["BET: rejected — pure air with no draws on a wet, connected board. Bluffing into 2 opponents is unprofitable."]
+}
+```
+
+```json
+{
+  "situation_id": "d5466_CO_flop",
+  "action": "CHECK",
+  "confidence": "MEDIUM",
+  "reasoning": "Hero has K6d on KhQc9d — top pair weak kicker with 47.5% equity and 78% worse hands. CO is the preflop raiser but is OOP (sandwich between BTN and BB). The board is KhQc9d — highly connected with straight draws (JT makes a straight) and multiple broadway cards. BTN's capped range is dense with QJ, JT, T9s, KTs type hands that connect well. While villain_range_capped=1 and worse_hand_pct is high, hero's weak kicker means many Kx hands dominate (KQ, KJ, KT). The board is dynamic and connected (danger 0.30), and hero is OOP. Top pair weak kicker is a textbook pot-control hand 3-way per DO NOT rule #5.",
+  "difficulty": 2,
+  "key_factors": ["top_pair_weak_kicker", "oop_sandwich", "connected_broadway_board", "pot_control"],
+  "factor_conflicts": "High worse_hand_pct (78%) and capped villain range suggest value, but OOP sandwich position on a connected board with weak kicker argues for pot control. Position and board texture dominate.",
+  "alternatives_considered": ["BET small (25-33%): defensible given capped villain range and 78% worse hands, but the connected KQ9 board gives BTN many draws and better Kx. OOP thin value with a weak kicker on a dynamic board is risky."]
+}
+```
+
+```json
+{
+  "situation_id": "d8963_BB_turn",
+  "action": "CHECK",
+  "confidence": "HIGH",
+  "reasoning": "Hero has AJ on Ks4h9c3h — no pair, no draws (draw_outs=0), 17.8% equity OOP from BB on the turn. Villain checked back flop (villain_checked_back=1) which shows some weakness, but hero still has only ace-high with 56% better hands. The board has a heart flush draw developing. With no made hand and no draws, hero has no reason to bet — ace-high has some showdown value if checked through but cannot profitably bet into two opponents.",
+  "difficulty": 1,
+  "key_factors": ["no_made_hand", "low_equity", "oop_position"],
+  "factor_conflicts": "None",
+  "alternatives_considered": ["BET: rejected — ace-high with no draws cannot value bet or profitably bluff into 2 opponents on the turn."]
+}
+```
+
+```json
+{
+  "situation_id": "d1647_CO_turn",
+  "action": "CHECK",
+  "confidence": "HIGH",
+  "reasoning": "Hero has AcTc on Qh8s7s6d — no pair with a gutshot (4 outs to a straight with a 5 or J... actually T gives a 6-T straight? No — board is Q876, so 5 or T makes a straight). 13.6% equity, OOP from CO on an extremely dangerous board (danger 0.88). The board is Q8765 four-to-a-straight with a spade draw. Villain_checked_back=1 but villain_tp_plus is 38% — strong holdings. Hero has only a gutshot with ace-high. Semi-bluffing a gutshot into 2 opponents on a very wet board OOP is clearly wrong.",
+  "difficulty": 1,
+  "key_factors": ["very_low_equity", "extremely_wet_board", "oop_position", "weak_draw"],
+  "factor_conflicts": "None",
+  "alternatives_considered": ["BET: rejected — gutshot only (4 outs) on a board where opponents likely have straights, pairs+draws, or flush draws. Bluffing into 2 opponents with near-zero fold equity on this texture is losing."]
+}
+```
+
+```json
+{
+  "situation_id": "d8758_BTN_turn",
+  "action": "BET",
+  "confidence": "MEDIUM",
+  "reasoning": "Hero has 66 on 4d9s4cKs — two pair (6s full? No — 66 with board 44 gives two pair 6s and 4s). This is classified as is_strong_made=1 with 58.5% worse hands and 24% equity. Hero is IP on BTN with closing action. Both opponents checked (villain_checked_back=1), showing weakness. The board is dry (danger 0.23) and paired. While villain_tp_plus is 60.5% (UTG uncapped range has Kx, overpairs, trips), the checked-through action on a K-high board signals both villains likely don't have Kx or better. IP with a strong made hand on a dry board after both check — betting thin for value and protection against overcards is correct.",
+  "difficulty": 2,
+  "key_factors": ["ip_closing_action", "strong_made_hand", "both_opponents_checked", "dry_board"],
+  "factor_conflicts": "Villain_tp_plus (60.5%) and board_favour (-0.31) suggest villain ranges are strong, but both opponents checking a K-high paired board contradicts this — action history shows weakness. The actual ranges after checking are much weaker than the preflop-computed features suggest. Action history overrides static range features.",
+  "alternatives_considered": ["CHECK: defensible for pot control given the raw feature numbers, but both opponents showed weakness by checking a K-high board. IP with two pair, a bet extracts value from medium pairs and protects against overcard outs."]
+}
+```
+
+```json
+{
+  "situation_id": "d1119_CO_turn",
+  "action": "CHECK",
+  "confidence": "HIGH",
+  "reasoning": "Hero has QJo on 2h2s4s9h — two overcards with no pair, no draws, 8% equity OOP from CO on a paired low board on the turn. Better_hand_pct is 83%, villain_air_pct is only 11% (opponents have connected with this board), and board_favour is negative. Hero has nothing — no made hand, no draws, extremely low equity. Pure check-fold territory.",
+  "difficulty": 1,
+  "key_factors": ["very_low_equity", "no_made_hand", "no_draws", "oop_position"],
+  "factor_conflicts": "None",
+  "alternatives_considered": ["BET: rejected — pure bluff with 8% equity into 2 opponents who have strong ranges (49% TP+, only 11% air). Bluffing is hopeless here."]
+}
+```

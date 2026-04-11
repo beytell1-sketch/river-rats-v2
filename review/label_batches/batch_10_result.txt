@@ -1,0 +1,39 @@
+```json
+{"situation_id":"CALL_Board2_Ks9h5d_h3","action":"FOLD","confidence":"HIGH","reasoning":"Th8h is pure air on Ks9h5d with no made hand, no draws, and 11.8% equity facing a raise. Better_hand_pct is 99.8% and equity is far below the 33.3% pot odds. With SPR 1.1 calling would nearly commit the stack with nothing.","difficulty":1,"key_factors":["no_equity","facing_raise","compressed_spr"],"factor_conflicts":"None","alternatives_considered":["CALL: rejected — no draws, no made hand, equity 11.8% vs 33.3% pot odds, would commit with air"]}
+```
+
+```json
+{"situation_id":"CALL_Board2_Ks9h5d_h4","action":"FOLD","confidence":"HIGH","reasoning":"6d4d is complete air on Ks9h5d with no made hand, no draws, and 11.4% equity. Worse_hand_pct is 0% meaning hero has the worst hand in nearly every scenario. Facing a raise with SPR 1.1 makes this a trivial fold.","difficulty":1,"key_factors":["no_equity","facing_raise","compressed_spr"],"factor_conflicts":"None","alternatives_considered":["CALL: rejected — zero draws, zero made hand value, equity far below pot odds"]}
+```
+
+```json
+{"situation_id":"CALL_Board2_Ks9h5d_h5","action":"FOLD","confidence":"MEDIUM","reasoning":"9cTc is second pair on Ks9h5d facing a raise with 24.8% equity vs 33.3% pot odds. SPR is 1.1 so calling essentially commits the stack. Second pair facing a raise 3-way is dominated by the raiser's range which contains Kx, overpairs, and better 9x. Equity is below pot odds and the compressed SPR eliminates implied odds.","difficulty":2,"key_factors":["equity_below_pot_odds","facing_raise","compressed_spr","second_pair_vulnerable"],"factor_conflicts":"IP position and made hand argue for continuing, but equity below pot odds and facing a raise with compressed SPR override. Action history dominates position here.","alternatives_considered":["CALL: rejected — equity 24.8% < pot odds 33.3%, SPR 1.1 commits stack with second pair facing a raise, no draws to improve"]}
+```
+
+```json
+{"situation_id":"CALL_Board2_Ks9h5d_h6","action":"FOLD","confidence":"MEDIUM","reasoning":"9s8s is second pair with worse kicker than h5, equity 27.6% vs 33.3% pot odds on Ks9h5d facing a raise. SPR 1.1 means calling commits effectively. While equity is closer to pot odds than h5, it still falls short, and facing a raise narrows villain's range to hands that dominate second pair. No draws to improve.","difficulty":2,"key_factors":["equity_below_pot_odds","facing_raise","compressed_spr","second_pair_vulnerable"],"factor_conflicts":"IP position and 27.6% equity are closer to threshold, but facing a raise at SPR 1.1 with second pair no kicker still favours folding. The raise signal narrows villain range above what raw equity reflects.","alternatives_considered":["CALL: rejected — still below pot odds, compressed SPR commits with a dominated hand, no improvement path"]}
+```
+
+```json
+{"situation_id":"CALL_Board2_Ks9h5d_h7","action":"CALL","confidence":"MEDIUM","reasoning":"Kc4c is top pair weak kicker on Ks9h5d facing a raise with 44.4% equity well above 33.3% pot odds. SPR 1.1 effectively commits, but hero has top pair and villain range is capped (no AA/KK). Worse_hand_pct 73.7% means hero beats most of villain's range. While the weak kicker is concerning, folding top pair at these odds when villain is capped would be too tight.","difficulty":2,"key_factors":["equity_above_pot_odds","top_pair","villain_range_capped","compressed_spr"],"factor_conflicts":"Facing a raise argues caution, but villain_range_capped means no overpairs in villain's range. Equity 44.4% comfortably exceeds pot odds. Capped range and equity override the raise signal.","alternatives_considered":["FOLD: rejected — 44.4% equity vs 33.3% pot odds with top pair against a capped range is too strong to fold","RAISE: rejected — SPR 1.1 means calling and raising are similar, but raising with TP weak kicker is thin value that only gets called by better"]}
+```
+
+```json
+{"situation_id":"CALL_Board2_Ks9h5d_h8","action":"CALL","confidence":"HIGH","reasoning":"KhJd is top pair good kicker on Ks9h5d facing a raise with 47.1% equity well above 33.3% pot odds. Villain range is capped so no overpairs possible. TPGK is a strong hand against a capped range on a dry board. SPR 1.1 commits but hero is ahead of most of villain's raising range.","difficulty":1,"key_factors":["equity_above_pot_odds","top_pair_good_kicker","villain_range_capped","dry_board"],"factor_conflicts":"None — equity, position (IP), capped villain range, and dry board all support calling.","alternatives_considered":["RAISE: rejected — at SPR 1.1 raising and calling are nearly equivalent, but TPGK is not the nuts; calling keeps villain's bluffs in","FOLD: rejected — equity far exceeds pot odds with a strong made hand"]}
+```
+
+```json
+{"situation_id":"CALL_Board2_Ks9h5d_h9","action":"RAISE","confidence":"HIGH","reasoning":"AsAh is an overpair (AA) on Ks9h5d facing a raise with 64.6% equity. Villain range is capped (no KK/AA), so AA is the effective nuts. SPR 1.1 means raising commits both stacks, which is ideal with the best hand. With 88.4% worse_hand_pct and a capped villain range, hero should raise to get maximum value at this compressed SPR.","difficulty":1,"key_factors":["monster_equity","villain_range_capped","compressed_spr_commits","overpair_nuts"],"factor_conflicts":"None — all factors strongly support raising. Equity, position, range advantage, dry board, and compressed SPR all align.","alternatives_considered":["CALL: rejected — with SPR 1.1 and the effective nuts against a capped range, flatting leaves value on the table; raising commits optimally"]}
+```
+
+```json
+{"situation_id":"CALL_Board3_Qh7c2s5d_h1","action":"FOLD","confidence":"HIGH","reasoning":"JhTh is pure air on Qh7c2s5d turn facing a double barrel from uncapped CO with 5.6% equity. No draws (draw_outs=0), no made hand, equity far below 27.8% pot odds. Villain aggression count of 2 signals a strong range. SPR 0.64 means no implied odds.","difficulty":1,"key_factors":["no_equity","no_draws","double_barrel_aggression","compressed_spr"],"factor_conflicts":"None","alternatives_considered":["CALL: rejected — 5.6% equity vs 27.8% pot odds with no improvement path is a clear fold"]}
+```
+
+```json
+{"situation_id":"CALL_Board3_Qh7c2s5d_h2","action":"FOLD","confidence":"HIGH","reasoning":"9h8h has a gutshot (4 outs) but only 12.6% equity facing a double barrel on Qh7c2s5d turn. Equity is far below the 27.8% pot odds. SPR 0.64 means virtually no implied odds even if the straight hits. Villain aggression count of 2 from uncapped CO signals strength. A gutshot alone cannot justify continuing.","difficulty":1,"key_factors":["equity_far_below_pot_odds","weak_draw_only","double_barrel_aggression","no_implied_odds"],"factor_conflicts":"None","alternatives_considered":["CALL: rejected — 4 outs with no implied odds at SPR 0.64, equity 12.6% vs 27.8% needed"]}
+```
+
+```json
+{"situation_id":"CALL_Board3_Qh7c2s5d_h3","action":"FOLD","confidence":"HIGH","reasoning":"Ah3h is ace-high with a gutshot (4 outs) and 13.8% equity facing a double barrel on Qh7c2s5d turn. Despite having an ace, equity is far below the 27.8% pot odds. SPR 0.64 eliminates implied odds. Villain is uncapped with aggression count 2, signaling a strong value-heavy range. Ace-high with a weak gutshot cannot profitably continue.","difficulty":1,"key_factors":["equity_far_below_pot_odds","double_barrel_aggression","no_implied_odds","ace_high_no_showdown"],"factor_conflicts":"None — ace blocker provides minimal value against two opponents with a double-barreling villain.","alternatives_considered":["CALL: rejected — 13.8% equity vs 27.8% pot odds, gutshot only provides 4 outs with no room to realize them at SPR 0.64"]}
+```

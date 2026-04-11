@@ -1,0 +1,61 @@
+# Review Batch 28 — 1 situations
+# Label independently using the 5-factor framework.
+
+--- SITUATION: BD_Board9_Qh9h4dTh_h9 ---
+Board ID: BD_Board9_Qh9h4dTh
+Hero cards: Ah 5d
+Features:
+  action: CALL
+  bet_to_pot: 0.25
+  better_hand_pct: 0.886027
+  board_favour: -0.4513
+  connectivity_score: 7
+  danger_score: 0.7454
+  draw_outs: 9
+  equity_margin: 0.00625
+  equity_vs_range: 0.20625
+  facing_bet: 1
+  facing_raise: 0
+  flush_block_pct: 0.226027
+  flush_danger: 0.5154
+  flush_draw_rank: 14
+  hand_category: 1
+  hand_rank: 0.34
+  has_flush_draw: 1
+  has_showdown_value: 0
+  has_straight_draw: 0
+  hero_position: 4
+  hero_range_percentile: 0.0
+  high_card_rank: 12
+  improvement_probability: 0.195652
+  is_3bet_pot: 0
+  is_double_paired: 0
+  is_ip: 0
+  is_made_hand: 0
+  is_monotone: 0
+  is_monster: 0
+  is_paired: 0
+  is_rainbow: 0
+  is_strong_made: 0
+  is_two_tone: 1
+  num_callers_to_bet: 0
+  num_opponents: 2
+  overcard_outs: 3
+  pot_odds: 0.2
+  pot_size: 180.0
+  raw_equity: 0.20625
+  spr: 0.5556
+  straight_danger: 0.5
+  street: 1
+  to_call: 45.0
+  villain_aggression_count: 0
+  villain_air_pct: 0.0
+  villain_call_count: 1
+  villain_checked_back: 1
+  villain_draw_pct: 0.057
+  villain_fold_equity_estimate: 0.048488
+  villain_position: 3
+  villain_range_capped: 1
+  villain_top_pair_plus_pct: 0.7513
+  worse_hand_pct: 0.087671
+

@@ -1,0 +1,151 @@
+--- HAND: MW-12 ---
+Situation ID: MW-12
+Hero cards: JsTs
+Board: 8c5d2h
+Street: flop
+Hero position: BTN
+Villain positions: BB
+Num opponents: 2
+Pot: 75.0
+To call: 0.0
+Facing bet: False
+Action history: CO opens, BTN (hero) calls, BB calls. Flop 852r checks around to hero.
+
+Key features:
+  raw_equity: 0.1175
+  equity_vs_range: 0.1175
+  pot_odds: 0.0000
+  is_ip: 1
+  hand_category: 2
+  is_made_hand: 0
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.0000
+  spr: 1.33
+  villain_top_pair_plus_pct: 0.2041
+  villain_air_pct: 0.5782
+  villain_range_capped: 1
+  board_favour: 0.0959
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 0
+  villain_checked_back: 0
+  better_hand_pct: 0.9264
+  worse_hand_pct: 0.0569
+
+--- HAND: MW-13 ---
+Situation ID: MW-13
+Hero cards: KhJh
+Board: Ac9d3s
+Street: flop
+Hero position: SB
+Villain positions: BTN
+Num opponents: 2
+Pot: 90.0
+To call: 0.0
+Facing bet: False
+Action history: BTN opens, SB (hero) calls, BB calls. Flop A93r: hero first to act OOP.
+
+Key features:
+  raw_equity: 0.1298
+  equity_vs_range: 0.1298
+  pot_odds: 0.0000
+  is_ip: 0
+  hand_category: 0
+  is_made_hand: 0
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.0000
+  spr: 1.11
+  villain_top_pair_plus_pct: 0.1481
+  villain_air_pct: 0.3778
+  villain_range_capped: 0
+  board_favour: 0.1519
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 1
+  villain_checked_back: 0
+  better_hand_pct: 0.6442
+  worse_hand_pct: 0.3282
+
+--- HAND: MW-14 ---
+Situation ID: MW-14
+Hero cards: Td9d
+Board: Jd8d3h
+Street: flop
+Hero position: BB
+Villain positions: CO
+Num opponents: 2
+Pot: 90.0
+To call: 33.0
+Facing bet: True
+Action history: CO opens, BTN calls, BB (hero) calls. Flop Jd8d3h: CO bets 33 into 90.
+
+Key features:
+  raw_equity: 0.5357
+  equity_vs_range: 0.5357
+  pot_odds: 0.2683
+  is_ip: 0
+  hand_category: 0
+  is_made_hand: 0
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 17
+  has_flush_draw: 1
+  has_straight_draw: 1
+  danger_score: 0.2500
+  spr: 1.11
+  villain_top_pair_plus_pct: 0.4619
+  villain_air_pct: 0.2506
+  villain_range_capped: 0
+  board_favour: -0.1619
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 1
+  villain_checked_back: 0
+  better_hand_pct: 0.9594
+  worse_hand_pct: 0.0232
+
+--- HAND: MW-15 ---
+Situation ID: MW-15
+Hero cards: 9s8s
+Board: QsJd5h2c6c
+Street: river
+Hero position: BTN
+Villain positions: BB
+Num opponents: 2
+Pot: 120.0
+To call: 0.0
+Facing bet: False
+Action history: CO opens, BTN (hero) calls, BB calls. Flop/turn check through. River 6c: BB checks, hero faces decision.
+
+Key features:
+  raw_equity: 0.0000
+  equity_vs_range: 0.0000
+  pot_odds: 0.0000
+  is_ip: 1
+  hand_category: 0
+  is_made_hand: 0
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 4
+  has_flush_draw: 0
+  has_straight_draw: 1
+  danger_score: 0.4200
+  spr: 0.83
+  villain_top_pair_plus_pct: 0.2721
+  villain_air_pct: 0.3673
+  villain_range_capped: 1
+  board_favour: 0.0279
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 0
+  villain_checked_back: 1
+  better_hand_pct: 0.9548
+  worse_hand_pct: 0.0271

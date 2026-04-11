@@ -1,0 +1,21 @@
+# Batch 39 Results
+
+{"situation_id":"BD_Board6_9c7c2dKh_h8","action":"FOLD","confidence":"HIGH","reasoning":"Td8d has an open-ended straight draw (8 outs, 19.3% equity) OOP facing bet + raise (pot odds 28.6%). Equity (19.3%) is below pot odds. Facing a raise (facing_raise=1) in a 3-way pot with only a draw = FOLD. The straight draw does not justify continuing below pot odds against near-nut range signalled by the raise."}
+
+{"situation_id":"BD_Board7_Jh8d5cQc4h_h1","action":"CALL","confidence":"MEDIUM","reasoning":"JcTc is second pair + gutshot (37.0% equity) IP facing a bet (pot odds 22.2%) on a connected board (connectivity=5). villain_aggression=3 (strong range, villain_tp_plus=0.651) but equity (37%) exceeds pot odds (22.2%). IP position helps realization. Made hand + draw outs (4) + IP = marginal but acceptable call. The draw equity survives range narrowing per Example 8."}
+
+{"situation_id":"BD_Board7_Jh8d5cQc4h_h2","action":"CALL","confidence":"HIGH","reasoning":"QhJd is top two pair (hand_category=10, is_strong_made=1, 74.2% equity, 71.4% worse hands) IP facing a bet (pot odds 22.2%). villain_aggression=3 is high but equity (74.2%) massively exceeds pot odds. IP + strong two pair + 74% equity = clear CALL. Not a set per is_monster=0."}
+
+{"situation_id":"BD_Board7_Jh8d5cQc4h_h3","action":"CALL","confidence":"MEDIUM","reasoning":"8c7c is second pair + gutshot (35.4% equity) IP facing a bet (pot odds 22.2%) with villain_aggression=3. Equity (35.4%) comfortably exceeds pot odds (22.2%). IP + made hand + draw. Similar to h1 — second pair + draw outs with positive equity surplus. CALL."}
+
+{"situation_id":"BD_Board7_Jh8d5cQc4h_h4","action":"CALL","confidence":"MEDIUM","reasoning":"AhJh is top pair (31.5% equity) IP facing a bet (pot odds 22.2%) with villain_aggression=3 (villain_tp_plus=0.651). Equity (31.5%) exceeds pot odds (22.2%). villain_aggression=3 narrows range heavily but top pair IP with 9.3% equity surplus justifies marginal call. IP position supports equity realization."}
+
+{"situation_id":"BD_Board7_Jh8d5cQc4h_h5","action":"FOLD","confidence":"HIGH","reasoning":"9h7h has only 0% equity (raw_equity=0.0) IP facing a bet (pot odds 22.2%) with villain_aggression=3. No equity whatsoever against villain's range. Even with a draw (draw_outs=4), the pipeline reports 0 equity. Clear fold."}
+
+{"situation_id":"BD_Board7_Jh8d5cQc4h_h6","action":"CALL","confidence":"MEDIUM","reasoning":"QdTd is top pair + gutshot (42.3% equity) IP facing a bet (pot odds 22.2%) with villain_aggression=3. Equity (42.3%) comfortably exceeds pot odds. IP + top pair + draw outs = CALL. villain_tp_plus=0.651 is high but combined equity is sufficient."}
+
+{"situation_id":"BD_Board7_Jh8d5cQc4h_h7","action":"RAISE","confidence":"HIGH","reasoning":"5d5h is a set (is_monster=1, 79.2% equity, 79.2% worse hands) IP facing a bet (pot odds 22.2%). villain_aggression=3 signals a strong range but sets RAISE per the RAISE RULE. IP position is ideal for raising. 79.2% equity and sets protect well on connected boards (connectivity=5, danger=0.42). RAISE to build pot and deny draws."}
+
+{"situation_id":"BD_Board7_Jh8d5cQc4h_h8","action":"CALL","confidence":"MEDIUM","reasoning":"KhKd is an overpair (53.2% equity) IP facing a bet (pot odds 22.2%) with villain_aggression=3. Equity (53.2%) comfortably exceeds pot odds. villain_tp_plus=0.651 is high and the board (J-8-5-Q-4) has many top-pair hands in it. KK is dominated by QQ+/two-pair. But equity (53.2%) vs pot odds (22.2%) provides ample surplus. CALL with comfortable margin."}
+
+{"situation_id":"BD_Board8_6h3d2h9cKs_h1","action":"CHECK","confidence":"MEDIUM","reasoning":"6c5c is second pair + gutshot (13.95% equity, 55.3% worse hands) OOP with no facing bet on 6h3d2h9cKs (turn). villain_air=0.371 is high but villain_checked_back=1 on prior street. Equity (14%) is marginal. OOP with a draw + weak pair — check to see the river cheaply. Despite villain air being high, the hand is too weak to lead OOP 3-way."}

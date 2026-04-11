@@ -1,0 +1,19 @@
+{"situation_id":"OC_Board4_6s3h2cTs_h2","action":"CHECK","confidence":"MEDIUM","reasoning":"Hero holds KdQd on 6s3h2cTs — no made hand, 6 overcard outs, raw_equity=0.084, IP. Not facing a bet; villain_air=0.50 but villain_tp_plus=0.21. Board (6s3h2cTs) favours villains with low pairs and connectors. With no pair and equity=0.084, check to realize equity cheaply rather than betting into two opponents."}
+
+{"situation_id":"OC_Board4_6s3h2cTs_h3","action":"CHECK","confidence":"MEDIUM","reasoning":"Hero holds Ah5c on 6s3h2cTs — gutshot (draw_outs=4), raw_equity=0.146, IP. Not facing a bet; villain_air=0.50. Ace-high with gutshot; check to realize equity cheaply rather than semi-bluffing into two opponents 3-way where fold equity is only ~36%."}
+
+{"situation_id":"OC_Board4_6s3h2cTs_h4","action":"CHECK","confidence":"HIGH","reasoning":"Hero holds Qd9c on 6s3h2cTs — no made hand, 3 overcard outs, raw_equity=0.048, IP. Not facing a bet; equity=0.048 means hero has almost nothing here. Check is clear — do not bet into two opponents with 5% equity on a board that favours low-pair hands."}
+
+{"situation_id":"OC_Board4_6s3h2cTs_h5","action":"CHECK","confidence":"HIGH","reasoning":"Hero holds Jc9c on 6s3h2cTs — no made hand, 3 overcard outs, raw_equity=0.053, IP. Not facing a bet. Equity too low to consider betting; check."}
+
+{"situation_id":"OC_Board4_6s3h2cTs_h6","action":"CHECK","confidence":"HIGH","reasoning":"Hero holds 8h7h on 6s3h2cTs — gutshot (draw_outs=4), raw_equity=0.131, IP. Not facing a bet; better_hand_pct=0.98. Gutshot-only draw at the bottom of the range; check to realize equity. Semi-bluffing into two opponents with a gutshot is not profitable 3-way."}
+
+{"situation_id":"OC_Board4_6s3h2cTs_h7","action":"BET","confidence":"MEDIUM","reasoning":"Hero holds 4d4c on 6s3h2cTs — pocket pair (hand_category=4, is_made_hand=1), equity=0.367, IP. Not facing a bet; villain_air=0.50, villain_tp_plus=0.21, villain_checked_back=1. Made hand with 37% equity and villain air at 50% — thin value bet IP on a dry board where many villain hands miss. The draw_outs=4 suggests a straight draw component too. Villain range is weak (high air, low TP+), supporting a thin value bet."}
+
+{"situation_id":"OC_Board4_6s3h2cTs_h8","action":"CHECK","confidence":"MEDIUM","reasoning":"Hero holds AhJd on 6s3h2cTs — no made hand, 6 overcard outs, raw_equity=0.117, IP. Not facing a bet; villain_air=0.50. With no pair, checking AJ is standard; 6 overcard outs provide implied value when hitting but not enough to justify a bluff-bet into two opponents 3-way."}
+
+{"situation_id":"TV_Board1_Qc8d4s2h_h1","action":"BET","confidence":"HIGH","reasoning":"Hero holds Qd7d on Qc8d4s2h (flop, OOP) — top pair (hand_category=6, is_made_hand=1), equity=0.489, not facing a bet. Villain_air=0.44, villain_tp_plus=0.16 (very weak villain range), worse_hand_pct=0.74. High villain air + low TP+ + dry board + good equity = value bet OOP per Example 6 framework. This is the OOP value bet exception: villain range is weak and capped enough to override the OOP default."}
+
+{"situation_id":"TV_Board1_Qc8d4s2h_h2","action":"BET","confidence":"HIGH","reasoning":"Hero holds Qh5h on Qc8d4s2h — top pair (hand_category=6, is_made_hand=1), equity=0.474, OOP. Villain_air=0.44, villain_tp_plus=0.16, worse_hand_pct=0.74. Same spot as h1 — weak villain range on dry board supports OOP thin value bet. Bet small (25-33% pot) for value against two weak ranges."}
+
+{"situation_id":"TV_Board1_Qc8d4s2h_h3","action":"CHECK","confidence":"MEDIUM","reasoning":"Hero holds 8c7c on Qc8d4s2h — second pair (hand_category=5), equity=0.293, OOP. Villain_air=0.44 is high but villain_aggression=2 means villain has been betting multiple streets. With second pair and OOP, check to control the pot; second pair 3-way is a showdown hand not a value-betting hand. The high villain air supports checking rather than building a pot with a marginal hand."}

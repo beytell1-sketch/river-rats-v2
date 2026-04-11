@@ -1,0 +1,39 @@
+```json
+{"situation_id":"CALL_Board1_Jd8d4c_h2","action":"FOLD","confidence":"HIGH","reasoning":"Ts5s is complete air on Jd8d4c — no pair, no draw (0 outs), 10.4% equity facing a bet needing 26.8% pot odds. OOP with 96% of villain's range beating hero and SPR 1.1 leaving no room to maneuver. Clear fold with no path to improvement.","difficulty":1,"key_factors":["zero_equity","no_draws","massive_pot_odds_deficit"],"factor_conflicts":"None","alternatives_considered":["CALL: rejected — equity 10.4% vs 26.8% pot odds with no draw outs, pure money burn"]}
+```
+
+```json
+{"situation_id":"CALL_Board1_Jd8d4c_h3","action":"FOLD","confidence":"MEDIUM","reasoning":"9h7h has a gutshot (4 outs) but only 20.2% equity vs 26.8% pot odds needed. OOP with no flush draw, and the gutshot alone provides insufficient equity to call. At SPR 1.1 there is no implied odds room — if hero hits, stacks are nearly committed already. The backdoor heart draw adds minimal equity.","difficulty":2,"key_factors":["insufficient_equity","weak_draw_only_gutshot","no_implied_odds_low_spr"],"factor_conflicts":"Draw outs suggest possible call, but 4 outs is insufficient vs pot odds and OOP position with compressed SPR eliminates implied odds.","alternatives_considered":["CALL: rejected — 4 gutshot outs provide ~8% improvement per street, not enough to bridge the equity gap at these pot odds with SPR 1.1"]}
+```
+
+```json
+{"situation_id":"CALL_Board1_Jd8d4c_h4","action":"CALL","confidence":"HIGH","reasoning":"Qd3d is a flush draw (9 outs) with 37.3% equity, well above the 26.8% pot odds. Despite being OOP, the flush draw provides strong enough equity to continue. Second-nut flush draw with clear odds to call. Raising is rejected because OOP 3-way fold equity is too low and SPR 1.1 means a raise commits stacks.","difficulty":1,"key_factors":["strong_draw_equity","pot_odds_exceeded","flush_draw_9_outs"],"factor_conflicts":"None — equity clearly exceeds pot odds with a strong draw.","alternatives_considered":["RAISE: rejected — OOP with SPR 1.1, a raise commits stacks as a semi-bluff against two opponents with only ~36% fold equity 3-way","FOLD: rejected — 37.3% equity far exceeds 26.8% pot odds"]}
+```
+
+```json
+{"situation_id":"CALL_Board1_Jd8d4c_h5","action":"CALL","confidence":"HIGH","reasoning":"7d6d is a monster combo draw with flush draw + open-ended straight draw (13 outs), giving 44.3% equity — far exceeding 26.8% pot odds. Despite being OOP, this hand has massive draw equity and is virtually a coinflip. Calling preserves flexibility while the equity is already sufficient to continue very profitably.","difficulty":2,"key_factors":["monster_draw_equity","combo_draw_13_outs","pot_odds_far_exceeded"],"factor_conflicts":"The massive draw equity could justify a raise (semi-bluff with near-coinflip equity), but OOP at SPR 1.1 means a raise commits stacks against two opponents where fold equity is low 3-way.","alternatives_considered":["RAISE: reasonable with 13 outs and near-50% equity, but 3-way fold equity is ~36% and committing stacks OOP is risky. Calling is safer and still very profitable","FOLD: rejected — equity massively exceeds pot odds"]}
+```
+
+```json
+{"situation_id":"CALL_Board1_Jd8d4c_h6","action":"CALL","confidence":"MEDIUM","reasoning":"AdKs is unpaired but has 6 overcard outs (3 aces + 3 kings) providing ~24% improvement by river — hidden equity not captured in draw_outs=0. Raw equity 24.9% is close to pot odds 26.8%. Per knowledge base Example 7 (AK on a missed board), overcard outs make this a profitable call. The Ad also provides a backdoor nut flush draw on this two-diamond board.","difficulty":2,"key_factors":["overcard_hidden_equity","backdoor_flush_draw","close_to_pot_odds"],"factor_conflicts":"Raw equity (24.9%) is slightly below pot odds (26.8%), suggesting fold. But hidden overcard outs (~24% improvement) and backdoor nut flush draw tip this to a call. Knowledge base Example 7 directly addresses this pattern.","alternatives_considered":["FOLD: defensible since raw equity is slightly below pot odds, but overcard outs and backdoor draw provide hidden equity the features understate"]}
+```
+
+```json
+{"situation_id":"CALL_Board1_Jd8d4c_h7","action":"CALL","confidence":"HIGH","reasoning":"8c7c is middle pair (second pair) with 34.5% equity exceeding 26.8% pot odds. Only 33.5% of villain's range beats hero, giving decent showdown value. Made hand with clear equity advantage over pot odds makes this a straightforward call despite being OOP.","difficulty":1,"key_factors":["made_hand_second_pair","equity_exceeds_pot_odds","showdown_value"],"factor_conflicts":"None — equity clearly exceeds pot odds with a made hand.","alternatives_considered":["FOLD: rejected — 34.5% equity well above 26.8% pot odds with a made hand","RAISE: rejected — second pair is not strong enough to raise 3-way, only better hands call"]}
+```
+
+```json
+{"situation_id":"CALL_Board1_Jd8d4c_h8","action":"CALL","confidence":"HIGH","reasoning":"Jc5h is top pair weak kicker with 38.6% equity, well above 26.8% pot odds. Only 22.7% of villain's range beats hero. Top pair is medium-strength 3-way — not strong enough to raise (only better hands call a raise), but clearly strong enough to call at these odds. Pot control via calling is correct.","difficulty":1,"key_factors":["top_pair_showdown_value","equity_well_above_pot_odds","pot_control_call"],"factor_conflicts":"None — equity clearly supports calling.","alternatives_considered":["RAISE: rejected — top pair weak kicker 3-way is medium-strength, raising only gets called by better","FOLD: rejected — 38.6% equity far exceeds 26.8% pot odds"]}
+```
+
+```json
+{"situation_id":"CALL_Board1_Jd8d4c_h9","action":"CALL","confidence":"HIGH","reasoning":"JsTh is top pair with a decent kicker and 41.3% equity, well above 26.8% pot odds. Only 21.3% of villain's range beats hero. Strong showdown value but still medium-strength 3-way — calling for pot control is correct. Raising only gets action from dominating hands.","difficulty":1,"key_factors":["top_pair_good_kicker","strong_equity_above_pot_odds","pot_control"],"factor_conflicts":"None — all factors support calling.","alternatives_considered":["RAISE: rejected — top pair is medium-strength 3-way, raising only gets action from better hands","FOLD: rejected — 41.3% equity far exceeds pot odds"]}
+```
+
+```json
+{"situation_id":"CALL_Board2_Ks9h5d_h1","action":"FOLD","confidence":"HIGH","reasoning":"7c2h is complete trash on Ks9h5d — no pair, no draws, 5.4% equity facing 33.3% pot odds. 99.96% of villain's range beats hero. Absolute bottom of range with zero path to improvement. Trivial fold despite being IP.","difficulty":1,"key_factors":["zero_equity","no_draws","complete_air"],"factor_conflicts":"None","alternatives_considered":["CALL: rejected — 5.4% equity vs 33.3% pot odds is burning money"]}
+```
+
+```json
+{"situation_id":"CALL_Board2_Ks9h5d_h2","action":"FOLD","confidence":"HIGH","reasoning":"QhJh has a gutshot (4 outs) but only 22.3% equity vs 33.3% pot odds — an 11pp gap. Despite being IP and villain range being capped, the equity deficit is too large. At SPR 1.1 there are no implied odds to make up the shortfall. The gutshot alone (4 outs, ~8% per street) is insufficient on this dry rainbow board.","difficulty":2,"key_factors":["equity_below_pot_odds","weak_draw_only_gutshot","no_implied_odds_low_spr"],"factor_conflicts":"IP position would normally help equity realization, but the large equity gap (22.3% vs 33.3%) and compressed SPR eliminate the positional advantage.","alternatives_considered":["CALL: rejected — 11pp equity gap is too large to overcome with only a gutshot at SPR 1.1, even IP over-realization cannot bridge this gap"]}
+```

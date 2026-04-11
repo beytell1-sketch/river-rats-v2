@@ -1,0 +1,21 @@
+# Batch 35 Results
+
+{"situation_id":"BD_Board1_AcKd7h_h8","action":"CHECK","confidence":"HIGH","reasoning":"6h5h has only 10% equity OOP on AcKd7h — complete miss, no pair, no draw (draw_outs=0), worst hand range percentile (0.0). Essentially no showdown value. Check and fold to any bet."}
+
+{"situation_id":"BD_Board2_5d5c9hJd_h1","action":"CALL","confidence":"HIGH","reasoning":"JhTh is top pair on 5d5c9hJd (hand_category=10, 43.7% equity) IP facing a bet (pot odds 25.9%). villain_tp_plus=0.732 is very high and villain_aggression=2. Equity (43.7%) is comfortably above pot odds, IP position helps. Top pair on a paired board facing aggression — CALL is correct. Raise rule does not apply (is_monster=0)."}
+
+{"situation_id":"BD_Board2_5d5c9hJd_h2","action":"CALL","confidence":"MEDIUM","reasoning":"9c8c has two pair on 5d5c9hJd (hand_category=10, 26.2% equity) IP facing a bet (pot odds 25.9%). Equity (26.2%) marginally exceeds pot odds. villain_tp_plus=0.732 is very high. This is the borderline — equity barely covers pot odds, IP helps realization. The two-pair hand has showdown value. Marginal CALL given IP position and marginal equity surplus."}
+
+{"situation_id":"BD_Board2_5d5c9hJd_h3","action":"CALL","confidence":"HIGH","reasoning":"AhAd is an overpair (77.7% equity) IP on 5d5c9hJd facing a bet (pot odds 25.9%). villain_aggression=2, villain_tp_plus=0.732. Despite high villain range strength, AA has 77.7% equity with 93.8% worse hands. Equity massively exceeds pot odds. IP + strong overpair = clear CALL. Not a monster (no trips/set) so no RAISE."}
+
+{"situation_id":"BD_Board2_5d5c9hJd_h4","action":"CALL","confidence":"HIGH","reasoning":"KhKd is an overpair (63.1% equity) IP on 5d5c9hJd facing a bet (pot odds 25.9%). villain_aggression=2, villain_tp_plus=0.732 (high, but includes all pairs of fives and nines). Equity (63.1%) is well above pot odds. IP + strong overpair + 91.8% worse hands = CALL. Not a set so no RAISE."}
+
+{"situation_id":"BD_Board2_5d5c9hJd_h5","action":"RAISE","confidence":"HIGH","reasoning":"5h4h is trips (hand_category=11, is_monster=1, 82.0% equity, 96.4% worse hands) IP on 5d5c9hJd facing a bet. Trips on a paired board are a monster hand qualifying for RAISE per the RAISE RULE. Need to build pot and protect against straight draws with villain_aggression=2 indicating a strong betting range that will call a raise."}
+
+{"situation_id":"BD_Board2_5d5c9hJd_h6","action":"CALL","confidence":"MEDIUM","reasoning":"QdTd has flush draw + straight draw (17 outs, 30.8% equity) IP on a paired board (5d5c9hJd) facing a bet (pot odds 25.9%). villain_tp_plus=0.732 is very high. Equity (30.8%) marginally exceeds pot odds. IP + large combo draw barely covers pot odds. The nut flush draw element provides some pull toward calling. CALL for the draw equity."}
+
+{"situation_id":"BD_Board2_5d5c9hJd_h7","action":"RAISE","confidence":"HIGH","reasoning":"Ac5s is trips with top kicker (hand_category=11, is_monster=1, 83.2% equity, 97.5% worse hands) IP on 5d5c9hJd facing a bet. Trips are a monster per the RAISE RULE. IP position + 97.5% worse hands = RAISE to build the pot. Villain has aggression_count=2 meaning they will likely continue."}
+
+{"situation_id":"BD_Board2_5d5c9hJd_h8","action":"FOLD","confidence":"HIGH","reasoning":"7c6c has a gutshot (4 outs, 10.9% equity) IP on 5d5c9hJd facing a bet (pot odds 25.9%). villain_aggression=2, villain_tp_plus=0.732. Equity (10.9%) is far below pot odds (25.9%). Gutshot-only with almost no equity versus a strong villain range. Clear fold."}
+
+{"situation_id":"BD_Board3_Td8c3h6s_h1","action":"CHECK","confidence":"MEDIUM","reasoning":"Td9d is top pair + open-ended straight draw (32.3% equity) OOP on Td8c3h6s with no facing bet. villain_aggression=2 and villain_air=0.403. No facing bet means hero can check and take a free turn. OOP with a draw + top pair — the framework says don't semi-bluff into two opponents 3-way OOP. Check to see the turn cheaply, and if a bet comes, call with draw equity."}

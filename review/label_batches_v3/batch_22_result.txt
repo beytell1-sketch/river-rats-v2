@@ -1,0 +1,19 @@
+{"situation_id":"SB_Board8_Qs8s3d5cJh_h3","action":"FOLD","confidence":"HIGH","reasoning":"Hero holds KsTs on the river (Qs8s3d5cJh) — raw_equity=0.003, essentially zero equity, no made hand, gutshot only. Better_hand_pct=0.89, villain_tp_plus=0.76. Clear fold far below pot odds."}
+
+{"situation_id":"SB_Board8_Qs8s3d5cJh_h4","action":"FOLD","confidence":"HIGH","reasoning":"Hero holds 9s7s — raw_equity=0.0, no made hand, gutshot only on the river. Better_hand_pct=0.97, villain_tp_plus=0.76. Complete fold with zero equity."}
+
+{"situation_id":"SB_Board8_Qs8s3d5cJh_h5","action":"FOLD","confidence":"HIGH","reasoning":"Hero holds AsTd on the river — no made hand, gutshot only, raw_equity=0.033, far below the 26% pot odds. Better_hand_pct=0.70, villain_tp_plus=0.76. Fold against condensed value-heavy river range."}
+
+{"situation_id":"SB_Board8_Qs8s3d5cJh_h6","action":"CALL","confidence":"MEDIUM","reasoning":"Hero holds QdTs on river Qs8s3d5cJh — top pair with gutshot (hand_category=6, is_made_hand=1), raw_equity=0.25, pot odds=0.26. OOP on the river facing a bet with villain_tp_plus=0.76. Equity is barely above pot odds; better_hand_pct=0.18 and worse_hand_pct=0.80 suggest hero beats most of villain's range. Marginal spot but the made hand with 80% worse hands supports a call."}
+
+{"situation_id":"SB_Board8_Qs8s3d5cJh_h7","action":"FOLD","confidence":"HIGH","reasoning":"Hero holds Jd9d — second pair with gutshot draw (raw_equity=0.155), OOP on the river. Villain_tp_plus=0.76 and villain_range_capped=1 means the betting range on this board is almost exclusively strong made hands. Equity=0.155 is well below the 26% pot odds; fold."}
+
+{"situation_id":"SB_Board8_Qs8s3d5cJh_h8","action":"CALL","confidence":"MEDIUM","reasoning":"Hero holds KhQh — top pair (hand_category=7, is_made_hand=1), raw_equity=0.27, pot odds=0.26. Worse_hand_pct=0.82 means hero beats the large majority of villain's continuing range. OOP position is a concern but equity just clears pot odds and the hand has strong showdown value; marginal call is correct."}
+
+{"situation_id":"SB_Board8_Qs8s3d5cJh_h9","action":"FOLD","confidence":"HIGH","reasoning":"Hero holds 6s5s — second pair only (hand_category=5), raw_equity=0.078, negative equity_margin on the river. Villain_tp_plus=0.76 and villain_range_capped=1. Equity far below 26% pot odds; fold."}
+
+{"situation_id":"FB_Board1_Jh7h2c_h1","action":"CALL","confidence":"HIGH","reasoning":"Hero holds AhKh on Jh7h2c (flop, street=0) — nut flush draw with 9 draw outs + 6 overcard outs, raw_equity=0.52, IP, villain_air=0.10, villain_draw_pct=0.43. Equity of 52% well exceeds pot odds of 21.7%; IP position improves realization. The nut flush draw is a clear call; no blocker to merit raising (no As)."}
+
+{"situation_id":"FB_Board1_Jh7h2c_h2","action":"FOLD","confidence":"MEDIUM","reasoning":"Hero holds AhQc on Jh7h2c — no made hand, no flush draw, no straight draw, raw_equity=0.228, pot odds=0.217. Equity barely clears pot odds against full preflop ranges, but villain_draw_pct=0.43 suggests callers have strong draws. With no improvement path beyond overcard outs and OOP villain (hero is IP here), this is a marginal fold — the overcards provide some implied odds but the made board limits their value."}
+
+{"situation_id":"FB_Board1_Jh7h2c_h3","action":"FOLD","confidence":"HIGH","reasoning":"Hero holds KhTd on Jh7h2c — no made hand, only a Kh flush partial (has_flush_draw=0), raw_equity=0.188, better_hand_pct=0.88. Equity below 21.7% pot odds; IP but with no draw and two opponents, this is a clear fold."}

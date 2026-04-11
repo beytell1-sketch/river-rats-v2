@@ -1,0 +1,21 @@
+# Batch 37 Results
+
+{"situation_id":"BD_Board4_Kh9d4c2sJc_h4","action":"CALL","confidence":"MEDIUM","reasoning":"JdTd is second pair + gutshot (34.9% equity, 64.0% worse hands) OOP facing a bet (pot odds 28.6%) with villain_aggression=2 and villain_checked_back=1. Equity (34.9%) marginally exceeds pot odds (28.6%). Second pair + draw outs with prior villain check = marginal but acceptable call. Equity surplus is small but positive with a made hand + draw."}
+
+{"situation_id":"BD_Board4_Kh9d4c2sJc_h5","action":"CALL","confidence":"HIGH","reasoning":"AhAd is an overpair (67.8% equity, 81.0% worse hands) OOP on Kh9d4c2sJc facing a bet (pot odds 28.6%). villain_aggression=2 but villain_checked_back=1. Equity (67.8%) massively exceeds pot odds. AA on a K-9-4-2-J runout — opponent can have two pair or better but AA still has 67.8% equity and 81% worse hands. Clear CALL."}
+
+{"situation_id":"BD_Board4_Kh9d4c2sJc_h6","action":"CALL","confidence":"HIGH","reasoning":"KhJh is top two pair (hand_category=10, is_strong_made=1, 76.7% equity, 86.4% worse hands) OOP facing a bet (pot odds 28.6%) with villain_aggression=2, villain_checked_back=1. Equity (76.7%) massively exceeds pot odds. Two pair is a strong calling hand. Not a set so no raise per the RAISE RULE. CALL."}
+
+{"situation_id":"BD_Board4_Kh9d4c2sJc_h7","action":"FOLD","confidence":"HIGH","reasoning":"Ac5c has a gutshot draw (4 outs) with only 1.4% equity OOP facing a bet (pot odds 28.6%). villain_aggression=2, villain_tp_plus=0.618. Equity (1.4%) is catastrophically below pot odds. Essentially drawing dead on this board. Clear fold."}
+
+{"situation_id":"BD_Board4_Kh9d4c2sJc_h8","action":"RAISE","confidence":"HIGH","reasoning":"QdTd has made the straight (is_monster=1, 97.6% equity, 97.4% worse hands) OOP on Kh9d4c2sJc facing a bet (pot odds 28.6%). Nut straight is a clear monster qualifying for RAISE per the RAISE RULE. villain_aggression=2 means villain will call raises. 97.6% equity + nut hand = RAISE for maximum value."}
+
+{"situation_id":"BD_Board5_7h4d2cQd9s_h1","action":"BET","confidence":"HIGH","reasoning":"QhJh is top pair good kicker (61.9% equity, 83.9% worse hands) OOP with no facing bet on 7h4d2cQd9s (turn). villain_range_capped=1, villain_tp_plus=0.297. This mirrors Example 6 precisely: OOP with 61.9% equity and 83.9% worse hands on a dry board (danger=0.12) against a capped range with moderate air (villain_air=0.297). The OOP default is overridden by strong equity + very high worse_hand_pct. BET small."}
+
+{"situation_id":"BD_Board5_7h4d2cQd9s_h2","action":"CHECK","confidence":"MEDIUM","reasoning":"7c6c is second pair (26.8% equity, 52.6% worse hands) OOP on 7h4d2cQd9s with no facing bet. villain_range_capped=1, villain_tp_plus=0.297. Equity (26.8%) is too weak for OOP value betting against a range with ~30% top-pair-plus hands. Check for pot control."}
+
+{"situation_id":"BD_Board5_7h4d2cQd9s_h3","action":"CHECK","confidence":"HIGH","reasoning":"AdKd missed the board completely (10.1% equity, overcard_outs=6) OOP on 7h4d2cQd9s with no facing bet. No pair on a Q-9-7 board. villain_call_count=1 suggests villain's range is condensed. Check — don't lead with air 3-way OOP. The overcard outs give minimal implied value against a 3-way capped range."}
+
+{"situation_id":"BD_Board5_7h4d2cQd9s_h4","action":"BET","confidence":"HIGH","reasoning":"AhQc is top pair + top kicker (74.6% equity, 89.1% worse hands) OOP with no facing bet on 7h4d2cQd9s. villain_range_capped=1, villain_air=0.297. Equity (74.6%) and worse_hand_pct (89.1%) are both very strong. Clear OOP value bet — equity substantially exceeds 60% with near-90% worse hands. BET small (33%)."}
+
+{"situation_id":"BD_Board5_7h4d2cQd9s_h5","action":"CHECK","confidence":"HIGH","reasoning":"9c8c is second pair (35.2% equity, 62.6% worse hands) OOP on 7h4d2cQd9s with no facing bet. villain_range_capped=1. 35.2% equity OOP is below the value-betting threshold. Check for pot control — the hand has showdown value but the equity margin doesn't justify an OOP lead against two opponents."}

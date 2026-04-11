@@ -1,0 +1,152 @@
+--- HAND: MW-12 ---
+Situation ID: MW-12
+Hero cards: JsTs
+Board: 8c5d2h
+Street: flop
+Hero position: BTN
+Villain positions: BB
+Num opponents: 2
+Pot: 75.0
+To call: 0.0
+Facing bet: False
+Action history: CO opens, BTN (hero) calls, BB calls. Flop 852r checks around to hero.
+
+Key features:
+  raw_equity: 0.1232
+  equity_vs_range: 0.1232
+  pot_odds: 0.0000
+  is_ip: 1
+  hand_category: 2
+  is_made_hand: 0
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.0000
+  spr: 1.33
+  villain_top_pair_plus_pct: 0.2041
+  villain_air_pct: 0.5782
+  villain_range_capped: 1
+  board_favour: 0.0959
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 0
+  villain_checked_back: 0
+  better_hand_pct: 0.9264
+  worse_hand_pct: 0.0569
+
+--- HAND: MW-30 ---
+Situation ID: MW-30
+Hero cards: KcTh
+Board: KdJc6s
+Street: flop
+Hero position: BB
+Villain positions: CO
+Num opponents: 2
+Pot: 155.0
+To call: 35.0
+Facing bet: True
+Action history: CO opens, BTN calls, SB calls, BB (hero) calls. Flop KJ6r: CO bets 35, BTN calls, SB folds. Hero faces bet + call.
+
+Key features:
+  raw_equity: 0.3972
+  equity_vs_range: 0.3972
+  pot_odds: 0.1842
+  is_ip: 0
+  hand_category: 6
+  is_made_hand: 1
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.0000
+  spr: 0.65
+  villain_top_pair_plus_pct: 0.4140
+  villain_air_pct: 0.1527
+  villain_range_capped: 0
+  board_favour: -0.1140
+  num_callers_to_bet: 1
+  facing_raise: 0
+  villain_aggression_count: 1
+  villain_checked_back: 0
+  better_hand_pct: 0.2136
+  worse_hand_pct: 0.7798
+
+--- HAND: MW-33 ---
+Situation ID: MW-33
+Hero cards: 8h8s
+Board: 8d7c3h
+Street: flop
+Hero position: BB
+Villain positions: CO
+Num opponents: 2
+Pot: 200.0
+To call: 40.0
+Facing bet: True
+Action history: CO opens, BTN calls, SB calls, BB (hero) calls. Flop 873r: CO bets 40, BTN calls, SB folds. Hero facing bet + call with set.
+
+Key features:
+  raw_equity: 0.9065
+  equity_vs_range: 0.9065
+  pot_odds: 0.1667
+  is_ip: 0
+  hand_category: 12
+  is_made_hand: 1
+  is_strong_made: 1
+  is_monster: 1
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.3000
+  spr: 0.50
+  villain_top_pair_plus_pct: 0.4416
+  villain_air_pct: 0.3823
+  villain_range_capped: 0
+  board_favour: -0.1416
+  num_callers_to_bet: 1
+  facing_raise: 0
+  villain_aggression_count: 1
+  villain_checked_back: 0
+  better_hand_pct: 0.0000
+  worse_hand_pct: 1.0000
+
+--- HAND: MW-50 ---
+Situation ID: MW-50
+Hero cards: JcTc
+Board: Js8h4d5c
+Street: turn
+Hero position: BB
+Villain positions: BTN
+Num opponents: 2
+Pot: 220.0
+To call: 90.0
+Facing bet: True
+Action history: CO opens, BTN calls, SB calls, BB (hero) calls. Flop J84r: CO bets, BTN raises, SB folds, BB calls. Turn 5: CO calls. BTN bets 90 into 220.
+
+Key features:
+  raw_equity: 0.3217
+  equity_vs_range: 0.3217
+  pot_odds: 0.2903
+  is_ip: 0
+  hand_category: 6
+  is_made_hand: 1
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.3800
+  spr: 0.45
+  villain_top_pair_plus_pct: 0.5203
+  villain_air_pct: 0.2592
+  villain_range_capped: 1
+  board_favour: -0.2203
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 1
+  villain_checked_back: 0
+  better_hand_pct: 0.3365
+  worse_hand_pct: 0.6494
+

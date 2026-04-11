@@ -1,0 +1,151 @@
+--- HAND: MW-37 ---
+Situation ID: MW-37
+Hero cards: QcJd
+Board: Qh7c2s
+Street: flop
+Hero position: BTN
+Villain positions: CO
+Num opponents: 2
+Pot: 45.0
+To call: 15.0
+Facing bet: True
+Action history: CO opens deep stack 200bb, BTN (hero) calls, BB calls. Flop Q72r (SPR ~15): BB checks, CO bets 15 into 45.
+
+Key features:
+  raw_equity: 0.4482
+  equity_vs_range: 0.4482
+  pot_odds: 0.2500
+  is_ip: 1
+  hand_category: 6
+  is_made_hand: 1
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.0000
+  spr: 2.22
+  villain_top_pair_plus_pct: 0.3861
+  villain_air_pct: 0.3098
+  villain_range_capped: 0
+  board_favour: -0.0861
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 1
+  villain_checked_back: 0
+  better_hand_pct: 0.1802
+  worse_hand_pct: 0.8139
+
+--- HAND: MW-38 ---
+Situation ID: MW-38
+Hero cards: AhJh
+Board: Kh8h3d
+Street: flop
+Hero position: BTN
+Villain positions: BB
+Num opponents: 2
+Pot: 30.0
+To call: 15.0
+Facing bet: True
+Action history: CO opens, BTN (hero) calls, BB calls. Flop Kh8h3d (SPR ~3): BB leads 15 into 30.
+
+Key features:
+  raw_equity: 0.4288
+  equity_vs_range: 0.4288
+  pot_odds: 0.3333
+  is_ip: 1
+  hand_category: 1
+  is_made_hand: 0
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 9
+  has_flush_draw: 1
+  has_straight_draw: 0
+  danger_score: 0.2500
+  spr: 3.33
+  villain_top_pair_plus_pct: 0.2701
+  villain_air_pct: 0.0304
+  villain_range_capped: 1
+  board_favour: 0.0299
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 0
+  villain_checked_back: 0
+  better_hand_pct: 0.7993
+  worse_hand_pct: 0.1506
+
+--- HAND: MW-39 ---
+Situation ID: MW-39
+Hero cards: AhJh
+Board: Kh8h3d
+Street: flop
+Hero position: BTN
+Villain positions: CO
+Num opponents: 2
+Pot: 90.0
+To call: 33.0
+Facing bet: True
+Action history: CO opens, BTN (hero) calls, BB calls deep. Flop Kh8h3d (SPR ~15): CO bets 33 into 90.
+
+Key features:
+  raw_equity: 0.4263
+  equity_vs_range: 0.4263
+  pot_odds: 0.2683
+  is_ip: 1
+  hand_category: 1
+  is_made_hand: 0
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 9
+  has_flush_draw: 1
+  has_straight_draw: 0
+  danger_score: 0.2500
+  spr: 1.11
+  villain_top_pair_plus_pct: 0.2667
+  villain_air_pct: 0.0604
+  villain_range_capped: 0
+  board_favour: 0.0333
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 1
+  villain_checked_back: 0
+  better_hand_pct: 0.6226
+  worse_hand_pct: 0.3208
+
+--- HAND: MW-41 ---
+Situation ID: MW-41
+Hero cards: QhTc
+Board: KsQd7cJh
+Street: turn
+Hero position: BTN
+Villain positions: CO
+Num opponents: 2
+Pot: 200.0
+To call: 60.0
+Facing bet: True
+Action history: CO opens, BTN (hero) calls, BB calls. Flop KQ7r: CO bets, hero calls, BB calls. Turn J: CO fires 60 into 200.
+
+Key features:
+  raw_equity: 0.2620
+  equity_vs_range: 0.2620
+  pot_odds: 0.2308
+  is_ip: 1
+  hand_category: 5
+  is_made_hand: 1
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 8
+  has_flush_draw: 0
+  has_straight_draw: 1
+  danger_score: 0.8800
+  spr: 0.50
+  villain_top_pair_plus_pct: 0.6325
+  villain_air_pct: 0.0436
+  villain_range_capped: 0
+  board_favour: -0.3325
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 2
+  villain_checked_back: 0
+  better_hand_pct: 0.4414
+  worse_hand_pct: 0.5518

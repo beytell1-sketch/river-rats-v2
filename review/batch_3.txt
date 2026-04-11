@@ -1,0 +1,151 @@
+--- HAND: MW-24 ---
+Situation ID: MW-24
+Hero cards: QsJd
+Board: Qc8d3s
+Street: flop
+Hero position: SB
+Villain positions: BTN
+Num opponents: 2
+Pot: 90.0
+To call: 0.0
+Facing bet: False
+Action history: BTN opens, SB (hero) calls, BB calls. Flop Q83r: hero first to act OOP.
+
+Key features:
+  raw_equity: 0.5863
+  equity_vs_range: 0.5863
+  pot_odds: 0.0000
+  is_ip: 0
+  hand_category: 6
+  is_made_hand: 1
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.0000
+  spr: 1.11
+  villain_top_pair_plus_pct: 0.1407
+  villain_air_pct: 0.4926
+  villain_range_capped: 0
+  board_favour: 0.1593
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 1
+  villain_checked_back: 0
+  better_hand_pct: 0.1004
+  worse_hand_pct: 0.8824
+
+--- HAND: MW-27 ---
+Situation ID: MW-27
+Hero cards: JhJc
+Board: 9d6c2h
+Street: flop
+Hero position: BTN
+Villain positions: BB
+Num opponents: 2
+Pot: 90.0
+To call: 0.0
+Facing bet: False
+Action history: CO opens, BTN (hero) calls, BB calls. Flop 962r: BB checks, CO checks, hero acts.
+
+Key features:
+  raw_equity: 0.4612
+  equity_vs_range: 0.4612
+  pot_odds: 0.0000
+  is_ip: 1
+  hand_category: 9
+  is_made_hand: 1
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.0000
+  spr: 1.11
+  villain_top_pair_plus_pct: 0.2313
+  villain_air_pct: 0.5102
+  villain_range_capped: 1
+  board_favour: 0.0687
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 0
+  villain_checked_back: 0
+  better_hand_pct: 0.1321
+  worse_hand_pct: 0.8622
+
+--- HAND: MW-28 ---
+Situation ID: MW-28
+Hero cards: JhJd
+Board: 9d6c2h
+Street: flop
+Hero position: SB
+Villain positions: BTN
+Num opponents: 2
+Pot: 90.0
+To call: 0.0
+Facing bet: False
+Action history: BTN opens, SB (hero) calls, BB calls. Flop 962r: hero first to act OOP.
+
+Key features:
+  raw_equity: 0.5797
+  equity_vs_range: 0.5797
+  pot_odds: 0.0000
+  is_ip: 0
+  hand_category: 9
+  is_made_hand: 1
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.0000
+  spr: 1.11
+  villain_top_pair_plus_pct: 0.2000
+  villain_air_pct: 0.5370
+  villain_range_capped: 0
+  board_favour: 0.1000
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 1
+  villain_checked_back: 0
+  better_hand_pct: 0.0764
+  worse_hand_pct: 0.9208
+
+--- HAND: MW-30 ---
+Situation ID: MW-30
+Hero cards: KcTh
+Board: KdJc6s
+Street: flop
+Hero position: BB
+Villain positions: CO
+Num opponents: 2
+Pot: 155.0
+To call: 35.0
+Facing bet: True
+Action history: CO opens, BTN calls, SB calls, BB (hero) calls. Flop KJ6r: CO bets 35, BTN calls, SB folds. Hero faces bet + call.
+
+Key features:
+  raw_equity: 0.4163
+  equity_vs_range: 0.4163
+  pot_odds: 0.1842
+  is_ip: 0
+  hand_category: 6
+  is_made_hand: 1
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.0000
+  spr: 0.65
+  villain_top_pair_plus_pct: 0.4140
+  villain_air_pct: 0.1527
+  villain_range_capped: 0
+  board_favour: -0.1140
+  num_callers_to_bet: 1
+  facing_raise: 0
+  villain_aggression_count: 1
+  villain_checked_back: 0
+  better_hand_pct: 0.2136
+  worse_hand_pct: 0.7798

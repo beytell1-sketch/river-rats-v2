@@ -1,0 +1,129 @@
+```json
+{
+  "situation_id": "d9208_BB_turn",
+  "action": "BET",
+  "confidence": "HIGH",
+  "reasoning": "Hero has A6 on A77Q board — two pair aces and sevens with 62% equity and 74% worse_hand_pct. Although OOP, villain_checked_back=1 means both opponents showed weakness on a prior street. The board is relatively dry (danger 0.23) and hero's two pair is strong enough to bet for value OOP against ranges that checked. SPR 1.25 means a bet nearly commits stacks, which is fine with this hand strength.",
+  "difficulty": 2,
+  "key_factors": ["strong_equity", "opponents_showed_weakness", "low_danger_board", "compressed_spr"],
+  "factor_conflicts": "OOP position argues for check, but 62% equity with both opponents checking back on a prior street plus low danger board means value betting overrides the OOP default.",
+  "alternatives_considered": ["CHECK: reasonable for pot control OOP, but with both opponents showing weakness and 74% worse hands, checking leaves too much value on the table at this SPR."]
+}
+```
+
+```json
+{
+  "situation_id": "d4775_BTN_turn",
+  "action": "BET",
+  "confidence": "HIGH",
+  "reasoning": "Hero has the nut flush (Ac5c on 8c6cKc3d) with 97.6% equity and 100% worse_hand_pct. IP with closing action, both opponents checked. Monster hand on a dangerous board (0.60 danger) that could produce a fourth club or pair the board on the river. Must bet to build the pot and protect against board-pairing outs. SPR 1.25 means this bet effectively commits stacks — ideal with the nuts.",
+  "difficulty": 1,
+  "key_factors": ["nut_hand", "ip_position", "must_protect_on_dangerous_board"],
+  "factor_conflicts": "None",
+  "alternatives_considered": ["CHECK (slowplay): rejected — board is dangerous with possible full house outs if board pairs, and 3-way slowplaying risks losing value or being outdrawn."]
+}
+```
+
+```json
+{
+  "situation_id": "d9989_BTN_turn",
+  "action": "BET",
+  "confidence": "HIGH",
+  "reasoning": "Hero has a flush (9cTc on Kc3c7dJc) with 87.7% equity and 97.6% worse_hand_pct. IP, both opponents checked, and the board is dangerous (0.60 danger) with possible higher flushes or full houses on the river. Must bet for value and protection. SPR 1.25 means this effectively commits stacks, which is correct with a flush. Only 2.4% better hands exist (higher flushes), and opponents have shown weakness by checking.",
+  "difficulty": 1,
+  "key_factors": ["near_nut_hand", "ip_position", "dangerous_board_requires_protection"],
+  "factor_conflicts": "None",
+  "alternatives_considered": ["CHECK: rejected — too dangerous to give free cards on a board where higher flushes or full houses can develop. Must extract value now."]
+}
+```
+
+```json
+{
+  "situation_id": "d4781_BTN_turn",
+  "action": "BET",
+  "confidence": "HIGH",
+  "reasoning": "Hero has a king-high flush (QhKh on 7hKs9h6h) — a monster with 86.3% equity and 98% worse_hand_pct. IP, both opponents checked. The board is extremely dangerous (0.75 danger) with a monotone heart board where any heart on river could change the dynamic. Villain_tp_plus is 51.6% indicating opponents have some strong holdings, but hero's flush dominates all non-Ah hands. Must bet to extract value and deny free cards at SPR 1.25.",
+  "difficulty": 1,
+  "key_factors": ["monster_flush", "ip_position", "very_dangerous_board", "compressed_spr"],
+  "factor_conflicts": "None",
+  "alternatives_considered": ["CHECK: rejected — monotone board is too dangerous to slowplay. If Ah comes on river, hero loses to ace-high flush. Must bet now."]
+}
+```
+
+```json
+{
+  "situation_id": "d3642_BTN_turn",
+  "action": "BET",
+  "confidence": "HIGH",
+  "reasoning": "Hero has a straight (7-high straight with 67 on 3654) — a monster with 86.1% equity and 89.3% worse_hand_pct. IP, both opponents checked. The board is extremely dangerous (0.88 danger) with four to a straight on board meaning many hands have straight draws or made straights. Must bet for value and protection at SPR 1.25. Hero's 7-high straight is strong but vulnerable to higher straights if an 8 comes.",
+  "difficulty": 1,
+  "key_factors": ["monster_straight", "ip_position", "extreme_danger_board", "compressed_spr"],
+  "factor_conflicts": "None",
+  "alternatives_considered": ["CHECK: rejected — board is extremely connected and dangerous. Free cards could easily make higher straights for opponents. Must protect and extract value."]
+}
+```
+
+```json
+{
+  "situation_id": "d4534_BB_turn",
+  "action": "BET",
+  "confidence": "HIGH",
+  "reasoning": "Hero has two pair (A8 on A825) with 87.1% equity and 97.3% worse_hand_pct. Although OOP, this is a strong made hand on a relatively dry board (danger 0.38). Both opponents checked back a prior street (villain_checked_back=1), showing weakness. With only 1.8% better hands and low villain air (10.6%), opponents likely have medium-strength hands that will call. SPR 1.25 means betting effectively commits — correct with two pair.",
+  "difficulty": 2,
+  "key_factors": ["strong_two_pair", "opponents_showed_weakness", "low_better_hand_pct", "compressed_spr"],
+  "factor_conflicts": "OOP argues for caution, but 87% equity with 97% worse hands and opponents showing weakness clearly overrides the position disadvantage.",
+  "alternatives_considered": ["CHECK: rejected — too strong to pot control with 87% equity. Opponents showed weakness, so hero must bet for value rather than risk a checked-through river."]
+}
+```
+
+```json
+{
+  "situation_id": "d1595_UTG_turn",
+  "action": "CHECK",
+  "confidence": "HIGH",
+  "reasoning": "Hero has QJo on 2c8c3sTs — no pair, just a gutshot straight draw (4 outs) with only 11.7% equity. OOP from UTG with 91.7% better hands in villain range. This is a weak hand with minimal equity that cannot profitably bluff into two opponents. Checking is the only option — a bluff would need both opponents to fold and 3-way fold equity is insufficient, especially OOP with a transparent barrel on a board that doesn't favour hero.",
+  "difficulty": 1,
+  "key_factors": ["very_low_equity", "oop_position", "no_fold_equity_3way", "weak_draw"],
+  "factor_conflicts": "None",
+  "alternatives_considered": ["BET: rejected — 11.7% equity, OOP, gutshot only. Pure bluff into two opponents is unprofitable 3-way."]
+}
+```
+
+```json
+{
+  "situation_id": "d7695_BTN_turn",
+  "action": "CHECK",
+  "confidence": "MEDIUM",
+  "reasoning": "Hero has AQo on Kh3c5s7h — no pair, no draw (draw_outs=0), only 16% equity on the turn. Despite being IP, hero has ace-high with 52% better hands in villain range. Villain_air is low (12.9%) meaning opponents' ranges have tightened by the turn. With no improvement path and low equity, betting would be a pure bluff into two opponents which is unprofitable 3-way. Check behind and hope to win at showdown with ace-high.",
+  "difficulty": 2,
+  "key_factors": ["low_equity", "no_draws", "low_villain_air", "unprofitable_bluff_3way"],
+  "factor_conflicts": "IP position could support a bluff, but low equity with no outs and low villain air means there isn't enough fold equity to justify a bet into two opponents.",
+  "alternatives_considered": ["BET (bluff): rejected — 16% equity, no draws, low villain air (12.9%). Need both opponents to fold and 3-way fold equity is insufficient for a pure bluff."]
+}
+```
+
+```json
+{
+  "situation_id": "d7695_BTN_flop",
+  "action": "CHECK",
+  "confidence": "MEDIUM",
+  "reasoning": "Hero has AQo on Kh3c5s — no pair, no draw, 23.6% equity. IP with closing action and high villain_air (53.2%). However, hero has no made hand and draw_outs=0. While the high air percentage and IP position might suggest a small c-bet, hero has no pair and no draw to fall back on if called. AQ has 6 overcard outs (three aces) but the king on board means only the ace helps, and the pipeline shows draw_outs=0. Checking preserves showdown value with ace-high and avoids bloating the pot with nothing.",
+  "difficulty": 2,
+  "key_factors": ["no_made_hand", "moderate_equity_from_overcards", "high_villain_air", "ip_position"],
+  "factor_conflicts": "IP + high villain air (53%) argues for betting, but no made hand and no draws means a bet is essentially a pure bluff. 3-way pure bluffs are unprofitable. Check behind to realize showdown equity with ace-high.",
+  "alternatives_considered": ["BET (small c-bet): tempting given 53% villain air and IP position, but hero has no pair and no draws. If called, hero has minimal equity going forward. Better to check and realize free equity with ace-high."]
+}
+```
+
+```json
+{
+  "situation_id": "d3642_BTN_flop",
+  "action": "BET",
+  "confidence": "HIGH",
+  "reasoning": "Hero has 7d6d on 3d6h5d — top pair plus flush draw plus open-ended straight draw (13 outs). 61.8% equity with 82.6% worse hands. IP with closing action, both opponents checked. The board is dangerous (0.65) favouring connected/suited hands which hero has. High villain_air (68%) means opponents mostly missed. Hero has a monster combo draw with a made hand — must bet for value and protection. Even if called, hero has massive equity with 13 additional outs.",
+  "difficulty": 1,
+  "key_factors": ["strong_combo_draw_plus_made_hand", "ip_position", "high_villain_air", "opponents_checked"],
+  "factor_conflicts": "None — all factors strongly agree. High equity, IP, combo draw, high villain air, opponents showed weakness.",
+  "alternatives_considered": ["CHECK: rejected — hero has top pair plus 13 draw outs with 82.6% worse hands. Checking wastes massive value and gives free cards on a dangerous board."]
+}
+```

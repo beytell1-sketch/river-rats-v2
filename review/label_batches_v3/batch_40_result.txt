@@ -1,0 +1,21 @@
+# Batch 40 Results
+
+{"situation_id":"BD_Board8_6h3d2h9cKs_h2","action":"CHECK","confidence":"MEDIUM","reasoning":"9h8h is second pair (19.1% equity, 54.3% worse hands) OOP on 6h3d2h9cKs with no facing bet. villain_air=0.371, villain_checked_back=1. Equity (19.1%) is weak for OOP leading. 54% of hands beat hero. Despite the checked_back signal, the equity is too low for OOP value. Check and realize equity cheaply."}
+
+{"situation_id":"BD_Board8_6h3d2h9cKs_h3","action":"CHECK","confidence":"HIGH","reasoning":"Ah4h has a straight draw (8 outs) but only 0.375% equity OOP on 6h3d2h9cKs. No made hand, 87.9% of hands beat hero. Essentially drawing dead to all of villain's range. Check and fold to any bet."}
+
+{"situation_id":"BD_Board8_6h3d2h9cKs_h4","action":"BET","confidence":"HIGH","reasoning":"KdJd is TPTK (53.9% equity, 73.6% worse hands) OOP on 6h3d2h9cKs with no facing bet. villain_air=0.371 is high, villain_checked_back=1 on prior street (showed weakness), villain_tp_plus=0.194 is low. With 53.9% equity and 73.6% worse hands against a weakened range (villain checked back) with high air, OOP value bet is correct. BET small."}
+
+{"situation_id":"BD_Board8_6h3d2h9cKs_h5","action":"BET","confidence":"HIGH","reasoning":"2c2d is a set (is_monster=1, 86.7% equity, 90.8% worse hands) OOP with no facing bet on 6h3d2h9cKs. Sets must bet for value and protection 3-way. 90.8% worse hands against villain's range. BET for value. villain_air=0.371 provides many callers."}
+
+{"situation_id":"BD_Board8_6h3d2h9cKs_h6","action":"CHECK","confidence":"HIGH","reasoning":"7h5h has a gutshot draw (4 outs) but 0% equity OOP — no made hand, no equity against villain's range. Complete miss. Check and fold to any bet."}
+
+{"situation_id":"BD_Board8_6h3d2h9cKs_h7","action":"CHECK","confidence":"MEDIUM","reasoning":"9dTd is second pair (20.5% equity, 57.1% worse hands) OOP with no facing bet on 6h3d2h9cKs. villain_air=0.371 is significant but equity (20.5%) OOP is below value-betting threshold. villain_checked_back=1. Marginal equity with OOP position = check."}
+
+{"situation_id":"BD_Board8_6h3d2h9cKs_h8","action":"CHECK","confidence":"HIGH","reasoning":"QcJc has a straight draw (4 outs) but 0% equity (raw_equity=0.0) OOP on 6h3d2h9cKs. No made hand, no effective equity against villain's range. 91.8% of hands beat hero. Check and fold."}
+
+{"situation_id":"BD_Board9_Qh9h4dTh_h1","action":"RAISE","confidence":"HIGH","reasoning":"AhKh has made the nut flush (hand_category=14, is_monster=1, 94.3% equity, 99.7% worse hands) OOP on Qh9h4dTh facing a bet (pot odds 20%). Nut flush is a monster per the RAISE RULE. OOP + 94.3% equity + 99.7% worse hands = maximum value raise. Build the pot against villain's flopped strong hands."}
+
+{"situation_id":"BD_Board9_Qh9h4dTh_h2","action":"RAISE","confidence":"HIGH","reasoning":"KhJh has made the straight flush or very strong flush (hand_category=17, is_monster=1, 100% equity, 100% worse hands) OOP on Qh9h4dTh facing a bet. The absolute nuts — 100% equity means no hand beats this. RAISE for maximum value. Per the RAISE RULE, this is unambiguously the nuts."}
+
+{"situation_id":"BD_Board9_Qh9h4dTh_h3","action":"CALL","confidence":"MEDIUM","reasoning":"QdJd has top pair + open-ended straight draw (35.4% equity, 8 outs) OOP on a two-tone board (Qh9h4dTh) facing a bet (pot odds 20%). villain_tp_plus=0.751 is very high (mostly flush hands). Equity (35.4%) exceeds pot odds. OOP with draw + pair. Villain range is very strong (many flushes/straights) — but calling the pot odds with top pair + straight draw is justified. CALL marginally."}

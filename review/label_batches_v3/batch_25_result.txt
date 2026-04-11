@@ -1,0 +1,19 @@
+{"situation_id":"FB_Board3_Td6d2s8h_h6","action":"CALL","confidence":"HIGH","reasoning":"Hero holds 8d7d on Td6d2s8h — second pair with flush draw + straight draw (draw_outs=13, has_flush_draw=1), equity=0.48, IP, pot odds=0.20. Strong combined equity well above pot odds; villain_checked_back=1, villain_air=0.30. Made hand + 13 draw outs; clear CALL."}
+
+{"situation_id":"FB_Board3_Td6d2s8h_h7","action":"RAISE","confidence":"HIGH","reasoning":"Hero holds 9c7c on Td6d2s8h — is_monster=1 (straight, hand_category=13), equity=0.92, worse_hand_pct=0.999. Monster hand IP with villain_checked_back=1 and opponent weakness. Must raise with the near-nuts to build pot; giving free cards to a two-opponent draw-possible board is costly with a nut straight."}
+
+{"situation_id":"FB_Board3_Td6d2s8h_h8","action":"FOLD","confidence":"MEDIUM","reasoning":"Hero holds Qd5d on Td6d2s8h — flush draw only (draw_outs=9, flush_draw_rank=12), no made hand, raw_equity=0.212, IP. Pot odds=0.20. Equity marginally clears pot odds but better_hand_pct=0.97 and worse_hand_pct=0.03 indicate this non-nut flush draw is at the bottom of the range with very little showdown value. Against two opponents 3-way, a non-nut flush draw with almost no made-hand equity folds."}
+
+{"situation_id":"FB_Board3_Td6d2s8h_h9","action":"CALL","confidence":"MEDIUM","reasoning":"Hero holds AcKc on Td6d2s8h — no made hand, no draw shown, raw_equity=0.192, IP, pot odds=0.20. Pipeline shows draw_outs=0 but AK has 6 overcard outs (hidden equity per Example 7). Accounting for overcards, true equity approaches 25%. IP position + implied odds when hitting TPTK supports a call; marginal but correct per the overcard framework."}
+
+{"situation_id":"FB_Board4_As7s3cKs9d_h1","action":"RAISE","confidence":"HIGH","reasoning":"Hero holds QsJs on As7s3cKs9d (river, street=2) — is_monster=1, nut flush (hand_category=14), raw_equity=1.0, worse_hand_pct=1.0. Perfect equity on the river facing a bet at SPR=0.33. Raise with the absolute nuts to get maximum value; all money going in is correct."}
+
+{"situation_id":"FB_Board4_As7s3cKs9d_h2","action":"RAISE","confidence":"HIGH","reasoning":"Hero holds Ts8s on As7s3cKs9d — is_strong_made=1, hand_category=14 (flush), equity=0.985, worse_hand_pct=0.993. Near-nut flush facing a bet at SPR=0.33. Raise — hand_category=14 and equity=0.985 puts this in the monster/near-monster tier; stacks are effectively committed at this SPR."}
+
+{"situation_id":"FB_Board4_As7s3cKs9d_h3","action":"CALL","confidence":"HIGH","reasoning":"Hero holds AdQd on As7s3cKs9d — two pair (hand_category=7, is_made_hand=1), equity=0.34, IP, pot odds=0.25. Villain_range_capped=1, villain_air=0.22. Equity above pot odds with a strong made hand; is_monster=0 so no raise. CALL with top two pair at SPR=0.33."}
+
+{"situation_id":"FB_Board4_As7s3cKs9d_h4","action":"CALL","confidence":"HIGH","reasoning":"Hero holds AdQs on As7s3cKs9d — two pair (hand_category=7), equity=0.37, IP, pot odds=0.25. Flush_block_pct=0.14 provides modest blocker value. Similar to h3 — strong two pair, equity above pot odds, call."}
+
+{"situation_id":"FB_Board4_As7s3cKs9d_h5","action":"FOLD","confidence":"MEDIUM","reasoning":"Hero holds KdQd on As7s3cKs9d — second pair (hand_category=5), raw_equity=0.186, IP, pot odds=0.25. Villain_tp_plus=0.66 on a board with two spades and an ace — betting range is strong. Equity=0.186 is below pot odds; fold against a condensed value range."}
+
+{"situation_id":"FB_Board4_As7s3cKs9d_h6","action":"CALL","confidence":"MEDIUM","reasoning":"Hero holds KhQs on As7s3cKs9d — second pair (hand_category=5), equity=0.195, IP, pot odds=0.25. Flush_block_pct=0.14 (Qs blocks some flush combos). Equity just below pot odds but the partial flush blocker and IP position provide marginal additional value. Very close spot; CALL is marginal, FOLD is also defensible."}

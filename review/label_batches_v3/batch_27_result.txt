@@ -1,0 +1,19 @@
+{"situation_id":"FB_Board5_8h5h2dQhJc_h8","action":"CHECK","confidence":"HIGH","reasoning":"Hero holds KdTd on 8h5h2dQhJc — gutshot only (draw_outs=4), no made hand, raw_equity=0.083, OOP. Villain_aggression=3, villain_tp_plus=0.48. No showdown value, equity well below any calling threshold; check and fold to the expected villain bet."}
+
+{"situation_id":"FB_Board5_8h5h2dQhJc_h9","action":"CHECK","confidence":"MEDIUM","reasoning":"Hero holds 5d4d on 8h5h2dQhJc — second pair (hand_category=5), equity=0.352, OOP. Villain_aggression=3 signals a narrow strong range; villain_tp_plus=0.48. With OOP position and marginal equity against a multi-street bettor, check for pot control and reassess — do not bet second pair into a 3-barrel villain."}
+
+{"situation_id":"OC_Board1_9c6h3d_h1","action":"CALL","confidence":"MEDIUM","reasoning":"Hero holds AhKh on 9c6h3d (flop) — no made hand but 6 overcard outs, raw_equity=0.283, IP, pot odds=0.25. Per Example 7 overcard framework, AK has hidden equity not in features; true equity approaches 30%+. IP position + villain_air=0.37 + villain_aggression=1 (single bet). Marginal call with AK overcards is standard."}
+
+{"situation_id":"OC_Board1_9c6h3d_h2","action":"FOLD","confidence":"MEDIUM","reasoning":"Hero holds AhQd on 9c6h3d — no made hand, no draws, raw_equity=0.170, IP. Pot odds=0.25; AQ has 6 overcard outs but Q is a weaker overcard on a 9-high board vs AK. Equity=0.17 below pot odds even adjusting for overcards; villain_aggression=1 but villain_tp_plus=0.38 means the betting range includes many hands that dominate AQ. Fold."}
+
+{"situation_id":"OC_Board1_9c6h3d_h3","action":"FOLD","confidence":"HIGH","reasoning":"Hero holds KhJd on 9c6h3d — no made hand, no draws, raw_equity=0.134, IP. 6 overcard outs but K and J are weaker on a low board. Better_hand_pct=0.75, equity below pot odds even with overcards. Fold."}
+
+{"situation_id":"OC_Board1_9c6h3d_h4","action":"FOLD","confidence":"HIGH","reasoning":"Hero holds Ah8c on 9c6h3d — no made hand, 3 overcard outs (only A), raw_equity=0.142, IP. Pot odds=0.25; equity below threshold even accounting for ace overcard. Fold."}
+
+{"situation_id":"OC_Board1_9c6h3d_h5","action":"FOLD","confidence":"HIGH","reasoning":"Hero holds Kh5c on 9c6h3d — no made hand, 3 overcard outs (K only), raw_equity=0.135, IP. Equity below pot odds with minimal improvement path. Fold."}
+
+{"situation_id":"OC_Board1_9c6h3d_h6","action":"FOLD","confidence":"MEDIUM","reasoning":"Hero holds Th8h on 9c6h3d — gutshot (draw_outs=4), raw_equity=0.268, IP. Pot odds=0.25; equity just above odds, but gutshot only with no showdown value and better_hand_pct=0.96. Against 3-way 36% fold equity, gutshots barely meet threshold. Very close but lean fold vs two opponents 3-way."}
+
+{"situation_id":"OC_Board1_9c6h3d_h7","action":"CALL","confidence":"MEDIUM","reasoning":"Hero holds 7h5h on 9c6h3d — open-ended straight draw (draw_outs=4... note: 7-high on 9-6-3 = likely double-belly buster or gutshot), raw_equity=0.391, IP. Pot odds=0.25, equity well above. With 39% equity vs 25% pot odds IP, this draw has sufficient equity to call despite 3-way dynamics."}
+
+{"situation_id":"OC_Board1_9c6h3d_h8","action":"FOLD","confidence":"HIGH","reasoning":"Hero holds 4c2c on 9c6h3d — gutshot (draw_outs=4) but raw_equity=0.243, better_hand_pct=1.0 meaning hero beats literally nothing on the current board. Facing a bet 3-way with no pair and a low-rank draw; fold."}
