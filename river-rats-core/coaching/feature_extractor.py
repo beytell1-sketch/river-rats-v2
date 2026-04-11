@@ -1031,6 +1031,11 @@ FEATURE_COLUMNS = [
     'villain_checked_back', 'villain_call_count',
     # Step 8: multiway context
     'num_opponents',
+    # Step 10: promoted range-board features (v9)
+    'villain_top_pair_plus_pct', 'villain_draw_pct', 'villain_air_pct',
+    'villain_range_capped', 'board_favour',
+    # Step 11: current-street action features (v9)
+    'num_callers_to_bet', 'facing_raise',
 ]
 
 LABEL_COLUMN = 'action'
@@ -1251,6 +1256,18 @@ def extract_all_features(hand: Dict) -> Dict:
         opener_pos=hand.get('_opener_position', None),
     )
     features.update(range_feats)
+
+    # Step 10: Promote range-board features from metadata to model features
+    # These keep their _-prefixed copies for the teaching pipeline (SituationDescriber).
+    features[F.VILLAIN_TOP_PAIR_PLUS_PCT] = features.get('_villain_top_pair_plus_pct', 0.0)
+    features[F.VILLAIN_DRAW_PCT] = features.get('_villain_draw_pct', 0.0)
+    features[F.VILLAIN_AIR_PCT] = features.get('_villain_air_pct', 0.0)
+    features[F.VILLAIN_RANGE_CAPPED] = features.get('_villain_range_capped', 0)
+    features[F.BOARD_FAVOUR] = features.get('_board_favour', 0.0)
+
+    # Step 11: Current-street action features (new for v9)
+    features[F.NUM_CALLERS_TO_BET] = hand.get('_num_callers_to_bet', 0)
+    features[F.FACING_RAISE] = hand.get('_facing_raise', 0)
 
     return features
 

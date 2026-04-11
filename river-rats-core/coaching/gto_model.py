@@ -44,9 +44,15 @@ FEATURE_COLUMNS = (
     "is_3bet_pot", "villain_aggression_count",
     "villain_checked_back", "villain_call_count",
     "num_opponents",
+    # v9 features (38→45): range composition + current-street action
+    "villain_top_pair_plus_pct", "villain_draw_pct", "villain_air_pct",
+    "villain_range_capped", "board_favour",
+    "num_callers_to_bet", "facing_raise",
+    # v9 features (45->48): blocker + outs + improvement
+    "flush_block_pct", "overcard_outs", "improvement_probability",
 )
 
-N_FEATURES = len(FEATURE_COLUMNS)  # 38
+N_FEATURES = len(FEATURE_COLUMNS)  # 48
 N_CLASSES = len(ACTION_CLASSES)     # 5
 
 
@@ -86,6 +92,11 @@ class GtoOracle:
         self._model = xgb.XGBClassifier()
         self._model.load_model(model_path)
 
+        # Auto-detect feature width for backwards compatibility (v8=38, v9=45)
+        self._n_features = getattr(
+            self._model, 'n_features_in_', len(FEATURE_COLUMNS)
+        )
+
         # Validate
         assert self._model.n_classes_ == N_CLASSES, (
             f"Model has {self._model.n_classes_} classes, expected {N_CLASSES}"
@@ -96,11 +107,16 @@ class GtoOracle:
         Predict action for a single hand.
 
         Args:
-            features: numpy array of shape (37,) or (1, 37)
+            features: numpy array of shape (N,) or (1, N) where N matches model width.
 
         Returns:
             OraclePrediction with action, confidence, and probabilities.
         """
+        # Slice to model's expected width (v8=38, v9=45)
+        if features.ndim == 1:
+            features = features[:self._n_features]
+        else:
+            features = features[:, :self._n_features]
         X = self._ensure_2d(features)
         probs = self._model.predict_proba(X)[0]
         action_idx = int(np.argmax(probs))
@@ -120,12 +136,13 @@ class GtoOracle:
         Predict actions for multiple hands.
 
         Args:
-            features: numpy array of shape (n_hands, 37)
+            features: numpy array of shape (n_hands, N) where N >= model width.
 
         Returns:
             List of OraclePrediction.
         """
         X = features if features.ndim == 2 else features.reshape(1, -1)
+        X = X[:, :self._n_features]
         all_probs = self._model.predict_proba(X)
         results = []
         for i in range(X.shape[0]):
