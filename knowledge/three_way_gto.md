@@ -1,7 +1,7 @@
 # 3-Way Postflop GTO Knowledge Base
 
-**Version:** 1.2
-**Date:** 7 April 2026
+**Version:** 1.3
+**Date:** 10 April 2026
 **Purpose:** Reference document for the 3-way labelling agent.
 Contains quantified facts (as reasoning inputs), a decision
 framework, preflop range construction, board texture interactions,
@@ -143,6 +143,91 @@ worse_hand_pct (a suitless metric) as a raise signal is wrong.
 Blockers and backdoor equity drive raise frequency, not raw hand
 strength.
 
+### 1.9 Preflop geometry vs postflop composition — do not collapse them
+
+There are two distinct signals the labelling agent must not conflate:
+
+**Preflop structural geometry.** A stable fact about villain's
+preflop action sequence. Example: "villain cold-called a CO open in
+a non-3-bet pot" implies villain's preflop range excludes AA / KK /
+QQ / AKs by construction (those hands 3-bet preflop). This is a
+statement about which hand combos were *allowed into the range in
+the first place*, not about which combos remain after bets and
+calls on the flop.
+
+**Postflop composition.** The actual decomposition of villain's
+*current continuing range* on the current street, measured by three
+features from the 45-feature pipeline:
+
+- `villain_top_pair_plus_pct` — fraction of villain's continuing
+  range that is top pair or better (strength signal).
+- `villain_draw_pct` — fraction that is draws without made-hand
+  equity yet (equity-with-fold-potential signal).
+- `villain_air_pct` — fraction that is air with no meaningful
+  equity (fold-equity signal).
+
+These three features sum to ≤ 1 (hands outside the three buckets
+— e.g. low pocket pairs without draws on a high board — are
+distributed across the remainder).
+
+**The trap.** Using preflop structural geometry as a postflop
+strength proxy underestimates TP+ density in a cold-caller's
+*actual continuing range* on boards that smash the caller's flats.
+MW-30 is the canonical example: a BB hero holding KcTh on KdJc6s
+facing CO bet + BTN cold-call. BTN's preflop range excludes
+AA/KK/QQ/AKs by construction — but that is irrelevant to the
+postflop strength question. What matters is what BTN's *continuing
+range after calling CO's flop bet* actually contains. The real
+feature row for this hand (source:
+`review/all_557_situations.jsonl` line 120, CALL_Board5_KdJc6s_h5)
+shows `villain_top_pair_plus_pct = 0.3174`,
+`villain_draw_pct = 0.0878`, `villain_air_pct = 0.1856` — roughly
+32% strong, 9% draws, 19% air, and ~40% weaker made hands and
+pocket pairs in the remainder. The continuing range is not "all
+better Kx"; it contains significant worse holdings that KcTh beats.
+Hero's 43.2% raw equity vs 18.4% pot odds reflects that
+composition. Reasoning from "BTN's preflop range is structurally
+narrower than CO's" to "therefore KcTh is dominated" collapses the
+two signals and produces the over-fold that the MW-30 solver
+correction exposed (see feedback_solver_findings.md finding 6 and
+Worked Example 3 below).
+
+**Rule.** Reason postflop decisions from the composition triple as
+the **primary** strength signal. Use preflop action sequence only
+to inform what the preflop range looked like — never substitute it
+for the current-street composition.
+
+**Threshold buckets (provisional — adopted from teaching).** The
+teaching-side L3 renderer
+(`river-rats-teaching/interface/l3_renderer.py`,
+`_villain_range_sentence` at line 317+) characterizes villain range
+shape using these buckets:
+
+| `villain_top_pair_plus_pct` | Shape |
+|---|---|
+| ≥ 60% | Heavy with strong hands |
+| ≥ 40% | Meaningful value density |
+| ≥ 20% | Some value but mostly weaker holdings |
+| < 20% | Thin on value |
+
+The KB adopts the same buckets so teaching and labelling share one
+vocabulary. **Thresholds are provisional pending calibration
+against solver data** — logged as TODO for the next
+feature-importance audit (see `feedback_solver_findings.md`). If
+calibration shifts the boundaries, both this section and
+`l3_renderer.py` must be updated together.
+
+**Cross-reference.** This section replaces the prior use of
+`villain_range_capped` as a postflop strength indicator in the KB.
+The feature remains in the pipeline for continuity with the
+v9-3way-v2.2 model; no KB-level retraining decision is being made
+in this revision. Whether to drop `villain_range_capped` from the
+feature vector in a future training round is a model-training
+decision, tracked against the next feature-importance audit in
+`feedback_solver_findings.md`. The labelling agent must not treat
+it as a postflop signal. See DO NOT Rule #8 for the operative
+instruction.
+
 ---
 
 ## 2. Decision Framework
@@ -172,20 +257,67 @@ align) or a CHECK (if they don't).
 
 ### Factor 3: Range Composition
 
-The 45-feature pipeline provides:
-- `villain_top_pair_plus_pct`: high = villain range is strong
-- `villain_air_pct`: high = villain range is weak
-- `villain_range_capped`: 1 = no premiums in villain range
-- `board_favour`: positive = board favours hero's range
+Postflop strength is measured directly from the composition triple,
+NOT from preflop structural labels. The 45-feature pipeline
+provides:
 
-These features encode the preflop construction → postflop range
-interaction. When villain_air_pct is high, thin value bets become
-profitable. When villain_tp_plus_pct is high, pot control is
-correct even with strong hands.
+- `villain_top_pair_plus_pct` — fraction of villain's continuing
+  range that is top pair or better. **Primary postflop strength
+  signal.** Bucket thresholds in Section 1.9 (≥60 / ≥40 / ≥20 / <20).
+- `villain_draw_pct` — fraction that is draws without made-hand
+  equity yet. Signals equity-with-fold-potential in villain's range.
+- `villain_air_pct` — fraction that is air with no meaningful
+  equity. High air supports thin value bets.
+- `board_favour` — positive when board favours hero's range,
+  negative when it favours villain's.
 
-**Critical: the two opponents are NOT symmetric.** The cold-caller
-(BTN flat) is capped — no AA/KK/QQ/AKs. The blind defender (BB)
-is wide but uncapped via squeeze. Reasoning must distinguish them.
+**How to use the triple.** Read `villain_top_pair_plus_pct` first
+against the Section 1.9 buckets. A range with ≥40% TP+ has
+meaningful value density regardless of preflop structural labels.
+A range with <20% TP+ is thin on value and supports thin value
+betting. High `villain_air_pct` (≥30%) adds fold-equity support
+for thin value and for nut-draw semi-bluffs with blockers (see
+Section 1.7). High `villain_draw_pct` means many of villain's
+continuing combos still need to improve, which supports protection
+betting with vulnerable made hands.
+
+**Feature `villain_range_capped` — present in the pipeline but not
+a postflop signal.** The pipeline also exposes
+`villain_range_capped` (see
+`river-rats-core/feature_extractor.py:1195-1197`). It is computed
+as `int(not is_3bet_pot and villain_is_defender)` — a pure
+preflop-action-geometry bit that flags whether villain was the
+preflop caller in a non-3-bet pot. It encodes "which hands were
+structurally *allowed into* the preflop range", not "which hands
+are *currently in* the continuing range after flop/turn/river
+action". Do not use it as a postflop strength signal. If the
+composition triple and `villain_range_capped` appear to
+contradict each other, **the composition triple is authoritative**
+— it is a direct measurement of the current range; the binary is
+a preflop structural label. See Section 1.9 and DO NOT Rule #8.
+
+**The two opponents are NOT symmetric — expressed compositionally.**
+The cold-caller (BTN flat) and the blind defender (BB) have
+different preflop range constructions:
+
+- **Cold-caller (BTN flat vs CO open):** Preflop range excludes
+  AA / KK / QQ / AKs by construction (those 3-bet). Still contains
+  22-TT for set-mining, suited broadway (KTs/QJs/JTs), suited
+  connectors (76s-T9s), and suited aces (A2s-A5s). On boards that
+  smash these holdings (connected middling, two-tone middling),
+  the postflop composition can still be heavy with TP+ and draws
+  even without any premium overpairs.
+- **Blind defender (BB vs CO+1 caller):** Preflop range is wider
+  (speculative suited/connected, small pairs, some broadway) and
+  includes some premium combos at low frequency (BB mixes flats
+  and squeezes with AA/KK). Very wide flop range, high air
+  fraction, but carries strong combos on connecting boards.
+
+When reasoning about which opponent is dominating which part of
+the action, reason from their *actual composition triple*, not
+from the preflop construction. The preflop construction tells you
+how the composition triple was generated; it does not substitute
+for it. See Section 1.9.
 
 ### Factor 4: Board Texture
 
@@ -255,32 +387,63 @@ with worse trips.)
 
 ## 3. Preflop Construction → Postflop Ranges
 
+Preflop action sequence determines which combos were structurally
+allowed into each player's range. That is a *generator* for the
+postflop composition triple (Section 1.9, Factor 3) — it is not a
+substitute for it. This section describes the generators; the
+labelling agent still reasons postflop decisions from the actual
+composition triple.
+
 ### CO open / BTN flat / BB defend (most common 3-way)
 
-- **CO opens ~27-28%:** Linear, uncapped. All premiums, strong
-  broadways, suited connectors, suited aces, medium pairs.
-- **BTN flats ~5%:** Condensed, capped. 22-TT, suited connectors
-  (76s-JTs), suited aces (A2s-A5s), some KTs/QJs. Missing AA/KK/
-  QQ/AKs (those 3-bet). Hits most boards with pairs and draws but
-  can't make the nuts as often as CO.
+- **CO opens ~27-28%:** Linear range. Includes all premiums
+  (AA-QQ, AKs/AKo), strong broadways, suited connectors, suited
+  aces, medium pairs. On any flop, CO's continuing range will
+  *contain* some AA/KK/AK combos — those don't have to be
+  inferred from the action.
+- **BTN flats ~5%:** Condensed range. Excludes AA / KK / QQ / AKs
+  by construction (those 3-bet). Contains 22-TT, suited connectors
+  (76s-JTs), suited aces (A2s-A5s), some KTs/QJs. On connecting
+  middling boards, the postflop composition can still show
+  meaningful TP+ density even though the preflop range contained
+  no premium overpairs — middle pairs, top-pair-with-kicker, and
+  sets fill in. On dry high-card boards, the composition is air-
+  and draw-heavy.
 - **BB overcalls wide:** Speculative suited/connected hands, small
-  pairs. Needs ~19% equity. Capped (premiums would squeeze). OOP
-  reduces EQR, so BB is selective despite good odds.
+  pairs, some broadway. Needs ~19% equity to defend. Premium
+  hands (AA/KK/AKs) squeeze rather than flat, so the BB flat
+  range excludes them at high frequency (BB mixes a squeeze-flat
+  fraction but the headline construction is still "wide without
+  premiums"). OOP reduces EQR, so BB is selective despite good
+  odds. Very high preflop air, strong composition on low
+  connecting boards, thin composition on high dry boards.
 
 ### HJ open / CO flat / BB defend
 
-- **HJ opens tighter (~22-24%):** Stronger range than CO. More
-  overpairs, more AK/AQ.
-- **CO flats ~4-6%:** Even more capped than BTN vs CO. Very
-  condensed.
-- **BB:** Similar to above but facing a stronger open.
+- **HJ opens tighter (~22-24%):** Stronger range than CO — more
+  overpairs, more AK/AQ, fewer speculative suited connectors.
+- **CO flats ~4-6%:** Excludes AA / KK / QQ / AKs / AQs and most
+  broadway combos that would 3-bet over HJ. Very condensed. Even
+  narrower than BTN vs CO. Postflop composition is similarly
+  pair-and-draw-driven on connecting boards.
+- **BB:** Similar to above but facing a stronger open — tighter
+  defend range, lower preflop air.
 
 ### Key insight for labelling
 
-The opener's range width determines villain_air_pct. A CO opener
-has more air than an HJ opener. The cold-caller is always capped.
-The BB is always wide. When the features show high villain_air_pct,
-it reflects a wider opening range, which supports thinner value.
+The opener's preflop range width drives the postflop composition
+triple, particularly `villain_air_pct`. A CO opener's continuing
+range has more air than an HJ opener's on the same flop, because
+the CO preflop range was wider to begin with. The cold-caller's
+preflop range always excludes the premium 3-bet holdings by
+construction, but its postflop continuing range can still be
+dense with value on boards that smash the caller's flats (middle
+pairs, connected suited combos). The BB's preflop range is
+always wide and carries the highest baseline air fraction. When
+the features show high `villain_air_pct`, it reflects the combined
+effect of a wide opening/defend range and a board that missed it
+— read the composition triple directly rather than inferring
+strength from the preflop role.
 
 ---
 
@@ -297,13 +460,14 @@ weighed → conflicts resolved → action chosen.
 **Factors:**
 1. Equity: ~52% (marginal 3-way for top pair second kicker)
 2. Position: OOP — hero acts first, worst position
-3. Range composition: villain_air_pct ~0.25 (moderate), BTN is
-   capped but CO is uncapped with AK/KK in range
+3. Range composition: villain_air_pct ~0.25 (moderate), BTN flat
+   range excludes AA/KK/QQ/AKs, but CO open range still
+   contains AK and KK
 4. Board: dry, rainbow, low danger — favours raiser (CO)
 5. Action: no prior aggression this street
 
 **Factor interaction:** Equity suggests possible thin value. But
-OOP + board favouring CO + CO's uncapped range (has AK, KK that
+OOP + board favouring CO + CO's open range containing AK / KK (which
 dominate KQ) = too much risk. Betting folds out worse (BTN's
 middle pairs) and gets called/raised by better (CO's AK, KK).
 
@@ -385,6 +549,72 @@ decision from CALL to FOLD. Reserve the "bet-and-call = fold" pattern
 for hands where equity is genuinely close to break-even AND hero's
 specific holding is dominated (e.g., bottom pair, no draw).
 
+**Composition addendum (v1.3, real feature row):** The feature row
+for KcTh on KdJc6s BB vs CO bet + BTN call
+(`review/all_557_situations.jsonl` line 120,
+`_situation_id = CALL_Board5_KdJc6s_h5`) shows the continuing-range
+composition the old "capped + bet+call → fold" reasoning collapsed:
+
+- `villain_top_pair_plus_pct` = **0.3174** (≥20% bucket per
+  Section 1.9 — "some value but mostly weaker holdings"; nowhere
+  near the ≥60% "heavy with strong hands" threshold)
+- `villain_draw_pct` = **0.0878**
+- `villain_air_pct` = **0.1856**
+- `worse_hand_pct` = **0.8043** (KcTh beats roughly 80% of the
+  partition sample)
+- `raw_equity` = **0.4323**, `pot_odds` = **0.1842**,
+  `equity_margin` = **+0.2480** (equity surplus of ~25 percentage
+  points over pot odds)
+- `villain_range_capped` = **0** (note: the pipeline's
+  `range_capped` bit is 0 here because the *villain*
+  captured by the features is CO — the bettor/opener — not the
+  BTN cold-caller. This is a structural quirk of the single-villain
+  feature extraction, and it is a further reason not to treat the
+  bit as a postflop strength signal: it depends on *which*
+  opponent the feature pipeline happened to index, not on the
+  overall range the hero is facing.)
+
+Reading from the composition triple: the continuing range after
+bet+call is ~32% top pair or better, ~9% draws, ~19% air, with
+~40% of the range in weaker made hands and pocket pairs across
+the remainder. It is **not** "100% better Kx". KcTh dominates a
+large portion of the remainder (middle pairs, weaker Kx that BTN
+flats preflop, some pocket pairs, missed broadways). Hero's 43%
+raw equity against a combined-villain sample reflects exactly
+this composition. The "~40% weaker made hands and pocket pairs"
+characterisation follows directly from `extract_range_composition`
+in `river-rats-core/feature_extractor.py`: the function classifies
+each combo via `classify_hand` and sums only the `nuts`,
+`strong_value`, `good_value` (TP+), `draw`, `air`, and `bluff`
+buckets — `medium_made` and `weak_made` fall through into the
+unclassified remainder (see `feature_extractor.py` line 1173 and
+the `_TOP_PAIR_PLUS` / `_DRAW_CATEGORIES` / `_AIR_CATEGORIES`
+constants at lines 1088-1092). `medium_made` and `weak_made`
+correspond exactly to top-pair-weak-kicker, second/middle pair,
+underpairs (pocket pairs below the top board card), and bottom
+pair (see `range_narrowing.py` lines 213-240), which is the
+"weaker made hands and pocket pairs" bucket.
+
+The prior v1.2 reasoning — "capped BTN flat + bet+call → KT is
+dominated" — substituted a preflop structural label
+("capped") for the actual postflop composition. The composition
+triple shows villain's *continuing* range is in the ≥20% TP+
+bucket, not the ≥60% bucket the old reasoning implicitly assumed.
+The solver correction (MW-30 = pure CALL for all KT combos; see
+`feedback_solver_findings.md` finding 6 and
+`reference_corrections.md`) is exactly what the composition
+triple would predict if read correctly.
+
+**Generalisation.** When facing bet+call with a made hand that
+has equity well above pot odds (≥20pp margin), read the
+composition triple before folding. If `villain_top_pair_plus_pct`
+is in the <40% buckets (i.e. NOT "heavy with strong hands") and
+hero's hand dominates some portion of the continuing range, the
+bet+call signal alone is insufficient to flip the decision to
+fold. Reserve "bet+call = fold" for composition-supported cases:
+top pair weak kicker against a ≥60% TP+ continuing range on a
+board where hero's kicker is outkicked in the remainder.
+
 ### Example 4: Must bet monster — don't slowplay 3-way
 
 **Setup:** Hero holds 8c 8h on Jd 8s 5c. BTN (IP), 2 opponents.
@@ -418,8 +648,9 @@ Pot 90. First to act.
 **Factors:**
 1. Equity: ~36% (flush draw + gutshot = 12 outs)
 2. Position: OOP — worst position for semi-bluffing
-3. Range composition: CO opened (uncapped), BTN called (capped
-   but connected range hits middle boards)
+3. Range composition: CO's open range contains premiums (AA-QQ, AK),
+   BTN's cold-call range excludes those premiums by construction
+   but connected range hits middle boards
 4. Board: two-tone — flush draw is visible to opponents
 5. Action: hero is first to act
 
@@ -444,22 +675,36 @@ line.
 **Factors:**
 1. Equity: ~60% (top pair second kicker — strong for 3-way)
 2. Position: OOP — normally argues for pot control
-3. Range composition: villain_air_pct ~0.49 (very high), villain
-   range capped (BTN flat missing premiums), worse_hand_pct 88%
+3. Range composition: `villain_air_pct` = **0.5222** (very high —
+   BTN's CO-open range is heavily skewed toward unpaired broadways
+   and suited connectors that miss a Q-8-3 rainbow flop),
+   `villain_top_pair_plus_pct` = **0.1222** (<20% bucket per
+   Section 1.9 — "thin on value"),
+   `villain_draw_pct` = **0.0000** (rainbow, disconnected — no
+   flush draws, one gutshot-only range fraction absorbed into air),
+   `worse_hand_pct` = **0.9164** (hero's QJ is above ~92% of
+   villain's continuing combos), `board_favour` = **+0.1778**
+   (positive — board favours hero's range)
 4. Board: dry, rainbow, danger 0.00 — static, equity stable
 5. Action: hero is first to act, no aggression to respect
 
 **Factor interaction:** OOP position normally defaults to CHECK for
-pot control. But this hand has 60% equity with 88% worse hands on
-a dry board — far above the typical OOP pot-control threshold.
-The key distinction: "AA checks 80% OOP on dry board" applies to
-3-bet pots with deep SPR where the opponent's range is strong and
-uncapped. Here, in a single-raised pot, villain ranges are weaker
-(high air, capped) and hero's TPSK is near the top of hero's own
-range. When equity is 60%+, worse_hand_pct is 85%+, and the board
-is dry/static, the OOP penalty is insufficient to override the
-value from betting. A small bet (25-33% pot) gets called by worse
-pairs, Jx, pocket pairs, and some draws.
+pot control. But this hand has ~66% raw equity with ~92% of
+villain's continuing range worse, on a dry rainbow board — far
+above the typical OOP pot-control threshold. The key distinction:
+"AA checks 80% OOP on dry board" applies to 3-bet pots with deep
+SPR where the opponent's composition is in the ≥60% TP+ bucket
+and contains AA/KK/AK. Here, in a single-raised pot, the
+composition triple shows villain is compositionally thin on value
+(`villain_top_pair_plus_pct = 0.1222` — the <20% "thin on value"
+bucket; `villain_air_pct = 0.5222` — over half the range is air)
+and hero's TPSK is near the top of hero's own range
+(`hero_range_percentile = 0.7164`). When `raw_equity` is ~65%+,
+`worse_hand_pct` is ≥90%, `villain_top_pair_plus_pct` is in the
+<20% bucket, and the board is dry and static (`danger_score =
+0.0`), the OOP penalty is insufficient to override the value from
+betting. A small bet (25-33% pot) gets called by worse Qx, Jx,
+pocket pairs, and the few draws in the air fraction.
 
 **Action:** BET
 **Confidence:** HIGH
@@ -469,10 +714,12 @@ hands and a dry board, hero's equity is stable enough that OOP
 risk is minimal.
 
 **When does OOP default to CHECK instead?** When equity is marginal
-(< 50%), villain range is strong/uncapped, or the board is dynamic.
+(< 50%), `villain_top_pair_plus_pct` is in the ≥40% or ≥60% bucket
+(meaningful value density or heavier), or the board is dynamic.
 The AA-checks-80% reference data applies to 3-bet pots where the
-opponent has AA/KK/AK — not to single-raised pots against capped
-ranges with high air.
+opponent's continuing range contains AA / KK / AK at high frequency
+(a ≥60% TP+ composition) — not to single-raised pots where the
+composition triple shows a high-air, low-TP+ range like Example 6.
 
 ### Example 7: Overcard equity — AK on a missed board
 
@@ -483,7 +730,8 @@ vector.
 **Factors:**
 1. Equity: ~25% (no pair, no flush/straight draw per pipeline)
 2. Position: OOP — unfavourable
-3. Range composition: CO uncapped, villain_tp_plus ~0.47 (strong)
+3. Range composition: CO's open range contains premiums (AA/KK/AK),
+   villain_top_pair_plus_pct ~0.47 (strong — ≥40% bucket per Section 1.9)
 4. Board: semi-wet (two diamonds), danger 0.25
 5. Action: facing a standard c-bet from CO
 
@@ -644,11 +892,44 @@ frequency by 40+ percentage points for the same hand. See Section
 3-way leaves SPR ~1.5 on the turn. The flop decision must account
 for the full remaining tree at compressed SPR.
 
-**8. DO NOT assume both opponents have equivalent ranges.** The
-cold-caller (BTN flat) is capped — no premiums. The blind defender
-(BB) is wide but uncapped via squeeze. Reasoning must distinguish
-between them: the capped player folds strong draws less, the wide
-player folds air more.
+**8. DO NOT assume both opponents have equivalent ranges, and DO
+NOT use `villain_range_capped` as a postflop strength signal.**
+The two opponents in a 3-way pot have different preflop range
+constructions, and those constructions must be read through the
+postflop composition triple — not via a binary preflop label.
+
+- **Cold-caller (BTN flat vs CO open):** Preflop range excludes
+  AA / KK / QQ / AKs by construction (those hands 3-bet preflop).
+  Contains 22-TT, suited broadway, suited connectors, suited aces.
+  On connected / middling / two-tone boards the cold-caller's
+  postflop composition can still be heavy with TP+ and draws —
+  check the composition triple, not the preflop construction.
+- **Blind defender (BB):** Preflop range is wider (speculative
+  suited/connected, small pairs, some broadway) and includes some
+  premium combos at squeeze frequency. High preflop air, but low
+  connected boards can invert the composition toward strong
+  holdings and sets.
+
+The operative asymmetry for postflop labelling is: the cold-caller
+folds strong draws less often (sticky continuing range, low air
+on connecting boards), the blind defender folds air more often
+(wide construction leaves more combos that miss any given flop).
+But this is a *generalisation about what the composition triple
+will typically look like*, not a substitute for reading it.
+
+**Do NOT use `villain_range_capped` as a postflop strength signal.**
+The pipeline exposes this feature (see
+`river-rats-core/feature_extractor.py:1195-1197`), but it encodes
+preflop action geometry only — it is `int(not is_3bet_pot and
+villain_is_defender)`, a pure flag for "villain was the preflop
+caller in a non-3-bet pot". It says nothing about the current
+continuing range's TP+ / draw / air split. Postflop strength is
+measured by `villain_top_pair_plus_pct`,
+`villain_draw_pct`, and `villain_air_pct` — read those against
+the Section 1.9 buckets and use the preflop action sequence only
+to inform *how* the preflop range was constructed. If the binary
+and the composition triple appear to conflict, the composition
+triple is authoritative. See Section 1.9.
 
 ---
 
@@ -684,6 +965,33 @@ with per-source classification.
 
 ## Version History
 
+- **v1.3 (10 Apr 2026):** Vocabulary purge and postflop composition
+  reframing. Removed the words "capped" and "uncapped" from the KB
+  body entirely (19 occurrences across Section 1 Factor 3, Section 3
+  preflop construction, Examples 1 / 5 / 6 / 7, and DO NOT Rule #8),
+  replacing them with compositional / "range excludes X by
+  construction" language. Added Section 1.9 (Preflop geometry vs
+  postflop composition) as the load-bearing principle — preflop
+  structural facts are a *generator* for the postflop composition
+  triple (`villain_top_pair_plus_pct` / `villain_draw_pct` /
+  `villain_air_pct`), not a substitute for it. Rewrote Factor 3 to
+  demote `villain_range_capped` out of the postflop signal list
+  (it encodes preflop action geometry; the feature stays in the
+  pipeline but must not be used as a postflop strength signal).
+  Rewrote Example 3 (MW-30) and Example 6 with real feature values
+  from `review/all_557_situations.jsonl` and live
+  `feature_extractor.py` extraction. Rewrote DO NOT Rule #8 to
+  preserve the BTN-vs-BB asymmetry compositionally and to instruct
+  the labelling agent explicitly not to use `villain_range_capped`
+  as a postflop signal. Adopted teaching's TP+ buckets (≥60 / ≥40
+  / ≥20 / <20) as shared vocabulary with
+  `river-rats-teaching/interface/l3_renderer.py` — provisional
+  pending calibration, TODO logged for the next feature-importance
+  audit. Rationale: the binary "capped/uncapped" framing was too
+  fixed, lacked nuance, and was being used by the labelling agent
+  as a postflop shortcut that contributed to the MW-30 / MW-46 /
+  MW-50 over-fold pattern. See `review/comms/KB_V1.3_EDIT_PLAN.md`
+  and `review/comms/REVIEW_VILLAIN_RANGE_FLAG_2026-04-10.md`.
 - **v1.2 (7 Apr 2026):** Solver-verified corrections from 3 GTO
   Wizard solves. Added: Section 1.7 (semi-bluff conditions), Section
   1.8 (blocker action selection), Worked Example 9 (nut draw raise).
