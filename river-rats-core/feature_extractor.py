@@ -321,7 +321,7 @@ if '/mnt/project' not in sys.path:
     sys.path.insert(0, '/mnt/project')
 from raw_equity import RawEquityCalculator
 import random
-from hand_categories import RANKS
+from hand_categories import RANKS, SUITS, cards_to_notation
 
 # Singleton instances â€” reused across all hands
 _range_manager = RangeManager()
@@ -333,7 +333,7 @@ _equity_calculator = RawEquityCalculator(mode='auto')
 # =============================================================================
 
 import eval7
-from hand_categories import SUITS
+# SUITS already available via hand_categories — consolidated with RANKS import above
 
 
 def get_valid_combos(hand: str, used_cards: set) -> List[List[str]]:
@@ -1038,6 +1038,9 @@ FEATURE_COLUMNS = [
     'num_callers_to_bet', 'facing_raise',
     # Step 12: new features 46-48
     'flush_block_pct', 'overcard_outs', 'improvement_probability',
+    # Step 13: new features 49-52
+    'hero_range_percentile', 'has_showdown_value',
+    'villain_fold_equity_estimate', 'flush_draw_rank',
 ]
 
 LABEL_COLUMN = 'action'
@@ -1254,10 +1257,6 @@ def compute_flush_block_pct(
     # Count hero's cards of the flush suit
     hero_flush_suit_cards = [c for c in hero_cards if c[1].lower() == flush_suit.lower()]
 
-    # If hero has 2+ cards of the suit, hero HAS the draw — not a blocker
-    if len(hero_flush_suit_cards) >= 2:
-        return 0.0
-
     # Build set of used cards (hero + board) for combo validity
     used_cards = set(c.lower() for c in hero_cards) | set(c.lower() for c in board_cards)
 
@@ -1428,6 +1427,98 @@ def compute_improvement_probability(
 
     return round(improved_count / len(unseen), 6)
 
+def compute_flush_draw_rank(
+    hero_cards: List[str],
+    board_cards: List[str],
+) -> int:
+    """
+    Feature 52: Rank of hero's highest card in the board's flush suit.
+
+    Returns 2-14 (using RANK_VALUES: A=14, K=13, ..., 2=2).
+    Returns 0 if hero has no card of the flush suit, or if there is no flush
+    suit (no suit appears 2+ times on the board).
+
+    Args:
+        hero_cards: e.g. ['Jh', '9s']
+        board_cards: e.g. ['Ah', '7h', '2d']
+
+    Returns:
+        Integer rank 0-14.
+    """
+    if not board_cards or not hero_cards:
+        return 0
+
+    # Find flush suit: suit with highest count on board (>= 2 required)
+    board_suit_counts: Dict[str, int] = {}
+    for card in board_cards:
+        s = card[1].lower()
+        board_suit_counts[s] = board_suit_counts.get(s, 0) + 1
+
+    flush_suit = None
+    max_count = 0
+    for suit, count in board_suit_counts.items():
+        if count > max_count:
+            max_count = count
+            flush_suit = suit
+    if flush_suit is None or max_count < 2:
+        return 0
+
+    # Inline rank map (same as compute_overcard_outs)
+    rank_map = {
+        'A': 14, 'K': 13, 'Q': 12, 'J': 11, 'T': 10,
+        '9': 9, '8': 8, '7': 7, '6': 6, '5': 5, '4': 4, '3': 3, '2': 2,
+    }
+
+    best_rank = 0
+    for card in hero_cards:
+        if card[1].lower() == flush_suit:
+            r = rank_map.get(card[0].upper(), 0)
+            if r > best_rank:
+                best_rank = r
+
+    return best_rank
+
+
+def compute_hero_range_percentile(
+    hero_cards: List[str],
+    board_cards: List[str],
+    hero_pos: str,
+    opener_pos: Optional[str],
+) -> float:
+    """
+    Feature 49: Where does hero's hand sit within their own range on this board?
+
+    Calls _range_manager.get_hand_percentile() with hero's preflop range.
+    Returns 0.0-1.0 where 1.0 = top of hero's range.
+
+    Args:
+        hero_cards: e.g. ['Ah', 'Kd']
+        board_cards: e.g. ['Jh', '8c', '2s']
+        hero_pos: e.g. 'BTN'
+        opener_pos: Preflop raiser's position, or None.
+
+    Returns:
+        Float [0.0, 1.0]
+    """
+    if not hero_cards or len(hero_cards) < 2 or not board_cards:
+        return 0.5
+
+    hand_notation = cards_to_notation(hero_cards[0], hero_cards[1])
+
+    # Hero is PFR when opener_pos matches hero_pos or when opener_pos is unknown.
+    is_pfr = (
+        opener_pos is None
+        or opener_pos.upper() == hero_pos.upper()
+    )
+    hero_range = _range_manager.get_postflop_range(hero_pos, is_pfr=is_pfr)
+    if not hero_range:
+        return 0.5
+
+    return round(
+        _range_manager.get_hand_percentile(hand_notation, hero_range, board_cards),
+        6,
+    )
+
 
 def extract_all_features(hand: Dict) -> Dict:
     """
@@ -1528,6 +1619,37 @@ def extract_all_features(hand: Dict) -> Dict:
     )
     features[F.IMPROVEMENT_PROBABILITY] = compute_improvement_probability(
         hero_cards, board_cards, features.get('hand_category', 0)
+    )
+
+    # Step 13: New features 49-52
+    _s13_opener_pos = hand.get('_opener_position', None)
+    features[F.HERO_RANGE_PERCENTILE] = compute_hero_range_percentile(
+        hero_cards, board_cards,
+        features.get('_hero_pos_raw', 'BTN'),
+        _s13_opener_pos,
+    )
+    features[F.HAS_SHOWDOWN_VALUE] = int(
+        features.get('is_made_hand', 0) == 1
+        and features.get('hand_category', 0) >= 3
+    )
+    _vtp = features.get(F.VILLAIN_TOP_PAIR_PLUS_PCT, 0.0)
+    _vdp = features.get(F.VILLAIN_DRAW_PCT, 0.0)
+    _num_opp = features.get(F.NUM_OPPONENTS, 1)
+    _per_opp_fold = 1.0 - (_vtp + 0.5 * _vdp)
+    _per_opp_fold = max(0.0, min(1.0, _per_opp_fold))
+    features[F.VILLAIN_FOLD_EQUITY_ESTIMATE] = round(
+        _per_opp_fold ** _num_opp, 6
+    )
+    features[F.FLUSH_DRAW_RANK] = compute_flush_draw_rank(
+        hero_cards, board_cards
+    )
+
+    # Feature 53: is_preflop_aggressor
+    # 1 if hero was the preflop raiser (opener), 0 if hero defended/called
+    _opener_pos = hand.get('_opener_position', None)
+    _hero_pos = features.get('_hero_pos_raw', 'BTN')
+    features[F.IS_PREFLOP_AGGRESSOR] = int(
+        _opener_pos is not None and _opener_pos.upper() == _hero_pos.upper()
     )
 
     return features

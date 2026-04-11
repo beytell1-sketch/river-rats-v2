@@ -69,16 +69,24 @@ class TestFlushBlockPct:
         assert result > 0.0, f"Expected positive flush_block_pct, got {result}"
         assert result <= 1.0, f"Value must be <= 1.0, got {result}"
 
-    def test_two_tone_hero_two_cards_returns_zero(self):
-        """Hero has 2 cards of flush suit -> hero has the draw, not a blocker -> 0.0."""
+    def test_two_tone_hero_two_cards_still_blocks(self):
+        """Hero has 2 cards of flush suit -> still blocks villain flush combos.
+
+        Per BLUEPRINT_FEATURES_V3.1 (feature-46 bug fix): hero holding 2 cards
+        of the flush suit DOES reduce villain flush combos, so the function
+        must return a positive blocker value rather than short-circuiting to
+        0.0. The earlier early-return guard was wrong.
+        """
         board = _parse_board('Ah7h2d')
         suit_counts = _suit_counts(board)
-        # Hero holds Jh and Th (two hearts) -> hero is the draw holder
+        # Hero holds Jh and Th (two hearts) - hero has the draw AND blocks
         v_range = _range_for()
         result = compute_flush_block_pct(['Jh', 'Th'], board, v_range, suit_counts)
-        assert result == 0.0, (
-            f"Hero with 2 flush-suit cards should return 0.0, got {result}"
+        assert result > 0.0, (
+            f"Hero with 2 flush-suit cards must still block villain combos, "
+            f"got {result}"
         )
+        assert result <= 1.0
 
     def test_monotone_board_hero_one_card_returns_positive(self):
         """Monotone board (3 hearts), hero holds 1 heart -> positive."""
@@ -283,27 +291,26 @@ class TestIntegration:
         assert 'overcard_outs' in features, "overcard_outs missing"
         assert 'improvement_probability' in features, "improvement_probability missing"
 
-    def test_existing_features_unchanged(self):
-        """Existing 45 features must be present and correct type."""
+    def test_all_feature_columns_present(self):
+        """Every entry in FEATURE_COLUMNS must appear in extract_all_features output."""
         from feature_extractor import extract_all_features, FEATURE_COLUMNS
         hand = self._make_hand()
         features = extract_all_features(hand)
-        # All 48 feature columns should be present
         for col in FEATURE_COLUMNS:
             assert col in features, f"Feature '{col}' missing from extract_all_features"
 
-    def test_feature_columns_count(self):
-        """FEATURE_COLUMNS should now have 48 entries."""
+    def test_feature_extractor_columns_count(self):
+        """feature_extractor.FEATURE_COLUMNS (CSV surface) has 52 entries."""
         from feature_extractor import FEATURE_COLUMNS
-        assert len(FEATURE_COLUMNS) == 48, (
-            f"Expected 48 feature columns, got {len(FEATURE_COLUMNS)}"
+        assert len(FEATURE_COLUMNS) == 52, (
+            f"Expected 52 feature columns, got {len(FEATURE_COLUMNS)}"
         )
 
     def test_gto_model_feature_columns_count(self):
-        """gto_model.FEATURE_COLUMNS should have 48 entries."""
+        """gto_model.FEATURE_COLUMNS has 53 entries (adds is_preflop_aggressor)."""
         from gto_model import FEATURE_COLUMNS as GTO_COLS
-        assert len(GTO_COLS) == 48, (
-            f"Expected 48 in gto_model.FEATURE_COLUMNS, got {len(GTO_COLS)}"
+        assert len(GTO_COLS) == 53, (
+            f"Expected 53 in gto_model.FEATURE_COLUMNS, got {len(GTO_COLS)}"
         )
 
     def test_new_feature_types(self):

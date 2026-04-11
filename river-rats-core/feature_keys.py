@@ -69,6 +69,15 @@ class F:
     OVERCARD_OUTS = 'overcard_outs'
     IMPROVEMENT_PROBABILITY = 'improvement_probability'
 
+    # Step 13: new features 49-52
+    HERO_RANGE_PERCENTILE = 'hero_range_percentile'
+    HAS_SHOWDOWN_VALUE = 'has_showdown_value'
+    VILLAIN_FOLD_EQUITY_ESTIMATE = 'villain_fold_equity_estimate'
+    FLUSH_DRAW_RANK = 'flush_draw_rank'
+
+    # Step 14: new feature 53
+    IS_PREFLOP_AGGRESSOR = 'is_preflop_aggressor'
+
     # Metadata fields (underscore prefix, not in model)
     META_NUM_OPPONENTS = '_num_opponents'
     META_NUM_RAISES = '_num_raises_this_street'

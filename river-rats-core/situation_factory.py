@@ -46,6 +46,16 @@ if _CORE not in sys.path:
 
 from game_state_bridge import build_features_from_game_state
 
+# Postflop acting order — SB first (OOP), BTN last (IP).
+# Used by validate_action_sequence().
+_POSTFLOP_ORDER = {
+    'SB': 0, 'BB': 1,
+    'UTG': 2, 'EP': 2,
+    'HJ': 3, 'MP': 3,
+    'CO': 4,
+    'BTN': 5,
+}
+
 
 # =============================================================================
 # Stub Classes
@@ -292,6 +302,101 @@ def build_situation(spec: SituationSpec) -> dict:
 # Validation
 # =============================================================================
 
+def validate_action_sequence(spec: 'SituationSpec') -> List[str]:
+    """
+    Check that action_history is internally consistent.
+
+    Rules checked:
+    1. On each postflop street, the first actor must be the player with the
+       lowest postflop order among the active players (SB before BB before
+       CO before BTN). Preflop order is not validated (preflop is out of scope).
+    2. Before the first bet on a postflop street, every active player must
+       act (check or bet) in order — no player may be silently skipped.
+    3. No player listed in action_history (for a postflop street) may have
+       an order value higher than a player who has not yet acted on that street.
+
+    Args:
+        spec: SituationSpec with hero_pos, villain_positions, and action_history.
+
+    Returns:
+        List of error strings. Empty list = valid.
+    """
+    errors: List[str] = []
+
+    # Build the full set of active positions
+    active_positions = {spec.hero_pos.upper()} | {
+        v.upper() for v in spec.villain_positions
+    }
+
+    # Group actions by street
+    actions_by_street: dict = {}
+    for s, pos, act in spec.action_history:
+        actions_by_street.setdefault(s, []).append((pos.upper(), act))
+
+    postflop_streets = [s for s in actions_by_street if s != 'preflop']
+
+    for street in postflop_streets:
+        street_actions = actions_by_street[street]
+
+        # 1. First actor must have the lowest order among active positions
+        if street_actions:
+            first_actor = street_actions[0][0]
+            first_order = _POSTFLOP_ORDER.get(first_actor, 99)
+            for pos in active_positions:
+                pos_order = _POSTFLOP_ORDER.get(pos, 99)
+                if pos_order < first_order:
+                    errors.append(
+                        f"ACTION_ORDER [{street}]: '{first_actor}' acted first "
+                        f"but '{pos}' has earlier postflop order "
+                        f"({pos_order} < {first_order}). "
+                        f"SB/BB must act before CO/BTN postflop."
+                    )
+                    break  # One error per street is enough
+
+        # 2 & 3. Before the opening bet, every active player must have acted
+        # once (check or open-bet) in correct positional order.
+        # After a bet, remaining players respond — we only validate pre-bet order.
+        acted_so_far: List[str] = []
+        bet_has_occurred = False
+        for pos, act in street_actions:
+            if bet_has_occurred:
+                break  # Post-bet actions are responses; order rules differ
+
+            # Check that this actor's order is >= all previous actors' orders
+            current_order = _POSTFLOP_ORDER.get(pos, 99)
+            for prior_pos in acted_so_far:
+                prior_order = _POSTFLOP_ORDER.get(prior_pos, 99)
+                if current_order < prior_order:
+                    errors.append(
+                        f"ACTION_ORDER [{street}]: '{pos}' (order={current_order}) "
+                        f"acted after '{prior_pos}' (order={prior_order}) but has "
+                        f"earlier position. Actions must proceed SB→BB→CO→BTN."
+                    )
+
+            # Check that no active player was skipped between prior actor and this one
+            if acted_so_far:
+                last_order = _POSTFLOP_ORDER.get(acted_so_far[-1], 99)
+                for skipped in active_positions:
+                    skipped_order = _POSTFLOP_ORDER.get(skipped, 99)
+                    if (
+                        last_order < skipped_order < current_order
+                        and skipped not in acted_so_far
+                        and skipped != pos
+                    ):
+                        errors.append(
+                            f"MISSING_ACTION [{street}]: '{skipped}' "
+                            f"(order={skipped_order}) was skipped between "
+                            f"'{acted_so_far[-1]}' and '{pos}'. All active "
+                            f"players must act on each street."
+                        )
+
+            acted_so_far.append(pos)
+            if act in ('bet', 'raise'):
+                bet_has_occurred = True
+
+    return errors
+
+
 def validate_situation(spec: SituationSpec, feat_dict: dict) -> List[str]:
     """
     Verify internal consistency between spec and the returned feat_dict.
@@ -308,6 +413,9 @@ def validate_situation(spec: SituationSpec, feat_dict: dict) -> List[str]:
        is_3bet_pot, villain_aggression_count, villain_checked_back, villain_call_count
     """
     errors: List[str] = []
+
+    # 0. Action sequence structural validation
+    errors.extend(validate_action_sequence(spec))
 
     # 1. Equity sanity
     raw_equity = feat_dict.get('raw_equity')
