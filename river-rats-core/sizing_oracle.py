@@ -1,11 +1,11 @@
 """
-Sizing Oracle â€” raise sizing and bet sizing predictions.
+Sizing Oracle â€" raise sizing and bet sizing predictions.
 
 Separate from the action oracle (gto_model.py). Predicts the appropriate
 sizing bucket for BET and RAISE actions using the same 37 features.
 
-Raise sizing: XGBoost 3-class classifier â†’ SMALL / STANDARD / LARGE
-Bet sizing:   Heuristic rule â†’ SMALL / STANDARD (89% of bets are STANDARD)
+Raise sizing: XGBoost 3-class classifier â†' SMALL / STANDARD / LARGE
+Bet sizing:   Heuristic rule â†' SMALL / STANDARD (89% of bets are STANDARD)
 
 Usage:
     oracle = SizingOracle("/path/to/raise_sizing_model.json")
@@ -19,7 +19,7 @@ Usage:
     result.pot_ratio    # 0.75
 
     result = oracle.predict(feature_array, action="FOLD")
-    # â†’ None
+    # â†' None
 
 Contract with teaching layer:
     size_bucket: Optional[str]   # None for FOLD/CHECK/CALL
@@ -58,8 +58,8 @@ RAISE_STANDARD_UPPER = 1.40
 BET_BUCKETS = ("SMALL", "STANDARD")
 
 # Bet bucket boundaries (pot-ratio thresholds)
-#   SMALL:    pot_ratio < 0.60  (~11% of GTO bets â€” flop probes, small pots)
-#   STANDARD: ratio â‰¥ 0.60     (~89% â€” the default, ~75% pot)
+#   SMALL:    pot_ratio < 0.60  (~11% of GTO bets â€" flop probes, small pots)
+#   STANDARD: ratio â‰¥ 0.60     (~89% â€" the default, ~75% pot)
 BET_SMALL_UPPER = 0.60
 
 # Pot-ratio midpoints per bucket (for teaching layer display)
@@ -77,7 +77,7 @@ BET_BUCKET_MIDPOINTS = {
 # Actions that have sizing
 SIZED_ACTIONS = frozenset({"BET", "RAISE"})
 
-# Feature columns (identical to gto_model.py â€” same 38 features)
+# Feature columns (identical to gto_model.py â€" same 45 features)
 FEATURE_COLUMNS = (
     "street", "facing_bet", "pot_size", "to_call", "pot_odds", "bet_to_pot",
     "hero_position", "villain_position", "is_ip",
@@ -92,9 +92,15 @@ FEATURE_COLUMNS = (
     "is_3bet_pot", "villain_aggression_count",
     "villain_checked_back", "villain_call_count",
     "num_opponents",
+    # v9 features (38→45): range composition + current-street action
+    "villain_top_pair_plus_pct", "villain_draw_pct", "villain_air_pct",
+    "villain_range_capped", "board_favour",
+    "num_callers_to_bet", "facing_raise",
+    # v9 features (45->48): blocker + outs + improvement
+    "flush_block_pct", "overcard_outs", "improvement_probability",
 )
 
-N_FEATURES = len(FEATURE_COLUMNS)  # 38
+N_FEATURES = len(FEATURE_COLUMNS)  # 48
 
 # Feature indices (for heuristic access without dict lookup)
 _STREET_IDX = 0
@@ -134,7 +140,7 @@ class SizingOracle:
     - BET:   Heuristic rule (SMALL / STANDARD)
     - FOLD/CHECK/CALL: Returns None
 
-    Completely separate from GtoOracle â€” no shared state, no coupling.
+    Completely separate from GtoOracle â€" no shared state, no coupling.
     Thread-safe for read-only prediction after initialization.
     """
 
@@ -152,6 +158,11 @@ class SizingOracle:
         import xgboost as xgb
         self._raise_model = xgb.XGBClassifier()
         self._raise_model.load_model(raise_model_path)
+
+        # Auto-detect feature width for backwards compatibility (v8=38, v9=45)
+        self._n_features = getattr(
+            self._raise_model, 'n_features_in_', len(FEATURE_COLUMNS)
+        )
 
         if self._raise_model.n_classes_ != N_RAISE_CLASSES:
             raise ValueError(
@@ -206,6 +217,10 @@ class SizingOracle:
 
     def _predict_raise(self, features: np.ndarray) -> SizingPrediction:
         """XGBoost model prediction for raise sizing."""
+        if features.ndim == 1:
+            features = features[:self._n_features]
+        else:
+            features = features[:, :self._n_features]
         X = self._ensure_2d(features)
         probs = self._raise_model.predict_proba(X)[0]
         bucket_idx = int(np.argmax(probs))
@@ -223,7 +238,7 @@ class SizingOracle:
         """
         Heuristic prediction for bet sizing.
 
-        Rule: Flop bets with deep stacks (SPR > 5) â†’ SMALL, else STANDARD.
+        Rule: Flop bets with deep stacks (SPR > 5) â†' SMALL, else STANDARD.
         Based on data analysis: 89% of GTO bets are 50-90% pot (STANDARD),
         the remaining 11% are flop probes at lower sizing.
         """
@@ -240,7 +255,7 @@ class SizingOracle:
         return SizingPrediction(
             bucket=bucket,
             pot_ratio=BET_BUCKET_MIDPOINTS[bucket],
-            confidence=1.0,  # Heuristic â€” no probability distribution
+            confidence=1.0,  # Heuristic â€" no probability distribution
             method="heuristic",
         )
 
