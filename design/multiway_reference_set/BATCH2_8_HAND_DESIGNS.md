@@ -1,8 +1,13 @@
 # Batch 2-8 Multiway Reference Hand Designs
 
 **Date:** 2026-04-05
-**Status:** Complete — 40 hands across Axes 2-8
+**Status:** Complete — 40 hands across Axes 2-8 (MW-18 redesigned v2)
 **Context:** Follows Batch 1 (MW-01 to MW-03c, Axis 1 — Equity Dilution)
+
+**ID numbering (canonical):** This document uses 6-per-batch numbering starting
+at MW-11. The original brief allocated 8-per-batch (MW-11-18, MW-19-26, etc.)
+but implementation settled on 6+4. This numbering is now canon — all pipeline
+output, range analysis, and future references use these IDs.
 
 ---
 
@@ -158,10 +163,10 @@
 
 ---
 
-### MW-18: 9d7d non-nut flush draw, same board Jd8d4c vs MW-17, 3-way
+### MW-18: Qd3d non-nut flush draw, same board Jd8d4c vs MW-17, 3-way
 
 **Target axis:** Axis 3 — Nut Potential
-**Hero cards:** 9d/7d
+**Hero cards:** Qd/3d
 **Board:** Jd 8d 4c
 **Street:** Flop
 **Hero position:** BB
@@ -175,6 +180,12 @@
 **Bettor position:** CO
 
 **Action history:** CO opens, BTN calls, BB (hero) calls. Flop Jd8d4c: CO bets 33 into 90. Compare to MW-17 (nut draw).
+
+**Design note (v2, replaces 9d7d):** Original MW-18 used 9d7d which had an OESD
+(6 or T for straight = 8 outs) confounding the nut-potential comparison. Qd3d has
+zero straight draw outs (Q and 3 have no connectivity to J-8-4), isolating the
+flush draw's nut-potential as the only variable vs MW-17 (AdKs). Q3s is in BB's
+standard defend range vs CO.
 
 ---
 
@@ -408,6 +419,16 @@
 
 **Action history:** CO opens, BTN calls, SB calls, BB (hero) calls. Flop KJ6r: CO bets 35, BTN calls, SB folds. Hero faces bet + call.
 
+**GTO OVERRIDE:** Action FOLD overrides raw equity signal of 0.399 (well above 0.184 pot odds).
+Reason: Raw equity is computed against opponents' full preflop ranges, but the
+bet-and-call sequence (CO bets, BTN calls into a multiway pot) dramatically narrows
+the effective ranges. BTN's cold-call of a bet credibly represents Kx+ or better.
+Against this condensed two-opponent range, KT top pair weak kicker is dominated by
+KJ, KQ, AK, and sets. Pipeline equity overestimates hero's true equity.
+Teaching note: Bet-and-call in multiway is one of the strongest range signals in
+poker. Top pair weak kicker is a clear fold despite "having equity" against
+unnarrowed ranges. This is action-implied range narrowing.
+
 ---
 
 ### MW-31: AsJs TPJK facing check-raise from CO in 3-way, AQ5r
@@ -427,6 +448,16 @@
 **Bettor position:** CO
 
 **Action history:** CO opens, BTN (hero) calls, BB calls. Flop AQ5r: BB checks, hero bets 30, CO raises to 90. BB folds.
+
+**GTO OVERRIDE:** Action FOLD overrides raw equity signal of 0.653 (massively above 0.222 pot odds).
+Reason: CO's check-raise on AQ5r in a pot that started 3-way is the most polarized,
+strength-weighted action in poker. CO's check-raise range is essentially AQ (two pair),
+AK (TPGK that dominates hero), sets of QQ/55, and occasional AA slowplays. AsJs (TPJK)
+loses to virtually every combo in this range. Pipeline equity reflects CO's entire
+opening range, not the narrow subset that check-raises.
+Teaching note: Check-raises in multiway pots represent the strongest possible ranges.
+Even with top pair and 65% raw equity, the opponent's ACTION tells you their range
+has narrowed to hands that crush you. This is the core of Axis 5 (Aggression Respect).
 
 ---
 
@@ -729,6 +760,17 @@
 **Bettor position:** CO
 
 **Action history:** HJ opens, CO calls, BTN (hero) calls, BB calls. Flop 775: CO bets, BTN calls, others fold. Turn 9: CO checks, hero bets, CO calls. River J: CO check-raises hero.
+
+**GTO OVERRIDE:** Action FOLD overrides raw equity signal of 0.908 (massively above 0.286 pot odds).
+Reason: CO's action sequence across three streets (bet flop on 775, check-call turn 9,
+check-raise river J) is the single most credible strength line in poker. CO's river
+check-raise range is almost exclusively full houses (55, 99, JJ) and the case 77 for
+quads. Trips (K7) loses to every combo that takes this line. Pipeline equity of 0.908
+reflects CO's entire preflop range with no mechanism to narrow for three streets of action.
+Teaching note: River check-raises after multi-street action represent the narrowest,
+strongest ranges in poker. Even holding trips with 90% raw equity, the opponent has
+told you across three streets they have a full house or better. This is the ultimate
+Axis 7 (Range Narrowing) lesson.
 
 ---
 

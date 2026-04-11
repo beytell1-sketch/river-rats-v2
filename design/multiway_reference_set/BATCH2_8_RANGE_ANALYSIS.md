@@ -29,7 +29,7 @@
 | MW-27 | position_ampli | 0.476 | 0.000 | BET | HIGH |
 | MW-28 | position_ampli | 0.561 | 0.000 | BET | MEDIUM |
 | MW-29 | aggression_res | 0.254 | 0.226 | CALL | MEDIUM |
-| MW-30 | aggression_res | 0.399 | 0.184 | FOLD | HIGH |
+| MW-30 | aggression_res | 0.399 | 0.184 | CALL | HIGH |
 | MW-31 | aggression_res | 0.653 | 0.222 | FOLD | HIGH |
 | MW-32 | aggression_res | 0.538 | 0.333 | CALL | MEDIUM |
 | MW-33 | aggression_res | 0.885 | 0.167 | RAISE | HIGH |
@@ -491,9 +491,11 @@
 | pot_odds | 0.1842 |
 | pot_odds_needed | 0.1842 |
 
-**GTO Action: FOLD** — Confidence: HIGH
+**GTO Action: CALL** — Confidence: HIGH (solver-corrected 9 Apr 2026)
 
-**Reasoning:** Same KcTh on KJ6r, but now facing CO bet + BTN call. The call signal from BTN dramatically narrows the effective field range — BTN called a bet into a 4-way pot, meaning BTN has a Kx+ hand or a strong draw. KT is now almost certainly dominated by KJ, KQ, AK on one side and sets on the other. With both opponents representing strength, folding is correct despite the mathematically acceptable pot odds. Multiway bet-and-call is a condensed range signal.
+**Reasoning (corrected):** KcTh on KJ6r facing CO bet + BTN call. Equity 40% vs pot odds 18% = 22pp surplus. Solver (GTO Wizard) shows pure CALL for all KT combos. The original FOLD was based on "bet+call narrows ranges" but the 22pp equity surplus overwhelms the range-narrowing signal. Per KB v1.2 Example 3: fold only when equity is near/below pot odds AND hero's specific holding is dominated. Here, hero has top pair with 22pp surplus — CALL.
+
+**Original reasoning (superseded):** Same KcTh on KJ6r, but now facing CO bet + BTN call. The call signal from BTN dramatically narrows the effective field range — BTN called a bet into a 4-way pot, meaning BTN has a Kx+ hand or a strong draw. KT is now almost certainly dominated by KJ, KQ, AK on one side and sets on the other. With both opponents representing strength, folding is correct despite the mathematically acceptable pot odds. Multiway bet-and-call is a condensed range signal.
 
 ---
 
@@ -964,10 +966,10 @@
 ### Axis 5 — Aggression Respect
 
 **Hands:** MW-29, MW-30, MW-31, MW-32, MW-33, MW-34
-**Actions:** CALL, FOLD, FOLD, CALL, RAISE, BET
+**Actions:** CALL, CALL, FOLD, CALL, RAISE, BET
 **Average equity:** 0.5658
 
-**Axis insight:** MW-30 and MW-31 identify FOLD even with decent hands — bet+call and check-raise in multiway pots are condensed range signals that eliminate most bluffs. MW-33 shows the one counter-example: when hero has the nuts (set), facing aggression MW means RAISE rather than fold or call. Aggression respect is about what opponents have, not reflexive folding.
+**Axis insight:** MW-31 identifies FOLD with a decent hand — check-raise in multiway pots is a condensed range signal. MW-30 (solver-corrected to CALL) shows the limit: when equity surplus is 22pp, the range signal is insufficient to override. MW-33 shows the other end: when hero has the nuts (set), facing aggression MW means RAISE. Aggression respect is about what opponents have, not reflexive folding.
 
 ### Axis 2 — Bluff Compression
 
