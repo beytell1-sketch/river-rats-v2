@@ -12,7 +12,8 @@ Coverage:
 """
 
 import sys
-sys.path.insert(0, '/home/rupertbeytell/river-rats/river-rats-complete')
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 import pytest
 from dataclasses import dataclass

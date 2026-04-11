@@ -20,7 +20,7 @@ import os
 import numpy as np
 import pytest
 
-sys.path.insert(0, '/home/rupertbeytell/river-rats/river-rats-complete')
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 from sizing_oracle import (
     SizingOracle,
@@ -100,6 +100,16 @@ def _make_features(**overrides) -> np.ndarray:
         'villain_checked_back': 0.0,
         'villain_call_count': 0.0,
         'num_opponents': 1.0,
+        'villain_top_pair_plus_pct': 0.0,
+        'villain_draw_pct': 0.0,
+        'villain_air_pct': 0.0,
+        'villain_range_capped': 0.0,
+        'board_favour': 0.0,
+        'num_callers_to_bet': 0.0,
+        'facing_raise': 0.0,
+        'flush_block_pct': 0.0,
+        'overcard_outs': 0.0,
+        'improvement_probability': 0.0,
     }
     defaults.update(overrides)
     return np.array(
@@ -127,6 +137,11 @@ def _make_feature_dict(**overrides) -> dict:
         'is_3bet_pot': 0.0, 'villain_aggression_count': 0.0,
         'villain_checked_back': 0.0, 'villain_call_count': 0.0,
         'num_opponents': 1.0,
+        'villain_top_pair_plus_pct': 0.0, 'villain_draw_pct': 0.0,
+        'villain_air_pct': 0.0, 'villain_range_capped': 0.0,
+        'board_favour': 0.0, 'num_callers_to_bet': 0.0, 'facing_raise': 0.0,
+        'flush_block_pct': 0.0, 'overcard_outs': 0.0,
+        'improvement_probability': 0.0,
     }
     defaults.update(overrides)
     return defaults
@@ -149,7 +164,7 @@ class TestConstants:
         assert N_RAISE_CLASSES == 3
 
     def test_feature_count(self):
-        assert N_FEATURES == 38
+        assert N_FEATURES == 48
 
     def test_feature_columns_match_gto_model(self):
         """Feature columns must be identical to gto_model.py."""
@@ -338,16 +353,16 @@ class TestRaisePrediction:
         assert result.method == "model"
 
     def test_1d_array_shape(self, oracle):
-        """Accepts (38,) shape."""
+        """Accepts (48,) shape — model slices to its expected width."""
         features = _make_features()
-        assert features.shape == (38,)
+        assert features.shape == (48,)
         result = oracle.predict(features, "RAISE")
         assert result is not None
 
     def test_2d_array_shape(self, oracle):
-        """Accepts (1, 38) shape."""
+        """Accepts (1, 48) shape — model slices to its expected width."""
         features = _make_features().reshape(1, -1)
-        assert features.shape == (1, 38)
+        assert features.shape == (1, 48)
         result = oracle.predict(features, "RAISE")
         assert result is not None
 
@@ -464,7 +479,7 @@ class TestFeaturesFromDict:
     def test_output_shape(self):
         feat_dict = _make_feature_dict()
         arr = SizingOracle.features_from_dict(feat_dict)
-        assert arr.shape == (38,)
+        assert arr.shape == (48,)
 
     def test_output_dtype(self):
         feat_dict = _make_feature_dict()

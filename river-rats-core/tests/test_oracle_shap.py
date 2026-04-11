@@ -6,9 +6,9 @@ Tests are skipped if the model file is not available.
 """
 
 import sys
-sys.path.insert(0, '/home/rupertbeytell/river-rats/river-rats-complete')
-
 import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+
 import pytest
 import numpy as np
 
