@@ -204,10 +204,12 @@ class TestOpenerAwareRanges:
         f_without = extract_all_features(hand_without)
         # Range composition features (villain_top_pair_plus_pct etc.) legitimately
         # differ with opener_pos because it changes which range is used.
-        # Use wider tolerance for range-derived features.
+        # hero_range_percentile also shifts with opener_pos because hero's
+        # own range depends on whether hero is the PFR. Use wider tolerance
+        # for all range-derived features.
         range_features = {
             'villain_top_pair_plus_pct', 'villain_draw_pct', 'villain_air_pct',
-            'villain_range_capped', 'board_favour',
+            'villain_range_capped', 'board_favour', 'hero_range_percentile',
         }
         for col in FEATURE_COLUMNS:
             tol = 0.15 if col in range_features else 0.05

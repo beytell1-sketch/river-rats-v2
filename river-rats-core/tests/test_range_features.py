@@ -92,9 +92,17 @@ class TestPokerSense:
         assert r['_villain_draw_pct'] > 0.08
 
     def test_broadway_board_has_high_tp_plus(self):
-        """KQJ board — many hands in villain's range hit this."""
+        """KQJ board — many hands in villain's range hit this.
+
+        Threshold is relative to the villain's cold-call range, which is
+        intentionally wider post-Phase-B (solver-backed mixed frequencies
+        replaced the old tight flat ranges). Wider ranges include more
+        weaker made hands and small pairs, which dilutes the top-pair-plus
+        percentage slightly even on broadway boards. 0.12 is the floor
+        that still captures the directional "broadway boards favour
+        villain TP+" claim without being tuned to the old data."""
         r = _extract(_parse_board('KsQdJc'))
-        assert r['_villain_top_pair_plus_pct'] > 0.15
+        assert r['_villain_top_pair_plus_pct'] > 0.12
 
     def test_low_board_has_lower_tp_plus(self):
         """742 rainbow — fewer hands in BB's range connect."""
