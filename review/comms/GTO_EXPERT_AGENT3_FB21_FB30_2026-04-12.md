@@ -14,7 +14,7 @@
 **Hero position:** BB (OOP — closes action)
 **Hero cards:** 5c 5d
 **Pot:** 90 | **Bet:** 45 | **To call:** 45
-**Pot odds:** 45 / (90 + 45) = 33%
+**Pot odds:** 45 / (90 + 45 + 45) = 25%
 
 **GTO Action:** FOLD — Confidence: HIGH
 
@@ -31,7 +31,7 @@
 **Hero position:** CO (OOP — closes action after BB call)
 **Hero cards:** Ah Jd
 **Pot:** 120 (after BB call) | **Bet:** 30 | **To call:** 30
-**Pot odds:** 30 / (120 + 30) = 20%
+**Pot odds:** 30 / (120 + 30 + 30) = 16.7%
 
 **GTO Action:** CALL — Confidence: HIGH
 
@@ -48,7 +48,7 @@
 **Hero position:** BB (OOP — closes action)
 **Hero cards:** Tc 9h
 **Pot:** 120 | **Bet:** 60 | **To call:** 60
-**Pot odds:** 60 / (120 + 60) = 33%
+**Pot odds:** 60 / (120 + 60 + 60) = 25%
 
 **GTO Action:** FOLD — Confidence: HIGH
 
@@ -65,7 +65,7 @@
 **Hero position:** BTN (IP — closes action)
 **Hero cards:** As 9s
 **Pot:** 120 | **Bet:** 90 | **To call:** 90
-**Pot odds:** 90 / (120 + 90) = 43%
+**Pot odds:** 90 / (120 + 90 + 90) = 30%
 
 **GTO Action:** RAISE — Confidence: MEDIUM
 
@@ -82,7 +82,7 @@
 **Hero position:** BB (OOP — closes action)
 **Hero cards:** Qh 7h
 **Pot:** 240 | **Bet:** 90 | **To call:** 90
-**Pot odds:** 90 / (240 + 90) = 27%
+**Pot odds:** 90 / (240 + 90 + 90) = 21.4%
 
 **GTO Action:** CALL — Confidence: MEDIUM
 
@@ -99,7 +99,7 @@
 **Hero position:** BTN (IP — closes action)
 **Hero cards:** Kh Th
 **Pot:** 150 | **Bet:** 90 | **To call:** 90
-**Pot odds:** 90 / (150 + 90) = 38%
+**Pot odds:** 90 / (150 + 90 + 90) = 27.3%
 
 **GTO Action:** FOLD — Confidence: HIGH
 
@@ -116,7 +116,7 @@
 **Hero position:** BB (OOP — sandwich, BTN behind)
 **Hero cards:** As 4s
 **Pot:** 90 | **Bet:** 30 | **To call:** 30
-**Pot odds:** 30 / (90 + 30) = 25%
+**Pot odds:** 30 / (90 + 30 + 30) = 20%
 
 **GTO Action:** RAISE — Confidence: MEDIUM
 
@@ -133,7 +133,7 @@
 **Hero position:** BB (OOP — closes action after bet-and-call)
 **Hero cards:** Jc Td
 **Pot:** 120 (after BTN call) | **Bet:** 30 | **To call:** 30
-**Pot odds:** 30 / (120 + 30) = 20%
+**Pot odds:** 30 / (120 + 30 + 30) = 16.7%
 
 **GTO Action:** FOLD — Confidence: HIGH
 
@@ -150,7 +150,7 @@
 **Hero position:** CO (sandwich — BTN behind)
 **Hero cards:** Ks Kd
 **Pot:** 90 | **Bet:** 45 | **To call:** 45
-**Pot odds:** 45 / (90 + 45) = 33%
+**Pot odds:** 45 / (90 + 45 + 45) = 25%
 
 **GTO Action:** CALL — Confidence: MEDIUM
 
@@ -167,7 +167,7 @@
 **Hero position:** BTN (IP — closes action)
 **Hero cards:** 7s 6s
 **Pot:** 90 | **Bet:** 60 | **To call:** 60
-**Pot odds:** 60 / (90 + 60) = 40%
+**Pot odds:** 60 / (90 + 60 + 60) = 28.6%
 
 **GTO Action:** CALL — Confidence: HIGH
 
