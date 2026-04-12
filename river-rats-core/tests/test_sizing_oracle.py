@@ -4,7 +4,7 @@ Tests for sizing_oracle.py
 
 Coverage targets:
   - SizingOracle.predict() for all 5 actions (FOLD/CHECK/CALL/BET/RAISE)
-  - Raise model predictions (3-class: SMALL/STANDARD/LARGE)
+  - Raise model predictions (2-class: SMALL/LARGE, solver-aligned)
   - Bet heuristic logic (street + SPR thresholds)
   - Bucket assignment utilities (boundary conditions)
   - predict_from_dict() convenience wrapper
@@ -29,10 +29,10 @@ from sizing_oracle import (
     assign_bet_bucket,
     RAISE_BUCKETS,
     RAISE_SMALL_UPPER,
-    RAISE_STANDARD_UPPER,
     BET_SMALL_UPPER,
     RAISE_BUCKET_MIDPOINTS,
     BET_BUCKET_MIDPOINTS,
+    BET_BUCKETS,
     FEATURE_COLUMNS,
     N_FEATURES,
     N_RAISE_CLASSES,
@@ -40,9 +40,9 @@ from sizing_oracle import (
     INT_TO_RAISE_BUCKET,
 )
 
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# ═══════════════════════════════════════════════════════════════════
 # FIXTURES
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# ═══════════════════════════════════════════════════════════════════
 
 MODEL_PATH = '/home/rupertbeytell/river-rats/river-rats-complete/raise_sizing_model_v3_38feat.json'
 
@@ -57,7 +57,7 @@ def oracle():
 
 def _make_features(**overrides) -> np.ndarray:
     """
-    Build a 38-feature array with sensible defaults and optional overrides.
+    Build a 48-feature array with sensible defaults and optional overrides.
 
     Defaults represent a typical turn hand facing a bet from BB vs CO.
     """
@@ -147,21 +147,21 @@ def _make_feature_dict(**overrides) -> dict:
     return defaults
 
 
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# ═══════════════════════════════════════════════════════════════════
 # CONSTANTS TESTS
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# ═══════════════════════════════════════════════════════════════════
 
 class TestConstants:
     """Verify sizing constants are self-consistent."""
 
     def test_raise_buckets_count(self):
-        assert len(RAISE_BUCKETS) == 3
+        assert len(RAISE_BUCKETS) == 2
 
     def test_raise_buckets_names(self):
-        assert RAISE_BUCKETS == ("SMALL", "STANDARD", "LARGE")
+        assert RAISE_BUCKETS == ("SMALL", "LARGE")
 
     def test_n_raise_classes(self):
-        assert N_RAISE_CLASSES == 3
+        assert N_RAISE_CLASSES == 2
 
     def test_feature_count(self):
         assert N_FEATURES == 48
@@ -171,20 +171,24 @@ class TestConstants:
         from coaching.gto_model import FEATURE_COLUMNS as GTO_FEATURES
         assert tuple(FEATURE_COLUMNS) == tuple(GTO_FEATURES)
 
-    def test_raise_thresholds_ordered(self):
-        assert 0 < RAISE_SMALL_UPPER < RAISE_STANDARD_UPPER
+    def test_raise_small_upper_positive(self):
+        assert 0 < RAISE_SMALL_UPPER < 1.0
 
     def test_bet_threshold_positive(self):
         assert 0 < BET_SMALL_UPPER < 1.0
 
     def test_raise_midpoints_within_buckets(self):
+        # SMALL midpoint must be below RAISE_SMALL_UPPER boundary
         assert RAISE_BUCKET_MIDPOINTS["SMALL"] < RAISE_SMALL_UPPER
-        assert RAISE_SMALL_UPPER <= RAISE_BUCKET_MIDPOINTS["STANDARD"] < RAISE_STANDARD_UPPER
-        assert RAISE_BUCKET_MIDPOINTS["LARGE"] >= RAISE_STANDARD_UPPER
+        # LARGE midpoint must be at or above boundary
+        assert RAISE_BUCKET_MIDPOINTS["LARGE"] >= RAISE_SMALL_UPPER
 
     def test_bet_midpoints_within_buckets(self):
         assert BET_BUCKET_MIDPOINTS["SMALL"] < BET_SMALL_UPPER
-        assert BET_BUCKET_MIDPOINTS["STANDARD"] >= BET_SMALL_UPPER
+        assert BET_BUCKET_MIDPOINTS["LARGE"] >= BET_SMALL_UPPER
+
+    def test_bet_buckets_names(self):
+        assert BET_BUCKETS == ("SMALL", "LARGE")
 
     def test_sized_actions(self):
         assert SIZED_ACTIONS == {"BET", "RAISE"}
@@ -194,35 +198,28 @@ class TestConstants:
             assert i in INT_TO_RAISE_BUCKET
 
 
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# ═══════════════════════════════════════════════════════════════════
 # BUCKET ASSIGNMENT TESTS
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# ═══════════════════════════════════════════════════════════════════
 
 class TestAssignRaiseBucket:
-    """Test raise bucket boundary conditions."""
+    """Test raise bucket boundary conditions (threshold = 0.50)."""
 
     def test_small_well_below(self):
-        assert assign_raise_bucket(0.50) == "SMALL"
+        assert assign_raise_bucket(0.20) == "SMALL"
 
     def test_small_just_below(self):
-        assert assign_raise_bucket(0.99) == "SMALL"
-
-    def test_standard_at_boundary(self):
-        """pot_ratio == 1.00 is STANDARD (>= lower, < upper)."""
-        assert assign_raise_bucket(1.00) == "STANDARD"
-
-    def test_standard_mid(self):
-        assert assign_raise_bucket(1.20) == "STANDARD"
-
-    def test_standard_just_below_upper(self):
-        assert assign_raise_bucket(1.39) == "STANDARD"
+        assert assign_raise_bucket(0.49) == "SMALL"
 
     def test_large_at_boundary(self):
-        """pot_ratio == 1.40 is LARGE (>= threshold)."""
-        assert assign_raise_bucket(1.40) == "LARGE"
+        """pot_ratio == 0.50 is LARGE (>= threshold)."""
+        assert assign_raise_bucket(0.50) == "LARGE"
 
     def test_large_above(self):
-        assert assign_raise_bucket(2.00) == "LARGE"
+        assert assign_raise_bucket(0.75) == "LARGE"
+
+    def test_large_one(self):
+        assert assign_raise_bucket(1.00) == "LARGE"
 
     def test_large_extreme(self):
         assert assign_raise_bucket(5.00) == "LARGE"
@@ -236,38 +233,38 @@ class TestAssignRaiseBucket:
 
 
 class TestAssignBetBucket:
-    """Test bet bucket boundary conditions."""
+    """Test bet bucket boundary conditions (threshold = 0.45)."""
 
     def test_small_well_below(self):
-        assert assign_bet_bucket(0.30) == "SMALL"
+        assert assign_bet_bucket(0.25) == "SMALL"
 
     def test_small_just_below(self):
-        assert assign_bet_bucket(0.59) == "SMALL"
+        assert assign_bet_bucket(0.44) == "SMALL"
 
-    def test_standard_at_boundary(self):
-        """pot_ratio == 0.60 is STANDARD."""
-        assert assign_bet_bucket(0.60) == "STANDARD"
+    def test_large_at_boundary(self):
+        """pot_ratio == 0.45 is LARGE (>= threshold)."""
+        assert assign_bet_bucket(0.45) == "LARGE"
 
-    def test_standard_typical(self):
-        assert assign_bet_bucket(0.75) == "STANDARD"
+    def test_large_typical(self):
+        assert assign_bet_bucket(0.66) == "LARGE"
 
-    def test_standard_overbet(self):
-        assert assign_bet_bucket(1.50) == "STANDARD"
+    def test_large_overbet(self):
+        assert assign_bet_bucket(1.50) == "LARGE"
 
     def test_small_zero(self):
         assert assign_bet_bucket(0.0) == "SMALL"
 
 
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# ═══════════════════════════════════════════════════════════════════
 # PREDICTION RESULT CONTRACT TESTS
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# ═══════════════════════════════════════════════════════════════════
 
 class TestSizingPrediction:
     """Verify the SizingPrediction dataclass contract."""
 
     def test_is_frozen(self):
         pred = SizingPrediction(
-            bucket="LARGE", pot_ratio=1.50,
+            bucket="LARGE", pot_ratio=0.66,
             confidence=0.95, method="model",
         )
         with pytest.raises(AttributeError):
@@ -275,26 +272,26 @@ class TestSizingPrediction:
 
     def test_fields_present(self):
         pred = SizingPrediction(
-            bucket="SMALL", pot_ratio=0.80,
+            bucket="SMALL", pot_ratio=0.33,
             confidence=0.88, method="model",
         )
         assert pred.bucket == "SMALL"
-        assert pred.pot_ratio == 0.80
+        assert pred.pot_ratio == 0.33
         assert pred.confidence == 0.88
         assert pred.method == "model"
 
     def test_heuristic_method(self):
         pred = SizingPrediction(
-            bucket="STANDARD", pot_ratio=0.75,
+            bucket="LARGE", pot_ratio=0.75,
             confidence=1.0, method="heuristic",
         )
         assert pred.method == "heuristic"
         assert pred.confidence == 1.0
 
 
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-# ORACLE PREDICTION TESTS â€” NON-SIZED ACTIONS
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# ═══════════════════════════════════════════════════════════════════
+# ORACLE PREDICTION TESTS — NON-SIZED ACTIONS
+# ═══════════════════════════════════════════════════════════════════
 
 class TestNonSizedActions:
     """predict() returns None for FOLD/CHECK/CALL."""
@@ -320,9 +317,9 @@ class TestNonSizedActions:
         assert result is None
 
 
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-# ORACLE PREDICTION TESTS â€” RAISE (MODEL)
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# ═══════════════════════════════════════════════════════════════════
+# ORACLE PREDICTION TESTS — RAISE (MODEL)
+# ═══════════════════════════════════════════════════════════════════
 
 class TestRaisePrediction:
     """Raise sizing predictions via XGBoost model."""
@@ -347,6 +344,27 @@ class TestRaisePrediction:
         result = oracle.predict(_make_features(), "RAISE")
         assert result.pot_ratio == RAISE_BUCKET_MIDPOINTS[result.bucket]
 
+    def test_small_raise_pot_ratio(self, oracle):
+        """SMALL raise bucket must use 0.33 pot ratio."""
+        # Run enough predictions to get a SMALL result
+        for spr in [0.5, 1.0, 2.0, 5.0, 10.0]:
+            result = oracle.predict(_make_features(spr=spr), "RAISE")
+            if result.bucket == "SMALL":
+                assert result.pot_ratio == 0.33
+                return
+        # If no SMALL produced, just verify LARGE pot_ratio
+        result = oracle.predict(_make_features(), "RAISE")
+        if result.bucket == "LARGE":
+            assert result.pot_ratio == 0.66
+
+    def test_large_raise_pot_ratio(self, oracle):
+        """LARGE raise bucket must use 0.66 pot ratio."""
+        for spr in [0.5, 1.0, 2.0, 5.0, 10.0]:
+            result = oracle.predict(_make_features(spr=spr), "RAISE")
+            if result.bucket == "LARGE":
+                assert result.pot_ratio == 0.66
+                return
+
     def test_lowercase_action(self, oracle):
         result = oracle.predict(_make_features(), "raise")
         assert isinstance(result, SizingPrediction)
@@ -368,21 +386,20 @@ class TestRaisePrediction:
 
     def test_different_scenarios_can_differ(self, oracle):
         """Different feature inputs can produce different buckets."""
-        # Small pot, deep stacks â†’ might differ from large pot, shallow
         f1 = _make_features(pot_size=6.0, spr=16.67, facing_bet=0.0,
                             to_call=0.0, pot_odds=0.0, bet_to_pot=0.0)
         f2 = _make_features(pot_size=150.0, spr=0.67, facing_bet=1.0,
                             to_call=50.0, pot_odds=0.25, bet_to_pot=0.33)
         r1 = oracle.predict(f1, "RAISE")
         r2 = oracle.predict(f2, "RAISE")
-        # We can't guarantee they differ, but both must be valid
+        # Both must be valid even if they happen to be the same
         assert r1.bucket in RAISE_BUCKETS
         assert r2.bucket in RAISE_BUCKETS
 
 
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-# ORACLE PREDICTION TESTS â€” BET (HEURISTIC)
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# ═══════════════════════════════════════════════════════════════════
+# ORACLE PREDICTION TESTS — BET (HEURISTIC)
+# ═══════════════════════════════════════════════════════════════════
 
 class TestBetPrediction:
     """Bet sizing predictions via heuristic rule."""
@@ -396,47 +413,66 @@ class TestBetPrediction:
         assert result.method == "heuristic"
 
     def test_confidence_is_one(self, oracle):
-        """Heuristic has no probability â€” always 1.0."""
+        """Heuristic has no probability — always 1.0."""
         result = oracle.predict(_make_features(), "BET")
         assert result.confidence == 1.0
 
     def test_bucket_is_valid(self, oracle):
         result = oracle.predict(_make_features(), "BET")
-        assert result.bucket in ("SMALL", "STANDARD")
+        assert result.bucket in ("SMALL", "LARGE")
 
     def test_pot_ratio_matches_bucket(self, oracle):
         result = oracle.predict(_make_features(), "BET")
         assert result.pot_ratio == BET_BUCKET_MIDPOINTS[result.bucket]
 
     def test_flop_deep_is_small(self, oracle):
-        """Flop (street=0) + deep stacks (SPR > 5) â†’ SMALL bet."""
+        """Flop (street=0) + deep stacks (SPR > 5) → SMALL bet."""
         features = _make_features(street=0.0, spr=10.0)
         result = oracle.predict(features, "BET")
         assert result.bucket == "SMALL"
 
-    def test_flop_shallow_is_standard(self, oracle):
-        """Flop but shallow (SPR â‰¤ 5) â†’ STANDARD."""
+    def test_flop_deep_small_pot_ratio(self, oracle):
+        """Flop SMALL bet uses 0.25 pot ratio (solver-aligned flop sizing)."""
+        features = _make_features(street=0.0, spr=10.0)
+        result = oracle.predict(features, "BET")
+        assert result.bucket == "SMALL"
+        assert result.pot_ratio == 0.25
+
+    def test_flop_shallow_is_large(self, oracle):
+        """Flop but shallow (SPR <= 5) → LARGE."""
         features = _make_features(street=0.0, spr=3.0)
         result = oracle.predict(features, "BET")
-        assert result.bucket == "STANDARD"
+        assert result.bucket == "LARGE"
 
-    def test_flop_spr_exactly_5_is_standard(self, oracle):
-        """SPR == 5.0 is NOT > 5.0, so â†’ STANDARD."""
+    def test_flop_spr_exactly_5_is_large(self, oracle):
+        """SPR == 5.0 is NOT > 5.0, so → LARGE."""
         features = _make_features(street=0.0, spr=5.0)
         result = oracle.predict(features, "BET")
-        assert result.bucket == "STANDARD"
+        assert result.bucket == "LARGE"
 
-    def test_turn_deep_is_standard(self, oracle):
-        """Turn (street=1) â†’ STANDARD regardless of SPR."""
+    def test_turn_deep_is_large(self, oracle):
+        """Turn (street=1) → LARGE regardless of SPR."""
         features = _make_features(street=1.0, spr=15.0)
         result = oracle.predict(features, "BET")
-        assert result.bucket == "STANDARD"
+        assert result.bucket == "LARGE"
 
-    def test_river_deep_is_standard(self, oracle):
-        """River (street=2) â†’ STANDARD."""
+    def test_turn_large_pot_ratio(self, oracle):
+        """Turn LARGE bet uses 0.75 pot ratio."""
+        features = _make_features(street=1.0, spr=15.0)
+        result = oracle.predict(features, "BET")
+        assert result.pot_ratio == 0.75
+
+    def test_river_deep_is_large(self, oracle):
+        """River (street=2) → LARGE."""
         features = _make_features(street=2.0, spr=20.0)
         result = oracle.predict(features, "BET")
-        assert result.bucket == "STANDARD"
+        assert result.bucket == "LARGE"
+
+    def test_river_large_pot_ratio(self, oracle):
+        """River LARGE bet uses 0.75 pot ratio."""
+        features = _make_features(street=2.0, spr=20.0)
+        result = oracle.predict(features, "BET")
+        assert result.pot_ratio == 0.75
 
     def test_lowercase_action(self, oracle):
         result = oracle.predict(_make_features(), "bet")
@@ -444,9 +480,9 @@ class TestBetPrediction:
         assert result.method == "heuristic"
 
 
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# ═══════════════════════════════════════════════════════════════════
 # CONVENIENCE WRAPPER TESTS
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# ═══════════════════════════════════════════════════════════════════
 
 class TestPredictFromDict:
     """Test predict_from_dict() convenience method."""
@@ -494,9 +530,9 @@ class TestFeaturesFromDict:
         assert arr[2] == 42.0    # pot_size is third column
 
 
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# ═══════════════════════════════════════════════════════════════════
 # MODEL LOADING / VALIDATION TESTS
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# ═══════════════════════════════════════════════════════════════════
 
 class TestModelLoading:
     """Test model loading and validation."""
@@ -504,24 +540,30 @@ class TestModelLoading:
     def test_model_loads(self, oracle):
         assert oracle.raise_model is not None
 
-    def test_model_has_correct_classes(self, oracle):
-        assert oracle.raise_model.n_classes_ == N_RAISE_CLASSES
+    def test_model_accepts_legacy_3class(self, oracle):
+        """
+        The oracle now supports legacy 3-class models via _legacy_3class flag.
+        A loaded model with n_classes_ == 3 should NOT raise ValueError;
+        the oracle maps STANDARD→LARGE internally.
+        """
+        # The loaded model may be 3-class or 2-class — either is valid
+        assert oracle.raise_model.n_classes_ in (2, 3)
 
     def test_invalid_path_raises(self):
         with pytest.raises(Exception):
             SizingOracle("/nonexistent/model.json")
 
 
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# ═══════════════════════════════════════════════════════════════════
 # EDGE CASE TESTS
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# ═══════════════════════════════════════════════════════════════════
 
 class TestEdgeCases:
     """Edge cases and boundary conditions."""
 
     def test_zero_features(self, oracle):
         """All-zero features don't crash."""
-        features = np.zeros(38, dtype=np.float32)
+        features = np.zeros(48, dtype=np.float32)
         result = oracle.predict(features, "RAISE")
         assert isinstance(result, SizingPrediction)
 
@@ -547,18 +589,18 @@ class TestEdgeCases:
         assert result is None
 
 
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# ═══════════════════════════════════════════════════════════════════
 # TEACHING LAYER CONTRACT TESTS
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# ═══════════════════════════════════════════════════════════════════
 
 class TestTeachingContract:
     """
     Verify the contract the teaching layer depends on.
 
     The teaching layer expects:
-      - size_bucket: Optional[str] â€” None for non-sized, string for sized
-      - Raise bucket strings are exactly "SMALL", "STANDARD", or "LARGE"
-      - Bet bucket strings are exactly "SMALL" or "STANDARD"
+      - size_bucket: Optional[str] — None for non-sized, string for sized
+      - Raise bucket strings are exactly "SMALL" or "LARGE"
+      - Bet bucket strings are exactly "SMALL" or "LARGE"
       - pot_ratio is always a float > 0
       - method is "model" or "heuristic"
     """
@@ -578,11 +620,11 @@ class TestTeachingContract:
 
     def test_raise_bucket_in_expected_set(self, oracle):
         result = oracle.predict(_make_features(), "RAISE")
-        assert result.bucket in {"SMALL", "STANDARD", "LARGE"}
+        assert result.bucket in {"SMALL", "LARGE"}
 
     def test_bet_bucket_in_expected_set(self, oracle):
         result = oracle.predict(_make_features(), "BET")
-        assert result.bucket in {"SMALL", "STANDARD"}
+        assert result.bucket in {"SMALL", "LARGE"}
 
     def test_pot_ratio_is_positive_float(self, oracle):
         for action in ("BET", "RAISE"):

@@ -1,30 +1,38 @@
 """
-Sizing Oracle â€" raise sizing and bet sizing predictions.
+Sizing Oracle — raise sizing and bet sizing predictions.
 
 Separate from the action oracle (gto_model.py). Predicts the appropriate
-sizing bucket for BET and RAISE actions using the same 37 features.
+sizing bucket for BET and RAISE actions using the same feature set.
 
-Raise sizing: XGBoost 3-class classifier â†' SMALL / STANDARD / LARGE
-Bet sizing:   Heuristic rule â†' SMALL / STANDARD (89% of bets are STANDARD)
+Sizes are aligned to GTO Wizard solver options so that training data,
+test sets, and solver verification all use the same sizing language.
+
+Bet sizing:   Street-dependent heuristic → SMALL / LARGE
+  Flop:  SMALL = 25% pot,  LARGE = 66% pot
+  Turn:  SMALL = 33% pot,  LARGE = 75% pot
+  River: SMALL = 33% pot,  LARGE = 75% pot
+
+Raise sizing: 2-class (SMALL / LARGE), uniform across streets
+  SMALL = 33% pot,  LARGE = 66% pot
 
 Usage:
     oracle = SizingOracle("/path/to/raise_sizing_model.json")
     result = oracle.predict(feature_array, action="RAISE")
     result.bucket       # "LARGE"
-    result.pot_ratio    # 1.50
+    result.pot_ratio    # 0.66
     result.confidence   # 0.94
 
     result = oracle.predict(feature_array, action="BET")
-    result.bucket       # "STANDARD"
-    result.pot_ratio    # 0.75
+    result.bucket       # "SMALL"
+    result.pot_ratio    # 0.25  (flop) or 0.33 (turn/river)
 
     result = oracle.predict(feature_array, action="FOLD")
-    # â†' None
+    # → None
 
 Contract with teaching layer:
     size_bucket: Optional[str]   # None for FOLD/CHECK/CALL
-                                  # "SMALL" / "STANDARD" / "LARGE" for RAISE
-                                  # "SMALL" / "STANDARD" for BET
+                                  # "SMALL" / "LARGE" for RAISE
+                                  # "SMALL" / "LARGE" for BET
 
 Performance:
     Model load: ~50ms (one-time)
@@ -41,38 +49,41 @@ from typing import Dict, Optional
 # CONSTANTS
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-# Raise bucket definitions
-RAISE_BUCKETS = ("SMALL", "STANDARD", "LARGE")
+# Raise bucket definitions (2-class, solver-aligned)
+RAISE_BUCKETS = ("SMALL", "LARGE")
 RAISE_BUCKET_TO_INT = {b: i for i, b in enumerate(RAISE_BUCKETS)}
 INT_TO_RAISE_BUCKET = {i: b for i, b in enumerate(RAISE_BUCKETS)}
 N_RAISE_CLASSES = len(RAISE_BUCKETS)
 
-# Raise bucket boundaries (pot-ratio thresholds)
-#   SMALL:    pot_ratio < 1.00   (~2x-2.2x raise, ~31% of GTO raises)
-#   STANDARD: 1.00 â‰¤ ratio < 1.40 (~2.5x raise, ~47% of GTO raises)
-#   LARGE:    ratio â‰¥ 1.40       (3x+ raise, pot-sized or bigger)
-RAISE_SMALL_UPPER = 1.00
-RAISE_STANDARD_UPPER = 1.40
+# Raise bucket boundary (pot-ratio threshold)
+#   SMALL: pot_ratio < 0.50  (33% pot raise)
+#   LARGE: pot_ratio >= 0.50 (66% pot raise)
+RAISE_SMALL_UPPER = 0.50
 
-# Bet bucket definitions
-BET_BUCKETS = ("SMALL", "STANDARD")
+# Bet bucket definitions (2-class, solver-aligned)
+BET_BUCKETS = ("SMALL", "LARGE")
 
-# Bet bucket boundaries (pot-ratio thresholds)
-#   SMALL:    pot_ratio < 0.60  (~11% of GTO bets â€" flop probes, small pots)
-#   STANDARD: ratio â‰¥ 0.60     (~89% â€" the default, ~75% pot)
-BET_SMALL_UPPER = 0.60
+# Bet bucket boundary (pot-ratio threshold)
+#   SMALL: pot_ratio < 0.45  (25% flop / 33% turn+river)
+#   LARGE: pot_ratio >= 0.45 (66% flop / 75% turn+river)
+BET_SMALL_UPPER = 0.45
 
-# Pot-ratio midpoints per bucket (for teaching layer display)
+# Raise midpoints — uniform across all streets (solver: 33% and 66%)
 RAISE_BUCKET_MIDPOINTS = {
-    "SMALL":    0.80,   # ~2.2x raise
-    "STANDARD": 1.20,   # ~2.5x raise
-    "LARGE":    1.50,   # ~3x raise
+    "SMALL": 0.33,
+    "LARGE": 0.66,
 }
 
-BET_BUCKET_MIDPOINTS = {
-    "SMALL":    0.40,   # ~40% pot
-    "STANDARD": 0.75,   # ~75% pot
+# Bet midpoints — street-dependent (solver options differ by street)
+# Flop: 25% / 66%  |  Turn: 33% / 75%  |  River: 33% / 75%
+BET_BUCKET_MIDPOINTS_BY_STREET = {
+    0: {"SMALL": 0.25, "LARGE": 0.66},   # flop
+    1: {"SMALL": 0.33, "LARGE": 0.75},   # turn
+    2: {"SMALL": 0.33, "LARGE": 0.75},   # river
 }
+
+# Fallback for callers that don't pass street (uses turn/river values)
+BET_BUCKET_MIDPOINTS = {"SMALL": 0.33, "LARGE": 0.75}
 
 # Actions that have sizing
 SIZED_ACTIONS = frozenset({"BET", "RAISE"})
@@ -136,11 +147,11 @@ class SizingOracle:
     """
     Sizing prediction for BET and RAISE actions.
 
-    - RAISE: XGBoost 3-class model (SMALL / STANDARD / LARGE)
-    - BET:   Heuristic rule (SMALL / STANDARD)
+    - RAISE: XGBoost 2-class model (SMALL / LARGE) or legacy 3-class
+    - BET:   Heuristic rule (SMALL / LARGE), street-dependent midpoints
     - FOLD/CHECK/CALL: Returns None
 
-    Completely separate from GtoOracle â€" no shared state, no coupling.
+    Completely separate from GtoOracle — no shared state, no coupling.
     Thread-safe for read-only prediction after initialization.
     """
 
@@ -153,22 +164,17 @@ class SizingOracle:
 
         Raises:
             FileNotFoundError: If model file doesn't exist.
-            ValueError: If model has wrong number of classes.
         """
         import xgboost as xgb
         self._raise_model = xgb.XGBClassifier()
         self._raise_model.load_model(raise_model_path)
 
-        # Auto-detect feature width for backwards compatibility (v8=38, v9=45)
         self._n_features = getattr(
             self._raise_model, 'n_features_in_', len(FEATURE_COLUMNS)
         )
 
-        if self._raise_model.n_classes_ != N_RAISE_CLASSES:
-            raise ValueError(
-                f"Raise model has {self._raise_model.n_classes_} classes, "
-                f"expected {N_RAISE_CLASSES}"
-            )
+        # Support both legacy 3-class and new 2-class models
+        self._legacy_3class = (self._raise_model.n_classes_ == 3)
 
     def predict(
         self,
@@ -224,8 +230,15 @@ class SizingOracle:
         X = self._ensure_2d(features)
         probs = self._raise_model.predict_proba(X)[0]
         bucket_idx = int(np.argmax(probs))
-        bucket = INT_TO_RAISE_BUCKET[bucket_idx]
-        confidence = float(probs[bucket_idx])
+
+        if self._legacy_3class:
+            # Legacy 3-class model: map SMALL→SMALL, STANDARD→LARGE, LARGE→LARGE
+            legacy_map = {0: "SMALL", 1: "LARGE", 2: "LARGE"}
+            bucket = legacy_map[bucket_idx]
+            confidence = float(probs[bucket_idx])
+        else:
+            bucket = INT_TO_RAISE_BUCKET[bucket_idx]
+            confidence = float(probs[bucket_idx])
 
         return SizingPrediction(
             bucket=bucket,
@@ -238,24 +251,29 @@ class SizingOracle:
         """
         Heuristic prediction for bet sizing.
 
-        Rule: Flop bets with deep stacks (SPR > 5) â†' SMALL, else STANDARD.
-        Based on data analysis: 89% of GTO bets are 50-90% pot (STANDARD),
-        the remaining 11% are flop probes at lower sizing.
+        Rule: Flop bets with deep stacks (SPR > 5) → SMALL, else LARGE.
+        Street-dependent midpoints aligned to GTO Wizard solver options:
+          Flop:  SMALL = 25% pot,  LARGE = 66% pot
+          Turn:  SMALL = 33% pot,  LARGE = 75% pot
+          River: SMALL = 33% pot,  LARGE = 75% pot
         """
         flat = features.ravel()
-        street = float(flat[_STREET_IDX])
+        street = int(float(flat[_STREET_IDX]))
         spr = float(flat[_SPR_IDX])
 
-        # street == 0.0 means flop in our encoding
-        if street == 0.0 and spr > 5.0:
+        if street == 0 and spr > 5.0:
             bucket = "SMALL"
         else:
-            bucket = "STANDARD"
+            bucket = "LARGE"
+
+        midpoints = BET_BUCKET_MIDPOINTS_BY_STREET.get(
+            street, BET_BUCKET_MIDPOINTS
+        )
 
         return SizingPrediction(
             bucket=bucket,
-            pot_ratio=BET_BUCKET_MIDPOINTS[bucket],
-            confidence=1.0,  # Heuristic â€" no probability distribution
+            pot_ratio=midpoints[bucket],
+            confidence=1.0,
             method="heuristic",
         )
 
@@ -291,12 +309,10 @@ def assign_raise_bucket(pot_ratio: float) -> str:
         pot_ratio: raise_size / pot_size
 
     Returns:
-        "SMALL", "STANDARD", or "LARGE"
+        "SMALL" or "LARGE"
     """
     if pot_ratio < RAISE_SMALL_UPPER:
         return "SMALL"
-    elif pot_ratio < RAISE_STANDARD_UPPER:
-        return "STANDARD"
     else:
         return "LARGE"
 
@@ -309,9 +325,9 @@ def assign_bet_bucket(pot_ratio: float) -> str:
         pot_ratio: bet_size / pot_size
 
     Returns:
-        "SMALL" or "STANDARD"
+        "SMALL" or "LARGE"
     """
     if pot_ratio < BET_SMALL_UPPER:
         return "SMALL"
     else:
-        return "STANDARD"
+        return "LARGE"
