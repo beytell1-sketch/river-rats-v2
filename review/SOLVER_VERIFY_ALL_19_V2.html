@@ -118,9 +118,11 @@
 <div class="toc">
   <h2>Solver Verification — Facing-Bet Test Set (V2, All 19 Situations)</h2>
   <p style="font-size:13px;color:#555;margin-bottom:16px;">
-    Action-order audit corrections applied. 5 of 19 situations have corrected action sequences.
+    Action-order audit corrections applied. 7 of 19 situations have corrected action sequences.
     2 labels flipped (FB-15 FOLD&rarr;CALL, FB-35 FOLD&rarr;CALL).
     FB-21 reclassified as OOP-closing. Date: 2026-04-12.
+    Missing-check audit (2026-04-12): 3 additional fixes — FB-18 (BB check→fold corrected on turn),
+    FB-35 (CO check added on turn), FB-37 (CO check added on turn).
   </p>
   <div class="toc-grid">
     <div class="toc-item">
@@ -161,6 +163,7 @@
     <div class="toc-item">
       <a href="#fb18">FB-18</a>
       <span class="toc-label">CALL MEDIUM</span>
+      <span class="amended-badge">AMENDED</span>
     </div>
     <div class="toc-item">
       <a href="#fb20">FB-20</a>
@@ -199,6 +202,7 @@
     <div class="toc-item">
       <a href="#fb37">FB-37</a>
       <span class="toc-label">CALL MEDIUM</span>
+      <span class="amended-badge">AMENDED</span>
     </div>
     <div class="toc-item">
       <a href="#fb38">FB-38</a>
@@ -693,12 +697,18 @@
 
 
 <!-- ============================================================ -->
-<!-- FB-18  CALL MEDIUM — unchanged                               -->
+<!-- FB-18  CALL MEDIUM — AMENDED action sequence                  -->
 <!-- ============================================================ -->
 <div class="page" id="fb18">
 
   <h1>Solver Verification — FB-18</h1>
   <div class="hero-info">Hero: BTN (IP, closing action) &nbsp;|&nbsp; Label: CALL &nbsp;|&nbsp; Confidence: MEDIUM</div>
+  <div class="amended-notice">
+    ACTION SEQUENCE CORRECTED — Missing-check audit 2026-04-12: Turn sequence showed BB: Fold before
+    CO bets, which is impossible (a player cannot fold without facing a bet). Correct sequence:
+    BB checks the turn, CO bets, BB folds facing the bet, BTN closes action. BB's check and the
+    fold reordering have been added. Label and confidence unchanged.
+  </div>
 
   <div class="label-small">Hero cards:</div>
   <div class="card-row">
@@ -730,8 +740,9 @@
     <div class="action-line"><span class="pos">BB:</span><span class="act act-check">Check (flop)</span></div>
     <div class="action-line"><span class="pos">CO:</span><span class="act act-check">Check (flop)</span></div>
     <div class="action-line"><span class="pos">BTN:</span><span class="act act-check">Check (flop)</span></div>
-    <div class="action-line"><span class="pos">BB:</span><span class="act act-fold">Fold (turn)</span></div>
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-check">Check (turn)</span></div>
     <div class="action-line"><span class="pos">CO:</span><span class="act act-bet">Bet 60 into 90 (turn)</span></div>
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-fold">Fold</span></div>
     <div class="action-line"><span class="pos">BTN:</span><span class="act act-hero">??? (HERO DECISION — closes action)</span></div>
   </div>
 
@@ -1173,6 +1184,7 @@
     <div class="action-line"><span class="pos">BB:</span><span class="act act-call">Call 30</span></div>
     <div class="action-line"><span class="pos">CO:</span><span class="act act-call">Call 30</span></div>
     <div class="action-line"><span class="pos">BB:</span><span class="act act-check">Check (turn)</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-check">Check (turn)</span></div>
     <div class="action-line"><span class="pos">BTN:</span><span class="act act-bet">Bet 90 into 150 (turn)</span></div>
     <div class="action-line"><span class="pos">BB:</span><span class="act act-fold">Fold</span></div>
     <div class="action-line"><span class="pos">CO:</span><span class="act act-hero">??? (HERO DECISION — closes action)</span></div>
@@ -1271,12 +1283,19 @@
 
 
 <!-- ============================================================ -->
-<!-- FB-37  CALL MEDIUM — unchanged                               -->
+<!-- FB-37  CALL MEDIUM — AMENDED action sequence                  -->
 <!-- ============================================================ -->
 <div class="page" id="fb37">
 
   <h1>Solver Verification — FB-37</h1>
   <div class="hero-info">Hero: CO (OOP, closing action) &nbsp;|&nbsp; Label: CALL &nbsp;|&nbsp; Confidence: MEDIUM</div>
+  <div class="amended-notice">
+    ACTION SEQUENCE CORRECTED — Missing-check audit 2026-04-12: Turn sequence showed BTN betting
+    immediately after BB checks, skipping CO's required check. In a 3-way BTN-opens pot
+    (BB&rarr;CO&rarr;BTN), all active players act in order on each new street. CO must check
+    before BTN can bet. CO: Check (turn) added between BB's check and BTN's bet.
+    Label and confidence unchanged. Hero decision note updated to reflect all three checked.
+  </div>
 
   <div class="label-small">Hero cards:</div>
   <div class="card-row">
@@ -1287,7 +1306,7 @@
   <hr class="sep">
 
   <div class="section-label">1. Positions</div>
-  <div class="positions">CO (hero, OOP) &larr; BTN (bettor) &nbsp;&nbsp;[BB already checked]</div>
+  <div class="positions">CO (hero, OOP) &larr; BTN (bettor) &nbsp;&nbsp;[BB checked, CO checked — BTN bets, CO closes action]</div>
   <div class="preflop">Preflop: BTN opens, CO (hero) calls, BB calls</div>
 
   <br>
@@ -1307,8 +1326,9 @@
   <div class="actions">
     <div class="action-line"><span class="pos">All:</span><span class="act act-check">Check (flop)</span></div>
     <div class="action-line"><span class="pos">BB:</span><span class="act act-check">Check (turn)</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-check">Check (turn)</span></div>
     <div class="action-line"><span class="pos">BTN:</span><span class="act act-bet">Bet 60 into 90 (turn)</span></div>
-    <div class="action-line"><span class="pos">CO:</span><span class="act act-hero">??? (HERO DECISION — BB already checked, hero closes action)</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-hero">??? (HERO DECISION — BB checked, CO checked, BTN bets — CO closes action)</span></div>
   </div>
 
   <div class="decision-box">
