@@ -447,7 +447,7 @@ unnarrowed ranges. This is action-implied range narrowing.
 **Opener position:** CO
 **Bettor position:** CO
 
-**Action history:** CO opens, BTN (hero) calls, BB calls. Flop AQ5r: BB checks, hero bets 30, CO raises to 90. BB folds.
+**Action history:** CO opens, BTN (hero) calls, BB calls. Flop AQ5r: BB checks, CO checks, BTN (hero) bets 30, BB folds, CO raises to 90. Hero faces CO's raise.
 
 **GTO OVERRIDE:** Action FOLD overrides raw equity signal of 0.653 (massively above 0.222 pot odds).
 Reason: CO's check-raise on AQ5r in a pot that started 3-way is the most polarized,
@@ -515,7 +515,7 @@ has narrowed to hands that crush you. This is the core of Axis 5 (Aggression Res
 **Opener position:** CO
 **Bettor position:** None
 
-**Action history:** CO (hero) opens, BTN calls, BB calls. Flop J94r: BB checks, BTN checks. Hero acts.
+**Action history:** CO (hero) opens, BTN calls, BB calls. Flop J94r: BB checks. Hero acts. (BTN acts after hero — initiative order BB→CO→BTN.)
 
 ---
 
