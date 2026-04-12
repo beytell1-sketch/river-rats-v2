@@ -401,7 +401,9 @@ def adjust(pred, feat_dict: dict, num_opponents: int,
                                  num_opponents, adjustment_confidence)
 
     # Rule 4: Draw check (OOP semi-bluff suppression)
-    if action == "BET" and draw_outs > 0:
+    # Skip on river — draw outs are meaningless when no cards remain.
+    street = feat_dict.get(F.STREET, 0)
+    if action == "BET" and draw_outs > 0 and street < 2:
         if not is_ip:
             # Monster draw exception: 12+ outs with 40%+ realized equity
             if draw_outs >= r4_monster_outs and realized_equity >= r4_monster_eq:

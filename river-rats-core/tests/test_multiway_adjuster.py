@@ -889,6 +889,46 @@ class TestRule4EquityException:
     def test_rule4_equity_exception_constant_value(self):
         assert RULE4_EQUITY_EXCEPTION == 0.65
 
+    def test_river_draw_outs_skips_draw_check_oop(self):
+        """River BET with draw_outs > 0 OOP must NOT trigger draw_check.
+        Draw outs are meaningless on the river (no cards left to improve).
+        street=2 is river."""
+        feat = _make_feat_dict(
+            equity_vs_range=0.65, raw_equity=0.65,
+            draw_outs=4, is_ip=0, street=2,
+        )
+        result = adjust(_pred("BET"), feat, num_opponents=2)
+        assert result.adjustment_reason != "draw_check"
+        assert result.adjusted_action != "CHECK" or result.adjustment_reason != "draw_check"
+
+    def test_river_draw_outs_skips_draw_check_ip(self):
+        """River BET with insufficient IP draw_outs must NOT trigger draw_check.
+        Same logic: draw outs meaningless on the river. street=2 is river."""
+        feat = _make_feat_dict(
+            equity_vs_range=0.65, raw_equity=0.65,
+            draw_outs=3, is_ip=1, street=2,
+        )
+        result = adjust(_pred("BET"), feat, num_opponents=2)
+        assert result.adjustment_reason != "draw_check"
+
+    def test_turn_draw_outs_still_triggers_draw_check_oop(self):
+        """Turn BET with draw_outs OOP still triggers draw_check (street=1)."""
+        feat = _make_feat_dict(
+            equity_vs_range=0.65, raw_equity=0.65,
+            draw_outs=4, is_ip=0, street=1,
+        )
+        result = adjust(_pred("BET"), feat, num_opponents=2)
+        assert result.adjustment_reason == "draw_check"
+
+    def test_flop_draw_outs_still_triggers_draw_check_oop(self):
+        """Flop BET with draw_outs OOP still triggers draw_check (street=0)."""
+        feat = _make_feat_dict(
+            equity_vs_range=0.65, raw_equity=0.65,
+            draw_outs=4, is_ip=0, street=0,
+        )
+        result = adjust(_pred("BET"), feat, num_opponents=2)
+        assert result.adjustment_reason == "draw_check"
+
 
 # ---------------------------------------------------------------------------
 # 15. RAISE_PER_OPPONENT scaling tests

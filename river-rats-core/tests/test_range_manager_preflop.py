@@ -391,3 +391,28 @@ class TestNoKeyErrorGate:
         rm = RangeManager()
         for pos in POSITIONS_6MAX:
             rm.get_fourbet_range(pos)
+
+
+class TestNoDuplicateMethods:
+    """Paranoia: catch duplicate method definitions in RangeManager.
+
+    Python silently resolves duplicate class methods to the last definition.
+    A stale duplicate of get_3bet_range() caused a real bug (Phase B, commit
+    1f9f739) where get_defend_range() silently called the wrong definition
+    and returned ranges from a dead dict. This test prevents recurrence."""
+
+    def test_no_duplicate_method_names(self):
+        import inspect
+        source = inspect.getsource(RangeManager)
+        import re
+        defs = re.findall(r'^\s+def\s+(\w+)\s*\(', source, re.MULTILINE)
+        seen = {}
+        duplicates = []
+        for name in defs:
+            if name in seen:
+                duplicates.append(name)
+            seen[name] = True
+        assert duplicates == [], (
+            f"RangeManager has duplicate method definitions: {duplicates}. "
+            f"Python resolves to the last definition, silently shadowing earlier ones."
+        )
