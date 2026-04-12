@@ -122,3 +122,22 @@ the mismatch. Only inconclusive hands (FB-27 type) need redoing.
 | **Adjusted** | FB-25 | CALL confirmed — hero changed to Jd7d |
 | **Inconclusive** | FB-27 | Accept either CALL or RAISE — sizing mismatch, needs redo with correct sizing |
 | Confirmed | FB-29 | CALL — BB bet 25%, hero calls from CO |
+| Confirmed | FB-35 | CALL (high certainty) — K9 diamonds, CO closing action |
+| Confirmed | FB-36 | CALL |
+| **Sequence error** | FB-37 | CALL (certainly) — but wrong sequence AGAIN in HTML |
+| Confirmed | FB-38 | CALL — had to use 150% bet (pot-sized not available). At 75% solver says RAISE. Pot-sized would be raise or call. |
+
+## FB-38 sizing note
+Solver could not model pot-sized bet. At 150% bet (closest available),
+solver says CALL. At 75% bet, solver says RAISE. The actual pot-sized
+bet likely falls between — accept either CALL or RAISE.
+
+## FB-37 sequence error (THIRD TIME)
+Despite two prior fixes, FB-37 still has an incorrect action sequence
+in the HTML. This is the third time a sequence error has been found
+in hand-written specs. Owner directive: build a code validation tool
+that programmatically enforces correct poker action sequences. No
+more manual sequence writing without machine validation.
+
+## Remaining
+| Outstanding | FB-20 | Not yet verified |
