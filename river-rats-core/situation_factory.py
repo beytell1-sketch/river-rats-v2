@@ -45,6 +45,7 @@ if _CORE not in sys.path:
     sys.path.insert(0, _CORE)
 
 from game_state_bridge import build_features_from_game_state
+from hand_sequence_validator import validate_action_string as _hsv_validate_action_string
 
 # Postflop acting order — SB first (OOP), BTN last (IP).
 # Used by validate_action_sequence().
@@ -524,5 +525,43 @@ def validate_situation(spec: SituationSpec, feat_dict: dict) -> List[str]:
                 f"{label} MISMATCH: expected {expected}, got {actual} "
                 f"(primary_vp={primary_vp})"
             )
+
+    # 5. Hand sequence validator — deep structural check of the current-street
+    #    postflop action sequence (ordering, bet legality, initiative round).
+    #
+    #    We reconstruct an action string from the current-street actions in
+    #    spec.action_history.  The hero decision point is implied (not yet
+    #    acted): we append "hero_pos ???" to let the validator know where hero
+    #    will act.  Errors from this validator are prefixed HSV: so callers
+    #    can distinguish them from the feature-level checks above.
+    #
+    #    NOTE: validate_action_sequence() already catches basic ordering on
+    #    prior streets.  The HSV call below adds:
+    #      - Bet-legality (fold/call/raise without a live bet)
+    #      - Response ordering after a bet (clockwise from bettor)
+    #      - Hero-action-index consistency
+    current_street_acts = [
+        (pos, act)
+        for s, pos, act in spec.action_history
+        if s == spec.street
+    ]
+    if current_street_acts:
+        # Build comma-separated action string from current-street history,
+        # then append the hero's pending decision as "HERO ???"
+        parts = []
+        for pos, act in current_street_acts:
+            parts.append(f"{pos} {act}")
+        parts.append(f"{spec.hero_pos} ???")
+        action_string = ', '.join(parts)
+
+        all_positions = [spec.hero_pos] + list(spec.villain_positions)
+        hsv_errors = _hsv_validate_action_string(
+            all_positions,
+            spec.street,
+            action_string,
+            spec.hero_pos,
+        )
+        for e in hsv_errors:
+            errors.append(f"HSV: {e}")
 
     return errors
