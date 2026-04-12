@@ -38,6 +38,11 @@ def _extract_3way_decisions(decisions, deal_id):
             continue
         if dec.feat_dict is None:
             continue
+        # Oracle can predict FOLD on a check-or-bet street (facing_bet=False).
+        # This is a model error — folding for free is illegal in real poker and
+        # produces corrupted training data (FOLD with no bet to face). Skip it.
+        if dec.oracle_action.upper() == 'FOLD' and not dec.facing_bet:
+            continue
 
         pos = dec.player_position
         prior = []
