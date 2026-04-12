@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solver Verification — All 19 Facing-Bet Hands</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Helvetica, Arial, sans-serif; background: #f5f5f5; color: #222; }
+
+  /* TABLE OF CONTENTS */
+  .toc-page {
+    max-width: 700px; margin: 30px auto; background: #fff;
+    padding: 40px 45px; border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    page-break-after: always;
+  }
+  .toc-page h1 { font-size: 22px; margin-bottom: 6px; }
+  .toc-subtitle { font-size: 13px; color: #888; margin-bottom: 24px; }
+  .toc-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .toc-table th { text-align: left; padding: 6px 8px; border-bottom: 2px solid #ddd; color: #555; font-weight: 700; }
+  .toc-table td { padding: 5px 8px; border-bottom: 1px solid #eee; }
+  .toc-table tr:hover td { background: #fafafa; }
+  .toc-table a { color: #0066cc; text-decoration: none; }
+  .toc-table a:hover { text-decoration: underline; }
+  .label-raise { color: #cc0000; font-weight: 700; }
+  .label-call  { color: #006600; font-weight: 700; }
+  .label-fold  { color: #888; font-weight: 700; }
+  .flag-yes { color: #996600; font-weight: 700; }
+
+  /* HAND PAGES */
+  .page {
+    max-width: 700px; margin: 30px auto; background: #fff;
+    padding: 40px 45px; border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    page-break-after: always;
+  }
+  h1 { font-size: 24px; margin-bottom: 6px; }
+  .hero-info { font-size: 15px; color: #444; font-weight: 600; margin-bottom: 18px; }
+
+  .card-row { display: flex; gap: 8px; margin: 12px 0 20px 0; flex-wrap: wrap; }
+  .card {
+    width: 56px; height: 78px; border: 2px solid #aaa; border-radius: 6px;
+    background: #fff; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 700; line-height: 1.1;
+  }
+  .card .rank { font-size: 28px; }
+  .card .suit { font-size: 22px; }
+  .card.spade   { color: #111; }
+  .card.heart   { color: #cc0000; }
+  .card.diamond { color: #0066cc; }
+  .card.club    { color: #1a7a1a; }
+
+  .board-cards .card {
+    width: 68px; height: 94px;
+  }
+  .board-cards .card .rank { font-size: 34px; }
+  .board-cards .card .suit { font-size: 26px; }
+
+  .sep { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
+
+  .section-label { font-size: 15px; font-weight: 700; color: #111; margin-bottom: 6px; }
+  .positions { font-size: 14px; color: #333; margin-left: 12px; margin-bottom: 4px; }
+  .preflop { font-size: 13px; color: #888; margin-left: 12px; margin-bottom: 0; }
+
+  .street-header { font-size: 13px; font-weight: 700; color: #555; margin: 14px 0 4px 0; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  .actions { margin: 8px 0 0 12px; }
+  .action-line { font-size: 14px; margin-bottom: 4px; display: flex; gap: 8px; }
+  .action-line .pos { color: #555; min-width: 42px; font-weight: 600; }
+  .action-line .act { }
+  .act-bet   { color: #cc0000; font-weight: 600; }
+  .act-call  { color: #006600; }
+  .act-check { color: #777; }
+  .act-fold  { color: #999; }
+  .act-hero  { color: #cc0000; font-weight: 700; }
+
+  .decision-box {
+    border-top: 3px solid #cc0000; margin-top: 24px; padding-top: 16px;
+  }
+  .decision-title { font-size: 18px; font-weight: 700; color: #cc0000; margin-bottom: 8px; }
+  .decision-detail { font-size: 14px; color: #333; margin-bottom: 4px; margin-left: 12px; }
+  .expert-label { font-size: 16px; font-weight: 700; color: #006600; margin-top: 12px; }
+  .verify-q { font-size: 13px; color: #555; margin-top: 6px; margin-left: 12px; }
+
+  .solver-note { font-size: 13px; color: #666; margin-top: 8px; margin-left: 12px;
+    border-left: 3px solid #ccc; padding-left: 8px; }
+
+  .label-small { font-size: 13px; color: #777; margin-bottom: 4px; }
+
+  .red-flag {
+    background: #fffbcc; border: 1px solid #e6c300; border-radius: 5px;
+    padding: 10px 14px; margin-top: 16px; font-size: 13px; color: #7a5c00;
+  }
+  .red-flag strong { color: #5c3d00; }
+
+  .crossref {
+    background: #f0f4ff; border: 1px solid #a0b8e8; border-radius: 5px;
+    padding: 10px 14px; margin-top: 12px; font-size: 13px; color: #2a4080;
+  }
+
+  @media print {
+    body { background: #fff; }
+    .page { box-shadow: none; margin: 0; max-width: 100%; }
+    .toc-page { box-shadow: none; margin: 0; max-width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!--  TABLE OF CONTENTS                                           -->
+<!-- ============================================================ -->
+<div class="toc-page">
+  <h1>Solver Verification — All 19 Facing-Bet Hands</h1>
+  <div class="toc-subtitle">River Rats v2 &nbsp;|&nbsp; GTO Wizard verification set &nbsp;|&nbsp; 2026-04-12</div>
+
+  <table class="toc-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Street</th>
+        <th>Position</th>
+        <th>Hero Cards</th>
+        <th>Label</th>
+        <th>Conf.</th>
+        <th>Flag</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><a href="#fb04">FB-04</a></td><td>Flop</td><td>BB (sandwich)</td><td>A&#9827; T&#9827;</td><td class="label-raise">RAISE</td><td>HIGH</td><td class="flag-yes">&#9888; Semi-bluff raise</td></tr>
+      <tr><td><a href="#fb07">FB-07</a></td><td>Flop</td><td>CO (sandwich)</td><td>Q&#9830; Q&#9827;</td><td class="label-call">CALL</td><td>MEDIUM</td><td></td></tr>
+      <tr><td><a href="#fb08">FB-08</a></td><td>Flop</td><td>CO (sandwich)</td><td>A&#9829; K&#9830;</td><td class="label-call">CALL</td><td>MEDIUM</td><td></td></tr>
+      <tr><td><a href="#fb09">FB-09</a></td><td>Flop</td><td>BTN (IP)</td><td>K&#9829; J&#9829;</td><td class="label-raise">RAISE</td><td>MEDIUM</td><td></td></tr>
+      <tr><td><a href="#fb11">FB-11</a></td><td>Flop</td><td>BTN (IP)</td><td>K&#9829; Q&#9824;</td><td class="label-call">CALL</td><td>MEDIUM</td><td></td></tr>
+      <tr><td><a href="#fb14">FB-14</a></td><td>Flop</td><td>BTN (IP)</td><td>7&#9827; 7&#9829;</td><td class="label-raise">RAISE</td><td>HIGH</td><td></td></tr>
+      <tr><td><a href="#fb15">FB-15</a></td><td>Flop</td><td>BB (sandwich)</td><td>A&#9830; 3&#9829;</td><td class="label-fold">FOLD</td><td>HIGH</td><td class="flag-yes">&#9888; Gutshot+flush OOP</td></tr>
+      <tr><td><a href="#fb17">FB-17</a></td><td>Turn</td><td>BB (sandwich)</td><td>Q&#9829; T&#9830;</td><td class="label-raise">RAISE</td><td>HIGH</td><td></td></tr>
+      <tr><td><a href="#fb18">FB-18</a></td><td>Turn</td><td>BTN (IP)</td><td>K&#9830; J&#9830;</td><td class="label-call">CALL</td><td>MEDIUM</td><td class="flag-yes">&#9888; Weak 2pr vs turn bet</td></tr>
+      <tr><td><a href="#fb20">FB-20</a></td><td>Turn</td><td>CO (OOP)</td><td>A&#9829; J&#9829;</td><td class="label-call">CALL</td><td>MEDIUM</td><td></td></tr>
+      <tr><td><a href="#fb24">FB-24</a></td><td>River</td><td>BTN (IP)</td><td>A&#9824; 9&#9824;</td><td class="label-raise">RAISE</td><td>MEDIUM</td><td></td></tr>
+      <tr><td><a href="#fb25">FB-25</a></td><td>River</td><td>BB (OOP)</td><td>Q&#9829; 7&#9829;</td><td class="label-call">CALL</td><td>MEDIUM</td><td></td></tr>
+      <tr><td><a href="#fb27">FB-27</a></td><td>Flop</td><td>BB (sandwich)</td><td>A&#9824; 4&#9824;</td><td class="label-raise">RAISE</td><td>MEDIUM</td><td class="flag-yes">&#9888; Semi-bluff raise</td></tr>
+      <tr><td><a href="#fb29">FB-29</a></td><td>Flop</td><td>CO (sandwich)</td><td>K&#9824; K&#9830;</td><td class="label-call">CALL</td><td>MEDIUM</td><td></td></tr>
+      <tr><td><a href="#fb34">FB-34</a></td><td>Flop</td><td>BB (OOP)</td><td>K&#9824; 6&#9824;</td><td class="label-raise">RAISE</td><td>MEDIUM</td><td></td></tr>
+      <tr><td><a href="#fb35">FB-35</a></td><td>Turn</td><td>CO (sandwich)</td><td>K&#9830; 9&#9830;</td><td class="label-fold">FOLD</td><td>MEDIUM</td><td class="flag-yes">&#9888; Weak TP vs turn bet</td></tr>
+      <tr><td><a href="#fb36">FB-36</a></td><td>Turn</td><td>CO (OOP)</td><td>J&#9827; T&#9827;</td><td class="label-raise">RAISE</td><td>HIGH</td><td></td></tr>
+      <tr><td><a href="#fb37">FB-37</a></td><td>Turn</td><td>CO (OOP)</td><td>Q&#9829; T&#9824;</td><td class="label-call">CALL</td><td>MEDIUM</td><td></td></tr>
+      <tr><td><a href="#fb38">FB-38</a></td><td>River</td><td>CO (sandwich)</td><td>A&#9827; 9&#9829;</td><td class="label-call">CALL</td><td>MEDIUM</td><td></td></tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top:20px; font-size:12px; color:#888;">
+    Red-flag patterns: (1) semi-bluff raise OOP with small bet — 25% vs 33% sizing mismatch could flip raise risk/reward;
+    (2) weak top pair facing turn/river standard bet — 50% vs 75% sizing gap;
+    (3) gutshot+draw hand where sizing mismatch could change action.
+    Flagged hands are marked with a yellow warning box on their page.
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!--  FB-04                                                       -->
+<!-- ============================================================ -->
+<div class="page" id="fb04">
+
+  <h1>Solver Verification &mdash; FB-04</h1>
+  <div class="hero-info">Hero: BB &nbsp;|&nbsp; Label: RAISE &nbsp;|&nbsp; Confidence: HIGH</div>
+
+  <div class="label-small">Hero cards:</div>
+  <div class="card-row">
+    <div class="card club"><span class="rank">A</span><span class="suit">&clubs;</span></div>
+    <div class="card club"><span class="rank">T</span><span class="suit">&clubs;</span></div>
+  </div>
+
+  <hr class="sep">
+
+  <div class="section-label">1. Positions</div>
+  <div class="positions">BB &rarr; CO &rarr; BTN &nbsp;&nbsp;(OOP first)</div>
+  <div class="preflop">Preflop: CO opens, BTN calls, BB (hero) calls</div>
+
+  <br>
+  <div class="section-label">2. FLOP cards</div>
+  <div class="card-row board-cards">
+    <div class="card club"><span class="rank">K</span><span class="suit">&clubs;</span></div>
+    <div class="card club"><span class="rank">8</span><span class="suit">&clubs;</span></div>
+    <div class="card diamond"><span class="rank">4</span><span class="suit">&diams;</span></div>
+  </div>
+
+  <div class="section-label">3. FLOP action sequence</div>
+  <div class="actions">
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-bet">Bet 45 into 90</span></div>
+    <div class="action-line"><span class="pos">BTN:</span><span class="act act-fold">(yet to act)</span></div>
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-hero">??? (HERO DECISION)</span></div>
+  </div>
+
+  <div class="decision-box">
+    <div class="decision-title">DECISION: Hero (BB) to act</div>
+    <div class="decision-detail">Pot: 90 &nbsp;|&nbsp; Facing bet: 45 &nbsp;|&nbsp; To call: 45</div>
+    <div class="decision-detail">Pot odds: 45 / (90 + 45 + 45) = 25.0%</div>
+    <div class="solver-note">Solver sizing note: Our ~50% pot bet maps to <strong>66% pot</strong> option in GTO Wizard (flop). Closest available flop sizing is 66% pot (not 50%).</div>
+    <div class="expert-label">Expert label: RAISE (HIGH)</div>
+    <div class="verify-q">Verify: Does solver RAISE with A&#9827;T&#9827; (nut flush draw + Ac blocker + side equity) on K&#9827;8&#9827;4&#9830; vs 50% pot c-bet in sandwich? Confirm nut flush draw with ace blocker raises OOP in 3-way even with BTN behind.</div>
+  </div>
+
+  <div class="red-flag">
+    <strong>Red flag &mdash; Semi-bluff raise, small/standard bet mismatch:</strong> Hero is semi-bluff raising OOP in sandwich. Our bet size is ~50% pot; closest solver option is 66% pot (flop). The additional fold equity at 66% vs 50% may push the solver toward a higher raise frequency. Check whether solver raises at both 50% and 66% input sizes, or only at the larger size.
+  </div>
+
+</div>
+
+
+<!-- ============================================================ -->
+<!--  FB-07                                                       -->
+<!-- ============================================================ -->
+<div class="page" id="fb07">
+
+  <h1>Solver Verification &mdash; FB-07</h1>
+  <div class="hero-info">Hero: CO (sandwich) &nbsp;|&nbsp; Label: CALL &nbsp;|&nbsp; Confidence: MEDIUM</div>
+
+  <div class="label-small">Hero cards:</div>
+  <div class="card-row">
+    <div class="card diamond"><span class="rank">Q</span><span class="suit">&diams;</span></div>
+    <div class="card club"><span class="rank">Q</span><span class="suit">&clubs;</span></div>
+  </div>
+
+  <hr class="sep">
+
+  <div class="section-label">1. Positions</div>
+  <div class="positions">BB &rarr; CO &rarr; BTN &nbsp;&nbsp;(OOP first)</div>
+  <div class="preflop">Preflop: CO (hero) opens, BTN calls, BB calls</div>
+
+  <br>
+  <div class="section-label">2. FLOP cards</div>
+  <div class="card-row board-cards">
+    <div class="card diamond"><span class="rank">J</span><span class="suit">&diams;</span></div>
+    <div class="card spade"><span class="rank">8</span><span class="suit">&spades;</span></div>
+    <div class="card heart"><span class="rank">6</span><span class="suit">&hearts;</span></div>
+  </div>
+
+  <div class="section-label">3. FLOP action sequence</div>
+  <div class="actions">
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-bet">Donk 45 into 90</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-hero">??? (HERO DECISION)</span></div>
+    <div class="action-line"><span class="pos">BTN:</span><span class="act act-fold">(yet to act behind hero)</span></div>
+  </div>
+
+  <div class="decision-box">
+    <div class="decision-title">DECISION: Hero (CO) to act</div>
+    <div class="decision-detail">Pot: 90 &nbsp;|&nbsp; Facing bet: 45 &nbsp;|&nbsp; To call: 45</div>
+    <div class="decision-detail">Pot odds: 45 / (90 + 45 + 45) = 25.0%</div>
+    <div class="solver-note">Solver sizing note: Our ~50% pot bet maps to <strong>66% pot</strong> option in GTO Wizard (flop). Note the 16pp gap between our sizing and solver option.</div>
+    <div class="expert-label">Expert label: CALL (MEDIUM)</div>
+    <div class="verify-q">Verify: Does solver CALL or RAISE with QQ (overpair) facing BB donk on J&#9830;8&#9824;6&#9829; in sandwich position (BTN behind)? Medium confidence — overpair in sandwich on connected board is a close call vs raise decision.</div>
+  </div>
+
+</div>
+
+
+<!-- ============================================================ -->
+<!--  FB-08                                                       -->
+<!-- ============================================================ -->
+<div class="page" id="fb08">
+
+  <h1>Solver Verification &mdash; FB-08</h1>
+  <div class="hero-info">Hero: CO (sandwich) &nbsp;|&nbsp; Label: CALL &nbsp;|&nbsp; Confidence: MEDIUM</div>
+
+  <div class="label-small">Hero cards:</div>
+  <div class="card-row">
+    <div class="card heart"><span class="rank">A</span><span class="suit">&hearts;</span></div>
+    <div class="card diamond"><span class="rank">K</span><span class="suit">&diams;</span></div>
+  </div>
+
+  <hr class="sep">
+
+  <div class="section-label">1. Positions</div>
+  <div class="positions">BB &rarr; CO &rarr; BTN &nbsp;&nbsp;(OOP first)</div>
+  <div class="preflop">Preflop: CO (hero) opens, BTN calls, BB calls</div>
+
+  <br>
+  <div class="section-label">2. FLOP cards</div>
+  <div class="card-row board-cards">
+    <div class="card heart"><span class="rank">Q</span><span class="suit">&hearts;</span></div>
+    <div class="card heart"><span class="rank">7</span><span class="suit">&hearts;</span></div>
+    <div class="card spade"><span class="rank">3</span><span class="suit">&spades;</span></div>
+  </div>
+
+  <div class="section-label">3. FLOP action sequence</div>
+  <div class="actions">
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-bet">Donk 45 into 90</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-hero">??? (HERO DECISION)</span></div>
+    <div class="action-line"><span class="pos">BTN:</span><span class="act act-fold">(yet to act behind hero)</span></div>
+  </div>
+
+  <div class="decision-box">
+    <div class="decision-title">DECISION: Hero (CO) to act</div>
+    <div class="decision-detail">Pot: 90 &nbsp;|&nbsp; Facing bet: 45 &nbsp;|&nbsp; To call: 45</div>
+    <div class="decision-detail">Pot odds: 45 / (90 + 45 + 45) = 25.0%</div>
+    <div class="solver-note">Solver sizing note: Our ~50% pot bet maps to <strong>66% pot</strong> option in GTO Wizard (flop).</div>
+    <div class="expert-label">Expert label: CALL (MEDIUM)</div>
+    <div class="verify-q">Verify: Does solver CALL with A&#9829;K&#9830; (ace-high, backdoor nut flush draw via A&#9829;) facing BB donk on Q&#9829;7&#9829;3&#9824;, sandwich position with BTN behind? Confirm AK with backdoor flush + overcards justifies a call at 25% pot odds in sandwich.</div>
+  </div>
+
+</div>
+
+
+<!-- ============================================================ -->
+<!--  FB-09                                                       -->
+<!-- ============================================================ -->
+<div class="page" id="fb09">
+
+  <h1>Solver Verification &mdash; FB-09</h1>
+  <div class="hero-info">Hero: BTN (IP, closes action) &nbsp;|&nbsp; Label: RAISE &nbsp;|&nbsp; Confidence: MEDIUM</div>
+
+  <div class="label-small">Hero cards:</div>
+  <div class="card-row">
+    <div class="card heart"><span class="rank">K</span><span class="suit">&hearts;</span></div>
+    <div class="card heart"><span class="rank">J</span><span class="suit">&hearts;</span></div>
+  </div>
+
+  <hr class="sep">
+
+  <div class="section-label">1. Positions</div>
+  <div class="positions">BB &rarr; CO &rarr; BTN &nbsp;&nbsp;(OOP first)</div>
+  <div class="preflop">Preflop: CO opens, BTN (hero) calls, BB calls</div>
+
+  <br>
+  <div class="section-label">2. FLOP cards</div>
+  <div class="card-row board-cards">
+    <div class="card heart"><span class="rank">Q</span><span class="suit">&hearts;</span></div>
+    <div class="card heart"><span class="rank">7</span><span class="suit">&hearts;</span></div>
+    <div class="card spade"><span class="rank">3</span><span class="suit">&spades;</span></div>
+  </div>
+
+  <div class="section-label">3. FLOP action sequence</div>
+  <div class="actions">
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-fold">Fold</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-bet">Bet 90 into 90 (pot-sized)</span></div>
+    <div class="action-line"><span class="pos">BTN:</span><span class="act act-hero">??? (HERO DECISION)</span></div>
+  </div>
+
+  <div class="decision-box">
+    <div class="decision-title">DECISION: Hero (BTN) to act</div>
+    <div class="decision-detail">Pot: 90 &nbsp;|&nbsp; Facing bet: 90 &nbsp;|&nbsp; To call: 90</div>
+    <div class="decision-detail">Pot odds: 90 / (90 + 90 + 90) = 33.3%</div>
+    <div class="solver-note">Solver sizing note: Our pot-sized (100%) bet maps to the <strong>66% pot</strong> or <strong>75% pot</strong> options in GTO Wizard (flop/turn). Use 66% pot flop option as closest available. The gap (100% vs 66%) is significant — solver pot-odds at 66% differ from actual 33%.</div>
+    <div class="expert-label">Expert label: RAISE (MEDIUM)</div>
+    <div class="verify-q">Verify: Does solver RAISE or CALL with K&#9829;J&#9829; (second-nut flush draw, K&#9829; blocker + overcard K + gutshot) facing pot-sized bet on Q&#9829;7&#9829;3&#9824; IP closing action? Confirm K-high flush draw with blocker properties merits a raise vs call in position heads-up.</div>
+  </div>
+
+</div>
+
+
+<!-- ============================================================ -->
+<!--  FB-11                                                       -->
+<!-- ============================================================ -->
+<div class="page" id="fb11">
+
+  <h1>Solver Verification &mdash; FB-11</h1>
+  <div class="hero-info">Hero: BTN (IP, closes action) &nbsp;|&nbsp; Label: CALL &nbsp;|&nbsp; Confidence: MEDIUM</div>
+
+  <div class="label-small">Hero cards:</div>
+  <div class="card-row">
+    <div class="card heart"><span class="rank">K</span><span class="suit">&hearts;</span></div>
+    <div class="card spade"><span class="rank">Q</span><span class="suit">&spades;</span></div>
+  </div>
+
+  <hr class="sep">
+
+  <div class="section-label">1. Positions</div>
+  <div class="positions">BB &rarr; CO &rarr; BTN &nbsp;&nbsp;(OOP first)</div>
+  <div class="preflop">Preflop: CO opens, BTN (hero) calls, BB calls</div>
+
+  <br>
+  <div class="section-label">2. FLOP cards (monotone)</div>
+  <div class="card-row board-cards">
+    <div class="card spade"><span class="rank">A</span><span class="suit">&spades;</span></div>
+    <div class="card spade"><span class="rank">9</span><span class="suit">&spades;</span></div>
+    <div class="card spade"><span class="rank">4</span><span class="suit">&spades;</span></div>
+  </div>
+
+  <div class="section-label">3. FLOP action sequence</div>
+  <div class="actions">
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-bet">Donk 45 into 90</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-fold">Fold</span></div>
+    <div class="action-line"><span class="pos">BTN:</span><span class="act act-hero">??? (HERO DECISION)</span></div>
+  </div>
+
+  <div class="decision-box">
+    <div class="decision-title">DECISION: Hero (BTN) to act</div>
+    <div class="decision-detail">Pot: 90 &nbsp;|&nbsp; Facing bet: 45 &nbsp;|&nbsp; To call: 45</div>
+    <div class="decision-detail">Pot odds: 45 / (90 + 45 + 45) = 25.0%</div>
+    <div class="solver-note">Solver sizing note: Our ~50% pot bet maps to <strong>66% pot</strong> option in GTO Wizard (flop).</div>
+    <div class="expert-label">Expert label: CALL (MEDIUM)</div>
+    <div class="verify-q">Verify: Does solver CALL or FOLD with K&#9829;Q&#9824; (Q&#9824; = second-nut flush draw) facing BB donk on A&#9824;9&#9824;4&#9824; monotone, heads-up in position? Confirm second-nut flush draw IP on monotone is a call, not raise, and does not fold.</div>
+  </div>
+
+</div>
+
+
+<!-- ============================================================ -->
+<!--  FB-14                                                       -->
+<!-- ============================================================ -->
+<div class="page" id="fb14">
+
+  <h1>Solver Verification &mdash; FB-14</h1>
+  <div class="hero-info">Hero: BTN (IP, closes action) &nbsp;|&nbsp; Label: RAISE &nbsp;|&nbsp; Confidence: HIGH</div>
+
+  <div class="label-small">Hero cards:</div>
+  <div class="card-row">
+    <div class="card club"><span class="rank">7</span><span class="suit">&clubs;</span></div>
+    <div class="card heart"><span class="rank">7</span><span class="suit">&hearts;</span></div>
+  </div>
+
+  <hr class="sep">
+
+  <div class="section-label">1. Positions</div>
+  <div class="positions">BB &rarr; CO &rarr; BTN &nbsp;&nbsp;(OOP first)</div>
+  <div class="preflop">Preflop: CO opens, BTN (hero) calls, BB calls</div>
+
+  <br>
+  <div class="section-label">2. FLOP cards</div>
+  <div class="card-row board-cards">
+    <div class="card diamond"><span class="rank">9</span><span class="suit">&diams;</span></div>
+    <div class="card diamond"><span class="rank">7</span><span class="suit">&diams;</span></div>
+    <div class="card club"><span class="rank">2</span><span class="suit">&clubs;</span></div>
+  </div>
+
+  <div class="section-label">3. FLOP action sequence</div>
+  <div class="actions">
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-bet">Donk 30 into 90</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-fold">Fold</span></div>
+    <div class="action-line"><span class="pos">BTN:</span><span class="act act-hero">??? (HERO DECISION)</span></div>
+  </div>
+
+  <div class="decision-box">
+    <div class="decision-title">DECISION: Hero (BTN) to act</div>
+    <div class="decision-detail">Pot: 90 &nbsp;|&nbsp; Facing bet: 30 &nbsp;|&nbsp; To call: 30</div>
+    <div class="decision-detail">Pot odds: 30 / (90 + 30 + 30) = 20.0%</div>
+    <div class="solver-note">Solver sizing note: Our ~33% pot bet maps to <strong>25% pot</strong> option in GTO Wizard (flop). Our sizing is slightly larger — pot odds in solver will be slightly tighter than actual 20%.</div>
+    <div class="expert-label">Expert label: RAISE (HIGH)</div>
+    <div class="verify-q">Verify: Does solver RAISE with 7&#9827;7&#9829; (middle set) facing BB donk on 9&#9830;7&#9830;2&#9827; two-tone flop, IP closing action? Confirm sets on two-tone boards raise to charge flush draws.</div>
+  </div>
+
+</div>
+
+
+<!-- ============================================================ -->
+<!--  FB-15                                                       -->
+<!-- ============================================================ -->
+<div class="page" id="fb15">
+
+  <h1>Solver Verification &mdash; FB-15</h1>
+  <div class="hero-info">Hero: BB (OOP, sandwich) &nbsp;|&nbsp; Label: FOLD &nbsp;|&nbsp; Confidence: HIGH</div>
+
+  <div class="label-small">Hero cards:</div>
+  <div class="card-row">
+    <div class="card diamond"><span class="rank">A</span><span class="suit">&diams;</span></div>
+    <div class="card heart"><span class="rank">3</span><span class="suit">&hearts;</span></div>
+  </div>
+
+  <hr class="sep">
+
+  <div class="section-label">1. Positions</div>
+  <div class="positions">BB &rarr; CO &rarr; BTN &nbsp;&nbsp;(OOP first)</div>
+  <div class="preflop">Preflop: CO opens, BTN calls, BB (hero) calls</div>
+
+  <br>
+  <div class="section-label">2. FLOP cards</div>
+  <div class="card-row board-cards">
+    <div class="card diamond"><span class="rank">9</span><span class="suit">&diams;</span></div>
+    <div class="card diamond"><span class="rank">7</span><span class="suit">&diams;</span></div>
+    <div class="card club"><span class="rank">2</span><span class="suit">&clubs;</span></div>
+  </div>
+
+  <div class="section-label">3. FLOP action sequence</div>
+  <div class="actions">
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-bet">Bet 45 into 90</span></div>
+    <div class="action-line"><span class="pos">BTN:</span><span class="act act-fold">(yet to act behind hero)</span></div>
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-hero">??? (HERO DECISION)</span></div>
+  </div>
+
+  <div class="decision-box">
+    <div class="decision-title">DECISION: Hero (BB) to act</div>
+    <div class="decision-detail">Pot: 90 &nbsp;|&nbsp; Facing bet: 45 &nbsp;|&nbsp; To call: 45</div>
+    <div class="decision-detail">Pot odds: 45 / (90 + 45 + 45) = 25.0%</div>
+    <div class="solver-note">Solver sizing note: Our ~50% pot bet maps to <strong>66% pot</strong> option in GTO Wizard (flop). Sizing gap may affect the fold/call boundary.</div>
+    <div class="expert-label">Expert label: FOLD (HIGH)</div>
+    <div class="verify-q">Verify: Does solver FOLD A&#9830;3&#9829; (nut flush draw, no pair, no side equity beyond A&#9830; itself) facing 50% pot c-bet on 9&#9830;7&#9830;2&#9827; OOP in sandwich? Raw equity (~28-32%) appears to exceed pot odds (25%) but OOP + sandwich EQR discount justified the fold. Confirm solver folds or calls here.</div>
+  </div>
+
+  <div class="red-flag">
+    <strong>Red flag &mdash; Fold where raw equity exceeds pot odds:</strong> Hero holds the nut flush draw (A&#9830;) with ~28-32% raw equity against 25% pot odds. The fold relies on OOP sandwich equity-realization discounts. Our bet is ~50% pot; solver uses 66% pot (flop). The larger solver sizing tightens pot odds, which would push toward fold more strongly. Verify whether solver folds or calls &mdash; if solver calls, label should be CALL, not FOLD.
+  </div>
+
+</div>
+
+
+<!-- ============================================================ -->
+<!--  FB-17                                                       -->
+<!-- ============================================================ -->
+<div class="page" id="fb17">
+
+  <h1>Solver Verification &mdash; FB-17</h1>
+  <div class="hero-info">Hero: BB (OOP, sandwich) &nbsp;|&nbsp; Label: RAISE &nbsp;|&nbsp; Confidence: HIGH</div>
+
+  <div class="label-small">Hero cards:</div>
+  <div class="card-row">
+    <div class="card heart"><span class="rank">Q</span><span class="suit">&hearts;</span></div>
+    <div class="card diamond"><span class="rank">T</span><span class="suit">&diams;</span></div>
+  </div>
+
+  <hr class="sep">
+
+  <div class="section-label">1. Positions</div>
+  <div class="positions">BB &rarr; CO &rarr; BTN &nbsp;&nbsp;(OOP first)</div>
+  <div class="preflop">Preflop: CO opens, BTN calls, BB (hero) calls</div>
+
+  <br>
+  <div class="section-label">2. FLOP cards</div>
+  <div class="card-row board-cards">
+    <div class="card club"><span class="rank">A</span><span class="suit">&clubs;</span></div>
+    <div class="card heart"><span class="rank">J</span><span class="suit">&hearts;</span></div>
+    <div class="card diamond"><span class="rank">5</span><span class="suit">&diams;</span></div>
+  </div>
+
+  <div class="street-header">Flop action</div>
+  <div class="actions">
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">BTN:</span><span class="act act-check">Check</span></div>
+  </div>
+
+  <br>
+  <div class="section-label">3. TURN card</div>
+  <div class="card-row board-cards">
+    <div class="card spade"><span class="rank">K</span><span class="suit">&spades;</span></div>
+  </div>
+
+  <div class="street-header">Turn action</div>
+  <div class="actions">
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-bet">Bet 60 into 90</span></div>
+    <div class="action-line"><span class="pos">BTN:</span><span class="act act-fold">(yet to act behind hero)</span></div>
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-hero">??? (HERO DECISION)</span></div>
+  </div>
+
+  <div class="decision-box">
+    <div class="decision-title">DECISION: Hero (BB) to act</div>
+    <div class="decision-detail">Pot: 90 &nbsp;|&nbsp; Facing bet: 60 &nbsp;|&nbsp; To call: 60</div>
+    <div class="decision-detail">Pot odds: 60 / (90 + 60 + 60) = 29.0%</div>
+    <div class="solver-note">Solver sizing note: Our ~67% pot bet maps to <strong>75% pot</strong> option in GTO Wizard (turn/river).</div>
+    <div class="expert-label">Expert label: RAISE (HIGH)</div>
+    <div class="verify-q">Verify: Does solver RAISE with Q&#9829;T&#9830; (nut Broadway straight A-K-Q-J-T) on A&#9827;J&#9829;5&#9830;K&#9824; turn, facing CO delayed c-bet in sandwich? With the stone-cold nuts, verify raise vs call frequency.</div>
+  </div>
+
+  <div class="crossref">
+    <strong>Cross-reference &mdash; FB-17 / FB-37:</strong> Both situations have the identical nut Broadway straight (Q-T on A-J-5-K board). FB-17 labels RAISE (sandwich position); FB-37 labels CALL (closes action, no one behind). The solver typically mixes RAISE/CALL with the nuts depending on position. <strong>Model scoring should accept either CALL or RAISE as correct on FB-17 and FB-37.</strong>
+  </div>
+
+</div>
+
+
+<!-- ============================================================ -->
+<!--  FB-18                                                       -->
+<!-- ============================================================ -->
+<div class="page" id="fb18">
+
+  <h1>Solver Verification &mdash; FB-18</h1>
+  <div class="hero-info">Hero: BTN (IP, closes action) &nbsp;|&nbsp; Label: CALL &nbsp;|&nbsp; Confidence: MEDIUM</div>
+
+  <div class="label-small">Hero cards:</div>
+  <div class="card-row">
+    <div class="card diamond"><span class="rank">K</span><span class="suit">&diams;</span></div>
+    <div class="card diamond"><span class="rank">J</span><span class="suit">&diams;</span></div>
+  </div>
+
+  <hr class="sep">
+
+  <div class="section-label">1. Positions</div>
+  <div class="positions">BB &rarr; CO &rarr; BTN &nbsp;&nbsp;(OOP first)</div>
+  <div class="preflop">Preflop: CO opens, BTN (hero) calls, BB calls</div>
+
+  <br>
+  <div class="section-label">2. FLOP cards</div>
+  <div class="card-row board-cards">
+    <div class="card club"><span class="rank">A</span><span class="suit">&clubs;</span></div>
+    <div class="card heart"><span class="rank">J</span><span class="suit">&hearts;</span></div>
+    <div class="card diamond"><span class="rank">5</span><span class="suit">&diams;</span></div>
+  </div>
+
+  <div class="street-header">Flop action</div>
+  <div class="actions">
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">BTN:</span><span class="act act-check">Check</span></div>
+  </div>
+
+  <br>
+  <div class="section-label">3. TURN card</div>
+  <div class="card-row board-cards">
+    <div class="card spade"><span class="rank">K</span><span class="suit">&spades;</span></div>
+  </div>
+
+  <div class="street-header">Turn action</div>
+  <div class="actions">
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-fold">Fold</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-bet">Bet 60 into 90</span></div>
+    <div class="action-line"><span class="pos">BTN:</span><span class="act act-hero">??? (HERO DECISION)</span></div>
+  </div>
+
+  <div class="decision-box">
+    <div class="decision-title">DECISION: Hero (BTN) to act</div>
+    <div class="decision-detail">Pot: 90 &nbsp;|&nbsp; Facing bet: 60 &nbsp;|&nbsp; To call: 60</div>
+    <div class="decision-detail">Pot odds: 60 / (90 + 60 + 60) = 29.0%</div>
+    <div class="solver-note">Solver sizing note: Our ~67% pot bet maps to <strong>75% pot</strong> option in GTO Wizard (turn/river). The 8pp gap between 67% and 75% tightens pot odds slightly in solver.</div>
+    <div class="expert-label">Expert label: CALL (MEDIUM)</div>
+    <div class="verify-q">Verify: Does solver CALL or RAISE with K&#9830;J&#9830; (KJ two pair — kings and jacks) facing CO delayed c-bet on A&#9827;J&#9829;5&#9830;K&#9824; turn, IP closing action? Confirm KJ two pair is a call vs raise — two-pair mix spot.</div>
+  </div>
+
+  <div class="red-flag">
+    <strong>Red flag &mdash; Weak two pair facing turn standard bet (sizing mismatch):</strong> KJ two pair is strong but can be dominated by AK. Our sizing is ~67% pot; solver option is 75% pot (7pp gap on turn). A larger bet size tightens pot odds from 29% to ~27%, which could push marginal hands toward fold. Verify whether solver mixes CALL/RAISE here, and whether the call remains stable at 75% pot sizing.
+  </div>
+
+</div>
+
+
+<!-- ============================================================ -->
+<!--  FB-20                                                       -->
+<!-- ============================================================ -->
+<div class="page" id="fb20">
+
+  <h1>Solver Verification &mdash; FB-20</h1>
+  <div class="hero-info">Hero: CO (OOP, closes action) &nbsp;|&nbsp; Label: CALL &nbsp;|&nbsp; Confidence: MEDIUM</div>
+
+  <div class="label-small">Hero cards:</div>
+  <div class="card-row">
+    <div class="card heart"><span class="rank">A</span><span class="suit">&hearts;</span></div>
+    <div class="card heart"><span class="rank">J</span><span class="suit">&hearts;</span></div>
+  </div>
+
+  <hr class="sep">
+
+  <div class="section-label">1. Positions</div>
+  <div class="positions">BB &rarr; CO &rarr; BTN &nbsp;&nbsp;(OOP first)</div>
+  <div class="preflop">Preflop: BTN opens, CO (hero) calls, BB calls</div>
+
+  <br>
+  <div class="section-label">2. FLOP cards</div>
+  <div class="card-row board-cards">
+    <div class="card heart"><span class="rank">K</span><span class="suit">&hearts;</span></div>
+    <div class="card heart"><span class="rank">6</span><span class="suit">&hearts;</span></div>
+    <div class="card diamond"><span class="rank">3</span><span class="suit">&diams;</span></div>
+  </div>
+
+  <div class="street-header">Flop action</div>
+  <div class="actions">
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">BTN:</span><span class="act act-bet">Bet 30 into 90</span></div>
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-fold">Fold</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-call">Call 30</span></div>
+  </div>
+
+  <br>
+  <div class="section-label">3. TURN card</div>
+  <div class="card-row board-cards">
+    <div class="card club"><span class="rank">Q</span><span class="suit">&clubs;</span></div>
+  </div>
+
+  <div class="street-header">Turn action</div>
+  <div class="actions">
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">BTN:</span><span class="act act-bet">Bet 90 into 120</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-hero">??? (HERO DECISION)</span></div>
+  </div>
+
+  <div class="decision-box">
+    <div class="decision-title">DECISION: Hero (CO) to act</div>
+    <div class="decision-detail">Pot: 120 &nbsp;|&nbsp; Facing bet: 90 &nbsp;|&nbsp; To call: 90</div>
+    <div class="decision-detail">Pot odds: 90 / (120 + 90 + 90) = 30.0%</div>
+    <div class="solver-note">Solver sizing note: Our 75% pot bet maps to <strong>75% pot</strong> option in GTO Wizard (turn/river) &mdash; exact match.</div>
+    <div class="expert-label">Expert label: CALL (MEDIUM)</div>
+    <div class="verify-q">Verify: Does solver CALL or RAISE with A&#9829;J&#9829; (nut flush draw + gutshot Broadway) facing BTN second barrel 75% pot on K&#9829;6&#9829;3&#9830;Q&#9827; turn, OOP heads-up? Classic raise/call mix spot with nut draw + side equity.</div>
+  </div>
+
+</div>
+
+
+<!-- ============================================================ -->
+<!--  FB-24                                                       -->
+<!-- ============================================================ -->
+<div class="page" id="fb24">
+
+  <h1>Solver Verification &mdash; FB-24</h1>
+  <div class="hero-info">Hero: BTN (IP, closes action) &nbsp;|&nbsp; Label: RAISE &nbsp;|&nbsp; Confidence: MEDIUM</div>
+
+  <div class="label-small">Hero cards:</div>
+  <div class="card-row">
+    <div class="card spade"><span class="rank">A</span><span class="suit">&spades;</span></div>
+    <div class="card spade"><span class="rank">9</span><span class="suit">&spades;</span></div>
+  </div>
+
+  <hr class="sep">
+
+  <div class="section-label">1. Positions</div>
+  <div class="positions">BB &rarr; CO &rarr; BTN &nbsp;&nbsp;(OOP first)</div>
+  <div class="preflop">Preflop: CO opens, BTN (hero) calls, BB calls</div>
+
+  <br>
+  <div class="section-label">2. FLOP cards</div>
+  <div class="card-row board-cards">
+    <div class="card diamond"><span class="rank">A</span><span class="suit">&diams;</span></div>
+    <div class="card club"><span class="rank">9</span><span class="suit">&clubs;</span></div>
+    <div class="card heart"><span class="rank">3</span><span class="suit">&hearts;</span></div>
+  </div>
+
+  <div class="street-header">Flop action</div>
+  <div class="actions">
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">BTN:</span><span class="act act-check">Check</span></div>
+  </div>
+
+  <br>
+  <div class="section-label">3. TURN card</div>
+  <div class="card-row board-cards">
+    <div class="card spade"><span class="rank">2</span><span class="suit">&spades;</span></div>
+  </div>
+
+  <div class="street-header">Turn action</div>
+  <div class="actions">
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">BTN:</span><span class="act act-check">Check</span></div>
+  </div>
+
+  <br>
+  <div class="section-label">4. RIVER card</div>
+  <div class="card-row board-cards">
+    <div class="card diamond"><span class="rank">K</span><span class="suit">&diams;</span></div>
+  </div>
+
+  <div class="street-header">River action</div>
+  <div class="actions">
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-bet">Donk 90 into 120</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-fold">Fold</span></div>
+    <div class="action-line"><span class="pos">BTN:</span><span class="act act-hero">??? (HERO DECISION)</span></div>
+  </div>
+
+  <div class="decision-box">
+    <div class="decision-title">DECISION: Hero (BTN) to act</div>
+    <div class="decision-detail">Pot: 120 &nbsp;|&nbsp; Facing bet: 90 &nbsp;|&nbsp; To call: 90</div>
+    <div class="decision-detail">Pot odds: 90 / (120 + 90 + 90) = 30.0%</div>
+    <div class="solver-note">Solver sizing note: Our 75% pot bet maps to <strong>75% pot</strong> option in GTO Wizard (turn/river) &mdash; exact match.</div>
+    <div class="expert-label">Expert label: RAISE (MEDIUM)</div>
+    <div class="verify-q">Verify: Does solver RAISE or CALL with A&#9824;9&#9824; (aces and nines two pair) facing BB river donk 75% pot on A&#9830;9&#9827;3&#9829;2&#9824;K&#9830;? BB checked all three streets then fired. Raise/call boundary for two pair facing a polarised river donk.</div>
+  </div>
+
+</div>
+
+
+<!-- ============================================================ -->
+<!--  FB-25                                                       -->
+<!-- ============================================================ -->
+<div class="page" id="fb25">
+
+  <h1>Solver Verification &mdash; FB-25</h1>
+  <div class="hero-info">Hero: BB (OOP, closes action) &nbsp;|&nbsp; Label: CALL &nbsp;|&nbsp; Confidence: MEDIUM</div>
+
+  <div class="label-small">Hero cards:</div>
+  <div class="card-row">
+    <div class="card heart"><span class="rank">Q</span><span class="suit">&hearts;</span></div>
+    <div class="card heart"><span class="rank">7</span><span class="suit">&hearts;</span></div>
+  </div>
+
+  <hr class="sep">
+
+  <div class="section-label">1. Positions</div>
+  <div class="positions">BB &rarr; CO &rarr; BTN &nbsp;&nbsp;(OOP first)</div>
+  <div class="preflop">Preflop: CO opens, BTN calls, BB (hero) calls</div>
+
+  <br>
+  <div class="section-label">2. FLOP cards</div>
+  <div class="card-row board-cards">
+    <div class="card diamond"><span class="rank">Q</span><span class="suit">&diams;</span></div>
+    <div class="card diamond"><span class="rank">8</span><span class="suit">&diams;</span></div>
+    <div class="card club"><span class="rank">4</span><span class="suit">&clubs;</span></div>
+  </div>
+
+  <div class="street-header">Flop action</div>
+  <div class="actions">
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-bet">Bet 30 into 90</span></div>
+    <div class="action-line"><span class="pos">BTN:</span><span class="act act-fold">Fold</span></div>
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-call">Call 30</span></div>
+  </div>
+
+  <br>
+  <div class="section-label">3. TURN card</div>
+  <div class="card-row board-cards">
+    <div class="card spade"><span class="rank">7</span><span class="suit">&spades;</span></div>
+  </div>
+
+  <div class="street-header">Turn action</div>
+  <div class="actions">
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-bet">Bet 60</span></div>
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-call">Call 60</span></div>
+  </div>
+
+  <br>
+  <div class="section-label">4. RIVER card</div>
+  <div class="card-row board-cards">
+    <div class="card heart"><span class="rank">J</span><span class="suit">&hearts;</span></div>
+  </div>
+
+  <div class="street-header">River action</div>
+  <div class="actions">
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-bet">Bet 90 into 240</span></div>
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-hero">??? (HERO DECISION)</span></div>
+  </div>
+
+  <div class="decision-box">
+    <div class="decision-title">DECISION: Hero (BB) to act</div>
+    <div class="decision-detail">Pot: 240 &nbsp;|&nbsp; Facing bet: 90 &nbsp;|&nbsp; To call: 90</div>
+    <div class="decision-detail">Pot odds: 90 / (240 + 90 + 90) = 21.4%</div>
+    <div class="solver-note">Solver sizing note: Our ~37.5% pot bet maps to <strong>33% pot</strong> option in GTO Wizard (turn/river) &mdash; very close match.</div>
+    <div class="expert-label">Expert label: CALL (MEDIUM)</div>
+    <div class="verify-q">Verify: Does solver CALL with Q&#9829;7&#9829; (queens and sevens two pair) facing CO triple-barrel small bet on Q&#9830;8&#9830;4&#9827;7&#9824;J&#9829;? River J completes T9 straights. Key question: does CO triple-barrel here with enough bluffs (busted diamond draws) to justify a call with two pair?</div>
+  </div>
+
+</div>
+
+
+<!-- ============================================================ -->
+<!--  FB-27                                                       -->
+<!-- ============================================================ -->
+<div class="page" id="fb27">
+
+  <h1>Solver Verification &mdash; FB-27</h1>
+  <div class="hero-info">Hero: BB (OOP, sandwich) &nbsp;|&nbsp; Label: RAISE &nbsp;|&nbsp; Confidence: MEDIUM</div>
+
+  <div class="label-small">Hero cards:</div>
+  <div class="card-row">
+    <div class="card spade"><span class="rank">A</span><span class="suit">&spades;</span></div>
+    <div class="card spade"><span class="rank">4</span><span class="suit">&spades;</span></div>
+  </div>
+
+  <hr class="sep">
+
+  <div class="section-label">1. Positions</div>
+  <div class="positions">BB &rarr; CO &rarr; BTN &nbsp;&nbsp;(OOP first)</div>
+  <div class="preflop">Preflop: CO opens, BTN calls, BB (hero) calls</div>
+
+  <br>
+  <div class="section-label">2. FLOP cards</div>
+  <div class="card-row board-cards">
+    <div class="card spade"><span class="rank">8</span><span class="suit">&spades;</span></div>
+    <div class="card spade"><span class="rank">5</span><span class="suit">&spades;</span></div>
+    <div class="card diamond"><span class="rank">3</span><span class="suit">&diams;</span></div>
+  </div>
+
+  <div class="section-label">3. FLOP action sequence</div>
+  <div class="actions">
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-bet">Bet 30 into 90</span></div>
+    <div class="action-line"><span class="pos">BTN:</span><span class="act act-fold">(yet to act behind hero)</span></div>
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-hero">??? (HERO DECISION)</span></div>
+  </div>
+
+  <div class="decision-box">
+    <div class="decision-title">DECISION: Hero (BB) to act</div>
+    <div class="decision-detail">Pot: 90 &nbsp;|&nbsp; Facing bet: 30 &nbsp;|&nbsp; To call: 30</div>
+    <div class="decision-detail">Pot odds: 30 / (90 + 30 + 30) = 20.0%</div>
+    <div class="solver-note">Solver sizing note: Our ~33% pot bet maps to <strong>25% pot</strong> option in GTO Wizard (flop). The 8pp sizing difference reduces raise risk/reward in solver vs our actual scenario.</div>
+    <div class="expert-label">Expert label: RAISE (MEDIUM)</div>
+    <div class="verify-q">Verify: Does solver RAISE with A&#9824;4&#9824; (nut flush draw + gutshot wheel draw + overcard A) facing CO 33% pot c-bet on 8&#9824;5&#9824;3&#9830;, OOP in sandwich? All three semi-bluff criteria met (nut draw + As blocker + side equity). Confirm raise frequency at 25% pot solver size.</div>
+  </div>
+
+  <div class="red-flag">
+    <strong>Red flag &mdash; Semi-bluff raise on flop facing small bet (sizing mismatch):</strong> Hero is semi-bluff raising OOP in sandwich. Our bet is ~33% pot; solver option is 25% pot (flop). A smaller bet in the solver gives hero a cheaper price to call rather than raise &mdash; this reduces the leverage of a raise and could flip the correct action from RAISE to CALL at the solver size. Verify whether solver raises at 25% pot sizing or just calls.
+  </div>
+
+</div>
+
+
+<!-- ============================================================ -->
+<!--  FB-29                                                       -->
+<!-- ============================================================ -->
+<div class="page" id="fb29">
+
+  <h1>Solver Verification &mdash; FB-29</h1>
+  <div class="hero-info">Hero: CO (sandwich) &nbsp;|&nbsp; Label: CALL &nbsp;|&nbsp; Confidence: MEDIUM</div>
+
+  <div class="label-small">Hero cards:</div>
+  <div class="card-row">
+    <div class="card spade"><span class="rank">K</span><span class="suit">&spades;</span></div>
+    <div class="card diamond"><span class="rank">K</span><span class="suit">&diams;</span></div>
+  </div>
+
+  <hr class="sep">
+
+  <div class="section-label">1. Positions</div>
+  <div class="positions">BB &rarr; CO &rarr; BTN &nbsp;&nbsp;(OOP first)</div>
+  <div class="preflop">Preflop: CO (hero) opens, BTN calls, BB calls</div>
+
+  <br>
+  <div class="section-label">2. FLOP cards</div>
+  <div class="card-row board-cards">
+    <div class="card spade"><span class="rank">8</span><span class="suit">&spades;</span></div>
+    <div class="card spade"><span class="rank">5</span><span class="suit">&spades;</span></div>
+    <div class="card diamond"><span class="rank">3</span><span class="suit">&diams;</span></div>
+  </div>
+
+  <div class="section-label">3. FLOP action sequence</div>
+  <div class="actions">
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-bet">Donk 45 into 90</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-hero">??? (HERO DECISION)</span></div>
+    <div class="action-line"><span class="pos">BTN:</span><span class="act act-fold">(yet to act behind hero)</span></div>
+  </div>
+
+  <div class="decision-box">
+    <div class="decision-title">DECISION: Hero (CO) to act</div>
+    <div class="decision-detail">Pot: 90 &nbsp;|&nbsp; Facing bet: 45 &nbsp;|&nbsp; To call: 45</div>
+    <div class="decision-detail">Pot odds: 45 / (90 + 45 + 45) = 25.0%</div>
+    <div class="solver-note">Solver sizing note: Our ~50% pot bet maps to <strong>66% pot</strong> option in GTO Wizard (flop).</div>
+    <div class="expert-label">Expert label: CALL (MEDIUM)</div>
+    <div class="verify-q">Verify: Does solver CALL or RAISE with K&#9824;K&#9830; (overpair) facing BB donk on 8&#9824;5&#9824;3&#9830; two-tone low board, CO sandwich position with BTN behind? Call vs raise boundary for overpair vs donk on board that favours BB's range.</div>
+  </div>
+
+</div>
+
+
+<!-- ============================================================ -->
+<!--  FB-34                                                       -->
+<!-- ============================================================ -->
+<div class="page" id="fb34">
+
+  <h1>Solver Verification &mdash; FB-34</h1>
+  <div class="hero-info">Hero: BB (OOP) &nbsp;|&nbsp; Label: RAISE &nbsp;|&nbsp; Confidence: MEDIUM</div>
+
+  <div class="label-small">Hero cards:</div>
+  <div class="card-row">
+    <div class="card spade"><span class="rank">K</span><span class="suit">&spades;</span></div>
+    <div class="card spade"><span class="rank">6</span><span class="suit">&spades;</span></div>
+  </div>
+
+  <hr class="sep">
+
+  <div class="section-label">1. Positions</div>
+  <div class="positions">BB &rarr; CO &rarr; BTN &nbsp;&nbsp;(OOP first)</div>
+  <div class="preflop">Preflop: CO opens, BTN calls, BB (hero) calls</div>
+
+  <br>
+  <div class="section-label">2. FLOP cards (monotone)</div>
+  <div class="card-row board-cards">
+    <div class="card spade"><span class="rank">A</span><span class="suit">&spades;</span></div>
+    <div class="card spade"><span class="rank">9</span><span class="suit">&spades;</span></div>
+    <div class="card spade"><span class="rank">4</span><span class="suit">&spades;</span></div>
+  </div>
+
+  <div class="section-label">3. FLOP action sequence</div>
+  <div class="actions">
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">BTN:</span><span class="act act-bet">Bet 30 into 90</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-call">Call 30</span></div>
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-hero">??? (HERO DECISION)</span></div>
+  </div>
+
+  <div class="decision-box">
+    <div class="decision-title">DECISION: Hero (BB) to act</div>
+    <div class="decision-detail">Pot: 120 (after CO call) &nbsp;|&nbsp; Facing bet: 30 &nbsp;|&nbsp; To call: 30</div>
+    <div class="decision-detail">Pot odds: 30 / (120 + 30 + 30) = 16.7%</div>
+    <div class="solver-note">Solver sizing note: Our ~33% pot bet (relative to original pot 90) maps to <strong>25% pot</strong> option in GTO Wizard (flop). Actual pot odds at 25% bet size would be slightly different.</div>
+    <div class="expert-label">Expert label: RAISE (MEDIUM)</div>
+    <div class="verify-q">Verify: Does solver RAISE or CALL with K&#9824;6&#9824; (nut flush on A&#9824;9&#9824;4&#9824; monotone) facing small bet + call? OOP with the nut flush facing two opponents — raise to extract value vs flush draws before fourth spade kills action.</div>
+  </div>
+
+</div>
+
+
+<!-- ============================================================ -->
+<!--  FB-35                                                       -->
+<!-- ============================================================ -->
+<div class="page" id="fb35">
+
+  <h1>Solver Verification &mdash; FB-35</h1>
+  <div class="hero-info">Hero: CO (sandwich) &nbsp;|&nbsp; Label: FOLD &nbsp;|&nbsp; Confidence: MEDIUM</div>
+
+  <div class="label-small">Hero cards:</div>
+  <div class="card-row">
+    <div class="card diamond"><span class="rank">K</span><span class="suit">&diams;</span></div>
+    <div class="card diamond"><span class="rank">9</span><span class="suit">&diams;</span></div>
+  </div>
+
+  <hr class="sep">
+
+  <div class="section-label">1. Positions</div>
+  <div class="positions">BB &rarr; CO &rarr; BTN &nbsp;&nbsp;(OOP first)</div>
+  <div class="preflop">Preflop: BTN opens, CO (hero) calls, BB calls</div>
+
+  <br>
+  <div class="section-label">2. FLOP cards</div>
+  <div class="card-row board-cards">
+    <div class="card heart"><span class="rank">K</span><span class="suit">&hearts;</span></div>
+    <div class="card heart"><span class="rank">6</span><span class="suit">&hearts;</span></div>
+    <div class="card diamond"><span class="rank">3</span><span class="suit">&diams;</span></div>
+  </div>
+
+  <div class="street-header">Flop action</div>
+  <div class="actions">
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">BTN:</span><span class="act act-bet">Bet 30 into 90</span></div>
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-call">Call 30</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-call">Call 30</span></div>
+  </div>
+
+  <br>
+  <div class="section-label">3. TURN card</div>
+  <div class="card-row board-cards">
+    <div class="card club"><span class="rank">Q</span><span class="suit">&clubs;</span></div>
+  </div>
+
+  <div class="street-header">Turn action</div>
+  <div class="actions">
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">BTN:</span><span class="act act-bet">Bet 90 into 150</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-hero">??? (HERO DECISION)</span></div>
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-fold">(yet to act behind hero)</span></div>
+  </div>
+
+  <div class="decision-box">
+    <div class="decision-title">DECISION: Hero (CO) to act</div>
+    <div class="decision-detail">Pot: 150 &nbsp;|&nbsp; Facing bet: 90 &nbsp;|&nbsp; To call: 90</div>
+    <div class="decision-detail">Pot odds: 90 / (150 + 90 + 90) = 27.3%</div>
+    <div class="solver-note">Solver sizing note: Our 60% pot bet maps to <strong>75% pot</strong> option in GTO Wizard (turn/river). The 15pp gap is the largest in this set &mdash; pot odds shift from 27% to ~25% in solver, which could change the fold/call boundary for a marginal hand.</div>
+    <div class="expert-label">Expert label: FOLD (MEDIUM)</div>
+    <div class="verify-q">Verify: Does solver FOLD K&#9830;9&#9830; (top pair weak kicker, K9) facing BTN second barrel on K&#9829;6&#9829;3&#9830;Q&#9827; turn, sandwich position with BB still to act? Sizing mismatch (60% actual vs 75% solver) is material here.</div>
+  </div>
+
+  <div class="red-flag">
+    <strong>Red flag &mdash; Weak top pair facing turn standard bet (sizing mismatch):</strong> K9 = top pair weak kicker. Our sizing is 60% pot; solver option is 75% pot (15pp gap). At 75% pot in solver, pot odds are tighter (~25%), making a fold easier to justify than at our actual 27% odds. If solver calls at 75% pot, our 60% pot label of FOLD may be wrong. This is the largest sizing gap in the 19-hand set &mdash; must verify.
+  </div>
+
+</div>
+
+
+<!-- ============================================================ -->
+<!--  FB-36                                                       -->
+<!-- ============================================================ -->
+<div class="page" id="fb36">
+
+  <h1>Solver Verification &mdash; FB-36</h1>
+  <div class="hero-info">Hero: CO (OOP, closes action) &nbsp;|&nbsp; Label: RAISE &nbsp;|&nbsp; Confidence: HIGH</div>
+
+  <div class="label-small">Hero cards:</div>
+  <div class="card-row">
+    <div class="card club"><span class="rank">J</span><span class="suit">&clubs;</span></div>
+    <div class="card club"><span class="rank">T</span><span class="suit">&clubs;</span></div>
+  </div>
+
+  <hr class="sep">
+
+  <div class="section-label">1. Positions</div>
+  <div class="positions">BB &rarr; CO &rarr; BTN &nbsp;&nbsp;(OOP first)</div>
+  <div class="preflop">Preflop: BTN opens, CO (hero) calls, BB calls</div>
+
+  <br>
+  <div class="section-label">2. FLOP cards</div>
+  <div class="card-row board-cards">
+    <div class="card spade"><span class="rank">T</span><span class="suit">&spades;</span></div>
+    <div class="card club"><span class="rank">8</span><span class="suit">&clubs;</span></div>
+    <div class="card heart"><span class="rank">4</span><span class="suit">&hearts;</span></div>
+  </div>
+
+  <div class="street-header">Flop action</div>
+  <div class="actions">
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">BTN:</span><span class="act act-bet">Bet 30 into 90</span></div>
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-fold">Fold</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-call">Call 30</span></div>
+  </div>
+
+  <br>
+  <div class="section-label">3. TURN card</div>
+  <div class="card-row board-cards">
+    <div class="card diamond"><span class="rank">J</span><span class="suit">&diams;</span></div>
+  </div>
+
+  <div class="street-header">Turn action</div>
+  <div class="actions">
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">BTN:</span><span class="act act-bet">Bet 60 into 120</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-hero">??? (HERO DECISION)</span></div>
+  </div>
+
+  <div class="decision-box">
+    <div class="decision-title">DECISION: Hero (CO) to act</div>
+    <div class="decision-detail">Pot: 120 &nbsp;|&nbsp; Facing bet: 60 &nbsp;|&nbsp; To call: 60</div>
+    <div class="decision-detail">Pot odds: 60 / (120 + 60 + 60) = 25.0%</div>
+    <div class="solver-note">Solver sizing note: Our 50% pot bet maps to <strong>75% pot</strong> option in GTO Wizard (turn/river). Pot odds shift from 25% to ~27% at 75% solver size.</div>
+    <div class="expert-label">Expert label: RAISE (HIGH)</div>
+    <div class="verify-q">Verify: Does solver RAISE with J&#9827;T&#9827; (top two pair, jacks and tens) facing BTN second barrel 50% pot on T&#9824;8&#9827;4&#9829;J&#9830; turn, OOP closes action? High confidence — two pair on connected board raises for value and protection.</div>
+  </div>
+
+</div>
+
+
+<!-- ============================================================ -->
+<!--  FB-37                                                       -->
+<!-- ============================================================ -->
+<div class="page" id="fb37">
+
+  <h1>Solver Verification &mdash; FB-37</h1>
+  <div class="hero-info">Hero: CO (OOP, closes action) &nbsp;|&nbsp; Label: CALL &nbsp;|&nbsp; Confidence: MEDIUM</div>
+
+  <div class="label-small">Hero cards:</div>
+  <div class="card-row">
+    <div class="card heart"><span class="rank">Q</span><span class="suit">&hearts;</span></div>
+    <div class="card spade"><span class="rank">T</span><span class="suit">&spades;</span></div>
+  </div>
+
+  <hr class="sep">
+
+  <div class="section-label">1. Positions</div>
+  <div class="positions">BB &rarr; CO &rarr; BTN &nbsp;&nbsp;(OOP first)</div>
+  <div class="preflop">Preflop: BTN opens, CO (hero) calls, BB calls</div>
+
+  <br>
+  <div class="section-label">2. FLOP cards</div>
+  <div class="card-row board-cards">
+    <div class="card club"><span class="rank">A</span><span class="suit">&clubs;</span></div>
+    <div class="card heart"><span class="rank">J</span><span class="suit">&hearts;</span></div>
+    <div class="card diamond"><span class="rank">5</span><span class="suit">&diams;</span></div>
+  </div>
+
+  <div class="street-header">Flop action</div>
+  <div class="actions">
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">BTN:</span><span class="act act-check">Check</span></div>
+  </div>
+
+  <br>
+  <div class="section-label">3. TURN card</div>
+  <div class="card-row board-cards">
+    <div class="card spade"><span class="rank">K</span><span class="suit">&spades;</span></div>
+  </div>
+
+  <div class="street-header">Turn action</div>
+  <div class="actions">
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">BTN:</span><span class="act act-bet">Bet 60 into 90</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-hero">??? (HERO DECISION)</span></div>
+  </div>
+
+  <div class="decision-box">
+    <div class="decision-title">DECISION: Hero (CO) to act</div>
+    <div class="decision-detail">Pot: 90 &nbsp;|&nbsp; Facing bet: 60 &nbsp;|&nbsp; To call: 60</div>
+    <div class="decision-detail">Pot odds: 60 / (90 + 60 + 60) = 28.6%</div>
+    <div class="solver-note">Solver sizing note: Our ~67% pot bet maps to <strong>75% pot</strong> option in GTO Wizard (turn/river).</div>
+    <div class="expert-label">Expert label: CALL (MEDIUM)</div>
+    <div class="verify-q">Verify: Does solver CALL or RAISE with Q&#9829;T&#9824; (nut Broadway straight A-K-Q-J-T) on A&#9827;J&#9829;5&#9830;K&#9824; turn, facing BTN delayed c-bet, OOP closes action? Slowplay line with the nuts &mdash; confirm call vs raise frequency.</div>
+  </div>
+
+  <div class="crossref">
+    <strong>Cross-reference &mdash; FB-37 / FB-17:</strong> Both situations have the identical nut Broadway straight (Q-T on A-J-5-K board). FB-37 labels CALL (closes action, no one behind); FB-17 labels RAISE (sandwich, BTN still to act). The solver typically mixes RAISE/CALL with the nuts depending on position. <strong>Model scoring should accept either CALL or RAISE as correct on FB-37 and FB-17.</strong>
+  </div>
+
+</div>
+
+
+<!-- ============================================================ -->
+<!--  FB-38                                                       -->
+<!-- ============================================================ -->
+<div class="page" id="fb38">
+
+  <h1>Solver Verification &mdash; FB-38</h1>
+  <div class="hero-info">Hero: CO (sandwich) &nbsp;|&nbsp; Label: CALL &nbsp;|&nbsp; Confidence: MEDIUM</div>
+
+  <div class="label-small">Hero cards:</div>
+  <div class="card-row">
+    <div class="card club"><span class="rank">A</span><span class="suit">&clubs;</span></div>
+    <div class="card heart"><span class="rank">9</span><span class="suit">&hearts;</span></div>
+  </div>
+
+  <hr class="sep">
+
+  <div class="section-label">1. Positions</div>
+  <div class="positions">BB &rarr; CO &rarr; BTN &nbsp;&nbsp;(OOP first)</div>
+  <div class="preflop">Preflop: BTN opens, CO (hero) calls, BB calls</div>
+
+  <br>
+  <div class="section-label">2. FLOP cards</div>
+  <div class="card-row board-cards">
+    <div class="card diamond"><span class="rank">A</span><span class="suit">&diams;</span></div>
+    <div class="card club"><span class="rank">9</span><span class="suit">&clubs;</span></div>
+    <div class="card heart"><span class="rank">3</span><span class="suit">&hearts;</span></div>
+  </div>
+
+  <div class="street-header">Flop action</div>
+  <div class="actions">
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">BTN:</span><span class="act act-check">Check</span></div>
+  </div>
+
+  <br>
+  <div class="section-label">3. TURN card</div>
+  <div class="card-row board-cards">
+    <div class="card spade"><span class="rank">2</span><span class="suit">&spades;</span></div>
+  </div>
+
+  <div class="street-header">Turn action</div>
+  <div class="actions">
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-check">Check</span></div>
+    <div class="action-line"><span class="pos">BTN:</span><span class="act act-check">Check</span></div>
+  </div>
+
+  <br>
+  <div class="section-label">4. RIVER card</div>
+  <div class="card-row board-cards">
+    <div class="card diamond"><span class="rank">K</span><span class="suit">&diams;</span></div>
+  </div>
+
+  <div class="street-header">River action</div>
+  <div class="actions">
+    <div class="action-line"><span class="pos">BB:</span><span class="act act-bet">Donk 90 into 90 (pot-sized)</span></div>
+    <div class="action-line"><span class="pos">CO:</span><span class="act act-hero">??? (HERO DECISION)</span></div>
+    <div class="action-line"><span class="pos">BTN:</span><span class="act act-fold">(yet to act behind hero)</span></div>
+  </div>
+
+  <div class="decision-box">
+    <div class="decision-title">DECISION: Hero (CO) to act</div>
+    <div class="decision-detail">Pot: 90 &nbsp;|&nbsp; Facing bet: 90 &nbsp;|&nbsp; To call: 90</div>
+    <div class="decision-detail">Pot odds: 90 / (90 + 90 + 90) = 33.3%</div>
+    <div class="solver-note">Solver sizing note: Our pot-sized (100%) bet maps to closest GTO Wizard option of <strong>75% pot</strong> (turn/river). Pot odds differ: 33% actual vs ~27% at 75% solver sizing.</div>
+    <div class="expert-label">Expert label: CALL (MEDIUM)</div>
+    <div class="verify-q">Verify: Does solver CALL with A&#9827;9&#9829; (aces and nines two pair) facing BB pot-sized river donk on A&#9830;9&#9827;3&#9829;2&#9824;K&#9830;, CO sandwich position with BTN to act? BTN checked all three streets, capping their range. Confirm sandwich CALL is correct vs fold at solver sizing.</div>
+  </div>
+
+</div>
+
+</body>
+</html>
