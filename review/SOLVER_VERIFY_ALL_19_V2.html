@@ -93,6 +93,17 @@
 
   .label-small { font-size: 13px; color: #777; margin-bottom: 4px; }
 
+  .sizing-note {
+    font-size: 13px; background: #e8f5e9; border: 1px solid #4caf50;
+    color: #2e7d32; border-radius: 4px; padding: 6px 10px; margin: 8px 0;
+  }
+  .sizing-yellow {
+    background: #fff8e1; border-color: #ffc107; color: #6d5600;
+  }
+  .sizing-red {
+    background: #ffebee; border-color: #ef5350; color: #b71c1c;
+  }
+
   @media print {
     body { background: #fff; }
     .page { box-shadow: none; margin: 0; max-width: 100%; }
@@ -248,6 +259,11 @@
     <div class="decision-title">DECISION: Hero (BB) to act — OOP-closing</div>
     <div class="decision-detail">Pot: 90 &nbsp;|&nbsp; Facing bet: 45 &nbsp;|&nbsp; To call: 45</div>
     <div class="decision-detail">Pot odds: 45 / (90 + 45 + 45) = 25.0%</div>
+    <div class="sizing-note sizing-red">
+      <strong>&#9888; Solver sizing mismatch:</strong> Use <strong>66% pot</strong> option on Flop.
+      Our bet is 50% pot; solver nearest is 66%. At 66% pot (bet ~59): pot odds = 59 / (90 + 59 + 59) = <strong>28.5%</strong> vs our 25.0% — differs by ~3.5pp.
+      <br><strong>Red flag:</strong> Hero is considering a semi-bluff check-raise with a nut flush draw. The raise sizing and risk-reward ratio change when the c-bet being faced is re-mapped from 50% to 66% pot. A larger facing bet increases the raise-to-pot ratio, making the semi-bluff raise more expensive and changing the leverage calculation. Confirm raise criteria still hold at the 66% solver size.
+    </div>
     <div class="expert-label">Expert label: RAISE (HIGH)</div>
     <div class="verify-q">
       Verify: Does solver RAISE with A&clubs;T&clubs; (nut flush draw + Ac blocker + Ten overcard) on K&clubs;8&clubs;4&diams;
@@ -298,6 +314,11 @@
     <div class="decision-title">DECISION: Hero (CO) to act — sandwich</div>
     <div class="decision-detail">Pot: 90 &nbsp;|&nbsp; Facing bet: 45 &nbsp;|&nbsp; To call: 45</div>
     <div class="decision-detail">Pot odds: 45 / (90 + 45 + 45) = 25.0%</div>
+    <div class="sizing-note sizing-red">
+      <strong>&#9888; Solver sizing mismatch:</strong> Use <strong>66% pot</strong> option on Flop.
+      Our bet is 50% pot; solver nearest is 66%. At 66% pot (bet ~59): pot odds = 59 / (90 + 59 + 59) = <strong>28.5%</strong> vs our 25.0% — differs by ~3.5pp.
+      <br><strong>Red flag:</strong> Hero holds an overpair (QQ) in sandwich position — a marginal call/raise decision at 50% pot. At the solver's 66% option, calling is more expensive and the pot odds are higher, which shifts the call/fold/raise calculation. The sandwich dynamic (BTN still behind) compounds this: a larger facing bet makes squeezing by BTN more punishing if hero calls. Verify the call decision specifically at 66% pot sizing.
+    </div>
     <div class="expert-label">Expert label: CALL (MEDIUM)</div>
     <div class="verify-q">
       Verify: Does solver CALL (not raise) with Q&diams;Q&clubs; (overpair) in CO sandwich position on J&diams;8&spades;6&hearts;
@@ -347,6 +368,11 @@
     <div class="decision-title">DECISION: Hero (CO) to act — sandwich</div>
     <div class="decision-detail">Pot: 90 &nbsp;|&nbsp; Facing bet: 45 &nbsp;|&nbsp; To call: 45</div>
     <div class="decision-detail">Pot odds: 45 / (90 + 45 + 45) = 25.0%</div>
+    <div class="sizing-note sizing-red">
+      <strong>&#9888; Solver sizing mismatch:</strong> Use <strong>66% pot</strong> option on Flop.
+      Our bet is 50% pot; solver nearest is 66%. At 66% pot (bet ~59): pot odds = 59 / (90 + 59 + 59) = <strong>28.5%</strong> vs our 25.0% — differs by ~3.5pp.
+      <br><strong>Red flag:</strong> Hero holds AK no made hand (backdoor draw only) in sandwich position on Q-high two-tone board. This is near the call/fold boundary for a weak holding facing a donk-bet with a player behind. At 66% pot the required equity to call is ~28.5% — AK with no pair and only backdoor equity may fall below that threshold. Verify the call decision specifically at 66% pot sizing.
+    </div>
     <div class="expert-label">Expert label: CALL (MEDIUM)</div>
     <div class="verify-q">
       Verify: Does solver CALL with A&hearts;K&diams; (AK no pair, Ah backdoor nut flush draw, overcard equity)
@@ -397,6 +423,11 @@
     <div class="decision-title">DECISION: Hero (BTN) to act — IP, closing</div>
     <div class="decision-detail">Pot: 90 &nbsp;|&nbsp; Facing bet: 90 &nbsp;|&nbsp; To call: 90</div>
     <div class="decision-detail">Pot odds: 90 / (90 + 90 + 90) = 33.3%</div>
+    <div class="sizing-note sizing-red">
+      <strong>&#9888; Solver sizing mismatch:</strong> Use <strong>66% pot</strong> option on Flop.
+      Our bet is 100% pot; solver nearest is 66% (the largest flop option available). At 66% pot (bet ~59): pot odds = 59 / (90 + 59 + 59) = <strong>28.5%</strong> vs our 33.3% — differs by ~4.8pp.
+      <br><strong>Red flag:</strong> Hero is considering a semi-bluff raise (KhJh near-nut flush draw) facing a pot-sized bet. The solver does not have a 100% pot flop option — it must be run at 66%. The actual pot odds hero faces (33.3%) are notably higher than the solver's equivalent (28.5%), meaning the true bet is more expensive for hero than the solver models. If solver shows RAISE at 66%, it is a stronger signal because hero actually faces even worse pot odds. This is the semi-bluff raise red flag pattern — raise leverage and risk-reward change materially when the facing bet jumps from 66% to 100%.
+    </div>
     <div class="expert-label">Expert label: RAISE (MEDIUM)</div>
     <div class="verify-q">
       Verify: Does solver RAISE with K&hearts;J&hearts; (second-nut flush draw, Kh blocker, overcard K, gutshot)
@@ -448,6 +479,11 @@
     <div class="decision-title">DECISION: Hero (BTN) to act — IP, closing</div>
     <div class="decision-detail">Pot: 90 &nbsp;|&nbsp; Facing bet: 45 &nbsp;|&nbsp; To call: 45</div>
     <div class="decision-detail">Pot odds: 45 / (90 + 45 + 45) = 25.0%</div>
+    <div class="sizing-note sizing-red">
+      <strong>&#9888; Solver sizing mismatch:</strong> Use <strong>66% pot</strong> option on Flop.
+      Our bet is 50% pot; solver nearest is 66%. At 66% pot (bet ~59): pot odds = 59 / (90 + 59 + 59) = <strong>28.5%</strong> vs our 25.0% — differs by ~3.5pp.
+      <br><strong>Red flag:</strong> Hero holds KhQs (second-nut flush draw on a monotone board) facing a donk-bet. On a monotone flop, flush draw equity is heavily discounted by reverse implied odds — if the BB holds the nut flush (As), hero is drawing dead on the flop. At 28.5% pot odds (66% solver option), the call threshold is higher and the second-nut draw on a monotone board sits right at the margin. Verify whether solver calls or folds KhQs at 66% pot sizing specifically.
+    </div>
     <div class="expert-label">Expert label: CALL (MEDIUM)</div>
     <div class="verify-q">
       Verify: Does solver CALL (not raise) with K&hearts;Q&spades; (second-nut flush draw via Qs on A&spades;9&spades;4&spades; monotone)
@@ -499,6 +535,10 @@
     <div class="decision-title">DECISION: Hero (BTN) to act — IP, closing</div>
     <div class="decision-detail">Pot: 90 &nbsp;|&nbsp; Facing bet: 30 &nbsp;|&nbsp; To call: 30</div>
     <div class="decision-detail">Pot odds: 30 / (90 + 30 + 30) = 20.0%</div>
+    <div class="sizing-note sizing-yellow">
+      <strong>Solver sizing:</strong> Use <strong>25% pot</strong> option on Flop.
+      Our bet is 33% pot; solver nearest is 25%. At 25% pot (bet ~22.5): pot odds = 22.5 / (90 + 22.5 + 22.5) = <strong>16.7%</strong> vs our 20.0% — differs by ~3.3pp. Unlikely to flip the action for a set.
+    </div>
     <div class="expert-label">Expert label: RAISE (HIGH)</div>
     <div class="verify-q">
       Verify: Does solver RAISE with 7&clubs;7&hearts; (middle set on 9&diams;7&diams;2&clubs; two-tone) IP heads-up
@@ -557,6 +597,11 @@
     <div class="decision-title">DECISION: Hero (BB) to act — OOP-closing</div>
     <div class="decision-detail">Pot: 90 &nbsp;|&nbsp; Facing bet: 45 &nbsp;|&nbsp; To call: 45</div>
     <div class="decision-detail">Pot odds: 45 / (90 + 45 + 45) = 25.0%</div>
+    <div class="sizing-note sizing-red">
+      <strong>&#9888; Solver sizing mismatch:</strong> Use <strong>66% pot</strong> option on Flop.
+      Our bet is 50% pot; solver nearest is 66%. At 66% pot (bet ~59): pot odds = 59 / (90 + 59 + 59) = <strong>28.5%</strong> vs our 25.0% — differs by ~3.5pp.
+      <br><strong>Red flag:</strong> This is a label-flip hand (was FOLD, now CALL) with a narrow realized-equity margin. The verify note already flags that realized equity (~22-24%) may fall below our 25% pot odds. The solver's 66% option requires 28.5% pot odds — even further above the estimated realized equity. This mismatch is directly decisive: if solver runs this at 66% and shows FOLD, it confirms the original FOLD label was correct. If solver shows CALL even at 66%, that strongly validates the CALL relabel. The sizing difference matters most for this specific hand.
+    </div>
     <div class="expert-label">Expert label: CALL (MEDIUM)</div>
     <div class="verify-q">
       Verify: Does solver CALL (not fold) with A&diams;3&hearts; (bare nut flush draw, no side equity except Ace overcard)
@@ -627,6 +672,10 @@
     <div class="decision-title">DECISION: Hero (BB) to act — OOP-closing, TURN</div>
     <div class="decision-detail">Pot: 90 &nbsp;|&nbsp; Facing bet: 60 &nbsp;|&nbsp; To call: 60</div>
     <div class="decision-detail">Pot odds: 60 / (90 + 60 + 60) = 28.6%</div>
+    <div class="sizing-note sizing-yellow">
+      <strong>Solver sizing:</strong> Use <strong>75% pot</strong> option on Turn.
+      Our bet is 67% pot; solver nearest is 75%. At 75% pot (bet ~67.5): pot odds = 67.5 / (90 + 67.5 + 67.5) = <strong>30.0%</strong> vs our 28.6% — differs by ~1.4pp. Unlikely to flip the action for a nut straight.
+    </div>
     <div class="expert-label">Expert label: RAISE (HIGH)</div>
     <div class="verify-q">
       Verify: Does solver RAISE with Q&hearts;T&diams; (nut Broadway straight A-K-Q-J-T) OOP heads-up vs CO's
@@ -690,6 +739,10 @@
     <div class="decision-title">DECISION: Hero (BTN) to act — IP, closing, TURN</div>
     <div class="decision-detail">Pot: 90 &nbsp;|&nbsp; Facing bet: 60 &nbsp;|&nbsp; To call: 60</div>
     <div class="decision-detail">Pot odds: 60 / (90 + 60 + 60) = 28.6%</div>
+    <div class="sizing-note sizing-yellow">
+      <strong>Solver sizing:</strong> Use <strong>75% pot</strong> option on Turn.
+      Our bet is 67% pot; solver nearest is 75%. At 75% pot (bet ~67.5): pot odds = 67.5 / (90 + 67.5 + 67.5) = <strong>30.0%</strong> vs our 28.6% — differs by ~1.4pp. Unlikely to flip the action for two pair.
+    </div>
     <div class="expert-label">Expert label: CALL (MEDIUM)</div>
     <div class="verify-q">
       Verify: Does solver CALL (not raise) with K&diams;J&diams; (two pair — Kings and Jacks) IP heads-up vs CO's
@@ -750,6 +803,9 @@
     <div class="decision-title">DECISION: Hero (CO) to act — OOP, closing, TURN</div>
     <div class="decision-detail">Pot: 120 &nbsp;|&nbsp; Facing bet: 90 &nbsp;|&nbsp; To call: 90</div>
     <div class="decision-detail">Pot odds: 90 / (120 + 90 + 90) = 30.0%</div>
+    <div class="sizing-note">
+      <strong>Solver sizing:</strong> Use <strong>75% pot</strong> option on Turn. Exact match — no adjustment needed.
+    </div>
     <div class="expert-label">Expert label: CALL (MEDIUM)</div>
     <div class="verify-q">
       Verify: Does solver CALL (not raise) with A&hearts;J&hearts; (nut flush draw + gutshot to Broadway: any T = A-K-Q-J-T)
@@ -812,6 +868,9 @@
     <div class="decision-title">DECISION: Hero (BTN) to act — IP, closing, RIVER</div>
     <div class="decision-detail">Pot: 120 &nbsp;|&nbsp; Facing bet: 90 &nbsp;|&nbsp; To call: 90</div>
     <div class="decision-detail">Pot odds: 90 / (120 + 90 + 90) = 30.0%</div>
+    <div class="sizing-note">
+      <strong>Solver sizing:</strong> Use <strong>75% pot</strong> option on River. Exact match — no adjustment needed.
+    </div>
     <div class="expert-label">Expert label: RAISE (MEDIUM)</div>
     <div class="verify-q">
       Verify: Does solver RAISE with A&spades;9&spades; (two pair — Aces and Nines) IP heads-up vs BB's 75% pot
@@ -879,6 +938,10 @@
     <div class="decision-title">DECISION: Hero (BB) to act — OOP, closing, RIVER</div>
     <div class="decision-detail">Pot: 240 &nbsp;|&nbsp; Facing bet: 90 &nbsp;|&nbsp; To call: 90</div>
     <div class="decision-detail">Pot odds: 90 / (240 + 90 + 90) = 21.4%</div>
+    <div class="sizing-note sizing-yellow">
+      <strong>Solver sizing:</strong> Use <strong>33% pot</strong> option on River.
+      Our bet is 37.5% pot; solver nearest is 33%. At 33% pot (bet ~79): pot odds = 79 / (240 + 79 + 79) = <strong>19.9%</strong> vs our 21.4% — differs by ~1.5pp. Unlikely to flip the action for two pair at this margin.
+    </div>
     <div class="expert-label">Expert label: CALL (MEDIUM)</div>
     <div class="verify-q">
       Verify: Does solver CALL with Q&hearts;7&hearts; (two pair — Queens and Sevens) OOP heads-up vs CO's
@@ -937,6 +1000,11 @@
     <div class="decision-title">DECISION: Hero (BB) to act — OOP-closing</div>
     <div class="decision-detail">Pot: 90 &nbsp;|&nbsp; Facing bet: 30 &nbsp;|&nbsp; To call: 30</div>
     <div class="decision-detail">Pot odds: 30 / (90 + 30 + 30) = 20.0%</div>
+    <div class="sizing-note sizing-red">
+      <strong>&#9888; Solver sizing mismatch:</strong> Use <strong>25% pot</strong> option on Flop.
+      Our bet is 33% pot; solver nearest is 25%. At 25% pot (bet ~22.5): pot odds = 22.5 / (90 + 22.5 + 22.5) = <strong>16.7%</strong> vs our 20.0% — differs by ~3.3pp.
+      <br><strong>Red flag:</strong> This is the semi-bluff check-raise red flag pattern. Hero is raising (not calling) with As4s (nut flush draw + As blocker + gutshot) facing a small c-bet. When the solver maps this to 25% pot instead of 33%, the facing bet is smaller — this changes the raise leverage (hero is check-raising a smaller bet, so the raise-to-pot ratio differs) and the risk-reward of the semi-bluff. A smaller facing bet makes the semi-bluff raise marginally cheaper relative to pot but also changes fold equity expectations. Confirm raise frequency at 25% pot option specifically.
+    </div>
     <div class="expert-label">Expert label: RAISE (HIGH)</div>
     <div class="verify-q">
       Verify: Does solver RAISE (check-raise) with A&spades;4&spades; (nut flush draw + As blocker + gutshot A-2-3-4-5
@@ -987,6 +1055,11 @@
     <div class="decision-title">DECISION: Hero (CO) to act — sandwich</div>
     <div class="decision-detail">Pot: 90 &nbsp;|&nbsp; Facing bet: 45 &nbsp;|&nbsp; To call: 45</div>
     <div class="decision-detail">Pot odds: 45 / (90 + 45 + 45) = 25.0%</div>
+    <div class="sizing-note sizing-red">
+      <strong>&#9888; Solver sizing mismatch:</strong> Use <strong>66% pot</strong> option on Flop.
+      Our bet is 50% pot; solver nearest is 66%. At 66% pot (bet ~59): pot odds = 59 / (90 + 59 + 59) = <strong>28.5%</strong> vs our 25.0% — differs by ~3.5pp.
+      <br><strong>Red flag:</strong> Hero holds KsKd (overpair) in sandwich on a low two-tone board that hits BB/BTN flat-calling ranges hard (sets, flush draws). The sandwich dynamic combined with a low board creates a call/raise/fold tension. At 66% pot the facing bet is larger, which raises the pot odds required to call and makes the sandwich risk more acute. This is the weak top-pair/overpair marginal-call pattern — 3.5pp near the boundary of whether KK can profitably call a larger donk in sandwich.
+    </div>
     <div class="expert-label">Expert label: CALL (MEDIUM)</div>
     <div class="verify-q">
       Verify: Does solver CALL (not raise) with K&spades;K&diams; (overpair) in CO sandwich position on 8&spades;5&spades;3&diams;
@@ -1041,6 +1114,9 @@
     <div class="decision-title">DECISION: Hero (BB) to act</div>
     <div class="decision-detail">Pot: 120 (after CO call) &nbsp;|&nbsp; Facing bet: 30 &nbsp;|&nbsp; To call: 30</div>
     <div class="decision-detail">Pot odds: 30 / (120 + 30 + 30) = 16.7%</div>
+    <div class="sizing-note">
+      <strong>Solver sizing:</strong> Use <strong>25% pot</strong> option on Flop. Exact match — no adjustment needed.
+    </div>
     <div class="expert-label">Expert label: RAISE (MEDIUM)</div>
     <div class="verify-q">Verify: Does solver RAISE or CALL with K&spades;6&spades; (nut flush on A&spades;9&spades;4&spades; monotone) facing small bet + call? Confirm raise sizing and frequency vs slowplay.</div>
   </div>
@@ -1106,6 +1182,11 @@
     <div class="decision-title">DECISION: Hero (CO) to act — OOP-closing, TURN</div>
     <div class="decision-detail">Pot: 150 &nbsp;|&nbsp; Facing bet: 90 &nbsp;|&nbsp; To call: 90</div>
     <div class="decision-detail">Pot odds: 90 / (150 + 90 + 90) = 27.3%</div>
+    <div class="sizing-note sizing-red">
+      <strong>&#9888; Solver sizing mismatch:</strong> Use <strong>75% pot</strong> option on Turn.
+      Our bet is 60% pot; solver nearest is 75%. At 75% pot (bet ~112.5): pot odds = 112.5 / (150 + 112.5 + 112.5) = <strong>30.0%</strong> vs our 27.3% — differs by ~2.7pp.
+      <br><strong>Red flag:</strong> This is the weak top-pair facing turn bet red flag. K9 (TPWK) is already a marginal bluff-catch at 27.3% pot odds after a double-barrel. The verify note estimates realized equity at ~28% (OOP EQR ~80% x 35-40% raw equity). At the solver's 75% option, pot odds jump to 30.0% — right at or above estimated realized equity. This mismatch could flip the result: solver may show FOLD at 75% even if CALL would be correct at 60%. This is the most important sizing check in the set given the label-flip history of this hand.
+    </div>
     <div class="expert-label">Expert label: CALL (MEDIUM)</div>
     <div class="verify-q">
       Verify: Does solver CALL (not fold) with K&diams;9&diams; (top pair weak kicker) OOP heads-up vs BTN's
@@ -1172,6 +1253,11 @@
     <div class="decision-title">DECISION: Hero (CO) to act — OOP, closing, TURN</div>
     <div class="decision-detail">Pot: 120 &nbsp;|&nbsp; Facing bet: 60 &nbsp;|&nbsp; To call: 60</div>
     <div class="decision-detail">Pot odds: 60 / (120 + 60 + 60) = 25.0%</div>
+    <div class="sizing-note sizing-red">
+      <strong>&#9888; Solver sizing mismatch:</strong> Use <strong>75% pot</strong> option on Turn.
+      Our bet is 50% pot; solver nearest is 75%. At 75% pot (bet ~90): pot odds = 90 / (120 + 90 + 90) = <strong>30.0%</strong> vs our 25.0% — differs by ~5.0pp.
+      <br><strong>Red flag:</strong> This is the largest sizing gap among the turn/river hands. Hero has top two pair (JcTc) and is considering a check-raise, but the check-call line is also credible. At 75% pot, the raise-to-pot ratio and the risk-reward of raising vs calling/trapping both change materially. With only 97 beating hero on this board, the value-raise argument is strong — but the 5pp pot odds gap means the solver may model this at a notably different equity threshold. Confirm raise vs call split frequency at 75% pot specifically.
+    </div>
     <div class="expert-label">Expert label: RAISE (HIGH)</div>
     <div class="verify-q">
       Verify: Does solver RAISE with J&clubs;T&clubs; (top two pair — Jacks and Tens on T&spades;8&clubs;4&hearts;J&diams;)
@@ -1229,6 +1315,10 @@
     <div class="decision-title">DECISION: Hero (CO) to act — OOP, closing, TURN</div>
     <div class="decision-detail">Pot: 90 &nbsp;|&nbsp; Facing bet: 60 &nbsp;|&nbsp; To call: 60</div>
     <div class="decision-detail">Pot odds: 60 / (90 + 60 + 60) = 28.6%</div>
+    <div class="sizing-note sizing-yellow">
+      <strong>Solver sizing:</strong> Use <strong>75% pot</strong> option on Turn.
+      Our bet is 67% pot; solver nearest is 75%. At 75% pot (bet ~67.5): pot odds = 67.5 / (90 + 67.5 + 67.5) = <strong>30.0%</strong> vs our 28.6% — differs by ~1.4pp. Unlikely to flip the action for a nut straight.
+    </div>
     <div class="expert-label">Expert label: CALL (MEDIUM)</div>
     <div class="verify-q">
       Verify: Does solver CALL (not raise) with Q&hearts;T&spades; (nut Broadway straight A-K-Q-J-T) OOP
@@ -1295,6 +1385,11 @@
     <div class="decision-title">DECISION: Hero (CO) to act — sandwich, RIVER</div>
     <div class="decision-detail">Pot: 90 &nbsp;|&nbsp; Facing bet: 90 &nbsp;|&nbsp; To call: 90</div>
     <div class="decision-detail">Pot odds: 90 / (90 + 90 + 90) = 33.3%</div>
+    <div class="sizing-note sizing-red">
+      <strong>&#9888; Solver sizing mismatch:</strong> Use <strong>75% pot</strong> option on River.
+      Our bet is 100% pot; solver nearest is 75% (the largest river option available). At 75% pot (bet ~67.5): pot odds = 67.5 / (90 + 67.5 + 67.5) = <strong>30.0%</strong> vs our 33.3% — differs by ~3.3pp.
+      <br><strong>Red flag:</strong> Hero faces a pot-sized river donk (BB bets pot into 90) in sandwich position with top two pair. The solver has no 100% pot river option — it must be run at 75%. Our actual pot odds (33.3%) are higher than the solver's equivalent (30.0%), meaning hero faces a more expensive bet in the real hand than what the solver models. If solver shows CALL at 75%, it is a stronger signal because the real bet is even larger. Also: sandwich position on river with BTN behind adds complexity — BTN checked three streets but a raise-behind is possible if hero raises. Verify the CALL decision specifically at 75% pot given the gap and sandwich context.
+    </div>
     <div class="expert-label">Expert label: CALL (MEDIUM)</div>
     <div class="verify-q">
       Verify: Does solver CALL with A&clubs;9&hearts; (top two pair — Aces and Nines, blocks 9-combos)
