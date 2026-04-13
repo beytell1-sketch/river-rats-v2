@@ -214,6 +214,10 @@ No action is the default. Each must earn its place.
 - FOLD with medium hand when action narrows ranges above you
   → range fold
 
+For flop and turn: as you evaluate each action, consider what
+happens on the next street. "Bet flop, then what?" Your street
+plan tags capture this — think forward now, not after deciding.
+
 ### Step 4: CHOOSE AND VERIFY
 
 Select the action with the strongest case. Then verify with this
@@ -401,9 +405,10 @@ Respond with ONLY valid JSON. No text before or after.
     the alternative but wastes fold equity with a nut draw.",
 
   "intentions_raw": "I'm raising because I have the nut flush
-    draw with the ace blocking villain's best flush combos,
-    plus fold equity against two opponents.",
-  "intentions": ["deny_equity", "bluff_fold_better"],
+    draw with the ace blocking villain's best flush combos.
+    I want to fold out hands that have equity against me and
+    charge draws that are behind my nut draw.",
+  "intentions": ["deny_equity"],
 
   "street_plan_raw": "Raise flop, if called bet safe turns
     where I pick up more equity, give up if a non-spade brick
