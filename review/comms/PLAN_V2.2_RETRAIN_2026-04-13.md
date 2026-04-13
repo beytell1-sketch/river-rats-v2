@@ -147,7 +147,20 @@ v2.2 ships if ALL of:
 7. All quality gates (2.1–2.4) passed with evidence
 
 If #1 fails: do NOT ship. Diagnose and adjust.
-If #2–3 fail but #1 passes: ship conditionally, plan v2.2.1.
+If #2–3 fail but #1 passes: do NOT ship. Diagnose whether batch 4
+data addressed the passive bias. If CALL accuracy improved but didn't
+hit 55%, add more CALL-targeted factory data and retrain as v2.2.1
+before shipping. No half-fixes reach production.
+
+## Notes
+
+**Facing-bet baseline (65.0%)** is against FINAL labels in the
+shipped production file `training-data/facing_bet_test_set_40.jsonl`
+(task #4 completed, commit 22b02e9). Targets do not need recalibration.
+
+**Reference set** runs against the corrected version with MW-31 and
+MW-34 sequence fixes applied (task #10, commit 6379761). Both labels
+unchanged (MW-31 FOLD, MW-34 BET).
 
 ## 10. Not in scope
 
