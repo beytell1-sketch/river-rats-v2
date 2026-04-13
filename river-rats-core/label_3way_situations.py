@@ -38,6 +38,14 @@ def label_situation(sit: dict) -> dict:
         expert_confidence: HIGH/MEDIUM/LOW
         expert_reasoning: 1-2 sentence explanation
     """
+    # Guard: action_string must be present and non-empty
+    action_string = sit.get('action_string', '')
+    if not action_string:
+        raise ValueError(
+            f"situation {sit.get('situation_id', '?')} is missing action_string. "
+            "Re-generate with updated generate_3way_situations.py."
+        )
+
     fd = sit.get('feat_dict', {})
 
     # Extract key features

@@ -190,6 +190,7 @@ class SituationSpec:
     opener_position: Optional[str] = None
     effective_stack: float = 100.0
     current_bet: float = 0.0
+    action_string: Optional[str] = None
 
 
 # =============================================================================
@@ -232,6 +233,34 @@ def _count_raises_this_street(
     ]
     # First aggressive action is the opening bet — not a raise
     return max(0, len(aggressive) - 1)
+
+
+def _build_action_string(
+    action_history: List[Tuple[str, str, str]],
+    current_street: str,
+    hero_pos: str,
+) -> str:
+    """Build a validated action string for the current street.
+
+    Extracts only current-street actions from action_history, formats them
+    as "POS action" tokens, and appends "HERO_POS ???".
+
+    Amount is omitted because action_history tuples carry no amount.
+    validate_action_string() treats missing amounts as 0.0 — legal for
+    ordering and type checks.
+
+    Returns:
+        Comma-separated string, e.g. "BB check, CO bet, BTN ???"
+        If no prior actions on current street: "BTN ???"
+    """
+    current_acts = [
+        (pos, act)
+        for s, pos, act in action_history
+        if s == current_street
+    ]
+    parts = [f"{pos.upper()} {act.lower()}" for pos, act in current_acts]
+    parts.append(f"{hero_pos.upper()} ???")
+    return ', '.join(parts)
 
 
 # =============================================================================
@@ -295,6 +324,25 @@ def build_situation(spec: SituationSpec) -> dict:
         # num_raises_this_street not set here — bridge line 97 falls back to
         # game.raises_this_street, which we set from action_history above.
     }
+
+    # Generate action_string if not pre-supplied on the spec
+    if spec.action_string is None:
+        spec.action_string = _build_action_string(
+            spec.action_history, spec.street, spec.hero_pos
+        )
+
+    # Validate immediately — raise on invalid sequence
+    all_positions = [spec.hero_pos] + list(spec.villain_positions)
+    _as_errors = _hsv_validate_action_string(
+        all_positions,
+        spec.street,
+        spec.action_string,
+        spec.hero_pos,
+    )
+    if _as_errors:
+        raise ValueError(
+            f"Invalid action_string '{spec.action_string}': {_as_errors}"
+        )
 
     return build_features_from_game_state(hero, game, context)
 
