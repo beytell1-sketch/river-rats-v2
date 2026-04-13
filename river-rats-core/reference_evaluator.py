@@ -4,6 +4,9 @@ Parses the 40-hand expert reference set (MW-11 to MW-50), runs each
 hand through the feature pipeline + oracle + adjuster for each variant,
 and compares to expert-labelled GTO actions.
 
+Also provides evaluate_facing_bet_test_set() for the 40-hand facing-bet
+test set (FB-01 to FB-40).
+
 No opponents needed — features in → action out → compare to label.
 
 Usage:
@@ -14,8 +17,14 @@ Usage:
         oracle_path="models/gto_model_v8_38feat.json",
     )
     print(format_eval_report(results))
+
+    # Facing-bet test set:
+    fb_results = evaluate_facing_bet_test_set()
+    print(f"Score: {fb_results['correct']}/{fb_results['total']}")
 """
 from __future__ import annotations
+import argparse
+import json
 import os
 import re
 from dataclasses import dataclass, field
@@ -487,3 +496,287 @@ def format_eval_report(report: EvalReport) -> str:
                 )
 
     return "\n".join(lines)
+
+
+# ── Facing-Bet Test Set Evaluation ──────────────────────────────────
+
+# _opener_position inference: for each FB situation the preflop opener
+# is CO (standard 3-way CO-open pot) unless the action string shows BB
+# leading the betting (donk), in which case CO is still the PF opener.
+# FB-20 and FB-36 are 2-way (BB folded), CO/BTN pot — opener is BTN or CO
+# depending on the situation.  The opener is only used as a metadata hint
+# by range features; it does not affect correctness.
+_FB_OPENER_POSITION = {
+    # BB,CO,BTN pots — CO opened preflop
+    'FB-01': 'CO', 'FB-02': 'CO', 'FB-03': 'CO', 'FB-04': 'CO',
+    'FB-05': 'CO', 'FB-06': 'CO', 'FB-07': 'CO', 'FB-08': 'CO',
+    'FB-09': 'CO', 'FB-10': 'CO', 'FB-11': 'CO', 'FB-12': 'BTN',
+    'FB-13': 'BTN', 'FB-14': 'CO', 'FB-15': 'CO', 'FB-16': 'CO',
+    'FB-17': 'CO', 'FB-18': 'CO', 'FB-19': 'BTN', 'FB-21': 'CO',
+    'FB-22': 'BTN', 'FB-23': 'CO', 'FB-24': 'CO', 'FB-25': 'CO',
+    'FB-26': 'CO', 'FB-27': 'CO', 'FB-28': 'CO', 'FB-29': 'CO',
+    'FB-30': 'CO', 'FB-31': 'CO', 'FB-32': 'CO', 'FB-33': 'BTN',
+    'FB-34': 'BTN', 'FB-35': 'BTN', 'FB-37': 'BTN', 'FB-38': 'CO',
+    'FB-39': 'BTN', 'FB-40': 'BTN',
+    # 2-way pots
+    'FB-20': 'BTN',   # CO vs BTN, BTN opened
+    'FB-36': 'BTN',   # CO vs BTN, BTN opened
+}
+
+# villain_aggression_count for the facing-bet test set.
+# For flop situations: 1 if CO c-bet the flop (normal), 0 if BB led (donk).
+# For turn situations: reflects prior-street aggression.
+# For river situations: reflects cumulative prior aggression.
+_FB_ACTION_HISTORY = {
+    # (villain_agg, villain_checked, villain_call, num_callers_to_bet, facing_raise)
+    'FB-01': (1, 0, 0, 0, 0),  # Flop. CO c-bet; BTN folded; hero faces HU bet.
+    'FB-02': (0, 0, 0, 0, 0),  # Flop. BB donk bet; CO folded; BTN faces HU bet.
+    'FB-03': (1, 0, 0, 1, 0),  # Flop. CO bet, BTN called; hero faces bet+call.
+    'FB-04': (1, 0, 0, 0, 0),  # Flop. CO c-bet; BTN folded; hero faces HU bet.
+    'FB-05': (1, 0, 0, 0, 0),  # Flop. CO c-bet 66% pot; BTN first responder.
+    'FB-06': (1, 0, 0, 0, 0),  # Flop. CO c-bet; BTN folded; hero faces HU bet.
+    'FB-07': (0, 0, 0, 0, 0),  # Flop. BB donk; CO sandwiched; BTN behind.
+    'FB-08': (0, 0, 0, 0, 0),  # Flop. BB donk; CO sandwiched; BTN behind.
+    'FB-09': (1, 0, 0, 0, 0),  # Flop. CO pot-bet; BTN first responder; BB behind.
+    'FB-10': (1, 0, 0, 0, 0),  # Flop. CO c-bet 33%; BTN folded; hero closes HU.
+    'FB-11': (0, 0, 0, 0, 0),  # Flop. BB donk 50%; CO folded; BTN closes HU.
+    'FB-12': (0, 0, 0, 0, 0),  # Flop. BTN c-bet after CO check; BB first resp; CO behind.
+    'FB-13': (0, 0, 0, 1, 0),  # Flop. BTN bet, BB folded; CO closes HU vs BTN bet-and-call.
+    'FB-14': (0, 0, 0, 0, 0),  # Flop. BB donk 33%; CO folded; BTN closes HU.
+    'FB-15': (1, 0, 0, 0, 0),  # Flop. CO c-bet 50%; BTN folded; hero closes HU.
+    'FB-16': (1, 0, 0, 1, 0),  # Flop. CO bet, BTN called; hero faces bet+call.
+    'FB-17': (1, 1, 0, 0, 0),  # Turn. CO checked flop, delayed c-bet turn; BTN folded.
+    'FB-18': (1, 1, 0, 0, 0),  # Turn. CO delayed c-bet; BTN first responder; BB behind.
+    'FB-19': (0, 0, 1, 0, 0),  # Turn. BTN called flop c-bet, now bets turn; BB sandwich.
+    'FB-20': (0, 0, 1, 0, 0),  # Turn. BB folded flop; CO called BTN flop bet, faces turn bet.
+    'FB-21': (1, 1, 0, 0, 0),  # Turn. CO checked flop, delayed c-bet turn; BTN folded.
+    'FB-22': (0, 0, 0, 1, 0),  # Flop. BTN c-bet, BB called; CO faces bet+call.
+    'FB-23': (0, 0, 0, 0, 0),  # River. All checked flop+turn; CO first bet on river; BTN folded.
+    'FB-24': (0, 0, 0, 0, 0),  # River. All checked flop+turn; BB donk river; CO folded.
+    'FB-25': (2, 0, 0, 0, 0),  # River. CO triple-barrel; BTN folded earlier; hero faces HU.
+    'FB-26': (0, 0, 0, 0, 0),  # River. All checked through; BB donk river; CO folded.
+    'FB-27': (1, 0, 0, 0, 0),  # Flop. CO c-bet 33%; BTN folded; hero closes HU.
+    'FB-28': (1, 0, 0, 1, 0),  # Flop. CO bet, BTN called; hero faces bet+call.
+    'FB-29': (0, 0, 0, 0, 0),  # Flop. BB donk 50%; CO sandwiched; BTN behind.
+    'FB-30': (1, 0, 0, 0, 0),  # Flop. CO c-bet 66%; BTN first responder; BB behind.
+    'FB-31': (0, 0, 0, 0, 0),  # Flop. BB donk 66%; CO folded; BTN closes HU.
+    'FB-32': (1, 0, 0, 1, 0),  # Flop. CO bet, BTN called; hero faces bet+call.
+    'FB-33': (0, 0, 0, 1, 0),  # Flop. BTN bet, BB called; CO faces bet+call.
+    'FB-34': (0, 0, 0, 1, 0),  # Flop. BTN bet 25%, BB called; CO faces bet+call.
+    'FB-35': (0, 0, 1, 0, 0),  # Turn. BB folded; CO called BTN flop bet; BTN bets turn.
+    'FB-36': (0, 0, 1, 0, 0),  # Turn. BB folded flop; CO called BTN flop bet; BTN bets turn.
+    'FB-37': (0, 0, 0, 0, 0),  # Turn. All checked flop; BTN delayed bet; BB folded.
+    'FB-38': (0, 0, 0, 0, 0),  # River. All checked flop+turn; BB pot-bet river; CO sandwich.
+    'FB-39': (0, 1, 0, 0, 0),  # River. BTN checked back turn; BB faces BTN river bet; CO behind.
+    'FB-40': (0, 0, 0, 0, 0),  # Flop. BTN c-bet 33%; BB sandwiched; CO behind.
+}
+
+
+def _build_fb_hand_dict(record: dict) -> dict:
+    """Build a hand dict for extract_all_features() from a FB JSONL record.
+
+    Constructs the same dict shape that _evaluate_one_hand() uses for the
+    MW reference set, so the feature pipeline sees a consistent interface.
+    """
+    sid = record['situation_id']
+
+    # Primary villain: first entry in villain_positions
+    primary_villain = record['villain_positions'][0] if record['villain_positions'] else 'CO'
+
+    ah = _FB_ACTION_HISTORY.get(sid, (0, 0, 0, 0, 0))
+    opener = _FB_OPENER_POSITION.get(sid, 'CO')
+
+    # num_callers_to_bet: derived from villain_positions length when pot is
+    # already enlarged (bet-and-call pattern has 2+ villains and pot > 90).
+    # We use the pre-annotated value from _FB_ACTION_HISTORY (index 3).
+
+    hand_dict = {
+        'h': record['hero_cards'],
+        'b': record['board'],
+        'pos': record['hero_pos'],
+        'vp': primary_villain,
+        'pot': float(record['pot']),
+        'tc': float(record['to_call']),
+        'st': record['street'],
+        'fb': int(record['facing_bet']),
+        'exp': 'C',   # placeholder; not used during inference
+        F.META_NUM_OPPONENTS: len(record['villain_positions']),
+        F.META_NUM_RAISES: 0,
+        F.META_OPENER_POSITION: opener,
+        F.META_BETTOR_POSITION: primary_villain,
+        '_villain_aggression_count': ah[0],
+        '_villain_checked_back': ah[1],
+        '_villain_call_count': ah[2],
+        '_num_callers_to_bet': ah[3],
+        '_facing_raise': ah[4],
+    }
+    return hand_dict
+
+
+def evaluate_facing_bet_test_set(
+    oracle_path: str = None,
+    jsonl_path: str = None,
+) -> dict:
+    """Evaluate the facing-bet test set (FB-01 to FB-40) against the oracle.
+
+    Loads the JSONL file, extracts features for each situation, runs the
+    oracle, and compares against the expected action.  If accept_alternative
+    is set on a record, the oracle picking that alternative action also counts
+    as correct.
+
+    The oracle prediction step is wrapped in a try/except so a missing model
+    file causes a graceful skip rather than a hard crash — useful for smoke
+    testing the data pipeline without a trained model.
+
+    Args:
+        oracle_path: Path to the XGBoost model JSON.  Defaults to the same
+                     model used by evaluate_variants().
+        jsonl_path:  Path to facing_bet_test_set_40.jsonl.  Defaults to
+                     training-data/ relative to the repo root.
+
+    Returns:
+        dict with keys:
+            correct       (int)
+            total         (int)
+            accuracy      (float)
+            by_action     (dict: action → {'correct': int, 'total': int})
+            failures      (list of dicts with situation_id, expected, got)
+            skipped       (list of situation_ids where oracle errored)
+    """
+    base = os.path.dirname(__file__)
+
+    if oracle_path is None:
+        oracle_path = os.path.join(base, 'models', 'gto_model_v8_38feat.json')
+
+    if jsonl_path is None:
+        jsonl_path = os.path.join(base, '..', 'training-data',
+                                  'facing_bet_test_set_40.jsonl')
+
+    jsonl_path = os.path.normpath(jsonl_path)
+
+    # Load test records
+    records = []
+    with open(jsonl_path) as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                records.append(json.loads(line))
+
+    # Load oracle — may fail if model file is absent
+    oracle = None
+    oracle_load_error = None
+    try:
+        oracle = GtoOracle(oracle_path)
+    except Exception as e:
+        oracle_load_error = str(e)
+
+    correct = 0
+    total = len(records)
+    failures = []
+    skipped = []
+
+    # Per-action tracking: CALL, FOLD, RAISE
+    by_action: Dict[str, Dict[str, int]] = {}
+    for action in ('CALL', 'FOLD', 'RAISE'):
+        by_action[action] = {'correct': 0, 'total': 0}
+
+    for record in records:
+        sid = record['situation_id']
+        expected = record['expected_action'].upper()
+        alternative = (record.get('accept_alternative') or '').upper() or None
+
+        # Track total per expected action
+        if expected in by_action:
+            by_action[expected]['total'] += 1
+
+        # Build hand dict and extract features
+        try:
+            hand_dict = _build_fb_hand_dict(record)
+            feat_dict = extract_all_features(hand_dict)
+        except Exception as e:
+            skipped.append({'situation_id': sid, 'error': f'feature extraction: {e}'})
+            continue
+
+        # Oracle prediction — skip gracefully if model absent
+        if oracle is None:
+            skipped.append({'situation_id': sid,
+                            'error': f'oracle not loaded: {oracle_load_error}'})
+            continue
+
+        try:
+            features = GtoOracle.features_from_dict(feat_dict)
+            pred = oracle.predict(features)
+            got = pred.action.upper()
+        except Exception as e:
+            skipped.append({'situation_id': sid, 'error': f'oracle predict: {e}'})
+            continue
+
+        # Correctness: exact match OR acceptable alternative
+        is_correct = (got == expected) or (alternative is not None and got == alternative)
+
+        if is_correct:
+            correct += 1
+            if expected in by_action:
+                by_action[expected]['correct'] += 1
+        else:
+            failures.append({
+                'situation_id': sid,
+                'expected': expected,
+                'accept_alternative': alternative,
+                'got': got,
+                'confidence': record.get('confidence', ''),
+                'solver_verified': record.get('solver_verified', False),
+            })
+
+    accuracy = correct / total if total > 0 else 0.0
+
+    return {
+        'correct': correct,
+        'total': total,
+        'accuracy': accuracy,
+        'by_action': by_action,
+        'failures': failures,
+        'skipped': skipped,
+    }
+
+
+# ── CLI entry point ──────────────────────────────────────────────────
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description='Reference set evaluator for River Rats GTO oracle.'
+    )
+    parser.add_argument(
+        '--facing-bet',
+        action='store_true',
+        help='Evaluate the facing-bet test set (FB-01 to FB-40).',
+    )
+    args = parser.parse_args()
+
+    if args.facing_bet:
+        results = evaluate_facing_bet_test_set()
+        print(f"Facing-Bet Test Set — FB-01 to FB-40")
+        print(f"Score: {results['correct']}/{results['total']} "
+              f"({results['accuracy']:.1%})")
+        print()
+        print("By action:")
+        for action in ('CALL', 'FOLD', 'RAISE'):
+            d = results['by_action'][action]
+            c, t = d['correct'], d['total']
+            pct = c / t if t > 0 else 0.0
+            print(f"  {action}: {c}/{t} ({pct:.0%})")
+        if results['failures']:
+            print(f"\nFailures ({len(results['failures'])}):")
+            for f in results['failures']:
+                alt = f"  [alt={f['accept_alternative']}]" if f['accept_alternative'] else ''
+                sv = ' [solver]' if f['solver_verified'] else ''
+                print(f"  {f['situation_id']} [{f['confidence']}]{sv}: "
+                      f"expected={f['expected']}{alt}, got={f['got']}")
+        if results['skipped']:
+            print(f"\nSkipped ({len(results['skipped'])}):")
+            for s in results['skipped']:
+                print(f"  {s['situation_id']}: {s['error']}")
+    else:
+        print("No evaluation mode selected. Use --facing-bet to evaluate the "
+              "facing-bet test set.")
+        print("For the MW reference set, import evaluate_variants() directly.")
