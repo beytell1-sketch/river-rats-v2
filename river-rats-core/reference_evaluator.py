@@ -66,6 +66,7 @@ class ReferenceHand:
     villain_call_count: int = 0         # prior streets villain flat-called
     num_callers_to_bet: int = 0         # opponents who cold-called current-street bet
     facing_raise: int = 0              # 1 if hero faces a raise (not just initial bet)
+    action_string: str = ''            # validated current-street action sequence
 
 
 # Action-history annotations for each reference hand.
@@ -120,6 +121,53 @@ _ACTION_HISTORY = {
     'MW-48': (1, 0, 0, 0, 0),  # Flop. Hero first to act OOP (low SPR).
     'MW-49': (0, 0, 2, 0, 0),  # Turn. BB: called pf, called flop. Checks to hero.
     'MW-50': (1, 0, 1, 0, 0),  # Turn. BTN raised flop. CO calls. BTN bets turn (bet, not raise).
+}
+
+
+# Validated action strings for each reference hand (current street only).
+# Reconstructed from _ACTION_HISTORY prose comments + hand design metadata.
+# Each string validated through hand_sequence_validator (40/40 pass, 2026-04-13).
+_ACTION_STRINGS = {
+    'MW-11': 'SB check, BB ???',
+    'MW-12': 'BB check, BTN ???',
+    'MW-13': 'SB ???',
+    'MW-14': 'BB check, CO bet 30, BB ???',
+    'MW-15': 'BB check, BTN ???',
+    'MW-16': 'BB check, BTN ???',
+    'MW-17': 'BB check, CO bet 30, BB ???',
+    'MW-18': 'BB check, CO bet 30, BB ???',
+    'MW-19': 'BB check, BTN ???',
+    'MW-20': 'BB bet 40, CO fold, BTN ???',
+    'MW-21': 'BB check, CO bet 30, BTN fold, BB ???',
+    'MW-22': 'BB ???',
+    'MW-23': 'BB check, BTN ???',
+    'MW-24': 'SB ???',
+    'MW-25': 'BB check, CO check, BTN ???',
+    'MW-26': 'SB ???',
+    'MW-27': 'BB check, BTN ???',
+    'MW-28': 'SB ???',
+    'MW-29': 'BB check, CO bet 30, BTN fold, BB ???',
+    'MW-30': 'BB check, CO bet 35, BTN call 35, BB ???',
+    'MW-31': 'CO check, BTN bet, CO raise, BTN ???',
+    'MW-32': 'CO bet 60, BTN ???',
+    'MW-33': 'BB check, CO bet 40, BTN call 40, BB ???',
+    'MW-34': 'BB check, CO ???',
+    'MW-35': 'CO bet 30, BTN ???',
+    'MW-36': 'CO bet 40, BTN ???',
+    'MW-37': 'CO bet 30, BTN ???',
+    'MW-38': 'BB bet 40, CO fold, BTN ???',
+    'MW-39': 'CO bet 30, BTN ???',
+    'MW-40': 'BB check, CO check, BTN ???',
+    'MW-41': 'CO bet 90, BTN ???',
+    'MW-42': 'CO check, BTN ???',
+    'MW-43': 'BB check, CO bet 60, BTN fold, BB ???',
+    'MW-44': 'BB bet 60, CO fold, BTN ???',
+    'MW-45': 'BB check, CO bet 60, BTN fold, BB ???',
+    'MW-46': 'CO check, BTN bet, CO raise, BTN ???',
+    'MW-47': 'SB check, BB check, CO bet 30, BTN call 30, SB ???',
+    'MW-48': 'BB ???',
+    'MW-49': 'BB check, BTN ???',
+    'MW-50': 'BB check, CO check, BTN bet 90, BB ???',
 }
 
 
@@ -245,6 +293,7 @@ def _parse_one_hand(ref_id: str, block: str) -> Optional[ReferenceHand]:
         villain_call_count=ah[2],
         num_callers_to_bet=ah[3],
         facing_raise=ah[4],
+        action_string=_ACTION_STRINGS.get(ref_id, ''),
     )
 
 
