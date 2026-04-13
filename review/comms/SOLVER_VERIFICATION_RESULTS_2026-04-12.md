@@ -139,5 +139,45 @@ in hand-written specs. Owner directive: build a code validation tool
 that programmatically enforces correct poker action sequences. No
 more manual sequence writing without machine validation.
 
-## Remaining
-| Outstanding | FB-20 | Not yet verified |
+## Round 2 results (fresh labels, 5 uncertain hands)
+
+| FB | Expert label | Solver result | Match? |
+|---|---|---|---|
+| FB-05 | CALL MEDIUM | CALL | YES |
+| FB-08 | RAISE MEDIUM | CALL | **CHANGE TO CALL** |
+| FB-15 | CALL MEDIUM | CALL (at 66% pot) | YES |
+| FB-29 | CALL MEDIUM | CALL | YES |
+| FB-35 | FOLD MEDIUM | CALL (at 75% pot) | **CHANGE TO CALL** |
+
+## Label changes from round 2
+
+| FB | Old → New | Reason |
+|---|---|---|
+| FB-08 | RAISE → CALL | Solver says CALL with non-nut flush draw in sandwich |
+| FB-35 | FOLD → CALL | Solver says CALL with nut flush draw at 75% pot on turn |
+
+## Final label distribution (all 40 hands, after all solver corrections)
+
+15 CALL + 2 flipped to CALL = 17 CALL
+15 FOLD - 1 flipped from FOLD = 14 FOLD
+10 RAISE - 1 flipped from RAISE = 9 RAISE
+
+Total: 17 CALL / 14 FOLD / 9 RAISE
+
+## Process failure noted
+
+Owner feedback: solver verification was conducted with wrong action
+sequences (round 1) and wrong bet sizes (rounds 1 and 2). This
+wasted owner's GTO Wizard time. Root cause: the test set was not
+fully updated to solver-aligned sizing before being sent for
+verification. All 35 non-redesigned situations still use old sizing
+(50%/67% pot instead of 25%/66%/33%/75%).
+
+**Lesson:** Before ANY future solver verification, ALL situations
+must have:
+1. Action sequences validated by hand_sequence_validator.py ✓ (done)
+2. Bet sizes matching solver options EXACTLY (NOT done for 35/40)
+3. Both verified in a single pre-flight check before generating HTML
+
+FB-20 from round 1 was never solver-verified. Label stands as-is
+(expert label, not solver-confirmed).
