@@ -1,0 +1,24 @@
+{
+  "intentions": {
+    "value_extract": "Worse hands call, you profit on this street",
+    "deny_equity": "Villain has draws; charge them or fold them out",
+    "bluff_fold_better": "You are behind; you win only if villain folds",
+    "continue_draw": "You have outs; future street equity justifies price",
+    "pot_control": "Hand has showdown value but cannot handle large pot",
+    "range_fold_priced_out": "Villain's action + range puts you too far behind to continue"
+  },
+  "street_plan_actions": {
+    "barrel_value": "Betting for value, plan to continue on most runouts",
+    "bet_protect_evaluate": "Betting to deny equity, turn action depends on runout",
+    "check_trap": "Checking strong hand to induce villain aggression",
+    "check_pot_control": "Checking medium hand to manage pot size",
+    "draw_continue": "Calling/checking with a draw, planning to realize equity"
+  },
+  "street_plan_responses": {
+    "continue_on_blank": "Bet again if next card does not complete obvious draws",
+    "give_up_on_complete": "Check/fold if draw completes",
+    "check_evaluate": "No strong prior plan; reassess based on next card",
+    "pot_control_check_call": "Check next street, call one bet, fold to continued pressure",
+    "bet_regardless": "Committed to multi-street aggression regardless of runout"
+  }
+}
