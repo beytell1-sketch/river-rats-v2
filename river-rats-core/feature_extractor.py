@@ -1041,6 +1041,10 @@ FEATURE_COLUMNS = [
     # Step 13: new features 49-52
     'hero_range_percentile', 'has_showdown_value',
     'villain_fold_equity_estimate', 'flush_draw_rank',
+    # Step 14: feature 53
+    'is_preflop_aggressor',
+    # Step 15: feature 54
+    'villain_medium_made_pct',
 ]
 
 LABEL_COLUMN = 'action'
@@ -1090,6 +1094,10 @@ _TOP_PAIR_PLUS = {'nuts', 'strong_value', 'good_value'}
 _DRAW_CATEGORIES = {'draw'}
 # Categories that count as "air" (no showdown value, no meaningful draw)
 _AIR_CATEGORIES = {'air', 'bluff'}
+# Categories that count as medium/weak made hands (below top pair)
+# medium_made: top pair weak kicker, second pair, underpairs below top board card
+# weak_made: bottom pair, weak showdown
+_MEDIUM_MADE_CATEGORIES = {'medium_made', 'weak_made'}
 
 
 def extract_range_composition(
@@ -1146,6 +1154,7 @@ def extract_range_composition(
     top_pair_plus_weight = 0.0
     draw_weight = 0.0
     air_weight = 0.0
+    medium_made_weight = 0.0
 
     for hand_notation, freq in v_range.items():
         if freq <= 0:
@@ -1170,17 +1179,20 @@ def extract_range_composition(
             draw_weight += freq
         elif category in _AIR_CATEGORIES:
             air_weight += freq
-        # medium_made and weak_made fall into none of the buckets
+        elif category in _MEDIUM_MADE_CATEGORIES:
+            medium_made_weight += freq
 
     # Compute percentages
     if total_weight > 0:
         tp_pct = round(top_pair_plus_weight / total_weight, 4)
         draw_pct = round(draw_weight / total_weight, 4)
         air_pct = round(air_weight / total_weight, 4)
+        medium_made_pct = round(medium_made_weight / total_weight, 4)
     else:
         tp_pct = 0.0
         draw_pct = 0.0
         air_pct = 0.0
+        medium_made_pct = 0.0
 
     # Feature 4: Range capped
     # In a single-raised pot where villain is the defender (not PFR),
@@ -1208,6 +1220,7 @@ def extract_range_composition(
         '_villain_top_pair_plus_pct': tp_pct,
         '_villain_draw_pct': draw_pct,
         '_villain_air_pct': air_pct,
+        '_villain_medium_made_pct': medium_made_pct,
         '_villain_range_capped': range_capped,
         '_board_favour': board_favour,
     }
@@ -1575,6 +1588,7 @@ def extract_all_features(hand: Dict) -> Dict:
     features[F.VILLAIN_TOP_PAIR_PLUS_PCT] = features.get('_villain_top_pair_plus_pct', 0.0)
     features[F.VILLAIN_DRAW_PCT] = features.get('_villain_draw_pct', 0.0)
     features[F.VILLAIN_AIR_PCT] = features.get('_villain_air_pct', 0.0)
+    features[F.VILLAIN_MEDIUM_MADE_PCT] = features.get('_villain_medium_made_pct', 0.0)
     features[F.VILLAIN_RANGE_CAPPED] = features.get('_villain_range_capped', 0)
     features[F.BOARD_FAVOUR] = features.get('_board_favour', 0.0)
 

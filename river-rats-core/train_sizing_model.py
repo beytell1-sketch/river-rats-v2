@@ -70,6 +70,13 @@ FEATURE_COLUMNS = [
     'num_callers_to_bet', 'facing_raise',
     # v9 features (45->48): blocker + outs + improvement
     'flush_block_pct', 'overcard_outs', 'improvement_probability',
+    # v9 features (48->52): range percentile, showdown value, fold equity, flush draw rank
+    'hero_range_percentile', 'has_showdown_value',
+    'villain_fold_equity_estimate', 'flush_draw_rank',
+    # feature 53: preflop aggressor flag
+    'is_preflop_aggressor',
+    # feature 54: medium/weak made hand pct in villain range
+    'villain_medium_made_pct',
 ]
 
 

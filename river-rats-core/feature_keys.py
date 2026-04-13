@@ -78,6 +78,9 @@ class F:
     # Step 14: new feature 53
     IS_PREFLOP_AGGRESSOR = 'is_preflop_aggressor'
 
+    # Step 15: new feature 54
+    VILLAIN_MEDIUM_MADE_PCT = 'villain_medium_made_pct'
+
     # Metadata fields (underscore prefix, not in model)
     META_NUM_OPPONENTS = '_num_opponents'
     META_NUM_RAISES = '_num_raises_this_street'
@@ -89,6 +92,7 @@ class F:
     META_VILLAIN_TP_PLUS_PCT = '_villain_top_pair_plus_pct'
     META_VILLAIN_DRAW_PCT = '_villain_draw_pct'
     META_VILLAIN_AIR_PCT = '_villain_air_pct'
+    META_VILLAIN_MEDIUM_MADE_PCT = '_villain_medium_made_pct'
     META_VILLAIN_RANGE_CAPPED = '_villain_range_capped'
     META_OPENER_POSITION = '_opener_position'
     META_BETTOR_POSITION = '_bettor_position'

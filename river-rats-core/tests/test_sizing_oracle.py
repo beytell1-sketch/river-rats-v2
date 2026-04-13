@@ -164,7 +164,7 @@ class TestConstants:
         assert N_RAISE_CLASSES == 2
 
     def test_feature_count(self):
-        assert N_FEATURES == 48
+        assert N_FEATURES == 54
 
     def test_feature_columns_match_gto_model(self):
         """Feature columns must be identical to gto_model.py."""
@@ -515,7 +515,7 @@ class TestFeaturesFromDict:
     def test_output_shape(self):
         feat_dict = _make_feature_dict()
         arr = SizingOracle.features_from_dict(feat_dict)
-        assert arr.shape == (48,)
+        assert arr.shape == (54,)
 
     def test_output_dtype(self):
         feat_dict = _make_feature_dict()

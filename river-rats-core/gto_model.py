@@ -55,9 +55,11 @@ FEATURE_COLUMNS = (
     "villain_fold_equity_estimate", "flush_draw_rank",
     # v9 feature 53: preflop aggressor flag
     "is_preflop_aggressor",
+    # feature 54: medium/weak made hand pct in villain range
+    "villain_medium_made_pct",
 )
 
-N_FEATURES = len(FEATURE_COLUMNS)  # 53
+N_FEATURES = len(FEATURE_COLUMNS)  # 54
 N_CLASSES = len(ACTION_CLASSES)     # 5
 
 

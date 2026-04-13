@@ -300,17 +300,17 @@ class TestIntegration:
             assert col in features, f"Feature '{col}' missing from extract_all_features"
 
     def test_feature_extractor_columns_count(self):
-        """feature_extractor.FEATURE_COLUMNS (CSV surface) has 52 entries."""
+        """feature_extractor.FEATURE_COLUMNS (CSV surface) has 54 entries."""
         from feature_extractor import FEATURE_COLUMNS
-        assert len(FEATURE_COLUMNS) == 52, (
-            f"Expected 52 feature columns, got {len(FEATURE_COLUMNS)}"
+        assert len(FEATURE_COLUMNS) == 54, (
+            f"Expected 54 feature columns, got {len(FEATURE_COLUMNS)}"
         )
 
     def test_gto_model_feature_columns_count(self):
-        """gto_model.FEATURE_COLUMNS has 53 entries (adds is_preflop_aggressor)."""
+        """gto_model.FEATURE_COLUMNS has 54 entries (adds is_preflop_aggressor and villain_medium_made_pct)."""
         from gto_model import FEATURE_COLUMNS as GTO_COLS
-        assert len(GTO_COLS) == 53, (
-            f"Expected 53 in gto_model.FEATURE_COLUMNS, got {len(GTO_COLS)}"
+        assert len(GTO_COLS) == 54, (
+            f"Expected 54 in gto_model.FEATURE_COLUMNS, got {len(GTO_COLS)}"
         )
 
     def test_new_feature_types(self):

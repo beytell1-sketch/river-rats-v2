@@ -30,41 +30,37 @@ def _make_hand(**overrides):
 
 
 class TestFeatureContract:
-    def test_feature_extractor_has_52_columns(self):
-        # feature_extractor.FEATURE_COLUMNS is the CSV export surface: 52
-        # columns (features 1-52). Feature 53 (is_preflop_aggressor) is
-        # computed by extract_all_features() but is 3-way-specialist only
-        # and lives in gto_model.FEATURE_COLUMNS, not in the training CSV.
-        assert len(FEATURE_COLUMNS) == 52
+    def test_feature_extractor_has_54_columns(self):
+        # feature_extractor.FEATURE_COLUMNS is the CSV export surface: 54
+        # columns (features 1-54, Phase 3A promotion).
+        assert len(FEATURE_COLUMNS) == 54
 
     def test_v8_features_preserved(self):
         # First 38 features unchanged from v8
         assert FEATURE_COLUMNS[37] == 'num_opponents'
 
-    def test_gto_model_is_feature_extractor_plus_preflop_aggressor(self):
-        # gto_model has 53 features: the 52 from feature_extractor plus
-        # the 3-way specialist feature is_preflop_aggressor.
-        assert len(GTO_COLS) == 53
-        assert list(GTO_COLS[:52]) == list(FEATURE_COLUMNS)
+    def test_gto_model_matches_feature_extractor(self):
+        # gto_model, sizing_oracle, train_model, and feature_extractor all
+        # share the same 54-feature surface after Phase 3A promotion.
+        assert len(GTO_COLS) == 54
+        assert list(GTO_COLS[:54]) == list(FEATURE_COLUMNS)
         assert GTO_COLS[52] == 'is_preflop_aggressor'
+        assert GTO_COLS[53] == 'villain_medium_made_pct'
 
-    def test_sizing_uses_48_feature_subset(self):
-        # Sizing model stays at the 48-feature surface. It does not consume
-        # features 49-53 (3-way specialist features).
-        assert len(SZ_COLS) == 48
-        assert len(TSM_COLS) == 48
-        # First 48 features of gto FEATURE_COLUMNS should match sizing
-        assert list(FEATURE_COLUMNS[:48]) == list(SZ_COLS)
+    def test_sizing_feature_surface(self):
+        # Sizing model is promoted to 54 features in Phase 3A.
+        assert len(SZ_COLS) == 54
+        assert len(TSM_COLS) == 54
+        # All 54 features of feature_extractor FEATURE_COLUMNS match sizing
+        assert list(FEATURE_COLUMNS) == list(SZ_COLS)
 
     def test_train_model_tracks_sizing_surface(self):
-        # train_model (GTO trainer) is currently at 48 features, matching
-        # the sizing surface. Features 49-53 are not yet in the training
-        # pipeline pending a separate retrain cycle.
+        # train_model and sizing model share the same 54-feature surface.
         assert list(TM_COLS) == list(SZ_COLS)
 
     def test_n_features_consistent(self):
-        assert GTO_N == 53
-        assert SZ_N == 48
+        assert GTO_N == 54
+        assert SZ_N == 54
 
 
 class TestNumOpponentsExtraction:
