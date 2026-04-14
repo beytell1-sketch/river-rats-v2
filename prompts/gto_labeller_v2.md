@@ -311,18 +311,81 @@ or seeing the next card):
 
 Plan format: `["action_tag", "response_tag"]`
 
-### Feature Attention
+### Feature Attention — Approach C (Action-Dependent) + CONFIRMED Tier
 
 Tag which features from the 54-feature vector drove this decision.
-Mark 2-6 features as `PRIMARY`.
+Two levels:
 
-**Definition of PRIMARY:** Without this feature's value, your
-label might change. If `danger_score` were different, would you
-still bet? If yes, it's not PRIMARY. If the action might change,
-it is PRIMARY.
+| Level | Definition |
+|-------|-----------|
+| **PRIMARY** | Without this feature's value, the action might change. This feature drove the decision. |
+| **CONFIRMED** | Checked this feature, its current value supports the action. If it were very different, the action might change. Verified as part of reasoning. |
 
-[Feature attention protocol will be inserted here after pilot
-selects Approach A, B, or C.]
+#### Mandatory composition (BET/RAISE/CALL/FOLD)
+
+For BET, RAISE, CALL, and FOLD: you MUST tag all 4 villain
+composition features as PRIMARY or CONFIRMED.
+
+```
+villain_top_pair_plus_pct
+villain_medium_made_pct
+villain_draw_pct
+villain_air_pct
+```
+
+- BET/RAISE: you are betting INTO this range. Know what it
+  contains.
+- CALL: you are calling AGAINST this range. Know how much
+  of it you beat.
+- FOLD: you are folding AGAINST this range. Confirm you are
+  really behind enough to give up.
+
+Only CHECK when not facing a bet is exempt from mandatory
+composition.
+
+#### Bucket-specific mandatory features
+
+After classifying the hand bucket, you MUST tag these features
+for your bucket as PRIMARY or CONFIRMED:
+
+| Bucket | Must tag |
+|--------|---------|
+| **Drawing** | `draw_outs`, `improvement_probability`. If flush draw: also `flush_draw_rank`, `flush_block_pct`. |
+| **Air** | `overcard_outs`, `has_showdown_value`, `villain_fold_equity_estimate` |
+| **Medium made** | `has_showdown_value`, `danger_score`, `hero_range_percentile` |
+| **Monster** | `spr` |
+| **Weak made** | `has_showdown_value`, `better_hand_pct`. If facing bet: `pot_odds`. |
+| **Strong made** | `danger_score` |
+
+These features define what your hand type IS. A drawing hand
+decision that doesn't consider improvement_probability is
+incomplete reasoning.
+
+#### Action-dependent defaults
+
+After choosing your action, start with these default PRIMARY tags:
+
+**CALL or FOLD:** equity_vs_range, pot_odds,
+villain_top_pair_plus_pct, villain_draw_pct, villain_air_pct,
+villain_medium_made_pct, is_ip, hero_range_percentile
+
+**BET or RAISE:** equity_vs_range, villain_top_pair_plus_pct,
+villain_draw_pct, villain_air_pct, villain_medium_made_pct,
+is_ip, hero_range_percentile, villain_fold_equity_estimate
+(NOT pot_odds)
+
+**CHECK:** equity_vs_range, villain_top_pair_plus_pct,
+villain_draw_pct, villain_air_pct, villain_medium_made_pct,
+is_ip, hero_range_percentile, has_showdown_value
+
+Then:
+1. REVIEW each default — remove any that didn't influence this
+   specific decision (with 1-sentence justification)
+2. ADD bucket-specific mandatory features (tag as PRIMARY or
+   CONFIRMED)
+3. ADD any other features that were PRIMARY or CONFIRMED
+4. Final feature_attention should tag each feature as PRIMARY
+   or CONFIRMED
 
 **The 54-feature vector:**
 
@@ -419,7 +482,18 @@ Respond with ONLY valid JSON. No text before or after.
     "flush_draw_rank": "PRIMARY",
     "flush_block_pct": "PRIMARY",
     "villain_fold_equity_estimate": "PRIMARY",
-    "equity_vs_range": "PRIMARY"
+    "equity_vs_range": "PRIMARY",
+    "villain_top_pair_plus_pct": "CONFIRMED",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_air_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "draw_outs": "CONFIRMED",
+    "improvement_probability": "CONFIRMED"
+  },
+
+  "tier1_removals": {
+    "pot_odds": "removed — this is a RAISE, not facing a call decision",
+    "is_ip": "removed — nut draw + blocker raise works from any position per KB 1.7"
   },
 
   "proposed_tags": [],
@@ -450,7 +524,13 @@ Respond with ONLY valid JSON. No text before or after.
   omit for river)
 - `street_plan_tags`: `[action_tag, response_tag]` from approved
   vocabulary (omit for river)
-- `feature_attention`: 2-6 features tagged as PRIMARY
+- `feature_attention`: features tagged as PRIMARY or CONFIRMED.
+  Includes action-dependent defaults (kept or removed), mandatory
+  composition (BET/RAISE/CALL/FOLD), bucket-specific features,
+  and any additional features that drove the decision.
+- `tier1_removals`: dict mapping removed action-dependent default
+  features to 1-sentence justifications. Only features you
+  actively removed from the defaults.
 - `proposed_tags`: empty list if all tags fit, otherwise proposed
   new tags with category + name + definition
 - `alternatives_considered`: at least 1 alternative with rejection

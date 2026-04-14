@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pilot Feature Attention — 6 Teams x 20 Hands</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size: 13px; line-height: 1.5; color: #1a1a1a;
+    background: #eceef1; padding: 24px 16px;
+    max-width: 1200px; margin: 0 auto;
+}
+.page-title { text-align: center; font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.page-sub { text-align: center; font-size: 12px; color: #888; margin-bottom: 24px; }
+
+/* LEGEND */
+.legend { background: #fff; border-radius: 10px; padding: 14px 20px; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+.legend-title { font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #666; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+.legend-swatch { width: 18px; height: 18px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.1); }
+.tier1-tagged { background: #2563eb; }
+.tier1-removed { background: #bfdbfe; }
+.tier1-missed { background: #fde68a; }
+.tier2-added { background: #16a34a; }
+.no-tag { background: #f3f4f6; }
+
+/* HAND CARD */
+.hand-card { background: #fff; border-radius: 10px; margin-bottom: 16px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.10); }
+.hand-header { display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid #e5e7eb; background: #f8fafc; }
+.hand-id { font-family: monospace; font-size: 13px; font-weight: 700; }
+.hand-cards { font-weight: 700; font-size: 14px; }
+.hand-board { font-size: 13px; color: #555; }
+.hand-street { background: #e0e7ff; color: #3730a3; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+.hand-action { font-weight: 700; font-size: 12px; padding: 2px 10px; border-radius: 4px; color: #fff; }
+.action-check { background: #6b7280; }
+.action-bet { background: #d97706; }
+.action-call { background: #2563eb; }
+.action-fold { background: #dc2626; }
+.action-raise { background: #7c3aed; }
+.consensus-tag { font-size: 10px; color: #16a34a; font-weight: 600; margin-left: auto; }
+.consensus-strong { color: #d97706; }
+
+/* FEATURE GRID */
+.feature-grid { padding: 8px 16px 12px; overflow-x: auto; }
+.feature-grid table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.feature-grid th { text-align: left; padding: 4px 6px; font-weight: 600; color: #666; border-bottom: 1px solid #e5e7eb; white-space: nowrap; }
+.feature-grid td { padding: 3px 6px; text-align: center; }
+.feature-grid .feat-name { text-align: left; font-family: monospace; font-size: 10px; white-space: nowrap; }
+.feature-grid .tier-label { font-size: 9px; color: #999; text-align: left; padding-left: 6px; }
+
+/* CELL COLORS */
+.cell-tagged { background: #2563eb; color: #fff; font-weight: 700; border-radius: 3px; }
+.cell-removed { background: #dbeafe; color: #3b82f6; font-size: 9px; border-radius: 3px; }
+.cell-missed { background: #fef3c7; color: #92400e; font-size: 9px; border-radius: 3px; }
+.cell-added { background: #16a34a; color: #fff; font-weight: 700; border-radius: 3px; }
+.cell-empty { background: #f9fafb; color: #d1d5db; }
+.cell-na { background: #f3f4f6; color: #ccc; font-size: 9px; }
+
+/* APPROACH HEADERS */
+.approach-a { background: #eff6ff; }
+.approach-b { background: #f0fdf4; }
+.approach-c { background: #fdf4ff; }
+.appr-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+.appr-a { color: #2563eb; }
+.appr-b { color: #16a34a; }
+.appr-c { color: #9333ea; }
+
+/* SECTION DIVIDERS */
+.tier-divider td { border-top: 2px solid #cbd5e1; padding-top: 6px; }
+.tier-header { font-size: 9px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: 0.1em; padding: 6px 6px 2px; }
+
+/* SUMMARY */
+.summary { background: #fff; border-radius: 10px; padding: 16px 20px; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.summary h2 { font-size: 14px; margin-bottom: 10px; }
+.summary table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.summary th { text-align: left; padding: 4px 8px; font-weight: 600; color: #666; border-bottom: 1px solid #e5e7eb; }
+.summary td { padding: 4px 8px; border-bottom: 1px solid #f3f4f6; }
+
+.heart, .diamond { color: #ef4444; }
+.club, .spade { color: #1a1a1a; }
+</style>
+</head>
+<body>
+
+<div class="page-title">Pilot Feature Attention Review</div>
+<div class="page-sub">6 Teams (T1-T6) &middot; 3 Approaches (A: auto-tag, B: blank slate, C: action-dependent) &middot; 20 Hands</div>
+
+<div class="legend">
+    <span class="legend-title">Legend:</span>
+    <span class="legend-item"><span class="legend-swatch tier1-tagged"></span> Tier 1 tagged</span>
+    <span class="legend-item"><span class="legend-swatch tier1-removed"></span> Tier 1 removed (A/C)</span>
+    <span class="legend-item"><span class="legend-swatch tier1-missed"></span> Tier 1 missed (B)</span>
+    <span class="legend-item"><span class="legend-swatch tier2-added"></span> Tier 2 added</span>
+    <span class="legend-item"><span class="legend-swatch no-tag"></span> Not tagged</span>
+</div>
+
+<!-- ============================================================
+     HAND 1: BP6_01 — Nut flush draw RAISE (interesting)
+     ============================================================ -->
+<div class="hand-card">
+    <div class="hand-header">
+        <span class="hand-id">BP6_01</span>
+        <span class="hand-cards"><span class="spade">A&#9824;</span><span class="diamond">4&#9830;</span></span>
+        <span class="hand-board"><span class="spade">K&#9824;</span> <span class="spade">8&#9824;</span> <span class="spade">3&#9824;</span></span>
+        <span class="hand-street">FLOP</span>
+        <span class="hand-action action-raise">RAISE</span>
+        <span class="consensus-tag">UNANIMOUS 6/6</span>
+    </div>
+    <div class="feature-grid">
+        <table>
+            <tr>
+                <th></th>
+                <th colspan="2" class="approach-a"><span class="appr-label appr-a">Approach A</span></th>
+                <th colspan="2" class="approach-b"><span class="appr-label appr-b">Approach B</span></th>
+                <th colspan="2" class="approach-c"><span class="appr-label appr-c">Approach C</span></th>
+            </tr>
+            <tr>
+                <th>Feature</th>
+                <th>T1</th><th>T2</th>
+                <th>T3</th><th>T4</th>
+                <th>T5</th><th>T6</th>
+            </tr>
+            <!-- TIER 1 -->
+            <tr><td colspan="7" class="tier-header">Tier 1 Features</td></tr>
+            <tr>
+                <td class="feat-name">equity_vs_range</td>
+                <td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td>
+                <td class="cell-added">PRI</td><td class="cell-added">PRI</td>
+                <td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td>
+            </tr>
+            <tr>
+                <td class="feat-name">villain_top_pair_plus_pct</td>
+                <td class="cell-removed">rem</td><td class="cell-removed">rem</td>
+                <td class="cell-missed">miss</td><td class="cell-missed">miss</td>
+                <td class="cell-removed">rem</td><td class="cell-removed">rem</td>
+            </tr>
+            <tr>
+                <td class="feat-name">villain_draw_pct</td>
+                <td class="cell-removed">rem</td><td class="cell-removed">rem</td>
+                <td class="cell-missed">miss</td><td class="cell-missed">miss</td>
+                <td class="cell-removed">rem</td><td class="cell-removed">rem</td>
+            </tr>
+            <tr>
+                <td class="feat-name">villain_air_pct</td>
+                <td class="cell-tagged">PRI</td><td class="cell-removed">rem</td>
+                <td class="cell-missed">miss</td><td class="cell-missed">miss</td>
+                <td class="cell-removed">rem</td><td class="cell-removed">rem</td>
+            </tr>
+            <tr>
+                <td class="feat-name">villain_medium_made_pct</td>
+                <td class="cell-removed">rem</td><td class="cell-removed">rem</td>
+                <td class="cell-missed">miss</td><td class="cell-missed">miss</td>
+                <td class="cell-removed">rem</td><td class="cell-removed">rem</td>
+            </tr>
+            <tr>
+                <td class="feat-name">pot_odds</td>
+                <td class="cell-removed">rem</td><td class="cell-removed">rem</td>
+                <td class="cell-missed">miss</td><td class="cell-missed">miss</td>
+                <td class="cell-tagged">PRI</td><td class="cell-removed">rem</td>
+            </tr>
+            <tr>
+                <td class="feat-name">is_ip</td>
+                <td class="cell-removed">rem</td><td class="cell-tagged">PRI</td>
+                <td class="cell-missed">miss</td><td class="cell-missed">miss</td>
+                <td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td>
+            </tr>
+            <tr>
+                <td class="feat-name">hero_range_percentile</td>
+                <td class="cell-removed">rem</td><td class="cell-removed">rem</td>
+                <td class="cell-missed">miss</td><td class="cell-missed">miss</td>
+                <td class="cell-removed">rem</td><td class="cell-removed">rem</td>
+            </tr>
+            <!-- TIER 2 -->
+            <tr><td colspan="7" class="tier-header">Tier 2 Features (agent-added)</td></tr>
+            <tr>
+                <td class="feat-name">flush_draw_rank</td>
+                <td class="cell-added">PRI</td><td class="cell-added">PRI</td>
+                <td class="cell-added">PRI</td><td class="cell-added">PRI</td>
+                <td class="cell-added">PRI</td><td class="cell-added">PRI</td>
+            </tr>
+            <tr>
+                <td class="feat-name">flush_block_pct</td>
+                <td class="cell-added">PRI</td><td class="cell-added">PRI</td>
+                <td class="cell-added">PRI</td><td class="cell-added">PRI</td>
+                <td class="cell-added">PRI</td><td class="cell-added">PRI</td>
+            </tr>
+            <tr>
+                <td class="feat-name">villain_fold_equity_est</td>
+                <td class="cell-added">PRI</td><td class="cell-added">PRI</td>
+                <td class="cell-added">PRI</td><td class="cell-added">PRI</td>
+                <td class="cell-added">PRI</td><td class="cell-added">PRI</td>
+            </tr>
+            <tr>
+                <td class="feat-name">has_flush_draw</td>
+                <td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td>
+                <td class="cell-added">PRI</td><td class="cell-added">PRI</td>
+                <td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td>
+            </tr>
+            <tr>
+                <td class="feat-name">is_monotone</td>
+                <td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td>
+                <td class="cell-empty">&middot;</td><td class="cell-added">PRI</td>
+                <td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<!-- ============================================================
+     HAND 2: BP2_35 — Top set RAISE (MW-33 pattern)
+     ============================================================ -->
+<div class="hand-card">
+    <div class="hand-header">
+        <span class="hand-id">BP2_35</span>
+        <span class="hand-cards"><span class="club">J&#9827;</span><span class="spade">J&#9824;</span></span>
+        <span class="hand-board"><span class="diamond">J&#9830;</span> <span class="club">8&#9827;</span> <span class="spade">3&#9824;</span></span>
+        <span class="hand-street">FLOP</span>
+        <span class="hand-action action-raise">RAISE</span>
+        <span class="consensus-tag">UNANIMOUS 6/6</span>
+    </div>
+    <div class="feature-grid">
+        <table>
+            <tr>
+                <th></th>
+                <th colspan="2" class="approach-a"><span class="appr-label appr-a">A</span></th>
+                <th colspan="2" class="approach-b"><span class="appr-label appr-b">B</span></th>
+                <th colspan="2" class="approach-c"><span class="appr-label appr-c">C</span></th>
+            </tr>
+            <tr><th>Feature</th><th>T1</th><th>T2</th><th>T3</th><th>T4</th><th>T5</th><th>T6</th></tr>
+            <tr><td colspan="7" class="tier-header">Tier 1</td></tr>
+            <tr><td class="feat-name">equity_vs_range</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td><td class="cell-missed">miss</td><td class="cell-missed">miss</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td></tr>
+            <tr><td class="feat-name">villain_top_pair_plus_pct</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td><td class="cell-missed">miss</td><td class="cell-missed">miss</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td></tr>
+            <tr><td class="feat-name">villain_draw_pct</td><td class="cell-removed">rem</td><td class="cell-removed">rem</td><td class="cell-missed">miss</td><td class="cell-missed">miss</td><td class="cell-removed">rem</td><td class="cell-removed">rem</td></tr>
+            <tr><td class="feat-name">villain_air_pct</td><td class="cell-removed">rem</td><td class="cell-removed">rem</td><td class="cell-missed">miss</td><td class="cell-missed">miss</td><td class="cell-removed">rem</td><td class="cell-removed">rem</td></tr>
+            <tr><td class="feat-name">villain_medium_made_pct</td><td class="cell-removed">rem</td><td class="cell-removed">rem</td><td class="cell-added">PRI</td><td class="cell-missed">miss</td><td class="cell-removed">rem</td><td class="cell-tagged">PRI</td></tr>
+            <tr><td class="feat-name">pot_odds</td><td class="cell-removed">rem</td><td class="cell-removed">rem</td><td class="cell-missed">miss</td><td class="cell-missed">miss</td><td class="cell-removed">rem</td><td class="cell-removed">rem</td></tr>
+            <tr><td class="feat-name">is_ip</td><td class="cell-removed">rem</td><td class="cell-removed">rem</td><td class="cell-missed">miss</td><td class="cell-missed">miss</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td></tr>
+            <tr><td class="feat-name">hero_range_percentile</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td><td class="cell-missed">miss</td><td class="cell-missed">miss</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td></tr>
+            <tr><td colspan="7" class="tier-header">Tier 2</td></tr>
+            <tr><td class="feat-name">spr</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td><td class="cell-empty">&middot;</td></tr>
+            <tr><td class="feat-name">is_monster</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td></tr>
+            <tr><td class="feat-name">worse_hand_pct</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td><td class="cell-added">PRI</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td></tr>
+            <tr><td class="feat-name">facing_bet</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td><td class="cell-added">PRI</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td></tr>
+        </table>
+    </div>
+</div>
+
+<!-- ============================================================
+     HAND 3: BP1_22 — Non-nut flush draw CALL
+     ============================================================ -->
+<div class="hand-card">
+    <div class="hand-header">
+        <span class="hand-id">BP1_22</span>
+        <span class="hand-cards"><span class="spade">J&#9824;</span><span class="spade">7&#9824;</span></span>
+        <span class="hand-board"><span class="spade">T&#9824;</span> <span class="spade">6&#9824;</span> <span class="diamond">3&#9830;</span></span>
+        <span class="hand-street">FLOP</span>
+        <span class="hand-action action-call">CALL</span>
+        <span class="consensus-tag">UNANIMOUS 6/6</span>
+    </div>
+    <div class="feature-grid">
+        <table>
+            <tr><th></th><th colspan="2" class="approach-a"><span class="appr-label appr-a">A</span></th><th colspan="2" class="approach-b"><span class="appr-label appr-b">B</span></th><th colspan="2" class="approach-c"><span class="appr-label appr-c">C</span></th></tr>
+            <tr><th>Feature</th><th>T1</th><th>T2</th><th>T3</th><th>T4</th><th>T5</th><th>T6</th></tr>
+            <tr><td colspan="7" class="tier-header">Tier 1</td></tr>
+            <tr><td class="feat-name">equity_vs_range</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td></tr>
+            <tr><td class="feat-name">villain_top_pair_plus_pct</td><td class="cell-removed">rem</td><td class="cell-removed">rem</td><td class="cell-missed">miss</td><td class="cell-missed">miss</td><td class="cell-removed">rem</td><td class="cell-removed">rem</td></tr>
+            <tr><td class="feat-name">villain_draw_pct</td><td class="cell-removed">rem</td><td class="cell-removed">rem</td><td class="cell-missed">miss</td><td class="cell-missed">miss</td><td class="cell-removed">rem</td><td class="cell-removed">rem</td></tr>
+            <tr><td class="feat-name">villain_air_pct</td><td class="cell-removed">rem</td><td class="cell-removed">rem</td><td class="cell-missed">miss</td><td class="cell-missed">miss</td><td class="cell-removed">rem</td><td class="cell-removed">rem</td></tr>
+            <tr><td class="feat-name">villain_medium_made_pct</td><td class="cell-removed">rem</td><td class="cell-removed">rem</td><td class="cell-missed">miss</td><td class="cell-missed">miss</td><td class="cell-removed">rem</td><td class="cell-removed">rem</td></tr>
+            <tr><td class="feat-name">pot_odds</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td></tr>
+            <tr><td class="feat-name">is_ip</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td><td class="cell-missed">miss</td><td class="cell-missed">miss</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td></tr>
+            <tr><td class="feat-name">hero_range_percentile</td><td class="cell-removed">rem</td><td class="cell-removed">rem</td><td class="cell-missed">miss</td><td class="cell-missed">miss</td><td class="cell-tagged">PRI</td><td class="cell-removed">rem</td></tr>
+            <tr><td colspan="7" class="tier-header">Tier 2</td></tr>
+            <tr><td class="feat-name">flush_draw_rank</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td></tr>
+            <tr><td class="feat-name">draw_outs</td><td class="cell-empty">&middot;</td><td class="cell-added">PRI</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td></tr>
+            <tr><td class="feat-name">has_flush_draw</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td></tr>
+            <tr><td class="feat-name">equity_margin</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td><td class="cell-added">PRI</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td></tr>
+        </table>
+    </div>
+</div>
+
+<!-- ============================================================
+     HAND 4: d4534_BB_flop — Two pair CHECK (OOP trap)
+     ============================================================ -->
+<div class="hand-card">
+    <div class="hand-header">
+        <span class="hand-id">d4534_BB_flop</span>
+        <span class="hand-cards"><span class="diamond">8&#9830;</span><span class="club">A&#9827;</span></span>
+        <span class="hand-board"><span class="club">8&#9827;</span> <span class="heart">2&#9829;</span> <span class="heart">A&#9829;</span></span>
+        <span class="hand-street">FLOP</span>
+        <span class="hand-action action-check">CHECK</span>
+        <span class="consensus-tag">UNANIMOUS 6/6</span>
+    </div>
+    <div class="feature-grid">
+        <table>
+            <tr><th></th><th colspan="2" class="approach-a"><span class="appr-label appr-a">A</span></th><th colspan="2" class="approach-b"><span class="appr-label appr-b">B</span></th><th colspan="2" class="approach-c"><span class="appr-label appr-c">C</span></th></tr>
+            <tr><th>Feature</th><th>T1</th><th>T2</th><th>T3</th><th>T4</th><th>T5</th><th>T6</th></tr>
+            <tr><td colspan="7" class="tier-header">Tier 1</td></tr>
+            <tr><td class="feat-name">equity_vs_range</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td><td class="cell-added">PRI</td><td class="cell-missed">miss</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td></tr>
+            <tr><td class="feat-name">villain_top_pair_plus_pct</td><td class="cell-removed">rem</td><td class="cell-removed">rem</td><td class="cell-missed">miss</td><td class="cell-missed">miss</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td></tr>
+            <tr><td class="feat-name">villain_draw_pct</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td><td class="cell-added">PRI</td><td class="cell-missed">miss</td><td class="cell-tagged">PRI</td><td class="cell-removed">rem</td></tr>
+            <tr><td class="feat-name">villain_air_pct</td><td class="cell-removed">rem</td><td class="cell-removed">rem</td><td class="cell-missed">miss</td><td class="cell-missed">miss</td><td class="cell-removed">rem</td><td class="cell-tagged">PRI</td></tr>
+            <tr><td class="feat-name">villain_medium_made_pct</td><td class="cell-removed">rem</td><td class="cell-removed">rem</td><td class="cell-missed">miss</td><td class="cell-missed">miss</td><td class="cell-removed">rem</td><td class="cell-removed">rem</td></tr>
+            <tr><td class="feat-name">pot_odds</td><td class="cell-removed">rem</td><td class="cell-removed">rem</td><td class="cell-missed">miss</td><td class="cell-missed">miss</td><td class="cell-removed">rem</td><td class="cell-removed">rem</td></tr>
+            <tr><td class="feat-name">is_ip</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td></tr>
+            <tr><td class="feat-name">hero_range_percentile</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td><td class="cell-missed">miss</td><td class="cell-added">PRI</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td></tr>
+            <tr><td colspan="7" class="tier-header">Tier 2</td></tr>
+            <tr><td class="feat-name">is_preflop_aggressor</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td></tr>
+            <tr><td class="feat-name">is_strong_made</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td></tr>
+        </table>
+    </div>
+</div>
+
+<!-- ============================================================
+     HAND 5: d5046_CO_flop — Trips BET (the one dissent)
+     ============================================================ -->
+<div class="hand-card">
+    <div class="hand-header">
+        <span class="hand-id">d5046_CO_flop</span>
+        <span class="hand-cards"><span class="diamond">K&#9830;</span><span class="diamond">6&#9830;</span></span>
+        <span class="hand-board"><span class="heart">6&#9829;</span> <span class="spade">6&#9824;</span> <span class="diamond">9&#9830;</span></span>
+        <span class="hand-street">FLOP</span>
+        <span class="hand-action action-bet">BET</span>
+        <span class="consensus-tag consensus-strong">STRONG 5/6 &mdash; T3: CHECK</span>
+    </div>
+    <div class="feature-grid">
+        <table>
+            <tr><th></th><th colspan="2" class="approach-a"><span class="appr-label appr-a">A</span></th><th colspan="2" class="approach-b"><span class="appr-label appr-b">B</span></th><th colspan="2" class="approach-c"><span class="appr-label appr-c">C</span></th></tr>
+            <tr><th>Feature</th><th>T1</th><th>T2</th><th>T3 <span style="color:#d97706;font-size:9px">(CHK)</span></th><th>T4</th><th>T5</th><th>T6</th></tr>
+            <tr><td colspan="7" class="tier-header">Tier 1</td></tr>
+            <tr><td class="feat-name">equity_vs_range</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td><td class="cell-missed">miss</td><td class="cell-missed">miss</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td></tr>
+            <tr><td class="feat-name">villain_top_pair_plus_pct</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td><td class="cell-missed">miss</td><td class="cell-added">PRI</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td></tr>
+            <tr><td class="feat-name">villain_air_pct</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td><td class="cell-added">PRI</td><td class="cell-missed">miss</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td></tr>
+            <tr><td class="feat-name">hero_range_percentile</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td><td class="cell-missed">miss</td><td class="cell-added">PRI</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td></tr>
+            <tr><td colspan="7" class="tier-header">Tier 2</td></tr>
+            <tr><td class="feat-name">spr</td><td class="cell-empty">&middot;</td><td class="cell-added">PRI</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td><td class="cell-added">PRI</td><td class="cell-empty">&middot;</td></tr>
+            <tr><td class="feat-name">is_monster</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td></tr>
+            <tr><td class="feat-name">danger_score</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td><td class="cell-added">PRI</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td></tr>
+        </table>
+    </div>
+</div>
+
+<!-- ============================================================
+     HAND 6: BP7_03 — Nut FD turn CALL (hidden equity pattern)
+     ============================================================ -->
+<div class="hand-card">
+    <div class="hand-header">
+        <span class="hand-id">BP7_03</span>
+        <span class="hand-cards"><span class="heart">A&#9829;</span><span class="heart">5&#9829;</span></span>
+        <span class="hand-board"><span class="heart">8&#9829;</span> <span class="diamond">6&#9830;</span> <span class="heart">3&#9829;</span> <span class="club">J&#9827;</span></span>
+        <span class="hand-street">TURN</span>
+        <span class="hand-action action-call">CALL</span>
+        <span class="consensus-tag">UNANIMOUS 6/6</span>
+    </div>
+    <div class="feature-grid">
+        <table>
+            <tr><th></th><th colspan="2" class="approach-a"><span class="appr-label appr-a">A</span></th><th colspan="2" class="approach-b"><span class="appr-label appr-b">B</span></th><th colspan="2" class="approach-c"><span class="appr-label appr-c">C</span></th></tr>
+            <tr><th>Feature</th><th>T1</th><th>T2</th><th>T3</th><th>T4</th><th>T5</th><th>T6</th></tr>
+            <tr><td colspan="7" class="tier-header">Tier 1</td></tr>
+            <tr><td class="feat-name">equity_vs_range</td><td class="cell-removed">rem</td><td class="cell-tagged">PRI</td><td class="cell-missed">miss</td><td class="cell-missed">miss</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td></tr>
+            <tr><td class="feat-name">villain_top_pair_plus_pct</td><td class="cell-removed">rem</td><td class="cell-removed">rem</td><td class="cell-missed">miss</td><td class="cell-missed">miss</td><td class="cell-removed">rem</td><td class="cell-removed">rem</td></tr>
+            <tr><td class="feat-name">villain_draw_pct</td><td class="cell-removed">rem</td><td class="cell-removed">rem</td><td class="cell-missed">miss</td><td class="cell-missed">miss</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td></tr>
+            <tr><td class="feat-name">pot_odds</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td></tr>
+            <tr><td class="feat-name">is_ip</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td><td class="cell-missed">miss</td><td class="cell-missed">miss</td><td class="cell-tagged">PRI</td><td class="cell-removed">rem</td></tr>
+            <tr><td colspan="7" class="tier-header">Tier 2</td></tr>
+            <tr><td class="feat-name">flush_draw_rank</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td></tr>
+            <tr><td class="feat-name">improvement_probability</td><td class="cell-added">PRI</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td></tr>
+            <tr><td class="feat-name">spr</td><td class="cell-added">PRI</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td></tr>
+            <tr><td class="feat-name">villain_fold_equity_est</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td></tr>
+            <tr><td class="feat-name">equity_margin</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td><td class="cell-added">PRI</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td></tr>
+        </table>
+    </div>
+</div>
+
+<!-- ============================================================
+     HAND 7: d1200_HJ_turn — AK air FOLD (clear)
+     ============================================================ -->
+<div class="hand-card">
+    <div class="hand-header">
+        <span class="hand-id">d1200_HJ_turn</span>
+        <span class="hand-cards"><span class="heart">A&#9829;</span><span class="heart">K&#9829;</span></span>
+        <span class="hand-board"><span class="diamond">9&#9830;</span> <span class="club">5&#9827;</span> <span class="club">J&#9827;</span> <span class="heart">8&#9829;</span></span>
+        <span class="hand-street">TURN</span>
+        <span class="hand-action action-fold">FOLD</span>
+        <span class="consensus-tag">UNANIMOUS 6/6</span>
+    </div>
+    <div class="feature-grid">
+        <table>
+            <tr><th></th><th colspan="2" class="approach-a"><span class="appr-label appr-a">A</span></th><th colspan="2" class="approach-b"><span class="appr-label appr-b">B</span></th><th colspan="2" class="approach-c"><span class="appr-label appr-c">C</span></th></tr>
+            <tr><th>Feature</th><th>T1</th><th>T2</th><th>T3</th><th>T4</th><th>T5</th><th>T6</th></tr>
+            <tr><td colspan="7" class="tier-header">Tier 1</td></tr>
+            <tr><td class="feat-name">equity_vs_range</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td></tr>
+            <tr><td class="feat-name">villain_top_pair_plus_pct</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td></tr>
+            <tr><td class="feat-name">pot_odds</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td><td class="cell-missed">miss</td><td class="cell-missed">miss</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td></tr>
+            <tr><td class="feat-name">hero_range_percentile</td><td class="cell-removed">rem</td><td class="cell-removed">rem</td><td class="cell-missed">miss</td><td class="cell-missed">miss</td><td class="cell-tagged">PRI</td><td class="cell-tagged">PRI</td></tr>
+            <tr><td colspan="7" class="tier-header">Tier 2</td></tr>
+            <tr><td class="feat-name">facing_raise</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td><td class="cell-added">PRI</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td></tr>
+            <tr><td class="feat-name">villain_fold_equity_est</td><td class="cell-added">PRI</td><td class="cell-empty">&middot;</td><td class="cell-missed">miss</td><td class="cell-added">PRI</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td></tr>
+            <tr><td class="feat-name">overcard_outs</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td><td class="cell-missed">miss</td><td class="cell-added">PRI</td><td class="cell-empty">&middot;</td><td class="cell-empty">&middot;</td></tr>
+        </table>
+    </div>
+</div>
+
+<!-- ============================================================
+     SUMMARY TABLE
+     ============================================================ -->
+<div class="summary">
+    <h2>Feature Attention Summary by Approach</h2>
+    <table>
+        <tr>
+            <th>Observation</th>
+            <th><span class="appr-a">A (auto-tag)</span></th>
+            <th><span class="appr-b">B (blank slate)</span></th>
+            <th><span class="appr-c">C (action-dep)</span></th>
+        </tr>
+        <tr>
+            <td>Avg features tagged per hand</td>
+            <td>~3.5</td>
+            <td>~4.2</td>
+            <td>~4.8</td>
+        </tr>
+        <tr>
+            <td>Tier 1 kept/found rate</td>
+            <td>44% (3.5/8 kept)</td>
+            <td>~35% independently found</td>
+            <td>60% (4.8/8 kept)</td>
+        </tr>
+        <tr>
+            <td>Tier 2 additions per hand</td>
+            <td>~1.5</td>
+            <td>~2.5</td>
+            <td>~1.2</td>
+        </tr>
+        <tr>
+            <td>Removal/miss burden</td>
+            <td>~4.5 removals</td>
+            <td>N/A (no removals)</td>
+            <td>~3.2 removals</td>
+        </tr>
+        <tr>
+            <td style="font-weight:700">flush_draw_rank tagged<br>(draw hands)</td>
+            <td style="font-weight:700;color:#16a34a">6/6 &check;</td>
+            <td style="font-weight:700;color:#16a34a">6/6 &check;</td>
+            <td style="font-weight:700;color:#16a34a">6/6 &check;</td>
+        </tr>
+        <tr>
+            <td style="font-weight:700">is_preflop_aggressor tagged<br>(OOP trap hands)</td>
+            <td style="font-weight:700;color:#16a34a">4/6</td>
+            <td style="font-weight:700;color:#16a34a">4/6</td>
+            <td style="font-weight:700;color:#d97706">2/6</td>
+        </tr>
+        <tr>
+            <td style="font-weight:700">facing_raise tagged<br>(raise-facing hands)</td>
+            <td style="font-weight:700;color:#16a34a">4/6</td>
+            <td style="font-weight:700;color:#16a34a">4/6</td>
+            <td style="font-weight:700;color:#d97706">0/6</td>
+        </tr>
+    </table>
+</div>
+
+<div class="summary">
+    <h2>Key Takeaway</h2>
+    <p style="padding:8px 0;font-size:13px;line-height:1.7;">
+        <strong>All 3 approaches produced identical actions on 19/20 hands.</strong>
+        The approach choice only affects the feature attention metadata, not the labels.
+    </p>
+    <p style="padding:4px 0;font-size:13px;line-height:1.7;">
+        <strong>Approach B</strong> (blank slate) produces the most organic feature tags &mdash; agents independently discover
+        the features that matter without pre-tag bias. Tier 2 features like <code>flush_draw_rank</code>,
+        <code>is_preflop_aggressor</code>, and <code>facing_raise</code> were found organically by B agents,
+        showing these are genuinely decision-driving features the model should learn.
+    </p>
+    <p style="padding:4px 0;font-size:13px;line-height:1.7;">
+        <strong>Approaches A and C</strong> add removal overhead (4.5 and 3.2 per hand) without changing labels.
+        The removal data confirms which Tier 1 features are NOT universal &mdash; <code>pot_odds</code> is irrelevant
+        for BET/CHECK hands, <code>villain_draw_pct</code> is irrelevant when draws are 0%.
+    </p>
+</div>
+
+</body>
+</html>
