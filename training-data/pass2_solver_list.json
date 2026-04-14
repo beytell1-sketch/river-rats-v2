@@ -1,0 +1,292 @@
+[
+  {
+    "situation_id": "BP5_01",
+    "reason": "mandatory_confident_split",
+    "tier": 1
+  },
+  {
+    "situation_id": "BP4_19",
+    "reason": "mandatory_majority_split",
+    "tier": 2
+  },
+  {
+    "situation_id": "BP4_21",
+    "reason": "mandatory_majority_split",
+    "tier": 2
+  },
+  {
+    "situation_id": "BP5_12",
+    "reason": "mandatory_majority_split",
+    "tier": 2
+  },
+  {
+    "situation_id": "BP7_01",
+    "reason": "mandatory_majority_split",
+    "tier": 2
+  },
+  {
+    "situation_id": "d2788_UTG_flop",
+    "reason": "mandatory_majority_split",
+    "tier": 2
+  },
+  {
+    "situation_id": "d4312_CO_turn",
+    "reason": "mandatory_majority_split",
+    "tier": 2
+  },
+  {
+    "situation_id": "d5222_BTN_flop",
+    "reason": "mandatory_majority_split",
+    "tier": 2
+  },
+  {
+    "situation_id": "d5620_CO_turn",
+    "reason": "mandatory_majority_split",
+    "tier": 2
+  },
+  {
+    "situation_id": "d5749_HJ_turn",
+    "reason": "mandatory_majority_split",
+    "tier": 2
+  },
+  {
+    "situation_id": "d8002_BTN_flop",
+    "reason": "mandatory_majority_split",
+    "tier": 2
+  },
+  {
+    "situation_id": "d8886_BTN_flop",
+    "reason": "mandatory_majority_split",
+    "tier": 2
+  },
+  {
+    "situation_id": "d8963_HJ_turn",
+    "reason": "mandatory_majority_split",
+    "tier": 2
+  },
+  {
+    "situation_id": "d9556_BB_flop",
+    "reason": "mandatory_majority_split",
+    "tier": 2
+  },
+  {
+    "situation_id": "BP1_05",
+    "reason": "panel_majority_flagged",
+    "tier": 3
+  },
+  {
+    "situation_id": "BP1_08",
+    "reason": "panel_majority_flagged",
+    "tier": 3
+  },
+  {
+    "situation_id": "BP2_18",
+    "reason": "panel_majority_flagged",
+    "tier": 3
+  },
+  {
+    "situation_id": "BP4_20",
+    "reason": "panel_majority_flagged",
+    "tier": 3
+  },
+  {
+    "situation_id": "BP4_35",
+    "reason": "panel_majority_flagged",
+    "tier": 3
+  },
+  {
+    "situation_id": "BP5_10",
+    "reason": "panel_majority_flagged",
+    "tier": 3
+  },
+  {
+    "situation_id": "BP6_04",
+    "reason": "panel_majority_flagged",
+    "tier": 3
+  },
+  {
+    "situation_id": "d0244_CO_river",
+    "reason": "panel_majority_flagged",
+    "tier": 3
+  },
+  {
+    "situation_id": "d5066_BTN_river",
+    "reason": "panel_majority_flagged",
+    "tier": 3
+  },
+  {
+    "situation_id": "d7760_BTN_river",
+    "reason": "panel_majority_flagged",
+    "tier": 3
+  },
+  {
+    "situation_id": "BP1_01",
+    "reason": "tier4_expert_flagged",
+    "tier": 4
+  },
+  {
+    "situation_id": "BP1_07",
+    "reason": "tier4_expert_flagged",
+    "tier": 4
+  },
+  {
+    "situation_id": "BP1_19",
+    "reason": "tier4_expert_flagged",
+    "tier": 4
+  },
+  {
+    "situation_id": "BP1_25",
+    "reason": "tier4_expert_flagged",
+    "tier": 4
+  },
+  {
+    "situation_id": "BP2_16",
+    "reason": "tier4_expert_flagged",
+    "tier": 4
+  },
+  {
+    "situation_id": "BP2_31",
+    "reason": "tier4_expert_flagged",
+    "tier": 4
+  },
+  {
+    "situation_id": "BP2_33",
+    "reason": "tier4_expert_flagged",
+    "tier": 4
+  },
+  {
+    "situation_id": "BP4_12",
+    "reason": "tier4_expert_flagged",
+    "tier": 4
+  },
+  {
+    "situation_id": "BP4_24",
+    "reason": "tier4_expert_flagged",
+    "tier": 4
+  },
+  {
+    "situation_id": "BP7_12",
+    "reason": "tier4_expert_flagged",
+    "tier": 4
+  },
+  {
+    "situation_id": "d1764_BTN_flop",
+    "reason": "tier4_expert_flagged",
+    "tier": 4
+  },
+  {
+    "situation_id": "d1971_HJ_river",
+    "reason": "tier4_expert_flagged",
+    "tier": 4
+  },
+  {
+    "situation_id": "d3409_HJ_river",
+    "reason": "tier4_expert_flagged",
+    "tier": 4
+  },
+  {
+    "situation_id": "d3687_HJ_turn",
+    "reason": "tier4_expert_flagged",
+    "tier": 4
+  },
+  {
+    "situation_id": "d4211_HJ_turn",
+    "reason": "tier4_expert_flagged",
+    "tier": 4
+  },
+  {
+    "situation_id": "d6508_BB_flop",
+    "reason": "tier4_expert_flagged",
+    "tier": 4
+  },
+  {
+    "situation_id": "d6709_BTN_flop",
+    "reason": "tier4_expert_flagged",
+    "tier": 4
+  },
+  {
+    "situation_id": "d6826_BTN_turn",
+    "reason": "tier4_expert_flagged",
+    "tier": 4
+  },
+  {
+    "situation_id": "d6869_CO_turn",
+    "reason": "tier4_expert_flagged",
+    "tier": 4
+  },
+  {
+    "situation_id": "d7296_BB_flop",
+    "reason": "tier4_expert_flagged",
+    "tier": 4
+  },
+  {
+    "situation_id": "d7760_BTN_flop",
+    "reason": "tier4_expert_flagged",
+    "tier": 4
+  },
+  {
+    "situation_id": "d8453_BTN_turn",
+    "reason": "tier4_expert_flagged",
+    "tier": 4
+  },
+  {
+    "situation_id": "d9208_BB_turn",
+    "reason": "tier4_expert_flagged",
+    "tier": 4
+  },
+  {
+    "situation_id": "d9556_BB_turn",
+    "reason": "tier4_expert_flagged",
+    "tier": 4
+  },
+  {
+    "situation_id": "d9989_BB_flop",
+    "reason": "tier4_expert_flagged",
+    "tier": 4
+  },
+  {
+    "situation_id": "d0182_BTN_flop",
+    "reason": "tier5_challenger_flagged",
+    "tier": 5
+  },
+  {
+    "situation_id": "d0976_BTN_turn",
+    "reason": "tier5_challenger_flagged",
+    "tier": 5
+  },
+  {
+    "situation_id": "d1983_BTN_turn",
+    "reason": "tier5_challenger_flagged",
+    "tier": 5
+  },
+  {
+    "situation_id": "d2139_BTN_flop",
+    "reason": "tier5_challenger_flagged",
+    "tier": 5
+  },
+  {
+    "situation_id": "d2833_BTN_flop",
+    "reason": "tier5_challenger_flagged",
+    "tier": 5
+  },
+  {
+    "situation_id": "d3456_BTN_turn",
+    "reason": "tier5_challenger_flagged",
+    "tier": 5
+  },
+  {
+    "situation_id": "d3642_BTN_flop",
+    "reason": "tier5_challenger_flagged",
+    "tier": 5
+  },
+  {
+    "situation_id": "d4534_BB_flop",
+    "reason": "tier5_challenger_flagged",
+    "tier": 5
+  },
+  {
+    "situation_id": "d8473_BTN_turn",
+    "reason": "tier5_challenger_flagged",
+    "tier": 5
+  }
+]
