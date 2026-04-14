@@ -1,0 +1,1555 @@
+{
+  "experiment": "exp4_intentions",
+  "n_samples": 20,
+  "n_features": 54,
+  "tag_list": [
+    "intent_bluff_fold_better",
+    "intent_continue_draw",
+    "intent_deny_equity",
+    "intent_pot_control",
+    "intent_range_fold_priced_out",
+    "intent_value_extract"
+  ],
+  "tag_frequencies": {
+    "intent_bluff_fold_better": {
+      "positive_count": 1,
+      "pct": 5.0
+    },
+    "intent_continue_draw": {
+      "positive_count": 3,
+      "pct": 15.0
+    },
+    "intent_deny_equity": {
+      "positive_count": 3,
+      "pct": 15.0
+    },
+    "intent_pot_control": {
+      "positive_count": 5,
+      "pct": 25.0
+    },
+    "intent_range_fold_priced_out": {
+      "positive_count": 5,
+      "pct": 25.0
+    },
+    "intent_value_extract": {
+      "positive_count": 7,
+      "pct": 35.0
+    }
+  },
+  "loo_predictions_per_tag": {
+    "intent_bluff_fold_better": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "intent_continue_draw": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "intent_deny_equity": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "intent_pot_control": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "intent_range_fold_priced_out": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0
+    ],
+    "intent_value_extract": [
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1
+    ]
+  },
+  "per_tag_results": {
+    "intent_bluff_fold_better": {
+      "positive_count": 1,
+      "loo_predicted_positive": 0,
+      "is_nontrivial": false,
+      "feature_importance": [
+        {
+          "feature": "street",
+          "importance": 0.0
+        },
+        {
+          "feature": "facing_bet",
+          "importance": 0.0
+        },
+        {
+          "feature": "pot_size",
+          "importance": 0.0
+        },
+        {
+          "feature": "to_call",
+          "importance": 0.0
+        },
+        {
+          "feature": "pot_odds",
+          "importance": 0.0
+        },
+        {
+          "feature": "bet_to_pot",
+          "importance": 0.0
+        },
+        {
+          "feature": "hero_position",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_position",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_ip",
+          "importance": 0.0
+        },
+        {
+          "feature": "hand_category",
+          "importance": 0.0
+        },
+        {
+          "feature": "hand_rank",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_made_hand",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_strong_made",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_monster",
+          "importance": 0.0
+        },
+        {
+          "feature": "has_flush_draw",
+          "importance": 0.0
+        },
+        {
+          "feature": "has_straight_draw",
+          "importance": 0.0
+        },
+        {
+          "feature": "draw_outs",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_monotone",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_two_tone",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_rainbow",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_paired",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_double_paired",
+          "importance": 0.0
+        },
+        {
+          "feature": "connectivity_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "high_card_rank",
+          "importance": 0.0
+        },
+        {
+          "feature": "danger_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "flush_danger",
+          "importance": 0.0
+        },
+        {
+          "feature": "straight_danger",
+          "importance": 0.0
+        },
+        {
+          "feature": "raw_equity",
+          "importance": 0.0
+        },
+        {
+          "feature": "equity_vs_range",
+          "importance": 0.0
+        },
+        {
+          "feature": "better_hand_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "worse_hand_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "equity_margin",
+          "importance": 0.0
+        },
+        {
+          "feature": "spr",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_3bet_pot",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_aggression_count",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_checked_back",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_call_count",
+          "importance": 0.0
+        },
+        {
+          "feature": "num_opponents",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_top_pair_plus_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_draw_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_air_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_range_capped",
+          "importance": 0.0
+        },
+        {
+          "feature": "board_favour",
+          "importance": 0.0
+        },
+        {
+          "feature": "num_callers_to_bet",
+          "importance": 0.0
+        },
+        {
+          "feature": "facing_raise",
+          "importance": 0.0
+        },
+        {
+          "feature": "flush_block_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "overcard_outs",
+          "importance": 0.0
+        },
+        {
+          "feature": "improvement_probability",
+          "importance": 0.0
+        },
+        {
+          "feature": "hero_range_percentile",
+          "importance": 0.0
+        },
+        {
+          "feature": "has_showdown_value",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_fold_equity_estimate",
+          "importance": 0.0
+        },
+        {
+          "feature": "flush_draw_rank",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_preflop_aggressor",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_medium_made_pct",
+          "importance": 0.0
+        }
+      ],
+      "top3_features": [
+        "street",
+        "facing_bet",
+        "pot_size"
+      ],
+      "differs_from_baseline_top3": null
+    },
+    "intent_continue_draw": {
+      "positive_count": 3,
+      "loo_predicted_positive": 0,
+      "is_nontrivial": false,
+      "feature_importance": [
+        {
+          "feature": "villain_position",
+          "importance": 0.22355185449123383
+        },
+        {
+          "feature": "hand_category",
+          "importance": 0.21618755161762238
+        },
+        {
+          "feature": "overcard_outs",
+          "importance": 0.19130074977874756
+        },
+        {
+          "feature": "better_hand_pct",
+          "importance": 0.17532478272914886
+        },
+        {
+          "feature": "flush_draw_rank",
+          "importance": 0.1621197909116745
+        },
+        {
+          "feature": "raw_equity",
+          "importance": 0.014606129378080368
+        },
+        {
+          "feature": "villain_medium_made_pct",
+          "importance": 0.010352689772844315
+        },
+        {
+          "feature": "pot_odds",
+          "importance": 0.006556469015777111
+        },
+        {
+          "feature": "street",
+          "importance": 0.0
+        },
+        {
+          "feature": "facing_bet",
+          "importance": 0.0
+        },
+        {
+          "feature": "pot_size",
+          "importance": 0.0
+        },
+        {
+          "feature": "to_call",
+          "importance": 0.0
+        },
+        {
+          "feature": "bet_to_pot",
+          "importance": 0.0
+        },
+        {
+          "feature": "hero_position",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_ip",
+          "importance": 0.0
+        },
+        {
+          "feature": "hand_rank",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_made_hand",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_strong_made",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_monster",
+          "importance": 0.0
+        },
+        {
+          "feature": "has_flush_draw",
+          "importance": 0.0
+        },
+        {
+          "feature": "has_straight_draw",
+          "importance": 0.0
+        },
+        {
+          "feature": "draw_outs",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_monotone",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_two_tone",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_rainbow",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_paired",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_double_paired",
+          "importance": 0.0
+        },
+        {
+          "feature": "connectivity_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "high_card_rank",
+          "importance": 0.0
+        },
+        {
+          "feature": "danger_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "flush_danger",
+          "importance": 0.0
+        },
+        {
+          "feature": "straight_danger",
+          "importance": 0.0
+        },
+        {
+          "feature": "equity_vs_range",
+          "importance": 0.0
+        },
+        {
+          "feature": "worse_hand_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "equity_margin",
+          "importance": 0.0
+        },
+        {
+          "feature": "spr",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_3bet_pot",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_aggression_count",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_checked_back",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_call_count",
+          "importance": 0.0
+        },
+        {
+          "feature": "num_opponents",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_top_pair_plus_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_draw_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_air_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_range_capped",
+          "importance": 0.0
+        },
+        {
+          "feature": "board_favour",
+          "importance": 0.0
+        },
+        {
+          "feature": "num_callers_to_bet",
+          "importance": 0.0
+        },
+        {
+          "feature": "facing_raise",
+          "importance": 0.0
+        },
+        {
+          "feature": "flush_block_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "improvement_probability",
+          "importance": 0.0
+        },
+        {
+          "feature": "hero_range_percentile",
+          "importance": 0.0
+        },
+        {
+          "feature": "has_showdown_value",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_fold_equity_estimate",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_preflop_aggressor",
+          "importance": 0.0
+        }
+      ],
+      "top3_features": [
+        "villain_position",
+        "hand_category",
+        "overcard_outs"
+      ],
+      "differs_from_baseline_top3": null
+    },
+    "intent_deny_equity": {
+      "positive_count": 3,
+      "loo_predicted_positive": 0,
+      "is_nontrivial": false,
+      "feature_importance": [
+        {
+          "feature": "hero_range_percentile",
+          "importance": 0.33038803935050964
+        },
+        {
+          "feature": "villain_aggression_count",
+          "importance": 0.2253742218017578
+        },
+        {
+          "feature": "villain_draw_pct",
+          "importance": 0.09753304719924927
+        },
+        {
+          "feature": "danger_score",
+          "importance": 0.09738855063915253
+        },
+        {
+          "feature": "hero_position",
+          "importance": 0.060810551047325134
+        },
+        {
+          "feature": "villain_top_pair_plus_pct",
+          "importance": 0.05575836822390556
+        },
+        {
+          "feature": "villain_position",
+          "importance": 0.04841110482811928
+        },
+        {
+          "feature": "equity_margin",
+          "importance": 0.04322945699095726
+        },
+        {
+          "feature": "hand_category",
+          "importance": 0.04110671579837799
+        },
+        {
+          "feature": "street",
+          "importance": 0.0
+        },
+        {
+          "feature": "facing_bet",
+          "importance": 0.0
+        },
+        {
+          "feature": "pot_size",
+          "importance": 0.0
+        },
+        {
+          "feature": "to_call",
+          "importance": 0.0
+        },
+        {
+          "feature": "pot_odds",
+          "importance": 0.0
+        },
+        {
+          "feature": "bet_to_pot",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_ip",
+          "importance": 0.0
+        },
+        {
+          "feature": "hand_rank",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_made_hand",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_strong_made",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_monster",
+          "importance": 0.0
+        },
+        {
+          "feature": "has_flush_draw",
+          "importance": 0.0
+        },
+        {
+          "feature": "has_straight_draw",
+          "importance": 0.0
+        },
+        {
+          "feature": "draw_outs",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_monotone",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_two_tone",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_rainbow",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_paired",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_double_paired",
+          "importance": 0.0
+        },
+        {
+          "feature": "connectivity_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "high_card_rank",
+          "importance": 0.0
+        },
+        {
+          "feature": "flush_danger",
+          "importance": 0.0
+        },
+        {
+          "feature": "straight_danger",
+          "importance": 0.0
+        },
+        {
+          "feature": "raw_equity",
+          "importance": 0.0
+        },
+        {
+          "feature": "equity_vs_range",
+          "importance": 0.0
+        },
+        {
+          "feature": "better_hand_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "worse_hand_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "spr",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_3bet_pot",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_checked_back",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_call_count",
+          "importance": 0.0
+        },
+        {
+          "feature": "num_opponents",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_air_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_range_capped",
+          "importance": 0.0
+        },
+        {
+          "feature": "board_favour",
+          "importance": 0.0
+        },
+        {
+          "feature": "num_callers_to_bet",
+          "importance": 0.0
+        },
+        {
+          "feature": "facing_raise",
+          "importance": 0.0
+        },
+        {
+          "feature": "flush_block_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "overcard_outs",
+          "importance": 0.0
+        },
+        {
+          "feature": "improvement_probability",
+          "importance": 0.0
+        },
+        {
+          "feature": "has_showdown_value",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_fold_equity_estimate",
+          "importance": 0.0
+        },
+        {
+          "feature": "flush_draw_rank",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_preflop_aggressor",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_medium_made_pct",
+          "importance": 0.0
+        }
+      ],
+      "top3_features": [
+        "hero_range_percentile",
+        "villain_aggression_count",
+        "villain_draw_pct"
+      ],
+      "differs_from_baseline_top3": null
+    },
+    "intent_pot_control": {
+      "positive_count": 5,
+      "loo_predicted_positive": 2,
+      "is_nontrivial": true,
+      "feature_importance": [
+        {
+          "feature": "villain_position",
+          "importance": 0.5923179388046265
+        },
+        {
+          "feature": "villain_top_pair_plus_pct",
+          "importance": 0.2421608865261078
+        },
+        {
+          "feature": "pot_size",
+          "importance": 0.16552112996578217
+        },
+        {
+          "feature": "street",
+          "importance": 0.0
+        },
+        {
+          "feature": "facing_bet",
+          "importance": 0.0
+        },
+        {
+          "feature": "to_call",
+          "importance": 0.0
+        },
+        {
+          "feature": "pot_odds",
+          "importance": 0.0
+        },
+        {
+          "feature": "bet_to_pot",
+          "importance": 0.0
+        },
+        {
+          "feature": "hero_position",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_ip",
+          "importance": 0.0
+        },
+        {
+          "feature": "hand_category",
+          "importance": 0.0
+        },
+        {
+          "feature": "hand_rank",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_made_hand",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_strong_made",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_monster",
+          "importance": 0.0
+        },
+        {
+          "feature": "has_flush_draw",
+          "importance": 0.0
+        },
+        {
+          "feature": "has_straight_draw",
+          "importance": 0.0
+        },
+        {
+          "feature": "draw_outs",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_monotone",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_two_tone",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_rainbow",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_paired",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_double_paired",
+          "importance": 0.0
+        },
+        {
+          "feature": "connectivity_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "high_card_rank",
+          "importance": 0.0
+        },
+        {
+          "feature": "danger_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "flush_danger",
+          "importance": 0.0
+        },
+        {
+          "feature": "straight_danger",
+          "importance": 0.0
+        },
+        {
+          "feature": "raw_equity",
+          "importance": 0.0
+        },
+        {
+          "feature": "equity_vs_range",
+          "importance": 0.0
+        },
+        {
+          "feature": "better_hand_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "worse_hand_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "equity_margin",
+          "importance": 0.0
+        },
+        {
+          "feature": "spr",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_3bet_pot",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_aggression_count",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_checked_back",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_call_count",
+          "importance": 0.0
+        },
+        {
+          "feature": "num_opponents",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_draw_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_air_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_range_capped",
+          "importance": 0.0
+        },
+        {
+          "feature": "board_favour",
+          "importance": 0.0
+        },
+        {
+          "feature": "num_callers_to_bet",
+          "importance": 0.0
+        },
+        {
+          "feature": "facing_raise",
+          "importance": 0.0
+        },
+        {
+          "feature": "flush_block_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "overcard_outs",
+          "importance": 0.0
+        },
+        {
+          "feature": "improvement_probability",
+          "importance": 0.0
+        },
+        {
+          "feature": "hero_range_percentile",
+          "importance": 0.0
+        },
+        {
+          "feature": "has_showdown_value",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_fold_equity_estimate",
+          "importance": 0.0
+        },
+        {
+          "feature": "flush_draw_rank",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_preflop_aggressor",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_medium_made_pct",
+          "importance": 0.0
+        }
+      ],
+      "top3_features": [
+        "villain_position",
+        "villain_top_pair_plus_pct",
+        "pot_size"
+      ],
+      "differs_from_baseline_top3": null
+    },
+    "intent_range_fold_priced_out": {
+      "positive_count": 5,
+      "loo_predicted_positive": 5,
+      "is_nontrivial": true,
+      "feature_importance": [
+        {
+          "feature": "raw_equity",
+          "importance": 0.6581365466117859
+        },
+        {
+          "feature": "equity_margin",
+          "importance": 0.3016304075717926
+        },
+        {
+          "feature": "improvement_probability",
+          "importance": 0.037283021956682205
+        },
+        {
+          "feature": "danger_score",
+          "importance": 0.00294998986646533
+        },
+        {
+          "feature": "street",
+          "importance": 0.0
+        },
+        {
+          "feature": "facing_bet",
+          "importance": 0.0
+        },
+        {
+          "feature": "pot_size",
+          "importance": 0.0
+        },
+        {
+          "feature": "to_call",
+          "importance": 0.0
+        },
+        {
+          "feature": "pot_odds",
+          "importance": 0.0
+        },
+        {
+          "feature": "bet_to_pot",
+          "importance": 0.0
+        },
+        {
+          "feature": "hero_position",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_position",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_ip",
+          "importance": 0.0
+        },
+        {
+          "feature": "hand_category",
+          "importance": 0.0
+        },
+        {
+          "feature": "hand_rank",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_made_hand",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_strong_made",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_monster",
+          "importance": 0.0
+        },
+        {
+          "feature": "has_flush_draw",
+          "importance": 0.0
+        },
+        {
+          "feature": "has_straight_draw",
+          "importance": 0.0
+        },
+        {
+          "feature": "draw_outs",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_monotone",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_two_tone",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_rainbow",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_paired",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_double_paired",
+          "importance": 0.0
+        },
+        {
+          "feature": "connectivity_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "high_card_rank",
+          "importance": 0.0
+        },
+        {
+          "feature": "flush_danger",
+          "importance": 0.0
+        },
+        {
+          "feature": "straight_danger",
+          "importance": 0.0
+        },
+        {
+          "feature": "equity_vs_range",
+          "importance": 0.0
+        },
+        {
+          "feature": "better_hand_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "worse_hand_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "spr",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_3bet_pot",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_aggression_count",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_checked_back",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_call_count",
+          "importance": 0.0
+        },
+        {
+          "feature": "num_opponents",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_top_pair_plus_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_draw_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_air_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_range_capped",
+          "importance": 0.0
+        },
+        {
+          "feature": "board_favour",
+          "importance": 0.0
+        },
+        {
+          "feature": "num_callers_to_bet",
+          "importance": 0.0
+        },
+        {
+          "feature": "facing_raise",
+          "importance": 0.0
+        },
+        {
+          "feature": "flush_block_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "overcard_outs",
+          "importance": 0.0
+        },
+        {
+          "feature": "hero_range_percentile",
+          "importance": 0.0
+        },
+        {
+          "feature": "has_showdown_value",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_fold_equity_estimate",
+          "importance": 0.0
+        },
+        {
+          "feature": "flush_draw_rank",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_preflop_aggressor",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_medium_made_pct",
+          "importance": 0.0
+        }
+      ],
+      "top3_features": [
+        "raw_equity",
+        "equity_margin",
+        "improvement_probability"
+      ],
+      "differs_from_baseline_top3": null
+    },
+    "intent_value_extract": {
+      "positive_count": 7,
+      "loo_predicted_positive": 5,
+      "is_nontrivial": true,
+      "feature_importance": [
+        {
+          "feature": "hand_rank",
+          "importance": 0.4331110119819641
+        },
+        {
+          "feature": "raw_equity",
+          "importance": 0.31150972843170166
+        },
+        {
+          "feature": "villain_aggression_count",
+          "importance": 0.09912813454866409
+        },
+        {
+          "feature": "villain_checked_back",
+          "importance": 0.06796219944953918
+        },
+        {
+          "feature": "danger_score",
+          "importance": 0.0482458621263504
+        },
+        {
+          "feature": "street",
+          "importance": 0.04004302993416786
+        },
+        {
+          "feature": "facing_bet",
+          "importance": 0.0
+        },
+        {
+          "feature": "pot_size",
+          "importance": 0.0
+        },
+        {
+          "feature": "to_call",
+          "importance": 0.0
+        },
+        {
+          "feature": "pot_odds",
+          "importance": 0.0
+        },
+        {
+          "feature": "bet_to_pot",
+          "importance": 0.0
+        },
+        {
+          "feature": "hero_position",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_position",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_ip",
+          "importance": 0.0
+        },
+        {
+          "feature": "hand_category",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_made_hand",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_strong_made",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_monster",
+          "importance": 0.0
+        },
+        {
+          "feature": "has_flush_draw",
+          "importance": 0.0
+        },
+        {
+          "feature": "has_straight_draw",
+          "importance": 0.0
+        },
+        {
+          "feature": "draw_outs",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_monotone",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_two_tone",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_rainbow",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_paired",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_double_paired",
+          "importance": 0.0
+        },
+        {
+          "feature": "connectivity_score",
+          "importance": 0.0
+        },
+        {
+          "feature": "high_card_rank",
+          "importance": 0.0
+        },
+        {
+          "feature": "flush_danger",
+          "importance": 0.0
+        },
+        {
+          "feature": "straight_danger",
+          "importance": 0.0
+        },
+        {
+          "feature": "equity_vs_range",
+          "importance": 0.0
+        },
+        {
+          "feature": "better_hand_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "worse_hand_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "equity_margin",
+          "importance": 0.0
+        },
+        {
+          "feature": "spr",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_3bet_pot",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_call_count",
+          "importance": 0.0
+        },
+        {
+          "feature": "num_opponents",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_top_pair_plus_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_draw_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_air_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_range_capped",
+          "importance": 0.0
+        },
+        {
+          "feature": "board_favour",
+          "importance": 0.0
+        },
+        {
+          "feature": "num_callers_to_bet",
+          "importance": 0.0
+        },
+        {
+          "feature": "facing_raise",
+          "importance": 0.0
+        },
+        {
+          "feature": "flush_block_pct",
+          "importance": 0.0
+        },
+        {
+          "feature": "overcard_outs",
+          "importance": 0.0
+        },
+        {
+          "feature": "improvement_probability",
+          "importance": 0.0
+        },
+        {
+          "feature": "hero_range_percentile",
+          "importance": 0.0
+        },
+        {
+          "feature": "has_showdown_value",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_fold_equity_estimate",
+          "importance": 0.0
+        },
+        {
+          "feature": "flush_draw_rank",
+          "importance": 0.0
+        },
+        {
+          "feature": "is_preflop_aggressor",
+          "importance": 0.0
+        },
+        {
+          "feature": "villain_medium_made_pct",
+          "importance": 0.0
+        }
+      ],
+      "top3_features": [
+        "hand_rank",
+        "raw_equity",
+        "villain_aggression_count"
+      ],
+      "differs_from_baseline_top3": null
+    }
+  },
+  "n_nontrivial_tags": 3,
+  "mechanical_success": true,
+  "notes": [
+    "Tags with <=2 positive examples will collapse to all-zero (majority class)",
+    "Multi-output LOO: 20 folds x N_tags binary models x 50 trees each"
+  ]
+}

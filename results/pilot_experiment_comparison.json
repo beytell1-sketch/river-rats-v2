@@ -1,0 +1,243 @@
+{
+  "n_hands": 20,
+  "per_hand_predictions": [
+    {
+      "situation_id": "d4534_BB_flop",
+      "true_label": "CHECK",
+      "baseline": "CHECK",
+      "exp1_masking": "CHECK",
+      "exp2_weighting": "RAISE",
+      "exp3_auxiliary": "CHECK"
+    },
+    {
+      "situation_id": "d7760_BTN_flop",
+      "true_label": "CHECK",
+      "baseline": "CHECK",
+      "exp1_masking": "FOLD",
+      "exp2_weighting": "CHECK",
+      "exp3_auxiliary": "CHECK"
+    },
+    {
+      "situation_id": "d6384_BTN_turn",
+      "true_label": "CHECK",
+      "baseline": "FOLD",
+      "exp1_masking": "FOLD",
+      "exp2_weighting": "FOLD",
+      "exp3_auxiliary": "FOLD"
+    },
+    {
+      "situation_id": "d6066_BB_flop",
+      "true_label": "CHECK",
+      "baseline": "BET",
+      "exp1_masking": "CHECK",
+      "exp2_weighting": "CHECK",
+      "exp3_auxiliary": "BET"
+    },
+    {
+      "situation_id": "d5046_CO_flop",
+      "true_label": "BET",
+      "baseline": "BET",
+      "exp1_masking": "BET",
+      "exp2_weighting": "BET",
+      "exp3_auxiliary": "BET"
+    },
+    {
+      "situation_id": "d6826_CO_turn",
+      "true_label": "BET",
+      "baseline": "BET",
+      "exp1_masking": "BET",
+      "exp2_weighting": "BET",
+      "exp3_auxiliary": "BET"
+    },
+    {
+      "situation_id": "d1971_HJ_river",
+      "true_label": "BET",
+      "baseline": "BET",
+      "exp1_masking": "FOLD",
+      "exp2_weighting": "BET",
+      "exp3_auxiliary": "BET"
+    },
+    {
+      "situation_id": "d2285_BTN_river",
+      "true_label": "FOLD",
+      "baseline": "FOLD",
+      "exp1_masking": "FOLD",
+      "exp2_weighting": "FOLD",
+      "exp3_auxiliary": "FOLD"
+    },
+    {
+      "situation_id": "d6533_BTN_river",
+      "true_label": "FOLD",
+      "baseline": "FOLD",
+      "exp1_masking": "FOLD",
+      "exp2_weighting": "FOLD",
+      "exp3_auxiliary": "FOLD"
+    },
+    {
+      "situation_id": "d1200_HJ_turn",
+      "true_label": "FOLD",
+      "baseline": "FOLD",
+      "exp1_masking": "FOLD",
+      "exp2_weighting": "FOLD",
+      "exp3_auxiliary": "FOLD"
+    },
+    {
+      "situation_id": "BP1_22",
+      "true_label": "CALL",
+      "baseline": "RAISE",
+      "exp1_masking": "RAISE",
+      "exp2_weighting": "BET",
+      "exp3_auxiliary": "RAISE"
+    },
+    {
+      "situation_id": "BP2_35",
+      "true_label": "RAISE",
+      "baseline": "RAISE",
+      "exp1_masking": "BET",
+      "exp2_weighting": "BET",
+      "exp3_auxiliary": "RAISE"
+    },
+    {
+      "situation_id": "BP3_03",
+      "true_label": "FOLD",
+      "baseline": "FOLD",
+      "exp1_masking": "FOLD",
+      "exp2_weighting": "FOLD",
+      "exp3_auxiliary": "FOLD"
+    },
+    {
+      "situation_id": "BP4_28",
+      "true_label": "BET",
+      "baseline": "CHECK",
+      "exp1_masking": "CHECK",
+      "exp2_weighting": "RAISE",
+      "exp3_auxiliary": "CHECK"
+    },
+    {
+      "situation_id": "BP5_02",
+      "true_label": "CHECK",
+      "baseline": "BET",
+      "exp1_masking": "CHECK",
+      "exp2_weighting": "CHECK",
+      "exp3_auxiliary": "BET"
+    },
+    {
+      "situation_id": "BP6_01",
+      "true_label": "RAISE",
+      "baseline": "CALL",
+      "exp1_masking": "CHECK",
+      "exp2_weighting": "CALL",
+      "exp3_auxiliary": "CALL"
+    },
+    {
+      "situation_id": "BP7_03",
+      "true_label": "CALL",
+      "baseline": "FOLD",
+      "exp1_masking": "RAISE",
+      "exp2_weighting": "RAISE",
+      "exp3_auxiliary": "FOLD"
+    },
+    {
+      "situation_id": "BP2_36",
+      "true_label": "RAISE",
+      "baseline": "RAISE",
+      "exp1_masking": "BET",
+      "exp2_weighting": "BET",
+      "exp3_auxiliary": "RAISE"
+    },
+    {
+      "situation_id": "BP2_42",
+      "true_label": "FOLD",
+      "baseline": "FOLD",
+      "exp1_masking": "FOLD",
+      "exp2_weighting": "FOLD",
+      "exp3_auxiliary": "FOLD"
+    },
+    {
+      "situation_id": "BP5_05",
+      "true_label": "BET",
+      "baseline": "RAISE",
+      "exp1_masking": "CHECK",
+      "exp2_weighting": "BET",
+      "exp3_auxiliary": "BET"
+    }
+  ],
+  "experiment_summary": {
+    "exp1_masking": {
+      "n_predictions_differ": 9,
+      "spearman_rho_importance": 0.1348,
+      "mechanical_success": true
+    },
+    "exp2_weighting": {
+      "n_predictions_differ": 9,
+      "spearman_rho_importance": 0.5095,
+      "mechanical_success": true
+    },
+    "exp3_auxiliary": {
+      "n_predictions_differ": 1,
+      "spearman_rho_importance": 0.9119,
+      "mechanical_success": true
+    }
+  },
+  "attention_signal_finding": {
+    "nonzero_attn_flags": [
+      {
+        "attn_feature": "attn_draw_outs",
+        "attn_importance": 0.08512318134307861,
+        "original_feature": "draw_outs",
+        "original_importance": 0.08376827836036682
+      },
+      {
+        "attn_feature": "attn_flush_draw_rank",
+        "attn_importance": 0.07657702267169952,
+        "original_feature": "flush_draw_rank",
+        "original_importance": 0.08028468489646912
+      },
+      {
+        "attn_feature": "attn_flush_block_pct",
+        "attn_importance": 0.06732179969549179,
+        "original_feature": "flush_block_pct",
+        "original_importance": 0.05181163176894188
+      },
+      {
+        "attn_feature": "attn_worse_hand_pct",
+        "attn_importance": 0.023509209975600243,
+        "original_feature": "worse_hand_pct",
+        "original_importance": 0.0014682702021673322
+      },
+      {
+        "attn_feature": "attn_danger_score",
+        "attn_importance": 0.02337663620710373,
+        "original_feature": "danger_score",
+        "original_importance": 0.022052491083741188
+      },
+      {
+        "attn_feature": "attn_better_hand_pct",
+        "attn_importance": 0.018571199849247932,
+        "original_feature": "better_hand_pct",
+        "original_importance": 0.04345275089144707
+      },
+      {
+        "attn_feature": "attn_is_preflop_aggressor",
+        "attn_importance": 0.010757239535450935,
+        "original_feature": "is_preflop_aggressor",
+        "original_importance": 0.0
+      },
+      {
+        "attn_feature": "attn_board_favour",
+        "attn_importance": 0.007394132670015097,
+        "original_feature": "board_favour",
+        "original_importance": 0.0
+      }
+    ],
+    "n_nonzero": 8,
+    "any_in_top20": true,
+    "conclusion": "XGBoost did learn to use expert attention signals at 20 samples"
+  },
+  "ranking_by_divergence": [
+    "exp1_masking",
+    "exp2_weighting",
+    "exp3_auxiliary"
+  ],
+  "most_divergent_experiment": "exp1_masking"
+}
