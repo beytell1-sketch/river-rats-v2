@@ -167,7 +167,119 @@ a8335b4 Phase 3B: calibration exam passed — 20/24 + 3/3 reversals
 - **No mid-stream vocabulary changes** — one review after all
   labelling complete.
 
-### Pass 1 is NOT started yet
+### Pass 1 status — PARTIALLY STARTED
 
-The previous session committed the GO directive but did not begin
-execution. Start with situation preparation (Phase 1 above).
+Phase 1 (situation preparation) is COMPLETE:
+- All 385 hands re-extracted with 54 features
+- Saved to `/tmp/pass1_situations.json` (385 records)
+- 156 batch files created at `/tmp/pass1_T{1-4}_batch{00-38}.json`
+- Team seeds: T1=1042, T2=2042, T3=3042, T4=4042
+- 38 batches of 10 + 1 batch of 5 per team
+
+Phase 2 (T1-T4 labelling) batch 00 was launched:
+- T1 batch 00: COMPLETE (10 hands labelled)
+- T2 batch 00: COMPLETE (10 hands labelled)
+- T3 batch 00: COMPLETE (10 hands labelled)
+- T4 batch 00: was running when session ended — may need re-run
+
+**Agent results from batch 00 are NOT saved to files** — they
+exist only in the previous session's conversation context. The
+new session should RE-RUN batch 00 for all 4 teams (the agents
+are independent and idempotent) and then continue with batches
+01-38.
+
+### How to continue
+
+1. Verify `/tmp/pass1_situations.json` exists (385 records) and
+   `/tmp/pass1_T*_batch*.json` files exist (156 files). If not,
+   re-run Phase 1 preparation (code pattern below).
+
+2. Launch T1-T4 labelling agents in waves. Each wave: 4-8 agents
+   in parallel (one batch per team per wave). Collect results
+   into per-team JSONL files for the comparison report.
+
+3. The labelling agent prompt template is:
+
+```
+You are a GTO poker labelling agent for Team T{N}, labelling 10
+hands in Pass 1 production using Approach C amended.
+
+## Setup
+1. Read the labelling prompt: `/home/rupertbeytell/river-rats-v2/prompts/gto_labeller_v2.md`
+2. Read the knowledge base: `/home/rupertbeytell/river-rats-v2/knowledge/three_way_gto.md`
+3. Read the tag vocabulary: `/home/rupertbeytell/river-rats-v2/training-data/tag_vocabulary.json`
+4. Read your situations from: `/tmp/pass1_T{N}_batch{XX}.json`
+
+## Feature attention: Approach C amended
+- CONFIRMED tier: PRIMARY (drove decision) or CONFIRMED (checked, supports)
+- Mandatory composition: BET/RAISE/CALL/FOLD must tag all 4 villain composition features
+- Bucket-specific mandatory features per the prompt
+- Action-dependent defaults then review/remove/add
+- tier1_removals with justifications
+
+## Output
+JSON array. Each object: situation_id, hand_bucket, action,
+confidence, difficulty, reasoning, intentions_raw, intentions,
+alternatives_considered, feature_attention, tier1_removals,
+proposed_tags. Flop/turn: street_plan_raw + street_plan_tags.
+River: omit. Blind — reason independently.
+```
+
+4. After all 156 agents complete, build the comparison report
+   per the Phase 3 Final Plan and Pass 1 GO directive.
+
+### Phase 1 preparation code (if /tmp files are missing)
+
+```python
+# Run from /home/rupertbeytell/river-rats-v2
+import json, sys, os, random, math
+sys.path.insert(0, 'river-rats-core')
+from feature_extractor import extract_all_features
+from feature_keys import F
+from gto_model import FEATURE_COLUMNS
+
+street_map = {'flop': 'f', 'turn': 't', 'river': 'r'}
+
+# Re-extract 200 reconstructed hands
+with open('training-data/3way_selected_200.jsonl') as f:
+    recon = [json.loads(l) for l in f]
+
+recon_54 = []
+for h in recon:
+    hand_dict = {
+        'h': h['hero_cards'], 'b': h['board'],
+        'pos': h['hero_position'], 'vp': h['villain_positions'][0],
+        'pot': h['pot'], 'tc': h['to_call'],
+        'st': street_map[h['street']], 'fb': int(h['facing_bet']),
+        'exp': 'C', F.META_NUM_OPPONENTS: h['num_opponents'],
+        F.META_NUM_RAISES: 0, F.META_OPENER_POSITION: None,
+        F.META_BETTOR_POSITION: None,
+        '_villain_aggression_count': h['feat_dict'].get('villain_aggression_count', 0),
+        '_villain_checked_back': h['feat_dict'].get('villain_checked_back', 0),
+        '_villain_call_count': h['feat_dict'].get('villain_call_count', 0),
+        '_num_callers_to_bet': h['feat_dict'].get('num_callers_to_bet', 0),
+        '_facing_raise': h['feat_dict'].get('facing_raise', 0),
+    }
+    feat = extract_all_features(hand_dict)
+    feat_filtered = {col: round(float(feat[col]), 6) if isinstance(feat[col], float) else int(feat[col]) for col in FEATURE_COLUMNS if col in feat}
+    # ... build situation dict with feat_filtered, situation_text, etc.
+
+# Load 185 factory hands (already 54 features)
+# Combine into all_385, build situation_text per hand
+# Save to /tmp/pass1_situations.json
+
+# Create batch files
+BATCH_SIZE = 10
+for team_num in range(1, 5):
+    rng = random.Random(team_num * 1000 + 42)
+    indices = list(range(385))
+    rng.shuffle(indices)
+    for batch_idx in range(math.ceil(385 / BATCH_SIZE)):
+        start = batch_idx * BATCH_SIZE
+        end = min(start + BATCH_SIZE, 385)
+        batch = [{'situation_id': all_385[i]['situation_id'],
+                  'situation_text': all_385[i]['situation_text']}
+                 for i in indices[start:end]]
+        with open(f'/tmp/pass1_T{team_num}_batch{batch_idx:02d}.json', 'w') as f:
+            json.dump(batch, f)
+```
