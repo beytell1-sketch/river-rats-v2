@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Solver Verification — Top 10 Most Uncertain Hands</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 900px; margin: 2em auto; padding: 0 1em; color: #222; background: #f7f7f8; }
+  h1 { border-bottom: 3px solid #333; padding-bottom: 0.3em; }
+  .intro { background: #fffbe6; border-left: 4px solid #e0b000; padding: 0.8em 1em; margin-bottom: 2em; }
+  section.hand { background: white; border: 1px solid #ddd; border-radius: 6px; padding: 1em 1.4em; margin-bottom: 1.5em; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  section.hand h2 { margin: 0 0 0.2em 0; font-size: 1.15em; }
+  section.hand h2 .num { display: inline-block; background: #333; color: white; width: 1.6em; height: 1.6em; line-height: 1.6em; text-align: center; border-radius: 50%; margin-right: 0.4em; font-size: 0.9em; }
+  section.hand h2 .sid { font-family: Menlo, Consolas, monospace; color: #555; font-weight: 600; }
+  .meta { color: #666; font-size: 0.9em; margin: 0 0 0.8em 0; }
+  .meta .p1 { color: #888; }
+  .meta .p2 b { color: #0066cc; font-size: 1.05em; }
+  .meta .note { color: #555; font-style: italic; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { text-align: left; padding: 0.55em 0.8em; border-bottom: 1px solid #eee; vertical-align: top; }
+  th { width: 140px; background: #fafafa; font-weight: 600; color: #444; white-space: nowrap; }
+  .card { display: inline-block; background: white; border: 1px solid #999; border-radius: 4px; padding: 3px 6px; margin: 0 2px; font-family: Menlo, Consolas, monospace; font-weight: 700; font-size: 1.05em; min-width: 1.4em; text-align: center; }
+  .card.red { color: #c00; }
+  .card.black { color: #111; }
+  .board { background: #f0f4f8; border-radius: 6px; padding: 4px 8px; display: inline-block; }
+</style>
+</head>
+<body>
+<h1>Solver Verification — Top 10 Most Uncertain Hands</h1>
+<div class="intro">
+  <b>Date:</b> 2026-04-14 &nbsp; | &nbsp; <b>Scope:</b> 9 Pass 2 overrides (where panel flipped Pass 1) + 1 CHECK→BET over-aggression flag (d1983).<br>
+  Verify each in GTO Wizard at the street shown. Sequence below: <b>Players → Flop cards → Flop action → Turn card → Turn action → River card → River action.</b>
+</div>
+
+<section class="hand">
+  <h2><span class="num">1</span> <span class="sid">BP5_01</span></h2>
+  <p class="meta"><span class="p1">Pass 1: BET/BET/BET/CHECK</span> → <span class="p2">Pass 2 label: <b>BET</b></span> &nbsp;|&nbsp; <span class="note">Tier 1 CONFIDENT_SPLIT</span></p>
+  <table>
+    <tbody>
+      <tr><th>Players</th><td>Hero <b>BB</b> with <span class="card red">4♥</span><span class="card red">2♦</span> &nbsp; vs &nbsp; villains <b>CO</b></td></tr><tr><th>Flop cards</th><td><span class="board"><span class="card black">8♠</span><span class="card red">4♦</span><span class="card red">2♥</span></span></td></tr><tr><th>Flop action</th><td>Checked to hero. Hero to act — <b>decision: BET?</b></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="hand">
+  <h2><span class="num">2</span> <span class="sid">BP4_21</span></h2>
+  <p class="meta"><span class="p1">Pass 1: BET/CHECK/CHECK/BET</span> → <span class="p2">Pass 2 label: <b>CHECK</b></span> &nbsp;|&nbsp; <span class="note">Pass 1 BET → Pass 2 CHECK</span></p>
+  <table>
+    <tbody>
+      <tr><th>Players</th><td>Hero <b>BTN</b> with <span class="card red">K♦</span><span class="card red">Q♥</span> &nbsp; vs &nbsp; villains <b>SB</b></td></tr><tr><th>Flop cards</th><td><span class="board"><span class="card red">J♥</span><span class="card black">9♣</span><span class="card red">6♦</span></span></td></tr><tr><th>Flop action</th><td>Checked to hero. Hero to act — <b>decision: CHECK?</b></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="hand">
+  <h2><span class="num">3</span> <span class="sid">BP7_01</span></h2>
+  <p class="meta"><span class="p1">Pass 1: RAISE/CALL/CALL/RAISE</span> → <span class="p2">Pass 2 label: <b>CALL</b></span> &nbsp;|&nbsp; <span class="note">Pass 1 RAISE → Pass 2 CALL</span></p>
+  <table>
+    <tbody>
+      <tr><th>Players</th><td>Hero <b>BTN</b> with <span class="card black">A♠</span><span class="card black">J♠</span> &nbsp; vs &nbsp; villains <b>BB</b></td></tr><tr><th>Flop cards</th><td><span class="board"><span class="card black">9♠</span><span class="card black">7♣</span><span class="card black">4♠</span></span></td></tr><tr><th>Flop action</th><td>Checked through</td></tr><tr><th>Turn card</th><td><span class="board"><span class="card red">K♦</span></span></td></tr><tr><th>Turn action</th><td>BB bets <b>59</b> into 121 (49% pot). Hero to act — <b>decision: CALL?</b></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="hand">
+  <h2><span class="num">4</span> <span class="sid">d5222_BTN_flop</span></h2>
+  <p class="meta"><span class="p1">Pass 1: CALL/CALL/FOLD/FOLD</span> → <span class="p2">Pass 2 label: <b>FOLD</b></span> &nbsp;|&nbsp; <span class="note">Pass 1 CALL → Pass 2 FOLD</span></p>
+  <table>
+    <tbody>
+      <tr><th>Players</th><td>Hero <b>BTN</b> with <span class="card red">7♦</span><span class="card black">7♣</span> &nbsp; vs &nbsp; villains <b>CO, BB</b></td></tr><tr><th>Flop cards</th><td><span class="board"><span class="card red">9♥</span><span class="card red">5♥</span><span class="card red">3♦</span></span></td></tr><tr><th>Flop action</th><td>Checked to CO; CO bets <b>53</b> into 80 (66% pot). Hero to act — <b>decision: FOLD?</b></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="hand">
+  <h2><span class="num">5</span> <span class="sid">d5620_CO_turn</span></h2>
+  <p class="meta"><span class="p1">Pass 1: CALL/FOLD/CALL/FOLD</span> → <span class="p2">Pass 2 label: <b>FOLD</b></span> &nbsp;|&nbsp; <span class="note">Pass 1 CALL → Pass 2 FOLD</span></p>
+  <table>
+    <tbody>
+      <tr><th>Players</th><td>Hero <b>CO</b> with <span class="card red">Q♦</span><span class="card red">6♦</span> &nbsp; vs &nbsp; villains <b>BTN, BB</b></td></tr><tr><th>Flop cards</th><td><span class="board"><span class="card black">J♠</span><span class="card black">K♠</span><span class="card red">K♦</span></span></td></tr><tr><th>Flop action</th><td>Checked through</td></tr><tr><th>Turn card</th><td><span class="board"><span class="card red">Q♥</span></span></td></tr><tr><th>Turn action</th><td>BB bets <b>53</b> into 80 (66% pot). Hero to act — <b>decision: FOLD?</b></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="hand">
+  <h2><span class="num">6</span> <span class="sid">d5749_HJ_turn</span></h2>
+  <p class="meta"><span class="p1">Pass 1: CALL/FOLD/FOLD/CALL</span> → <span class="p2">Pass 2 label: <b>FOLD</b></span> &nbsp;|&nbsp; <span class="note">Pass 1 CALL → Pass 2 FOLD</span></p>
+  <table>
+    <tbody>
+      <tr><th>Players</th><td>Hero <b>HJ</b> with <span class="card red">9♦</span><span class="card black">9♣</span> &nbsp; vs &nbsp; villains <b>BTN, BB</b></td></tr><tr><th>Flop cards</th><td><span class="board"><span class="card black">J♣</span><span class="card red">3♥</span><span class="card black">5♣</span></span></td></tr><tr><th>Flop action</th><td>Checked through</td></tr><tr><th>Turn card</th><td><span class="board"><span class="card red">2♥</span></span></td></tr><tr><th>Turn action</th><td>BB bets <b>53</b> into 80 (66% pot). Hero to act — <b>decision: FOLD?</b></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="hand">
+  <h2><span class="num">7</span> <span class="sid">d8002_BTN_flop</span></h2>
+  <p class="meta"><span class="p1">Pass 1: FOLD/CALL/CALL/FOLD</span> → <span class="p2">Pass 2 label: <b>CALL</b></span> &nbsp;|&nbsp; <span class="note">Pass 1 FOLD → Pass 2 CALL</span></p>
+  <table>
+    <tbody>
+      <tr><th>Players</th><td>Hero <b>BTN</b> with <span class="card black">7♠</span><span class="card red">7♦</span> &nbsp; vs &nbsp; villains <b>HJ, BB</b></td></tr><tr><th>Flop cards</th><td><span class="board"><span class="card black">5♠</span><span class="card black">3♣</span><span class="card red">T♥</span></span></td></tr><tr><th>Flop action</th><td>Checked to HJ; HJ bets <b>53</b> into 80 (66% pot). Hero to act — <b>decision: CALL?</b></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="hand">
+  <h2><span class="num">8</span> <span class="sid">d8886_BTN_flop</span></h2>
+  <p class="meta"><span class="p1">Pass 1: BET/CHECK/CHECK/BET</span> → <span class="p2">Pass 2 label: <b>CHECK</b></span> &nbsp;|&nbsp; <span class="note">Pass 1 BET → Pass 2 CHECK</span></p>
+  <table>
+    <tbody>
+      <tr><th>Players</th><td>Hero <b>BTN</b> with <span class="card black">9♣</span><span class="card red">9♦</span> &nbsp; vs &nbsp; villains <b>CO, BB</b></td></tr><tr><th>Flop cards</th><td><span class="board"><span class="card black">2♠</span><span class="card red">5♦</span><span class="card red">J♦</span></span></td></tr><tr><th>Flop action</th><td>Checked to hero. Hero to act — <b>decision: CHECK?</b></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="hand">
+  <h2><span class="num">9</span> <span class="sid">d8963_HJ_turn</span></h2>
+  <p class="meta"><span class="p1">Pass 1: BET/CHECK/BET/CHECK</span> → <span class="p2">Pass 2 label: <b>CHECK</b></span> &nbsp;|&nbsp; <span class="note">Pass 1 BET → Pass 2 CHECK</span></p>
+  <table>
+    <tbody>
+      <tr><th>Players</th><td>Hero <b>HJ</b> with <span class="card red">J♥</span><span class="card black">J♣</span> &nbsp; vs &nbsp; villains <b>BTN, BB</b></td></tr><tr><th>Flop cards</th><td><span class="board"><span class="card black">K♠</span><span class="card red">4♥</span><span class="card black">9♣</span></span></td></tr><tr><th>Flop action</th><td>Checked through</td></tr><tr><th>Turn card</th><td><span class="board"><span class="card red">3♥</span></span></td></tr><tr><th>Turn action</th><td>Checked to hero. Hero to act — <b>decision: CHECK?</b></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="hand">
+  <h2><span class="num">10</span> <span class="sid">d1983_BTN_turn</span></h2>
+  <p class="meta"><span class="p1">Pass 1: BET/BET/BET/BET</span> → <span class="p2">Pass 2 label: <b>CHECK</b></span> &nbsp;|&nbsp; <span class="note">Pass 1 BET → Pass 2 CHECK (over-aggression flag)</span></p>
+  <table>
+    <tbody>
+      <tr><th>Players</th><td>Hero <b>BTN</b> with <span class="card red">A♦</span><span class="card red">4♦</span> &nbsp; vs &nbsp; villains <b>HJ, BB</b></td></tr><tr><th>Flop cards</th><td><span class="board"><span class="card red">J♦</span><span class="card red">7♦</span><span class="card red">K♥</span></span></td></tr><tr><th>Flop action</th><td>Checked through</td></tr><tr><th>Turn card</th><td><span class="board"><span class="card black">2♣</span></span></td></tr><tr><th>Turn action</th><td>Checked to hero. Hero to act — <b>decision: CHECK?</b></td></tr>
+    </tbody>
+  </table>
+</section>
+
+</body>
+</html>
