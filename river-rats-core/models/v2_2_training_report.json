@@ -1,0 +1,37 @@
+{
+  "model_version": "v2_2",
+  "n_samples": 385,
+  "n_features": 108,
+  "features_raw": 54,
+  "features_attn": 54,
+  "class_distribution": {
+    "RAISE": 23,
+    "CALL": 57,
+    "FOLD": 75,
+    "BET": 99,
+    "CHECK": 131
+  },
+  "class_weights": {
+    "FOLD": 1.75,
+    "CHECK": 1.0,
+    "BET": 1.3291139240506329,
+    "CALL": 2.282608695652174,
+    "RAISE": 3.0
+  },
+  "best_iteration": 95,
+  "holdout_test_accuracy": 0.8831168831168831,
+  "cv_accuracies": [
+    0.9090909090909091,
+    0.935064935064935,
+    0.8831168831168831,
+    0.987012987012987,
+    0.935064935064935
+  ],
+  "cv_mean": 0.9298701298701297,
+  "cv_std": 0.034458439380315856,
+  "hyperparameters": {
+    "n_estimators": 800,
+    "max_depth": 5,
+    "learning_rate": 0.05
+  }
+}

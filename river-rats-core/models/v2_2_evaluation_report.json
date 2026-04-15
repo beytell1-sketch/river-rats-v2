@@ -1,0 +1,21 @@
+{
+  "model": "v2.2",
+  "n_features": 108,
+  "training_cv_mean": 0.9299,
+  "training_cv_std": 0.0345,
+  "holdout_test_acc": 0.8831,
+  "fb_40_accuracy": 0.725,
+  "fb_40_target": 0.7,
+  "fb_40_pass": true,
+  "mw_reference_accuracy": 0.8,
+  "mw_reference_target": 0.825,
+  "mw_reference_pass": false,
+  "villain_range_capped_ablation_fb": 0.675,
+  "villain_range_capped_delta": 0.0,
+  "mw_reference_n_hands": 50,
+  "mw_reference_note": "Normalized 0 hands for convention mismatch (old FOLD/RAISE on no-bet spots \u2192 CHECK/BET).",
+  "fb_40_inference_strategy": "attn_* columns all set to 1 at inference",
+  "mw_reference_accuracy_normalized": 0.44,
+  "mw_reference_pass_normalized": false,
+  "inference_strategy": "attn_* = 1 + legal-action masking (facing_bet controls legal set)"
+}
