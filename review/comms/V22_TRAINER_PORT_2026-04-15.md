@@ -3,7 +3,8 @@ date: 2026-04-15
 from: Builder (programmer)
 to: Main terminal + Owner
 re: Stream A — v2.2 trainer + evaluator port, A.3 validation
-status: **A.1 + A.2 SHIPPED. A.3 STOP-condition triggered — Track 2 NOT closed.**
+status: **A.1 + A.2 SHIPPED. A.3 ADJUDICATED 2026-04-15 — Track 2 CLOSED.**
+adjudication: MAIN_TERMINAL_UPDATE_2026-04-15-f.md §1
 plan: review/comms/PLAN_CONSOLIDATED_2026-04-15.md §2 Stream A
 ---
 
@@ -129,6 +130,26 @@ Builder recommends option 1 + 2 in sequence: accept 84% as the
 canonical MW-50 number for the live model, and optionally validate the
 recovered script's 80% as a shadow measurement.
 
+---
+
+### Adjudication 2026-04-15 (per `MAIN_TERMINAL_UPDATE_2026-04-15-f.md` §1)
+
+**Canonical numbers adopted:**
+- FB-40: **72.5% (29/40)** on live `v2_2_model.json`
+- MW-50: **84.0% (42/50)** on live `v2_2_model.json`,
+  d2920-IN / d4534-IN
+
+The 80.0% (40/50) MW-50 number is reclassified as a
+**shadow-model measurement** produced by the in-script retrain in
+`review/recovered/eval_MW_with_legal_action_masking.py`
+(`n_estimators=95`, no early stopping). Preserved at its recovered
+location for historical reference; not the model in production.
+
+Forensic verification of the 80% reproduction tracked separately
+(directive-f §4); not blocking.
+
+**Track 2 status: CLOSED.**
+
 ## 5. Constraints respected
 
 - Canonical `v2_2_model.json` NOT overwritten (A.1 defaults to
@@ -141,9 +162,12 @@ recovered script's 80% as a shadow measurement.
 
 ## 6. Closing statement
 
-**Track 2 is NOT closed.** A.1 + A.2 are ready to ship and provide a
-durable, provenance-linked in-tree trainer+evaluator. A.3 reproduces
-FB-40 cleanly but surfaces a 4-hand MW-50 divergence that requires
-main-terminal adjudication before Track 2 can be marked closed.
+**Track 2 is CLOSED** as of 2026-04-15 per
+`MAIN_TERMINAL_UPDATE_2026-04-15-f.md` §1. A.1 + A.2 shipped and
+provide a durable, provenance-linked in-tree trainer+evaluator. A.3
+reproduces FB-40 at the canonical 72.5% and MW-50 at the corrected
+canonical 84.0% on the live `v2_2_model.json`. The recovered shadow
+measurement of 80% is preserved in `review/recovered/` for reference
+and is the subject of forensic verification (directive-f §4).
 
 — Builder
