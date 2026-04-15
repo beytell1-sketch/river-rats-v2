@@ -113,6 +113,14 @@ Only reviewed, approved, passing files enter river-rats-core/.
 After every approved change, update river-rats-core/ before starting
 the next task. This folder is always deployable.
 
+**Training provenance (addendum, 2026-04-15):**
+Every model-producing script (trainer, evaluator) must live in
+`river-rats-core/` with a provenance docstring linking its commit to
+the model artifact it produced. Inline `python3 <<'EOF'` heredoc
+training is prohibited. If an experimental run produces a keeper
+model, commit the script that produced it before committing the
+model. See `review/comms/PLAN_CONSOLIDATED_2026-04-15.md` §5.1.
+
 ### 7. Verify Your Own Output
 - Code: run full test suite, report pass/fail counts
 - Blueprint: verify every file/function exists at specified location
