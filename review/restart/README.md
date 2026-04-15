@@ -1,14 +1,16 @@
 # River Rats Restart Pack
 
 **Date:** 2026-04-15
+**Last updated:** GitHub-first prompts for remote machines
 
 This folder holds everything needed to restart the River Rats
-project in new terminals. Every link is a GitHub link so you
-can open them from any browser or terminal.
+project in new terminals **on machines that can only access
+GitHub** (not the owner's local filesystem).
 
 ## Quick links
 
-- **Repo root:** https://github.com/beytell1-sketch/river-rats-v2
+- **Logic repo:** https://github.com/beytell1-sketch/river-rats-v2
+- **Teaching repo:** no GitHub remote yet (local only)
 - **This folder:** https://github.com/beytell1-sketch/river-rats-v2/tree/master/review/restart
 
 ## Files in this folder
@@ -18,16 +20,25 @@ can open them from any browser or terminal.
 | `README.md` | This file — index |
 | `RESTART_MAIN.md` | Prompt for the main reviewer/orchestrator terminal |
 | `RESTART_BUILDER.md` | Prompt for the builder terminal |
-| `RESTART_TEACHING.md` | Prompt for the teaching terminal |
+| `RESTART_TEACHING.md` | Prompt for the teaching terminal (blocked until teaching repo is on GitHub) |
 | `LINKS.md` | Every GitHub link you need, grouped by purpose |
 
 ## How to use
 
-1. Open a new terminal (Claude Code session)
-2. Copy the contents of the relevant RESTART_* file
-3. Paste as the first message to that session
-4. The session will pick up exactly where the previous one
-   stopped
+1. Open a new terminal (Claude Code session) on the target
+   machine
+2. Open the relevant RESTART_* file on GitHub via the link below
+3. Copy the prompt block inside the file
+4. Paste as the first message in the fresh Claude Code session
+5. The session will clone the repo from GitHub and read the
+   state files
+
+## Direct links to the restart prompts
+
+- [RESTART_MAIN.md](https://github.com/beytell1-sketch/river-rats-v2/blob/master/review/restart/RESTART_MAIN.md)
+- [RESTART_BUILDER.md](https://github.com/beytell1-sketch/river-rats-v2/blob/master/review/restart/RESTART_BUILDER.md)
+- [RESTART_TEACHING.md](https://github.com/beytell1-sketch/river-rats-v2/blob/master/review/restart/RESTART_TEACHING.md)
+- [LINKS.md](https://github.com/beytell1-sketch/river-rats-v2/blob/master/review/restart/LINKS.md)
 
 ## Current project state (summary)
 
@@ -41,6 +52,27 @@ can open them from any browser or terminal.
 - **Builder stopped responding** mid-directive. Restart
   should resume Tier 1 tracks.
 - **Teaching team unblocked** — has enriched label export,
-  can start L3 Phase 2 quality validation.
+  can start L3 Phase 2 quality validation (if teaching repo
+  is pushed to GitHub).
 
-See the RESTART_* files for specific instructions per terminal.
+## Important: GitHub auth on the new machine
+
+The builder needs to `git push` back to the logic repo. This
+requires GitHub credentials on the new machine (PAT or SSH key).
+
+If `git push` fails:
+- The builder will report BLOCKED
+- Owner sets up auth via GitHub CLI (`gh auth login`) or
+  configures an SSH key before continuing
+
+## Teaching repo bootstrap (if you want teaching on GitHub)
+
+From your local `/home/rupertbeytell/river-rats-teaching/`
+directory, run:
+
+```
+gh repo create river-rats-teaching --private --source=. \
+  --remote=origin --push
+```
+
+Then add the resulting URL to `RESTART_TEACHING.md` Step 1.

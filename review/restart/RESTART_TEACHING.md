@@ -1,4 +1,4 @@
-# Restart Prompt — Teaching Terminal
+# Restart Prompt — Teaching Terminal (GitHub-first)
 
 Copy the block below into a fresh Claude Code session as your
 first message.
@@ -6,37 +6,66 @@ first message.
 ---
 
 ```
-I'm restarting the River Rats teaching project. You are the
-TEACHING terminal — you design and build the L3 teaching
-renderer and its quality validation.
+I'm restarting the River Rats teaching terminal on a new
+machine. You can only access GitHub (no local filesystem
+from prior session).
 
-The teaching project lives at /home/rupertbeytell/river-rats-teaching/.
-The LOGIC project is a separate repo at /home/rupertbeytell/river-rats-v2/
-— you consume its outputs but do not modify its code.
+STEP 1: Teaching repo does NOT have a GitHub remote yet.
 
-Please start by reading these files:
+The teaching project at the owner's prior machine lives at
+/home/rupertbeytell/river-rats-teaching/ but has no GitHub
+remote. The owner needs to push it to GitHub first before you
+can clone it.
 
-From /home/rupertbeytell/river-rats-teaching/:
-1. CLAUDE.md — teaching project conventions
-2. review/comms/PLAN_TEACHING_V2_ALIGNED_2026-04-13.md —
-   teaching plan, replaces all prior teaching plans
-3. review/comms/REVIEW_TEACHING_QUALITY_ENGINE_2026-04-13.md —
-   5 amendments owner requested
-4. data/v2_2_enriched.jsonl — v2.2 enriched labels from the
-   logic team (your input data)
+Until that happens, you CANNOT restart the full teaching
+terminal. You can still do design/review work by reading the
+logic team's handoff document on GitHub (see Step 3 below).
 
-From /home/rupertbeytell/river-rats-v2/ (read-only reference):
-5. review/comms/TEACHING_HANDOFF_V2_2_LABELS_2026-04-15.md —
+If the owner has set up a remote and you have the URL, clone
+it:
+
+  git clone <teaching-repo-url> ~/river-rats-teaching
+
+Otherwise, report BLOCKED waiting on teaching repo to be
+pushed to GitHub.
+
+STEP 2: Clone the logic repo (read-only reference).
+
+You need the logic team's enriched label export as your
+input data. Clone their repo:
+
+  git clone https://github.com/beytell1-sketch/river-rats-v2.git \
+    ~/river-rats-v2
+
+You will READ ONLY from this repo. Do not modify anything in
+it. The logic team owns it.
+
+STEP 3: Read these files.
+
+From the logic repo (read-only):
+1. review/comms/TEACHING_HANDOFF_V2_2_LABELS_2026-04-15.md —
    schema and 22 label changes to be aware of
-6. review/comms/SESSION_STATE_2026-04-15.md — overall project state
+2. training-data/v2_2_enriched_for_teaching.jsonl — your input
+   data (385 hands with intentions, street_plan_tags,
+   feature_attention, difficulty, etc.)
+3. review/comms/SESSION_STATE_2026-04-15.md — overall project
+   state for context
 
-Current state:
+From the teaching repo (if available):
+4. CLAUDE.md
+5. review/comms/PLAN_TEACHING_V2_ALIGNED_2026-04-13.md —
+   teaching plan
+6. review/comms/REVIEW_TEACHING_QUALITY_ENGINE_2026-04-13.md —
+   5 owner amendments
+
+STEP 4: Current state.
+
 - v2.2 logic training complete, Gate 7 pending (but schema
   won't change for teaching)
 - Phase 1 teaching templates + layout were approved
 - Phase 2 quality validation unblocked — you have real v2.2
   enriched data now
-- logic team is running 6 parallel tracks while waiting on
+- Logic team is running 6 parallel tracks while waiting on
   owner solver time
 
 Your scope:
@@ -47,8 +76,8 @@ Your scope:
 - Templates fire on intention tags, NOT on feature thresholds
   (owner directive) — labelling agent already decided the
   intention, teaching just presents
-- Do NOT duplicate poker logic. Consume from v2.
-- Do NOT modify v2 code. It's a separate repo.
+- Do NOT duplicate poker logic. Consume from logic team.
+- Do NOT modify logic team's code. It's a separate repo.
 
 Important awareness:
 - The handoff note mentions CHECK-over-BET bias may persist in
@@ -64,26 +93,35 @@ Constraints:
 - Every teaching value must trace to a named field
 - No bespoke coaching prose — templates + numbers
 
-Confirm you've read the files and summarize the teaching state
-in 3-4 sentences. Then wait for owner direction.
+STEP 5: Report status.
+
+- Confirm whether the teaching repo has a GitHub remote yet
+  (if not, report BLOCKED)
+- Confirm you can clone and read the logic repo
+- Summarize the teaching state in 3-4 sentences
+- Then wait for owner direction
 ```
 
 ---
 
 ## Notes
 
-- The teaching repo has no GitHub remote yet. If you want it
-  synced to GitHub, create a repo and add a remote first.
-- The enriched label export is the main input
-- Keep the L3 renderer and scoring pipeline independent of the
-  logic team's Gate 7 decision — schema won't change
+- The teaching repo is local-only as of 2026-04-15
+- To unblock a GitHub-first restart, the owner needs to run
+  from the teaching directory:
+  ```
+  gh repo create river-rats-teaching --private --source=. \
+    --remote=origin --push
+  ```
+- Then add the resulting URL to this file
 
 ## Links
 
-**Logic repo (read-only reference for teaching):**
+**Logic repo (read-only reference):**
 
+- [Repo root](https://github.com/beytell1-sketch/river-rats-v2)
 - [TEACHING_HANDOFF_V2_2_LABELS_2026-04-15.md](https://github.com/beytell1-sketch/river-rats-v2/blob/master/review/comms/TEACHING_HANDOFF_V2_2_LABELS_2026-04-15.md)
 - [training-data/v2_2_enriched_for_teaching.jsonl](https://github.com/beytell1-sketch/river-rats-v2/blob/master/training-data/v2_2_enriched_for_teaching.jsonl)
 - [SESSION_STATE_2026-04-15.md](https://github.com/beytell1-sketch/river-rats-v2/blob/master/review/comms/SESSION_STATE_2026-04-15.md)
 
-**Teaching repo:** no GitHub remote yet. Local only.
+**Teaching repo:** no GitHub remote yet.
