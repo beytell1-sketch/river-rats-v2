@@ -24,12 +24,15 @@ on master. This is your working directory.
 
 STEP 2: Read these files from the cloned repo:
 
-1. review/comms/SESSION_STATE_2026-04-15.md
-2. review/comms/HRP_INVESTIGATION_2026-04-15.md
-3. review/comms/PHASE_4_TRAINING_REPORT_2026-04-15.md
-4. review/comms/DIRECTIVE_POST_HRP_PARALLEL_TRACKS_2026-04-15.md
-5. review/comms/REVIEW_PARALLEL_TRACKS_2026-04-15.md
-6. CLAUDE.md for project conventions
+1. review/restart/ORCHESTRATOR_UPDATE_2026-04-15.md ← LATEST HANDOFF (read first)
+2. review/comms/SESSION_STATE_2026-04-15.md
+3. review/comms/HRP_INVESTIGATION_2026-04-15.md
+4. review/comms/TRAINING_DATA_AUDIT_2026-04-15.md
+5. review/comms/MAIN_TERMINAL_UPDATE_2026-04-15.md
+6. review/comms/PHASE_4_TRAINING_REPORT_2026-04-15.md
+7. review/comms/DIRECTIVE_POST_HRP_PARALLEL_TRACKS_2026-04-15.md
+8. review/comms/REVIEW_PARALLEL_TRACKS_2026-04-15.md
+9. CLAUDE.md for project conventions
 
 If you have access to the owner's memory at
 ~/.claude/projects/-home-rupertbeytell/memory/MEMORY.md,
