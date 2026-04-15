@@ -14,12 +14,14 @@ import sys
 import os
 import json
 
-sys.path.insert(0, '/home/rupertbeytell/river-rats-v2/river-rats-core')
-os.chdir('/home/rupertbeytell/river-rats-v2/river-rats-core')
+_REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+_CORE = os.path.join(_REPO, 'river-rats-core')
+sys.path.insert(0, _CORE)
+os.chdir(_CORE)
 
-from situation_factory import SituationSpec, build_situation, validate_situation
+from situation_factory import SituationSpec, build_situation, validate_situation, normalise_situation
 
-OUTPUT_PATH = '/home/rupertbeytell/river-rats-v2/training-data/factory_batch2_situations.jsonl'
+OUTPUT_PATH = os.path.join(_REPO, 'training-data', 'factory_batch2_situations.jsonl')
 
 # =============================================================================
 # SEMI-BLUFF SWEEP (SB) BOARDS — 72 situations across 8 boards
@@ -1286,7 +1288,8 @@ def main():
     # Write JSONL
     with open(OUTPUT_PATH, 'w') as f:
         for sit in situations:
-            f.write(json.dumps(sit) + '\n')
+            # ANOMALY-A fix: normalise street/hero_position at serialisation.
+            f.write(json.dumps(normalise_situation(sit)) + '\n')
 
     print(f"\n{'='*60}")
     print(f"GENERATION COMPLETE")

@@ -20,12 +20,14 @@ import sys
 import os
 import json
 
-sys.path.insert(0, '/home/rupertbeytell/river-rats-v2/river-rats-core')
-os.chdir('/home/rupertbeytell/river-rats-v2/river-rats-core')
+_REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+_CORE = os.path.join(_REPO, 'river-rats-core')
+sys.path.insert(0, _CORE)
+os.chdir(_CORE)
 
-from situation_factory import SituationSpec, build_situation, validate_situation
+from situation_factory import SituationSpec, build_situation, validate_situation, normalise_situation
 
-OUTPUT_PATH = '/home/rupertbeytell/river-rats-v2/training-data/factory_batch3_situations.jsonl'
+OUTPUT_PATH = os.path.join(_REPO, 'training-data', 'factory_batch3_situations.jsonl')
 
 # =============================================================================
 # BOARD BASES (B01 – B33 + B10_LOW, B17_LOW)
@@ -1421,7 +1423,8 @@ def main():
     os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
     with open(OUTPUT_PATH, 'w') as f:
         for record in records:
-            f.write(json.dumps(record) + '\n')
+            # ANOMALY-A fix: normalise street/hero_position at serialisation.
+            f.write(json.dumps(normalise_situation(record)) + '\n')
 
     # Summary report
     print(f"\n{'=' * 60}")

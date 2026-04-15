@@ -30,6 +30,7 @@ normalises encoding at serialisation time.
 import os
 import sys
 import csv
+import json
 
 import pytest
 
@@ -126,3 +127,59 @@ def test_training_csv_street_has_no_string_literals():
         f'ANOMALY-A still present: {len(hits)} rows have string street '
         f'values. First offenders: {hits[:5]}'
     )
+
+
+# =============================================================================
+# Fix-1 follow-up: BP-series JSONLs must also carry numeric encoding.
+#
+# These are the upstream sources that feed the training CSV. Once the
+# BP-series generators normalise at serialisation time, every row in
+# every BP JSONL must have numeric street / hero_position.
+# =============================================================================
+
+BP_JSONLS = (
+    'training-data/factory_situations.jsonl',
+    'training-data/factory_batch2_situations.jsonl',
+    'training-data/factory_batch3_situations.jsonl',
+    'training-data/factory_batch4_situations.jsonl',
+    'training-data/factory_batch5_situations.jsonl',
+)
+
+JSONL_NUMERIC_COLUMNS = ('street', 'hero_position')
+
+
+@pytest.mark.parametrize('jsonl_rel', BP_JSONLS)
+@pytest.mark.parametrize('column', JSONL_NUMERIC_COLUMNS)
+def test_bp_jsonl_column_is_numeric(jsonl_rel: str, column: str):
+    """
+    Every row in every BP-series JSONL must encode `column` as a number
+    (int or float), not a Python string. Enforced at the generator's
+    serialisation boundary via situation_factory.normalise_situation().
+    """
+    jsonl_path = os.path.join(REPO_ROOT, jsonl_rel)
+    if not os.path.exists(jsonl_path):
+        pytest.skip(f'{jsonl_rel} not present on disk')
+
+    offenders = []
+    with open(jsonl_path) as f:
+        for i, line in enumerate(f, start=1):
+            line = line.strip()
+            if not line:
+                continue
+            rec = json.loads(line)
+            val = rec.get(column)
+            if val is None:
+                continue  # absent — not this test's job
+            if not isinstance(val, (int, float)) or isinstance(val, bool):
+                offenders.append((i, val))
+
+    if offenders:
+        distinct = sorted({repr(v) for _, v in offenders})
+        sample = offenders[:5]
+        pytest.fail(
+            f'{jsonl_rel}: column {column!r} has {len(offenders)} non-numeric '
+            f'rows.\n  Distinct non-numeric values: {distinct}\n'
+            f'  First offenders (line_no, value): {sample}\n'
+            f'  Fix at situation_factory.normalise_situation(); ensure the '
+            f'generator pipes every record through it before json.dumps().'
+        )

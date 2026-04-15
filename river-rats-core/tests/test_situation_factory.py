@@ -86,3 +86,59 @@ def test_build_situation_num_opponents_none_infers_from_list():
     # Should not raise
     feat_dict = build_situation(spec)
     assert feat_dict is not None
+
+
+# =============================================================================
+# ANOMALY-A regression: normalise_situation() at serialisation boundary
+# =============================================================================
+
+def test_normalise_situation_converts_street_strings():
+    """String street values become canonical ints (flop=0, turn=1, river=2)."""
+    from situation_factory import normalise_situation
+    assert normalise_situation({'street': 'flop'})['street'] == 0
+    assert normalise_situation({'street': 'turn'})['street'] == 1
+    assert normalise_situation({'street': 'river'})['street'] == 2
+
+
+def test_normalise_situation_converts_hero_position_strings():
+    """String hero_position values map via POSITION_ORDINAL."""
+    from situation_factory import normalise_situation
+    expected = {'UTG': 0, 'HJ': 1, 'CO': 2, 'BTN': 3, 'SB': 4, 'BB': 5}
+    for pos, code in expected.items():
+        out = normalise_situation({'hero_position': pos})
+        assert out['hero_position'] == code, f'{pos} -> {out["hero_position"]} (expected {code})'
+
+
+def test_normalise_situation_single_call_fixes_both_fields():
+    """A single normalise_situation() call converts both street and hero_pos."""
+    from situation_factory import normalise_situation
+    raw = {'street': 'turn', 'hero_position': 'BTN', 'villain_position': 2}
+    out = normalise_situation(raw)
+    assert out['street'] == 1
+    assert out['hero_position'] == 3
+    assert out['villain_position'] == 2
+    out2 = normalise_situation(out)
+    assert out2 == out
+
+
+def test_normalise_situation_also_handles_hero_pos_legacy_key():
+    from situation_factory import normalise_situation
+    out = normalise_situation({'hero_pos': 'SB', 'street': 'flop'})
+    assert out['hero_pos'] == 4
+    assert out['street'] == 0
+
+
+def test_normalise_situation_raises_on_unknown_values():
+    from situation_factory import normalise_situation
+    import pytest
+    with pytest.raises(KeyError):
+        normalise_situation({'street': 'preflop'})
+    with pytest.raises(KeyError):
+        normalise_situation({'hero_position': 'XX'})
+
+
+def test_normalise_situation_passes_numeric_unchanged():
+    from situation_factory import normalise_situation
+    out = normalise_situation({'street': 2, 'hero_position': 3.0})
+    assert out['street'] == 2
+    assert out['hero_position'] == 3.0

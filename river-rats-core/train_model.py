@@ -8,6 +8,18 @@ Predicts: FOLD / CHECK / CALL / BET / RAISE
 Usage:
     python3 train_model.py              # Train on features_2000.csv
     python3 train_model.py --full       # Train on features_25000.csv
+
+PRE-FLIGHT SCHEMA GATE (ANOMALY-A):
+    Before any training run, invoke:
+        pytest river-rats-core/tests/test_training_data_encoding.py
+    This enforces that every training CSV and every BP-series JSONL
+    encodes `street` and `hero_position` as numbers (not Python
+    strings). See review/comms/ANOMALY_A_VERIFICATION_2026-04-15.md
+    and review/comms/FIX1_BP_GENERATORS_2026-04-15.md.
+
+    _preflight_schema_check() below runs the same assertion in-process
+    at module load time and raises RuntimeError if any training input
+    has mixed encoding.
 """
 
 import sys
@@ -16,6 +28,86 @@ import json
 import csv
 import numpy as np
 from collections import Counter
+
+
+# =============================================================================
+# Pre-flight schema gate (ANOMALY-A)
+# =============================================================================
+
+def _preflight_schema_check() -> None:
+    """
+    Refuse to proceed if any committed training CSV / BP JSONL has
+    non-numeric `street` or `hero_position`. Catches a regression of
+    ANOMALY-A before it corrupts a new model.
+
+    Silent no-op if data files are absent (e.g., stripped-down checkout).
+    """
+    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    errors = []
+
+    # CSVs (if present)
+    for rel in ('training-data/v2_2_training.csv',):
+        path = os.path.join(repo_root, rel)
+        if not os.path.exists(path):
+            continue
+        with open(path, newline='') as f:
+            reader = csv.DictReader(f)
+            for col in ('street', 'hero_position'):
+                if col not in (reader.fieldnames or ()):
+                    continue
+                f.seek(0)
+                reader2 = csv.DictReader(f)
+                bad = 0
+                for row in reader2:
+                    v = (row.get(col) or '').strip()
+                    if v == '':
+                        continue
+                    try:
+                        float(v)
+                    except ValueError:
+                        bad += 1
+                if bad:
+                    errors.append(f'{rel}:{col} has {bad} non-numeric rows')
+
+    # JSONLs
+    for rel in (
+        'training-data/factory_situations.jsonl',
+        'training-data/factory_batch2_situations.jsonl',
+        'training-data/factory_batch3_situations.jsonl',
+        'training-data/factory_batch4_situations.jsonl',
+        'training-data/factory_batch5_situations.jsonl',
+    ):
+        path = os.path.join(repo_root, rel)
+        if not os.path.exists(path):
+            continue
+        with open(path) as f:
+            for i, line in enumerate(f, start=1):
+                line = line.strip()
+                if not line:
+                    continue
+                rec = json.loads(line)
+                for col in ('street', 'hero_position'):
+                    v = rec.get(col)
+                    if v is None:
+                        continue
+                    if not isinstance(v, (int, float)) or isinstance(v, bool):
+                        errors.append(f'{rel}:{col} line {i} = {v!r} (non-numeric)')
+                        break
+
+    if errors:
+        raise RuntimeError(
+            'ANOMALY-A pre-flight schema check failed:\n  '
+            + '\n  '.join(errors[:10])
+            + f'\n  (total issues: {len(errors)})\n'
+            'Fix upstream via situation_factory.normalise_situation(); see '
+            'review/comms/FIX1_BP_GENERATORS_2026-04-15.md.'
+        )
+
+
+# Run the gate when this module is executed as __main__ (training entry point).
+# Importing the module for unit-test helpers does not trigger the gate.
+if __name__ == '__main__':
+    _preflight_schema_check()
 
 # =============================================================================
 # Configuration

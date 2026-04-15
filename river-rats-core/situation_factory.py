@@ -59,6 +59,67 @@ _POSTFLOP_ORDER = {
 
 
 # =============================================================================
+# Serialisation-boundary normalisation (ANOMALY-A fix)
+# =============================================================================
+# The BP-series factory generators historically wrote `street` and
+# `hero_position` as Python strings ('flop' / 'BTN') while the d-series
+# pipeline emitted them as canonical integers. The v2.2 training CSV
+# merged both streams, producing a 200-numeric / 185-string split on
+# both columns (see review/comms/ANOMALY_A_VERIFICATION_2026-04-15.md).
+#
+# normalise_situation() is the canonical encoder; every BP-series
+# generator MUST pipe each record through it before `json.dumps`.
+#
+# Mappings mirror feature_extractor.py (POSITION_ORDINAL, STREET_ENCODING).
+STREET_CODE = {'flop': 0, 'turn': 1, 'river': 2}
+POSITION_CODE = {
+    'UTG': 0, 'EP': 0,
+    'HJ': 1, 'MP': 1,
+    'CO': 2,
+    'BTN': 3,
+    'SB': 4,
+    'BB': 5,
+}
+
+
+def normalise_situation(sit: dict) -> dict:
+    """
+    Normalise a situation dict at the JSONL serialisation boundary.
+
+    Converts string `street` and `hero_position` / `hero_pos` values to
+    the canonical integer encoding. Idempotent: numeric values are
+    returned unchanged. Unknown strings raise KeyError to fail loudly
+    rather than silently coercing (anti-goal: ANOMALY-A path 2/5).
+
+    Returns a new dict; does not mutate the caller's input.
+    """
+    sit = dict(sit)
+
+    s = sit.get('street')
+    if isinstance(s, str):
+        key = s.strip().lower()
+        if key not in STREET_CODE:
+            raise KeyError(
+                f"normalise_situation: unknown street string {s!r}; "
+                f"expected one of {sorted(STREET_CODE)}"
+            )
+        sit['street'] = STREET_CODE[key]
+
+    for fld in ('hero_position', 'hero_pos'):
+        v = sit.get(fld)
+        if isinstance(v, str):
+            key = v.strip().upper()
+            if key not in POSITION_CODE:
+                raise KeyError(
+                    f"normalise_situation: unknown position {v!r} in field "
+                    f"{fld!r}; expected one of {sorted(POSITION_CODE)}"
+                )
+            sit[fld] = POSITION_CODE[key]
+
+    return sit
+
+
+# =============================================================================
 # Stub Classes
 # =============================================================================
 
