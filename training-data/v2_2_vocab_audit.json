@@ -1,26 +1,27 @@
 {
   "intentions": {
+    "value_extract": 761,
+    "pot_control": 587,
+    "range_fold_priced_out": 524,
     "deny_equity": 457,
     "continue_draw": 409,
-    "value_extract": 761,
-    "range_fold_priced_out": 524,
-    "pot_control": 587,
     "bluff_fold_better": 20
   },
-  "proposed_tags": {
-    "give_up_no_equity": 2,
-    "give_up": 1
-  },
+  "proposed_tags": {},
   "street_plan_tags": {
-    "bet_protect_evaluate": 170,
-    "give_up_on_complete": 427,
-    "continue_on_blank": 188,
-    "draw_continue": 395,
-    "check_evaluate": 412,
-    "bet_regardless": 249,
-    "barrel_value": 426,
-    "pot_control_check_call": 238,
     "check_pot_control": 444,
+    "give_up_on_complete": 427,
+    "barrel_value": 426,
+    "check_evaluate": 412,
+    "draw_continue": 395,
+    "bet_regardless": 249,
+    "pot_control_check_call": 238,
+    "continue_on_blank": 188,
+    "bet_protect_evaluate": 170,
     "check_trap": 19
+  },
+  "merge_applied": {
+    "give_up": "pot_control",
+    "give_up_no_equity": "pot_control"
   }
 }
