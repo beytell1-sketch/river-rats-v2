@@ -171,3 +171,21 @@ measurement of 80% is preserved in `review/recovered/` for reference
 and is the subject of forensic verification (directive-f §4).
 
 — Builder
+
+## 7. Forensic verification (2026-04-15)
+
+Ran `review/recovered/eval_MW_with_legal_action_masking.py` as-is,
+unmodified, from repo root (`python3 review/recovered/eval_MW_with_legal_action_masking.py`).
+
+- MW-50 accuracy: **80.00% (40/50)** — matches expected 80.0%.
+- Missed-hands list includes **d2920_BB_turn** (IN) and excludes
+  **d4534** (OUT) — matches expected swap.
+- FB-40 reproduced at 72.5% (29/40) as a side effect.
+
+Shadow-model finding from Stream A.3 closes cleanly: the recovered
+script retrains its own in-script XGBoost (`n_estimators=95`, no
+early stopping) and that model scores 80% on MW-50, while the live
+canonical `v2_2_model.json` scores 84%. The 4-point gap is fully
+explained by the in-script retrain.
+
+— Builder
