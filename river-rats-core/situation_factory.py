@@ -190,6 +190,7 @@ class SituationSpec:
     opener_position: Optional[str] = None
     effective_stack: float = 100.0
     current_bet: float = 0.0
+    num_opponents: Optional[int] = None
     action_string: Optional[str] = None
 
 
@@ -311,6 +312,19 @@ def build_situation(spec: SituationSpec) -> dict:
             bet_this_street=current_bet if is_bettor else 0.0,
             stack=spec.effective_stack,
         ))
+
+    # v2.3 backlog item 5: fail at generation if villain list is incomplete.
+    # num_opponents must not exceed villain_positions length.
+    num_opponents_declared = getattr(spec, 'num_opponents', None)
+    if num_opponents_declared is None:
+        num_opponents_declared = len(spec.villain_positions)
+    if len(spec.villain_positions) < num_opponents_declared:
+        raise ValueError(
+            f"villain_positions has {len(spec.villain_positions)} seats "
+            f"but num_opponents={num_opponents_declared}. "
+            f"Add the missing seat(s) to spec.villain_positions before calling "
+            f"build_situation()."
+        )
 
     # Context
     context: dict = {

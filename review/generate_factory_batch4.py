@@ -1572,6 +1572,10 @@ def generate_all():
         feat_dict['hero_cards'] = hero_cards_str
         feat_dict['board_cards'] = board_cards_str
         feat_dict['description'] = description
+        feat_dict['action_string'] = spec.action_string
+        feat_dict['hero_position'] = spec.hero_pos
+        feat_dict['villain_positions'] = list(spec.villain_positions)
+        feat_dict['street'] = spec.street
 
         if validation_errors:
             feat_dict['has_errors'] = True

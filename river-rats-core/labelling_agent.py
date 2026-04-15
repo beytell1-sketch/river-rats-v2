@@ -36,6 +36,36 @@ from gto_model import FEATURE_COLUMNS
 DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'training-data')
 BATCH_DIR = os.path.join(os.path.dirname(__file__), '..', 'review', 'label_batches')
 
+# Known top-level metadata keys for flat BP-series records (no nested feat_dict).
+_FLAT_METADATA_KEYS = {
+    'situation_id', 'hero_cards', 'board_cards', 'hero_position',
+    'villain_positions', 'street', 'pot', 'to_call', 'facing_bet',
+    'num_opponents', 'action_string', 'description',
+}
+
+
+def _normalise_flat_situation(sit: dict) -> dict:
+    """Convert a flat factory_batch5 record into the nested format expected
+    by prepare_batches() and format_situation_for_agent().
+
+    Flat records (BP-series) store all features and metadata at the same
+    level. Nested records (d-series) have a 'feat_dict' sub-dict for
+    features and metadata at the top level.
+
+    This adapter splits known metadata keys to the top level and puts all
+    remaining keys into 'feat_dict', ensuring villain_positions (the full
+    list) is used rather than the single-valued _villain_pos_raw field.
+    """
+    nested = {}
+    feat_dict = {}
+    for key, value in sit.items():
+        if key in _FLAT_METADATA_KEYS:
+            nested[key] = value
+        else:
+            feat_dict[key] = value
+    nested['feat_dict'] = feat_dict
+    return nested
+
 
 def prepare_batches(input_path: str, batch_size: int = 10):
     """Split situations JSONL into batch files for agent dispatch.
@@ -69,6 +99,9 @@ def prepare_batches(input_path: str, batch_size: int = 10):
 
         with open(batch_path, 'w') as f:
             for sit in batch:
+                # Normalise flat BP records to nested format if feat_dict is absent.
+                if 'feat_dict' not in sit:
+                    sit = _normalise_flat_situation(sit)
                 f.write(f"--- HAND: {sit['situation_id']} ---\n")
                 # Format key fields for the agent
                 fd = sit.get('feat_dict', {})
