@@ -1,0 +1,62 @@
+[
+  {
+    "situation_id": "BP1_08",
+    "old": "RAISE",
+    "new": "CALL"
+  },
+  {
+    "situation_id": "BP4_11",
+    "old": "BET",
+    "new": "CHECK"
+  },
+  {
+    "situation_id": "BP5_10",
+    "old": "CHECK",
+    "new": "BET"
+  },
+  {
+    "situation_id": "BP6_04",
+    "old": "RAISE",
+    "new": "CALL"
+  },
+  {
+    "situation_id": "BP7_01",
+    "old": "RAISE",
+    "new": "CALL"
+  },
+  {
+    "situation_id": "BP2_28",
+    "old": "CALL",
+    "new": "FOLD"
+  },
+  {
+    "situation_id": "BP4_19",
+    "old": "CHECK",
+    "new": "BET"
+  },
+  {
+    "situation_id": "BP4_30",
+    "old": "BET",
+    "new": "CHECK"
+  },
+  {
+    "situation_id": "BP4_20",
+    "old": "CHECK",
+    "new": "BET"
+  },
+  {
+    "situation_id": "BP4_22",
+    "old": "BET",
+    "new": "CHECK"
+  },
+  {
+    "situation_id": "BP4_24",
+    "old": "BET",
+    "new": "CHECK"
+  },
+  {
+    "situation_id": "BP5_12",
+    "old": "BET",
+    "new": "CHECK"
+  }
+]
