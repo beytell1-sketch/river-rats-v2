@@ -230,11 +230,14 @@ This is consistent with how d8886 and d8963 were handled in the verification log
 
 ### Primary measurement
 
-The diagnostic test set produces an **accuracy score on the mixed-zone subset** (Groups A and B) for both v2.2 and v2.3. Success is defined as:
+The diagnostic test set produces an **accuracy score on the mixed-zone subset** (Groups A and B) for both v2.2 and v2.3. Success is defined as BOTH of the following:
 
-> v2.3 accuracy on Groups A+B is at least 5 percentage points higher than v2.2 accuracy on the same hands.
+> 1. v2.3 accuracy on Groups A+B is at least 5 percentage points higher than v2.2 accuracy on the same hands, AND
+> 2. **(Track 6 §2.4 amendment)** v2.3 absolute accuracy on Groups A+B is at least **70%** in absolute terms — not merely an improvement over a weak v2.2 baseline.
 
-This is a direct measurement of the bucket-first CHECK bias correction. A 5pp improvement on a 25-35 hand subset (Groups A+B) means roughly 1-2 additional correct predictions — achievable if the bias correction is genuine, non-trivial if it is not.
+The 70% absolute floor prevents the case where v2.2 scores 40% on the mixed-zone subset and v2.3 scores 46% — a 6pp improvement that nominally passes the first criterion but leaves the model failing the majority of mixed-zone hands. Both criteria must hold for the diagnostic to count as a successful bias correction.
+
+This is a direct measurement of the defensive multiway-checked-through CHECK bias correction. A 5pp improvement on a 25-35 hand subset (Groups A+B) means roughly 1-2 additional correct predictions — achievable if the bias correction is genuine, non-trivial if it is not. The 70% absolute floor ensures the correction lands at a usable accuracy level.
 
 ### Stability requirement
 
@@ -256,6 +259,20 @@ If v2.3 improves on the diagnostic set by trading regression on the anchors, the
 
 The Group D reversal accuracy is particularly important as a sanity check. A model that simply learned "bet more in MW" will score worse on reversals. A model that genuinely improved its mixed-zone reasoning will maintain or improve on reversals.
 
+### Group D Regression Fallback (Track 6 §2.4 amendment)
+
+**If v2.3 regresses on Group D reversal accuracy by more than 1 hand vs v2.2, stop and investigate before ship.**
+
+Group D contains 5 reversal hands. A regression of >1 hand (i.e. v2.3 gets ≥2 fewer Group D reversals correct than v2.2) indicates the training supplement shifted the model toward a naive "bet more" response that degrades calibration on the hardest spots. That is exactly the failure mode the reversal group exists to catch.
+
+When this fallback fires:
+1. Halt ship/promote decisions on v2.3.
+2. Investigate whether supplement over-represents aggressive actions beyond what the precondition predicate warrants (Track 6 §2.2 bucket).
+3. Consider whether class weight relaxation (v2.3 scope Section 1 note) was too aggressive.
+4. Re-scope before any further iteration.
+
+This fallback is enforcement-level — not a diagnostic note. A v2.3 model with Group D regression > 1 hand does not ship regardless of how favourable its Groups A+B numbers look.
+
 ### What this test set does not decide
 
 - Ship / iterate decision for v2.3 — that is a separate gate with its own criteria
@@ -270,9 +287,9 @@ When the comparison is run, results should be reported as a table:
 |--------|-------------|-------------|-------|-------|
 | FB-40 anchor | — | — | — | >= 0 |
 | MW-50 anchor | — | — | — | >= 0 |
-| Groups A+B (mixed zones, ~25-35 hands) | — | — | — | >= +5pp |
+| Groups A+B (mixed zones, ~25-35 hands) | — | — | — | >= +5pp AND v2.3 >= 70% absolute |
 | Group C (passive-lean, ~10-15 hands) | — | — | — | diagnostic |
-| Group D (reversals, 5 hands) | — | — | — | diagnostic |
+| Group D (reversals, 5 hands) | — | — | — | regression > 1 hand = STOP (Track 6 §2.4) |
 | Full diagnostic set (30-50 hands) | — | — | — | diagnostic |
 
 The delta on Groups A+B is the single headline number. Everything else is context.
