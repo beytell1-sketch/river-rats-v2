@@ -1,0 +1,26 @@
+{
+  "intentions": {
+    "deny_equity": 457,
+    "continue_draw": 409,
+    "value_extract": 761,
+    "range_fold_priced_out": 524,
+    "pot_control": 587,
+    "bluff_fold_better": 20
+  },
+  "proposed_tags": {
+    "give_up_no_equity": 2,
+    "give_up": 1
+  },
+  "street_plan_tags": {
+    "bet_protect_evaluate": 170,
+    "give_up_on_complete": 427,
+    "continue_on_blank": 188,
+    "draw_continue": 395,
+    "check_evaluate": 412,
+    "bet_regardless": 249,
+    "barrel_value": 426,
+    "pot_control_check_call": 238,
+    "check_pot_control": 444,
+    "check_trap": 19
+  }
+}
