@@ -4,8 +4,8 @@
 
 ## Repos
 
-- **river-rats-v2:** https://github.com/beytell1-sketch/river-rats-v2
-- **river-rats-teaching:** no GitHub remote yet (local only)
+- **river-rats-v2 (logic):** https://github.com/beytell1-sketch/river-rats-v2
+- **river-rats-teaching:** https://github.com/beytell1-sketch/river-rats-teaching
 
 ## READ FIRST — latest state
 
@@ -55,8 +55,18 @@
 
 ## Teaching handoff
 
-- [TEACHING_HANDOFF_V2_2_LABELS_2026-04-15.md](https://github.com/beytell1-sketch/river-rats-v2/blob/master/review/comms/TEACHING_HANDOFF_V2_2_LABELS_2026-04-15.md) — handoff note
-- [training-data/v2_2_enriched_for_teaching.jsonl](https://github.com/beytell1-sketch/river-rats-v2/blob/master/training-data/v2_2_enriched_for_teaching.jsonl) — enriched labels for teaching
+### Logic side (read-only for teaching)
+- [TEACHING_HANDOFF_V2_2_LABELS_2026-04-15.md](https://github.com/beytell1-sketch/river-rats-v2/blob/master/review/comms/TEACHING_HANDOFF_V2_2_LABELS_2026-04-15.md) — logic team's handoff note
+- [training-data/v2_2_enriched_for_teaching.jsonl](https://github.com/beytell1-sketch/river-rats-v2/blob/master/training-data/v2_2_enriched_for_teaching.jsonl) — source of enriched labels
+
+### Teaching side (teaching terminal writes here)
+- [Teaching repo root](https://github.com/beytell1-sketch/river-rats-teaching)
+- [TEACHING_HANDOFF_2026-04-15.md](https://github.com/beytell1-sketch/river-rats-teaching/blob/master/review/restart/TEACHING_HANDOFF_2026-04-15.md) — latest teaching restart handoff
+- [Teaching plan v2](https://github.com/beytell1-sketch/river-rats-teaching/blob/master/review/comms/PLAN_TEACHING_V2_ALIGNED_2026-04-13.md)
+- [Owner review + amendments](https://github.com/beytell1-sketch/river-rats-teaching/blob/master/review/comms/REVIEW_TEACHING_QUALITY_ENGINE_2026-04-13.md)
+- [data/v2_2_enriched.jsonl](https://github.com/beytell1-sketch/river-rats-teaching/blob/master/data/v2_2_enriched.jsonl) — 385 hands, Phase 2 input
+- [interface/l3_renderer_v2.py](https://github.com/beytell1-sketch/river-rats-teaching/blob/master/interface/l3_renderer_v2.py)
+- [content/intention_templates.py](https://github.com/beytell1-sketch/river-rats-teaching/blob/master/content/intention_templates.py)
 
 ## Solver work (pending owner)
 
