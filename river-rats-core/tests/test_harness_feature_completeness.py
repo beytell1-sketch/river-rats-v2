@@ -217,3 +217,69 @@ class TestExtractAllFeaturesCompleteness:
         assert list(FEATURE_COLUMNS) == list(GTO_FEATURE_COLUMNS), (
             "feature_extractor.FEATURE_COLUMNS and gto_model.FEATURE_COLUMNS are out of sync"
         )
+
+
+# ---------------------------------------------------------------------------
+# 4. Dtype guard — catch string-where-numeric at eval time
+#
+# Context: MAIN_TERMINAL_UPDATE_2026-04-15-c.md §1. ANOMALY-A (BP generators
+# emitted `street='flop'` instead of `0.0`) showed that raw dicts with string
+# values can leak through the harness. `features_from_dict()` used to pass
+# these straight to np.array(..., dtype=np.float32), which would raise a
+# cryptic ValueError at numpy-cast time — or, worse, silently coerce numeric-
+# looking strings. The dtype guard must hard-error with an explicit, hand-
+# qualified message before oracle scoring, mirroring the completeness guard.
+# ---------------------------------------------------------------------------
+
+class TestDtypeGuard:
+
+    def test_string_value_in_numeric_slot_raises_type_error(self):
+        """
+        If a FEATURE_COLUMNS entry holds a string ('flop' instead of 0.0),
+        features_from_dict() must raise TypeError naming the offending column
+        — not silently coerce, not fall through to a cryptic numpy cast error.
+        """
+        from gto_model import GtoOracle
+        feat = _complete_feat_dict()
+        feat['street'] = 'flop'  # simulate BP-generator serialisation leak
+        with pytest.raises(TypeError) as exc_info:
+            GtoOracle.features_from_dict(feat)
+        msg = str(exc_info.value)
+        assert 'street' in msg, f"Error message should name 'street': {msg}"
+
+    def test_validate_feat_dict_rejects_string_value(self):
+        """
+        _validate_feat_dict must reject a string in a numeric slot with a
+        hand-qualified ValueError before the feat_dict ever reaches the oracle.
+        """
+        from reference_evaluator import _validate_feat_dict
+        feat = _complete_feat_dict()
+        feat['hero_position'] = 'BTN'  # string in a numeric slot
+        with pytest.raises(ValueError) as exc_info:
+            _validate_feat_dict(feat, hand_id='MW-TEST')
+        msg = str(exc_info.value)
+        assert 'MW-TEST' in msg
+        assert 'hero_position' in msg
+
+    def test_bool_value_is_permitted(self):
+        """
+        Booleans are a numpy-numeric subtype (True→1.0, False→0.0) and are
+        emitted by extract_all_features for flag features. The dtype guard
+        must NOT reject them — only strings / non-numeric types.
+        """
+        from gto_model import GtoOracle
+        feat = _complete_feat_dict()
+        feat['is_made_hand'] = True
+        feat['has_flush_draw'] = False
+        # Must not raise
+        arr = GtoOracle.features_from_dict(feat)
+        assert arr.shape == (54,)
+
+    def test_none_value_is_rejected(self):
+        """None in a numeric slot must also be caught by the dtype guard."""
+        from gto_model import GtoOracle
+        feat = _complete_feat_dict()
+        feat['spr'] = None
+        with pytest.raises(TypeError) as exc_info:
+            GtoOracle.features_from_dict(feat)
+        assert 'spr' in str(exc_info.value)

@@ -190,6 +190,27 @@ class GtoOracle:
                 f"Run extract_all_features() to populate all {len(FEATURE_COLUMNS)} "
                 f"FEATURE_COLUMNS before calling features_from_dict()."
             )
+        # Dtype guard: catch string/None/other-non-numeric values before
+        # np.array() either raises a cryptic cast error or silently coerces.
+        # Context: MAIN_TERMINAL_UPDATE_2026-04-15-c.md §1. BP generators were
+        # emitting `street='flop'` instead of a numeric code; the guard
+        # ensures these are caught at the harness boundary.
+        bad = []
+        for f in FEATURE_COLUMNS:
+            v = feat_dict[f]
+            # bool is a subclass of int — explicitly allowed.
+            if isinstance(v, bool):
+                continue
+            if not isinstance(v, (int, float)):
+                bad.append((f, type(v).__name__, repr(v)))
+        if bad:
+            details = ', '.join(f"{name}={val!s} (type {ty})" for name, ty, val in bad)
+            raise TypeError(
+                f"feat_dict has {len(bad)} non-numeric value(s): {details}. "
+                f"All FEATURE_COLUMNS must be numeric (int/float/bool). "
+                f"Re-extract via extract_all_features() — do not pass raw "
+                f"serialisation dicts with string codes like street='flop'."
+            )
         return np.array(
             [feat_dict[f] for f in FEATURE_COLUMNS],
             dtype=np.float32,

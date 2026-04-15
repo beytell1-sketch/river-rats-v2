@@ -61,6 +61,27 @@ def _validate_feat_dict(feat_dict: dict, hand_id: str = '') -> None:
             f"Source of truth is re-extraction via extract_all_features() — "
             f"do not use stored feat_dicts from JSONL without re-extracting."
         )
+    # Dtype guard: reject string/None/other-non-numeric values with a
+    # hand-qualified message before they leak to the oracle. Mirrors the
+    # guard in GtoOracle.features_from_dict but fails earlier and lists the
+    # hand id. Context: MAIN_TERMINAL_UPDATE_2026-04-15-c.md §1
+    # (BP generators emitting street='flop').
+    bad = []
+    for col in FEATURE_COLUMNS:
+        v = feat_dict[col]
+        if isinstance(v, bool):
+            continue
+        if not isinstance(v, (int, float)):
+            bad.append((col, type(v).__name__, repr(v)))
+    if bad:
+        label = f" for hand '{hand_id}'" if hand_id else ''
+        details = ', '.join(f"{name}={val!s} (type {ty})" for name, ty, val in bad)
+        raise ValueError(
+            f"feat_dict{label} has {len(bad)} non-numeric value(s): {details}. "
+            f"All FEATURE_COLUMNS must be numeric. Re-extract via "
+            f"extract_all_features() — do not pass raw serialisation dicts "
+            f"with string codes like street='flop'."
+        )
 
 
 # ── Reference hand parsing ──────────────────────────────────────────
