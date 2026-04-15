@@ -173,9 +173,25 @@ class GtoOracle:
 
     @staticmethod
     def features_from_dict(feat_dict: Dict[str, float]) -> np.ndarray:
-        """Convert a feature dict to a numpy array in correct column order."""
+        """Convert a feature dict to a numpy array in correct column order.
+
+        Raises KeyError if any of the 54 FEATURE_COLUMNS are absent from
+        feat_dict.  Never silently defaults to 0.0 — a missing key means
+        the upstream pipeline is broken and must be fixed before scoring.
+
+        Context: HRP_INVESTIGATION_2026-04-15.md — the old feat_dict.get(f, 0.0)
+        silently zeroed 6 missing MW test-set features, producing bogus
+        hero_range_percentile = 0.00 across all MW misses.
+        """
+        missing = [f for f in FEATURE_COLUMNS if f not in feat_dict]
+        if missing:
+            raise KeyError(
+                f"feat_dict is missing {len(missing)} required feature(s): {missing}. "
+                f"Run extract_all_features() to populate all {len(FEATURE_COLUMNS)} "
+                f"FEATURE_COLUMNS before calling features_from_dict()."
+            )
         return np.array(
-            [feat_dict.get(f, 0.0) for f in FEATURE_COLUMNS],
+            [feat_dict[f] for f in FEATURE_COLUMNS],
             dtype=np.float32,
         )
 

@@ -31,10 +31,36 @@ from dataclasses import dataclass, field
 from typing import List, Dict, Tuple, Optional
 
 from feature_keys import F
-from feature_extractor import extract_all_features
+from feature_extractor import extract_all_features, FEATURE_COLUMNS
 from gto_model import GtoOracle
 from multiway_adjuster import adjust, get_default_params
 from self_play import Variant
+
+
+# ── Feature completeness guard ───────────────────────────────────────
+
+def _validate_feat_dict(feat_dict: dict, hand_id: str = '') -> None:
+    """Hard-error if feat_dict is missing any of the 54 FEATURE_COLUMNS.
+
+    Must be called immediately after extract_all_features() and before any
+    oracle scoring.  Never silently defaults missing keys to 0.
+
+    Context: HRP_INVESTIGATION_2026-04-15.md — stored feat_dicts from an older
+    pipeline schema had 48 of 54 keys; the missing keys silently defaulted to
+    0.0, producing the bogus hero_range_percentile = 0.00 finding.
+
+    Raises:
+        ValueError: listing the hand_id and all missing feature names.
+    """
+    missing = [col for col in FEATURE_COLUMNS if col not in feat_dict]
+    if missing:
+        label = f" for hand '{hand_id}'" if hand_id else ''
+        raise ValueError(
+            f"feat_dict{label} is missing {len(missing)} of {len(FEATURE_COLUMNS)} "
+            f"required FEATURE_COLUMNS: {missing}. "
+            f"Source of truth is re-extraction via extract_all_features() — "
+            f"do not use stored feat_dicts from JSONL without re-extracting."
+        )
 
 
 # ── Reference hand parsing ──────────────────────────────────────────
@@ -441,8 +467,12 @@ def _evaluate_one_hand(variant: Variant, hand: ReferenceHand,
         '_facing_raise': hand.facing_raise,
     }
 
-    # Run feature extraction
+    # Run feature extraction — re-extract every time, never use stored feat_dicts
     feat_dict = extract_all_features(hand_dict)
+
+    # Hard-error if any of the 54 FEATURE_COLUMNS are missing.
+    # See HRP_INVESTIGATION_2026-04-15.md for why this must not be a warning.
+    _validate_feat_dict(feat_dict, hand_id=hand.ref_id)
 
     # Oracle prediction
     features = GtoOracle.features_from_dict(feat_dict)
@@ -738,10 +768,17 @@ def evaluate_facing_bet_test_set(
         if expected in by_action:
             by_action[expected]['total'] += 1
 
-        # Build hand dict and extract features
+        # Build hand dict and extract features.
+        # _validate_feat_dict hard-errors (not warns) on any missing column —
+        # propagated as a hard exception, not caught into skipped.
         try:
             hand_dict = _build_fb_hand_dict(record)
             feat_dict = extract_all_features(hand_dict)
+            _validate_feat_dict(feat_dict, hand_id=sid)
+        except ValueError:
+            # Feature completeness failure: re-raise immediately.
+            # This is a pipeline bug, not a graceful skip.
+            raise
         except Exception as e:
             skipped.append({'situation_id': sid, 'error': f'feature extraction: {e}'})
             continue
