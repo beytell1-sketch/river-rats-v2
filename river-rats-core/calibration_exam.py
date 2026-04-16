@@ -1,15 +1,29 @@
 #!/usr/bin/env python3
-"""Calibration exam for the 3-way GTO labelling agent.
+"""Calibration exam for the 3-way GTO labelling agent — v2.3.
 
-Feeds the 24 three-way reference hands to the labelling agent,
-compares labels to known expert actions, and reports accuracy.
+Feeds the 28 three-way reference hands (24 MW + 4 new hard anchors) to
+the labelling agent, compares labels to known expert actions, and reports
+accuracy. Optionally extended with Group-D reversal hands from the
+diagnostic test set.
 
-Gate: 20/24 (83%) overall + ALL 3 GTO-reversal hands correct.
+Gate (v2.3, per review/comms/PLAN_V23_SCOPE_2026-04-15.md §5 and
+review/comms/V23_HAND_GENERATION_PLAN_2026-04-16.md §3.1):
+    - 23/28 standard-exam threshold (up from 20/24) AND
+    - 100% on reversal hands (any single reversal failure = FAIL).
+
+Reversal set (100%-must-pass):
+    - MW-30, MW-33, MW-50 (original reversal anchors)
+    - d2410_CO_turn, d3178_CO_river (predicate-matching new anchors)
+    - Any hand registered in GROUP_D_REVERSAL_HANDS (diagnostic set)
+
+Standard new anchors (count toward 23/28 but not 100%-must-pass):
+    - d8886_BB_flop, d8963_HJ_turn (mixed-zone spots)
+
 If gate fails, the agent must not label training data.
 
 Usage:
     python3 calibration_exam.py
-    python3 calibration_exam.py --prompt prompts/gto_labeller_v1.md
+    python3 calibration_exam.py --prompt prompts/gto_labeller_v3.md
 """
 import argparse
 import json
@@ -29,8 +43,55 @@ from feature_keys import F
 from gto_model import FEATURE_COLUMNS
 
 
-# The 3 GTO-reversal hands that MUST be correct
-GTO_REVERSAL_HANDS = {'MW-30', 'MW-33', 'MW-50'}
+# ── v2.3 exam structure ───────────────────────────────────────────
+
+# Standard exam size: 24 existing MW reference hands + 4 new hard anchors.
+# Group-D reversal hands, when registered, EXTEND the total but do NOT
+# change STANDARD_PASS_THRESHOLD — reversals are enforced via the 100%
+# rule, not the 23/28 rule.
+STANDARD_EXAM_SIZE = 28
+STANDARD_PASS_THRESHOLD = 23  # v2.3 (was 20 in v2.2)
+
+
+# The 4 new hard-anchor calibration candidates (per Scope §5 / Build
+# Plan §3.1). Each is sourced from the canonical labelled JSONL —
+# never hardcoded from memory.
+_NEW_HARD_ANCHOR_IDS = (
+    'd8886_BB_flop',    # mixed-zone (solver 50/50, our combo bets)
+    'd2410_CO_turn',    # predicate-matching (villain_checked_back=1)
+    'd8963_HJ_turn',    # mixed-zone (solver 50/50, our combo bets)
+    'd3178_CO_river',   # predicate-matching / trap-lean (AA on paired river)
+)
+
+
+# Group-D calibration reversals (from PLAN_V23_DIAGNOSTIC_TEST_SET §2.D).
+# d3688_BB_flop is the one confirmed reversal at time of writing
+# (v2.2 BET, expert CHECK on KT4 flush board with second villain).
+# Additional Group-D hands are extended into this registry as the
+# diagnostic set is finalized. Hands registered here are AUTOMATICALLY
+# ingested into GTO_REVERSAL_HANDS and become 100%-must-pass.
+GROUP_D_REVERSAL_HANDS = {
+    'd3688_BB_flop',
+}
+
+
+# The predicate-matching new anchors are reversals in the Group-D sense
+# (villain_checked_back=1, capped villain range, CHECK→BET override
+# required per Stream B.2 bias analysis).
+_PREDICATE_REVERSAL_ANCHORS = {
+    'd2410_CO_turn',
+    'd3178_CO_river',
+}
+
+
+# The 100%-must-pass reversal set = original MW reversals + predicate
+# new anchors + registered Group-D hands.
+GTO_REVERSAL_HANDS = (
+    {'MW-30', 'MW-33', 'MW-50'}
+    | _PREDICATE_REVERSAL_ANCHORS
+    | GROUP_D_REVERSAL_HANDS
+)
+
 
 # Paths
 _BASE = os.path.dirname(__file__)
@@ -38,8 +99,12 @@ _DESIGNS = os.path.join(_BASE, '..', 'design', 'multiway_reference_set',
                         'BATCH2_8_HAND_DESIGNS.md')
 _ANALYSIS = os.path.join(_BASE, '..', 'design', 'multiway_reference_set',
                          'BATCH2_8_RANGE_ANALYSIS.md')
-_PROMPT = os.path.join(_BASE, '..', 'prompts', 'gto_labeller_v1.md')
+_PROMPT = os.path.join(_BASE, '..', 'prompts', 'gto_labeller_v3.md')
 _KNOWLEDGE = os.path.join(_BASE, '..', 'knowledge', 'three_way_gto.md')
+_TEST_SET_50 = os.path.join(_BASE, '..', 'training-data',
+                            'test_set_50_labelled.jsonl')
+_3WAY_COMBINED = os.path.join(_BASE, '..', 'training-data',
+                              '3way_combined_350.jsonl')
 
 
 def _parse_action_history_prose() -> dict:
@@ -60,10 +125,137 @@ def _parse_action_history_prose() -> dict:
 
 
 def load_3way_reference_hands() -> list:
-    """Load and filter to the 24 three-way reference hands."""
+    """Load and filter to the 24 three-way MW reference hands."""
     all_hands = parse_reference_hands(_DESIGNS, _ANALYSIS)
     three_way = [h for h in all_hands if h.num_opponents == 2]
     return three_way
+
+
+def _load_labelled_record(sid: str) -> dict:
+    """Find a situation by id across the canonical labelled JSONL sources.
+
+    Search order: test_set_50_labelled.jsonl (primary labelled set),
+    then 3way_combined_350.jsonl. Raises KeyError if not found.
+    """
+    for path in (_TEST_SET_50, _3WAY_COMBINED):
+        if not os.path.exists(path):
+            continue
+        with open(path) as f:
+            for line in f:
+                r = json.loads(line)
+                if r.get('situation_id') == sid:
+                    return r
+    raise KeyError(
+        f"{sid} not found in canonical labelled JSONL sources: "
+        f"{_TEST_SET_50} or {_3WAY_COMBINED}"
+    )
+
+
+def _labelled_record_to_reference_hand(record: dict) -> ReferenceHand:
+    """Convert a canonical labelled JSONL record into a ReferenceHand.
+
+    All fields are sourced from the record — nothing is hardcoded. This
+    is how the 4 new hard anchors (and any Group-D hands living in the
+    labelled JSONL) enter the exam.
+    """
+    sid = record['situation_id']
+    feat = record.get('feat_dict', {})
+    villain_positions = record.get('villain_positions') or []
+    villain_pos = villain_positions[0] if villain_positions else ''
+
+    return ReferenceHand(
+        ref_id=sid,
+        axis='v2.3-hard-anchor',
+        hero_cards=record['hero_cards'],
+        board=record['board'],
+        street=str(record.get('street', '')).capitalize(),
+        hero_position=record['hero_position'],
+        villain_position=villain_pos,
+        num_opponents=int(record.get('num_opponents', 2)),
+        pot=float(record.get('pot', 0)),
+        facing_bet=bool(record.get('facing_bet', False)),
+        to_call=float(record.get('to_call', 0)),
+        opener_position='',
+        bettor_position=None,
+        expert_action=record['expert_action'],
+        expert_confidence=record.get('expert_confidence', 'MEDIUM'),
+        equity=float(record.get('equity', 0.0)),
+        villain_aggression_count=int(feat.get('villain_aggression_count', 0)),
+        villain_checked_back=int(feat.get('villain_checked_back', 0)),
+        villain_call_count=int(feat.get('villain_call_count', 0)),
+        num_callers_to_bet=int(feat.get('num_callers_to_bet', 0)),
+        facing_raise=int(feat.get('facing_raise', 0)),
+        action_string='',
+    )
+
+
+def load_new_hard_anchors() -> list:
+    """Load the 4 new v2.3 hard anchors from the canonical labelled JSONL.
+
+    These are the spots that specifically exercise the defensive
+    multiway-checked-through CHECK bias the v2.3 supplement is correcting.
+    Returns a list of ReferenceHand objects sourced — never hardcoded.
+    """
+    return [
+        _labelled_record_to_reference_hand(_load_labelled_record(sid))
+        for sid in _NEW_HARD_ANCHOR_IDS
+    ]
+
+
+def load_group_d_reversals() -> list:
+    """Load any Group-D reversal hands registered in the diagnostic set.
+
+    Hands in GROUP_D_REVERSAL_HANDS are looked up in the canonical
+    labelled JSONL. Silently skips hands that are not yet in the
+    labelled set (the diagnostic-set is still under owner review; see
+    PLAN_V23_DIAGNOSTIC_TEST_SET_2026-04-15.md §2.D). Registered hands
+    that ARE present in the canonical set are ingested.
+    """
+    loaded = []
+    for sid in sorted(GROUP_D_REVERSAL_HANDS):
+        try:
+            record = _load_labelled_record(sid)
+        except KeyError:
+            # Not yet in canonical labelled set. The enforcement rule
+            # still applies if the exam ever scores a hand with this
+            # ref_id — we just can't auto-ingest the situation data yet.
+            continue
+        loaded.append(_labelled_record_to_reference_hand(record))
+    return loaded
+
+
+def load_all_calibration_hands() -> list:
+    """Return the v2.3 base calibration-exam hand list.
+
+    Composition (STANDARD_EXAM_SIZE = 28):
+        - 24 MW reference hands (existing)
+        - 4 new hard anchors (d8886/d2410/d8963/d3178)
+
+    Does NOT include Group-D reversal extensions — see
+    load_all_calibration_hands_with_group_d() for the extended set used
+    by run_calibration().
+    """
+    hands = list(load_3way_reference_hands())
+    hands.extend(load_new_hard_anchors())
+    return hands
+
+
+def load_all_calibration_hands_with_group_d() -> list:
+    """Return the base exam + Group-D reversal extensions.
+
+    Extensions from GROUP_D_REVERSAL_HANDS that are present in the
+    canonical labelled JSONL are appended. This INCREASES the exam
+    beyond STANDARD_EXAM_SIZE. The 23/28 threshold still applies to
+    the full scoring tally (i.e. additional Group-D hands are bonus
+    enforcement on top of the base threshold).
+    """
+    hands = load_all_calibration_hands()
+    already = {h.ref_id for h in hands}
+    for h in load_group_d_reversals():
+        if h.ref_id not in already:
+            hands.append(h)
+            already.add(h.ref_id)
+    return hands
 
 
 _ACTION_PROSE = None  # lazy-loaded
@@ -190,7 +382,18 @@ def load_agent_context(prompt_path: str = None, knowledge_path: str = None) -> s
 
 
 def score_results(results: list) -> dict:
-    """Score calibration results and check gate criteria."""
+    """Score calibration results and check v2.3 gate criteria.
+
+    Gate (v2.3):
+        - standard-exam threshold: STANDARD_PASS_THRESHOLD correct out of
+          STANDARD_EXAM_SIZE hands (23/28)
+        - reversal gate: 100% on every hand in GTO_REVERSAL_HANDS
+          (MW-30/33/50 + predicate anchors + Group-D hands)
+
+    A single reversal failure fails the exam regardless of the overall
+    count. Reversal hands count BOTH toward the standard tally and the
+    reversal tally — they are a subset of the full exam.
+    """
     total = len(results)
     correct = sum(1 for r in results if r['correct'])
     accuracy = correct / total if total > 0 else 0.0
@@ -210,9 +413,10 @@ def score_results(results: list) -> dict:
         if r['correct']:
             by_conf[conf]['correct'] += 1
 
-    # Gate check
-    gate_overall = correct >= 20  # 20/24
-    gate_reversals = reversal_correct == reversal_total  # all 3
+    # Gate check (v2.3: 23/28 + 100% reversals)
+    gate_overall = correct >= STANDARD_PASS_THRESHOLD
+    gate_reversals = (reversal_total > 0 and
+                      reversal_correct == reversal_total)
     gate_passed = gate_overall and gate_reversals
 
     return {
@@ -220,8 +424,14 @@ def score_results(results: list) -> dict:
         'correct': correct,
         'accuracy': accuracy,
         'gate_passed': gate_passed,
-        'gate_overall': f"{correct}/24 >= 20 → {'PASS' if gate_overall else 'FAIL'}",
-        'gate_reversals': f"{reversal_correct}/{reversal_total} → {'PASS' if gate_reversals else 'FAIL'}",
+        'gate_overall': (
+            f"{correct}/{total} >= {STANDARD_PASS_THRESHOLD} "
+            f"→ {'PASS' if gate_overall else 'FAIL'}"
+        ),
+        'gate_reversals': (
+            f"{reversal_correct}/{reversal_total} (100% required) "
+            f"→ {'PASS' if gate_reversals else 'FAIL'}"
+        ),
         'reversal_details': reversal_results,
         'by_confidence': by_conf,
         'failures': [r for r in results if not r['correct']],
@@ -235,8 +445,9 @@ def print_report(scores: dict):
     print("=" * 60)
     print(f"\n  Overall: {scores['correct']}/{scores['total']} "
           f"({scores['accuracy']:.1%})")
-    print(f"  Gate (20/24): {scores['gate_overall']}")
-    print(f"  Gate (reversals): {scores['gate_reversals']}")
+    print(f"  Gate ({STANDARD_PASS_THRESHOLD}/{STANDARD_EXAM_SIZE}): "
+          f"{scores['gate_overall']}")
+    print(f"  Gate (reversals, 100%): {scores['gate_reversals']}")
     print(f"\n  GATE: {'PASSED' if scores['gate_passed'] else 'FAILED'}")
 
     if scores['by_confidence']:
@@ -276,9 +487,12 @@ def run_calibration(label_fn, prompt_path: str = None,
     # Load agent context
     agent_context = load_agent_context(prompt_path, knowledge_path)
 
-    # Load reference hands
-    hands = load_3way_reference_hands()
-    print(f"Loaded {len(hands)} three-way reference hands")
+    # Load the full v2.3 calibration set: 24 MW + 4 new anchors (+ any
+    # registered Group-D reversal hands).
+    hands = load_all_calibration_hands_with_group_d()
+    print(f"Loaded {len(hands)} calibration hands "
+          f"(base: {STANDARD_EXAM_SIZE}, +{len(hands) - STANDARD_EXAM_SIZE} "
+          f"Group-D extensions)")
 
     # Run exam
     results = []
