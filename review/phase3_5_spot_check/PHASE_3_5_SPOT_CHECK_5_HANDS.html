@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Phase 3.5 Spot Check - 5 Pilot Review Hands</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; max-width: 1060px; margin: 2em auto; padding: 0 1em; color: #222; background: #f7f7f8; }
+  h1 { border-bottom: 3px solid #333; padding-bottom: 0.3em; }
+  h2 { margin: 0 0 0.2em 0; font-size: 1.2em; }
+  h3 { margin: 1em 0 0.4em 0; font-size: 1.05em; color: #333; border-bottom: 1px solid #ddd; padding-bottom: 0.2em; }
+  h4 { margin: 0.6em 0 0.2em 0; font-size: 0.9em; color: #555; }
+  
+  .nav { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 1em 1.4em; margin-bottom: 1.5em; }
+  .nav a { text-decoration: none; color: #1a5276; font-weight: 600; font-family: Menlo, Consolas, monospace; font-size: 0.95em; }
+  .nav a:hover { text-decoration: underline; }
+  .nav-desc { color: #777; font-size: 0.85em; }
+  
+  .intro { background: #fff3cd; border-left: 4px solid #e0b000; padding: 0.8em 1em; margin-bottom: 2em; }
+  
+  section.hand { background: white; border: 1px solid #ddd; border-radius: 6px; padding: 1.2em 1.6em; margin-bottom: 2em; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  .hand h2 .num { display: inline-block; background: #333; color: white; width: 1.6em; height: 1.6em; line-height: 1.6em; text-align: center; border-radius: 50%; margin-right: 0.4em; font-size: 0.9em; }
+  .hand h2 .sid { font-family: Menlo, Consolas, monospace; color: #555; font-weight: 600; }
+  .hand-desc { color: #666; font-size: 0.9em; font-style: italic; margin: 0 0 0.8em 0; }
+  
+  .meta-table { border-collapse: collapse; width: 100%; margin-bottom: 1em; }
+  .meta-table th { width: 160px; background: #fafafa; font-weight: 600; color: #444; white-space: nowrap; text-align: left; padding: 0.5em 0.8em; border-bottom: 1px solid #eee; }
+  .meta-table td { padding: 0.5em 0.8em; border-bottom: 1px solid #eee; }
+  
+  .feat-table { border-collapse: collapse; width: 100%; margin-bottom: 1em; font-size: 0.9em; }
+  .feat-table td { padding: 0.3em 0.8em; border-bottom: 1px solid #f0f0f0; }
+  .feat-name { font-family: Menlo, Consolas, monospace; color: #555; width: 240px; }
+  .feat-val { font-family: Menlo, Consolas, monospace; font-weight: 600; }
+  
+  .card { display: inline-block; background: white; border: 1px solid #999; border-radius: 4px; padding: 3px 6px; margin: 0 2px; font-family: Menlo, Consolas, monospace; font-weight: 700; font-size: 1.05em; min-width: 1.4em; text-align: center; }
+  .card.red { color: #c00; } .card.black { color: #111; }
+  .board { background: #f0f4f8; border-radius: 6px; padding: 4px 8px; display: inline-block; }
+  .board-label { font-weight: 600; color: #555; font-size: 0.85em; }
+  
+  .tag { display: inline-block; font-size: 0.75em; font-weight: 700; padding: 2px 8px; border-radius: 3px; text-transform: uppercase; }
+  .tag.yes { background: #d4edda; color: #155724; }
+  .tag.no { background: #f0f0f0; color: #666; }
+  
+  .action-tag { display: inline-block; font-weight: 700; padding: 2px 10px; border-radius: 3px; font-size: 0.95em; text-transform: uppercase; }
+  .action-tag.bet { background: #d4edda; color: #155724; }
+  .action-tag.raise { background: #cce5ff; color: #004085; }
+  .action-tag.call { background: #fff3cd; color: #856404; }
+  .action-tag.check { background: #f0f0f0; color: #555; }
+  .action-tag.fold { background: #f8d7da; color: #721c24; }
+  
+  details.panel { margin-bottom: 0.6em; border: 1px solid #e0e0e0; border-radius: 4px; }
+  details.panel summary { cursor: pointer; padding: 0.6em 0.8em; background: #fafafa; font-size: 0.95em; border-radius: 4px; }
+  details.panel summary:hover { background: #f0f0f0; }
+  .panel-id { font-family: Menlo, Consolas, monospace; font-weight: 700; color: #333; }
+  .panel-body { padding: 0.6em 1em 0.8em; }
+  .panel-body ul { margin: 0.3em 0; padding-left: 1.5em; }
+  .panel-body li { margin: 0.2em 0; font-size: 0.9em; }
+  
+  .reasoning { font-size: 0.88em; line-height: 1.55; color: #333; background: #f9f9fb; border-left: 3px solid #ddd; padding: 0.5em 0.8em; margin: 0.3em 0; white-space: pre-wrap; word-wrap: break-word; }
+  
+  .pass2-box { background: #fff8e1; border: 1px solid #f0d060; border-radius: 6px; padding: 0.8em 1.2em; margin: 1em 0; }
+  .pass2-box h3 { color: #856404; border-bottom-color: #f0d060; margin-top: 0; }
+  
+  .no-pass2 { color: #888; font-style: italic; margin: 0.5em 0; }
+  
+  .final-label { margin-top: 1em; padding: 0.6em 0.8em; background: #e8f4fd; border-radius: 4px; border: 1px solid #b8daff; font-size: 1.05em; }
+  
+  code { font-family: Menlo, Consolas, monospace; font-size: 0.9em; background: #f0f0f0; padding: 1px 4px; border-radius: 2px; }
+</style></head><body>
+
+<h1>Phase 3.5 Spot Check &mdash; 5 Pilot Review Hands</h1>
+
+<div class="intro">
+  <b>Date:</b> 2026-04-17 &middot; Source: <code>v23_pilot_labelled.jsonl</code><br>
+  5 hands selected for owner review before Phase 3.5 gate confirmation.<br>
+  Each hand shows full Pass 1 panel traces (4 panels) + Pass 2 review (if triggered) + final aggregated label.
+</div>
+
+<div class="nav">
+<strong>Jump to hand:</strong><br>
+<a href="#UMBRELLA_067">1. UMBRELLA_067</a> <span class="nav-desc">(clean 4/4 override)</span><br><a href="#RAISE_VALUE_012">2. RAISE_VALUE_012</a> <span class="nav-desc">(negative control)</span><br><a href="#BP7_06">3. BP7_06</a> <span class="nav-desc">(section-3 probe with principled 3/1 split)</span><br><a href="#MM_IP_TURN_033">4. MM_IP_TURN_033</a> <span class="nav-desc">(boundary with override-the-override)</span><br><a href="#PFR_CONT_025">5. PFR_CONT_025</a> <span class="nav-desc">(MW-27-style flop vcb=0 negative control)</span>
+</div>
+
+<section class="hand" id="UMBRELLA_067">
+<h2><span class="num">1</span> <span class="sid">UMBRELLA_067</span></h2>
+<p class="hand-desc">clean 4/4 override</p>
+<table class="meta-table"><tbody>
+<tr><th>Street</th><td>Turn</td></tr>
+<tr><th>Hero Position</th><td><strong>BTN</strong> vs SB, CO</td></tr>
+<tr><th>Hero Cards</th><td><span class="card red">A&hearts;</span> <span class="card black">A&spades;</span></td></tr>
+<tr><th>Board</th><td><span class="board-label">Flop:</span> <span class="board"><span class="card black">T&spades;</span> <span class="card black">6&spades;</span> <span class="card red">3&diams;</span></span> &nbsp; <span class="board-label">Turn:</span> <span class="board"><span class="card red">2&hearts;</span></span></td></tr>
+<tr><th>Action History</th><td><code>SB check, CO check, BTN ???</code></td></tr>
+<tr><th>Facing Bet</th><td>NO</td></tr>
+<tr><th>Override Clause Fired</th><td><span class="tag yes">YES</span></td></tr>
+</tbody></table>
+
+<h3>Key Features</h3>
+<table class="feat-table"><tbody>
+<tr><td class="feat-name">villain_checked_back</td><td class="feat-val">1</td></tr>
+<tr><td class="feat-name">villain_range_capped</td><td class="feat-val">1</td></tr>
+<tr><td class="feat-name">worse_hand_pct</td><td class="feat-val">0.9511</td></tr>
+<tr><td class="feat-name">equity_vs_range</td><td class="feat-val">0.8027</td></tr>
+<tr><td class="feat-name">spr</td><td class="feat-val">1.1111</td></tr>
+<tr><td class="feat-name">hero_range_percentile</td><td class="feat-val">0.9435</td></tr>
+<tr><td class="feat-name">villain_air_pct</td><td class="feat-val">0.4815</td></tr>
+<tr><td class="feat-name">villain_draw_pct</td><td class="feat-val">0.0741</td></tr>
+<tr><td class="feat-name">villain_top_pair_plus_pct</td><td class="feat-val">0.3704</td></tr>
+<tr><td class="feat-name">villain_medium_made_pct</td><td class="feat-val">0.0741</td></tr>
+<tr><td class="feat-name">danger_score</td><td class="feat-val">0.3800</td></tr>
+<tr><td class="feat-name">is_ip</td><td class="feat-val">1</td></tr>
+<tr><td class="feat-name">raw_equity</td><td class="feat-val">0.8027</td></tr>
+<tr><td class="feat-name">better_hand_pct</td><td class="feat-val">0.0460</td></tr>
+<tr><td class="feat-name">villain_fold_equity_estimate</td><td class="feat-val">0.3511</td></tr>
+<tr><td class="feat-name">has_showdown_value</td><td class="feat-val">1</td></tr>
+<tr><td class="feat-name">pot_size</td><td class="feat-val">90.0</td></tr>
+<tr><td class="feat-name">to_call</td><td class="feat-val">0.0000</td></tr>
+<tr><td class="feat-name">is_3bet_pot</td><td class="feat-val">0</td></tr>
+<tr><td class="feat-name">villain_aggression_count</td><td class="feat-val">0</td></tr>
+
+</tbody></table>
+
+<h3>Pass 1 Panel Traces (4/4 &mdash; BET 4)</h3>
+<details class="panel">
+<summary><span class="panel-id">P1</span> &mdash; 
+<span class="action-tag bet">BET</span> 
+(confidence: <strong>HIGH</strong>) &nbsp; Override: <span class="tag yes">YES</span></summary>
+<div class="panel-body">
+<h4>Expert Reasoning</h4>
+<p class="reasoning">Bucket-first: overpair AA on Ts6s3d2h rainbow turn, hero BTN IP. Facing_bet=False, both blinds checked. Walking the Stream B.2 override precondition checklist: (1) facing_bet=False yes; (2) num_opponents=2 yes; (3) villain_checked_back=1 yes; (4) villain_range_capped=1 yes; (5) worse_hand_pct=0.951 &gt;= 0.55 yes; (6) equity_vs_range=0.803 &gt;= 0.35 yes; (7) SPR=1.11 &lt;= 2.0 yes. All seven hold — override clause fires [v3 addition — Stream B.2 override clause]. Prefer BET for value+protection; passive line forfeits capped villain&#x27;s air portion (48% air). Villain_air + villain_medium_made = 56%, cleanly above the DO NOT Rule 10 value-extract threshold.</p>
+<h4>Feature Attention</h4>
+<p><strong>PRIMARY:</strong> worse_hand_pct, villain_air_pct, villain_range_capped, villain_checked_back, spr<br><strong>CONFIRMED:</strong> equity_vs_range, is_ip, villain_top_pair_plus_pct, villain_medium_made_pct, danger_score</p>
+<h4>Intentions</h4>
+<p>value_extract, deny_equity</p>
+<h4>Street Plan</h4>
+<p>Bet ~50% pot turn; on brick river bet again for thin value, on A or flush-completing river check.</p>
+<h4>Factor Conflicts</h4>
+<p>None material. Overpair + predicate-match is a clean value+protection bet. The only marginal factor is board_favour=-0.07 (tiny villain favour) which is already absorbed in the composition quad.</p>
+<h4>Alternatives Considered</h4>
+<ul><li>CHECK: rejected — forfeits value from 48% air and denies no equity. At SPR 1.11 check gives up the pot-building inflection.</li></ul>
+</div>
+</details>
+<details class="panel">
+<summary><span class="panel-id">P2</span> &mdash; 
+<span class="action-tag bet">BET</span> 
+(confidence: <strong>HIGH</strong>) &nbsp; Override: <span class="tag yes">YES</span></summary>
+<div class="panel-body">
+<h4>Expert Reasoning</h4>
+<p class="reasoning">Overpair AA, rainbow turn, hero BTN IP vs two checkers. Predicate check: fb=0, npo=2, vcb=1, vrc=1, whp=0.95, evr=0.80, SPR=1.11 — all seven preconditions satisfied. The Stream B.2 override clause fires. Quote: &#x27;Prefer BET for value+protection... the passive line forfeits the capped villain&#x27;s air portion.&#x27; Composition quad shows 48% air + 7% medium-made — exactly the target villains for a small-sized value bet. A check behind at SPR 1.11 surrenders ~55% of villain range that would fold to a bet or call wide.</p>
+<h4>Feature Attention</h4>
+<p><strong>PRIMARY:</strong> villain_checked_back, villain_range_capped, worse_hand_pct, villain_air_pct, equity_vs_range<br><strong>CONFIRMED:</strong> spr, is_ip, villain_top_pair_plus_pct, villain_medium_made_pct, villain_fold_equity_estimate</p>
+<h4>Intentions</h4>
+<p>value_extract, deny_equity</p>
+<h4>Street Plan</h4>
+<p>Bet 40-50% pot turn; continue for value on most rivers, check on spade-river (flush block only 22%).</p>
+<h4>Factor Conflicts</h4>
+<p>None. Overpair with whp=0.95 is maximal value-bet territory.</p>
+<h4>Alternatives Considered</h4>
+<ul><li>CHECK: rejected — DO NOT Rule 10 explicitly warns against checked-to CHECK at compressed SPR when villain has air + meaningful weak-made share.</li></ul>
+</div>
+</details>
+<details class="panel">
+<summary><span class="panel-id">P3</span> &mdash; 
+<span class="action-tag bet">BET</span> 
+(confidence: <strong>HIGH</strong>) &nbsp; Override: <span class="tag yes">YES</span></summary>
+<div class="panel-body">
+<h4>Expert Reasoning</h4>
+<p class="reasoning">Board Ts6s3d2h is disconnected rainbow/two-tone with straight_danger=0.30. Hero AA is an overpair that beats 95% of range (whp=0.951) and loses to only 4.6% (sets, 22 in SB). Override-clause preconditions 1-7 all hold; the clause fires. Better_hand_pct 0.046 is essentially 22-only (SB defender uncapped portion mostly folded preflop). BET for value+protection against the 48% air fraction; a naked 6 or 2 can outdraw us but only to exact two-pair rivers. A check surrenders pot equity we have entitled to.</p>
+<h4>Feature Attention</h4>
+<p><strong>PRIMARY:</strong> better_hand_pct, worse_hand_pct, villain_air_pct, villain_range_capped, villain_checked_back<br><strong>CONFIRMED:</strong> spr, is_ip, straight_danger, equity_vs_range, villain_medium_made_pct</p>
+<h4>Intentions</h4>
+<p>value_extract, deny_equity</p>
+<h4>Street Plan</h4>
+<p>Bet turn 40% pot; bet again on brick river for thin value; check on 4/5 completion or spade completes.</p>
+<h4>Factor Conflicts</h4>
+<p>board_favour=-0.07 is marginally villain-favoured on Ts high but equity/composition dominate — not a reason to surrender value.</p>
+<h4>Alternatives Considered</h4>
+<ul><li>CHECK: rejected — wastes AA equity and ignores the 7-precondition override clause that fires here.</li></ul>
+</div>
+</details>
+<details class="panel">
+<summary><span class="panel-id">P4</span> &mdash; 
+<span class="action-tag bet">BET</span> 
+(confidence: <strong>HIGH</strong>) &nbsp; Override: <span class="tag yes">YES</span></summary>
+<div class="panel-body">
+<h4>Expert Reasoning</h4>
+<p class="reasoning">From an exploit angle vs a BTN vs SB+CO three-way pot that&#x27;s gone check-check-IP-decision at SPR 1.11: population of capped checkers rarely c/r this node and mostly folds air to a half-pot stab. Predicate check: all seven Stream B.2 preconditions hold (fb=0, npo=2, vcb=1, vrc=1, whp=0.95, evr=0.80, SPR=1.11). Override clause fires. Small-sized bet extracts from Tx/underpairs/air and denies runner-runner straights; the passive line forfeits that air portion verbatim per the clause.</p>
+<h4>Feature Attention</h4>
+<p><strong>PRIMARY:</strong> villain_checked_back, worse_hand_pct, spr, villain_range_capped<br><strong>CONFIRMED:</strong> is_ip, villain_air_pct, villain_top_pair_plus_pct, villain_medium_made_pct, equity_vs_range, villain_fold_equity_estimate</p>
+<h4>Intentions</h4>
+<p>value_extract, deny_equity</p>
+<h4>Street Plan</h4>
+<p>Bet small turn; bet brick rivers thin for value; fold to a raise only on wettest run-outs (54/97).</p>
+<h4>Factor Conflicts</h4>
+<p>None.</p>
+<h4>Alternatives Considered</h4>
+<ul><li>CHECK: rejected — forfeits air-fold value; no scare-card or exploit read justifies pot-control.</li></ul>
+</div>
+</details>
+
+<p class="no-pass2">Pass 2 not triggered (4/4 agreement).</p>
+
+<div class="final-label">
+<strong>Final Label:</strong> <span class="action-tag bet">BET</span>
+(confidence: <strong>HIGH</strong>)
+</div>
+</section>
+<section class="hand" id="RAISE_VALUE_012">
+<h2><span class="num">2</span> <span class="sid">RAISE_VALUE_012</span></h2>
+<p class="hand-desc">negative control</p>
+<table class="meta-table"><tbody>
+<tr><th>Street</th><td>Flop</td></tr>
+<tr><th>Hero Position</th><td><strong>BTN</strong> vs SB, BB</td></tr>
+<tr><th>Hero Cards</th><td><span class="card red">A&hearts;</span> <span class="card black">A&clubs;</span></td></tr>
+<tr><th>Board</th><td><span class="board-label">Flop:</span> <span class="board"><span class="card black">Q&spades;</span> <span class="card red">6&diams;</span> <span class="card red">2&hearts;</span></span></td></tr>
+<tr><th>Action History</th><td><code>SB check, BB bet, BTN ???</code></td></tr>
+<tr><th>Facing Bet</th><td>YES</td></tr>
+<tr><th>Override Clause Fired</th><td><span class="tag no">NO</span></td></tr>
+</tbody></table>
+
+<h3>Key Features</h3>
+<table class="feat-table"><tbody>
+<tr><td class="feat-name">villain_checked_back</td><td class="feat-val">0</td></tr>
+<tr><td class="feat-name">villain_range_capped</td><td class="feat-val">1</td></tr>
+<tr><td class="feat-name">worse_hand_pct</td><td class="feat-val">0.9569</td></tr>
+<tr><td class="feat-name">equity_vs_range</td><td class="feat-val">0.7348</td></tr>
+<tr><td class="feat-name">spr</td><td class="feat-val">0.8333</td></tr>
+<tr><td class="feat-name">hero_range_percentile</td><td class="feat-val">0.9755</td></tr>
+<tr><td class="feat-name">villain_air_pct</td><td class="feat-val">0.3894</td></tr>
+<tr><td class="feat-name">villain_draw_pct</td><td class="feat-val">0.0000</td></tr>
+<tr><td class="feat-name">villain_top_pair_plus_pct</td><td class="feat-val">0.2230</td></tr>
+<tr><td class="feat-name">villain_medium_made_pct</td><td class="feat-val">0.3877</td></tr>
+<tr><td class="feat-name">danger_score</td><td class="feat-val">0.0000</td></tr>
+<tr><td class="feat-name">is_ip</td><td class="feat-val">1</td></tr>
+<tr><td class="feat-name">raw_equity</td><td class="feat-val">0.7348</td></tr>
+<tr><td class="feat-name">better_hand_pct</td><td class="feat-val">0.0328</td></tr>
+<tr><td class="feat-name">villain_fold_equity_estimate</td><td class="feat-val">0.6037</td></tr>
+<tr><td class="feat-name">has_showdown_value</td><td class="feat-val">1</td></tr>
+<tr><td class="feat-name">pot_size</td><td class="feat-val">120.0</td></tr>
+<tr><td class="feat-name">to_call</td><td class="feat-val">30.0</td></tr>
+<tr><td class="feat-name">is_3bet_pot</td><td class="feat-val">0</td></tr>
+<tr><td class="feat-name">villain_aggression_count</td><td class="feat-val">0</td></tr>
+
+</tbody></table>
+
+<h3>Pass 1 Panel Traces (4/4 &mdash; RAISE 4)</h3>
+<details class="panel">
+<summary><span class="panel-id">P1</span> &mdash; 
+<span class="action-tag raise">RAISE</span> 
+(confidence: <strong>HIGH</strong>) &nbsp; Override: <span class="tag no">NO</span></summary>
+<div class="panel-body">
+<h4>Expert Reasoning</h4>
+<p class="reasoning">AhAc overpair on Qs6d2h dry rainbow, BTN facing 25% pot bet from BB after SB checked. facing_bet=True so override clause is NOT applicable — negative control. Bucket: strong_made/monster (overpair on dry board with no real draw threats). whp=0.96, evr=0.73. Pot odds: 30/(120+60)=16.7%; we have 73% equity vs range, crush pot odds. RAISE for value: BB&#x27;s bet-into-field on Qxx can be Qx/9x/overpairs worse/bluffs; raising extracts from all of them and denies SB cold-float equity. Size to ~3x (90bb raise to ~85bb total).</p>
+<h4>Feature Attention</h4>
+<p><strong>PRIMARY:</strong> worse_hand_pct, equity_vs_range, pot_odds, villain_top_pair_plus_pct<br><strong>CONFIRMED:</strong> villain_air_pct, spr, is_ip, villain_fold_equity_estimate</p>
+<h4>Intentions</h4>
+<p>value_extract, deny_equity</p>
+<h4>Street Plan</h4>
+<p>Raise flop; plan to bet most turns for value, slow down only on 3-straight or A-high turn coordinating vs BB&#x27;s flop bet story.</p>
+<h4>Factor Conflicts</h4>
+<p>None. Override clause does NOT fire (facing_bet=True); this is a routine value raise. I explicitly set override_clause_fired=false per the negative-control guidance.</p>
+<h4>Alternatives Considered</h4>
+<ul><li>CALL: rejected — fails to punish BB&#x27;s donk-range worse, allows SB to realize equity behind.</li></ul>
+</div>
+</details>
+<details class="panel">
+<summary><span class="panel-id">P2</span> &mdash; 
+<span class="action-tag raise">RAISE</span> 
+(confidence: <strong>HIGH</strong>) &nbsp; Override: <span class="tag no">NO</span></summary>
+<div class="panel-body">
+<h4>Expert Reasoning</h4>
+<p class="reasoning">AA on Qs6d2h facing BB bet with SB left to act behind. Override clause does NOT fire: facing_bet=1 (precondition 1 fails). Pot odds ~17% to call, we have 73% equity. Raise for value, isolate BB, charge SB floats.</p>
+<h4>Feature Attention</h4>
+<p><strong>PRIMARY:</strong> worse_hand_pct, equity_vs_range, pot_odds, villain_top_pair_plus_pct<br><strong>CONFIRMED:</strong> spr, villain_air_pct, is_ip</p>
+<h4>Intentions</h4>
+<p>value_extract, deny_equity</p>
+<h4>Street Plan</h4>
+<p>Raise flop; barrel turn bricks.</p>
+<h4>Factor Conflicts</h4>
+<p>None. override_clause_fired=false per negative-control guidance.</p>
+<h4>Alternatives Considered</h4>
+<ul><li>CALL: rejected — doesn&#x27;t maximize value or fold SB.</li></ul>
+</div>
+</details>
+<details class="panel">
+<summary><span class="panel-id">P3</span> &mdash; 
+<span class="action-tag raise">RAISE</span> 
+(confidence: <strong>HIGH</strong>) &nbsp; Override: <span class="tag no">NO</span></summary>
+<div class="panel-body">
+<h4>Expert Reasoning</h4>
+<p class="reasoning">BTN AA facing BB flop-donk on Qs6d2h. Facing_bet=True so override clause doesn&#x27;t apply. Raise for value: overpair crushes the 22% tp+ range, denies equity to SB&#x27;s cold-floats, and builds the pot for future streets. SPR=0.83 post-call would mean forced stacking — better to raise and get it in on the flop.</p>
+<h4>Feature Attention</h4>
+<p><strong>PRIMARY:</strong> equity_vs_range, worse_hand_pct, villain_top_pair_plus_pct, pot_odds<br><strong>CONFIRMED:</strong> spr, is_ip</p>
+<h4>Intentions</h4>
+<p>value_extract, deny_equity</p>
+<h4>Street Plan</h4>
+<p>Raise; going all-in is near-natural by the turn.</p>
+<h4>Factor Conflicts</h4>
+<p>None. Explicitly not firing override (facing_bet=True).</p>
+<h4>Alternatives Considered</h4>
+<ul><li>CALL: rejected — denies value from getting stacks in with AA.</li></ul>
+</div>
+</details>
+<details class="panel">
+<summary><span class="panel-id">P4</span> &mdash; 
+<span class="action-tag raise">RAISE</span> 
+(confidence: <strong>HIGH</strong>) &nbsp; Override: <span class="tag no">NO</span></summary>
+<div class="panel-body">
+<h4>Expert Reasoning</h4>
+<p class="reasoning">Exploit: population underbluffs small donks into two callers on Q-high dry board — BB&#x27;s range is value-heavy but we&#x27;re ahead of most of it. Override clause NOT applicable (facing bet). Raise for value + pot-commit.</p>
+<h4>Feature Attention</h4>
+<p><strong>PRIMARY:</strong> equity_vs_range, worse_hand_pct, villain_top_pair_plus_pct, pot_odds<br><strong>CONFIRMED:</strong> villain_fold_equity_estimate, spr</p>
+<h4>Intentions</h4>
+<p>value_extract, deny_equity</p>
+<h4>Street Plan</h4>
+<p>[not recorded]</p>
+<h4>Factor Conflicts</h4>
+<p>None. Negative-control maintained: override_clause_fired=false.</p>
+<h4>Alternatives Considered</h4>
+<ul><li>CALL: rejected.</li></ul>
+</div>
+</details>
+
+<p class="no-pass2">Pass 2 not triggered (4/4 agreement).</p>
+
+<div class="final-label">
+<strong>Final Label:</strong> <span class="action-tag raise">RAISE</span>
+(confidence: <strong>HIGH</strong>)
+</div>
+</section>
+<section class="hand" id="BP7_06">
+<h2><span class="num">3</span> <span class="sid">BP7_06</span></h2>
+<p class="hand-desc">section-3 probe with principled 3/1 split</p>
+<table class="meta-table"><tbody>
+<tr><th>Street</th><td>Turn</td></tr>
+<tr><th>Hero Position</th><td><strong>CO</strong> vs BB, BTN</td></tr>
+<tr><th>Hero Cards</th><td><span class="card red">A&hearts;</span> <span class="card red">J&hearts;</span></td></tr>
+<tr><th>Board</th><td><span class="board-label">Flop:</span> <span class="board"><span class="card red">Q&hearts;</span> <span class="card red">9&diams;</span> <span class="card red">5&hearts;</span></span> &nbsp; <span class="board-label">Turn:</span> <span class="board"><span class="card black">7&clubs;</span></span></td></tr>
+<tr><th>Action History</th><td><code>BB check, CO check, CO ???</code></td></tr>
+<tr><th>Facing Bet</th><td>NO</td></tr>
+<tr><th>Override Clause Fired</th><td><span class="tag no">NO</span></td></tr>
+</tbody></table>
+
+<h3>Key Features</h3>
+<table class="feat-table"><tbody>
+<tr><td class="feat-name">villain_checked_back</td><td class="feat-val">1</td></tr>
+<tr><td class="feat-name">villain_range_capped</td><td class="feat-val">1</td></tr>
+<tr><td class="feat-name">worse_hand_pct</td><td class="feat-val">0.3068</td></tr>
+<tr><td class="feat-name">equity_vs_range</td><td class="feat-val">0.2762</td></tr>
+<tr><td class="feat-name">spr</td><td class="feat-val">1.1111</td></tr>
+<tr><td class="feat-name">hero_range_percentile</td><td class="feat-val">0.4550</td></tr>
+<tr><td class="feat-name">villain_air_pct</td><td class="feat-val">0.1127</td></tr>
+<tr><td class="feat-name">villain_draw_pct</td><td class="feat-val">0.2113</td></tr>
+<tr><td class="feat-name">villain_top_pair_plus_pct</td><td class="feat-val">0.2254</td></tr>
+<tr><td class="feat-name">villain_medium_made_pct</td><td class="feat-val">0.4507</td></tr>
+<tr><td class="feat-name">danger_score</td><td class="feat-val">0.0800</td></tr>
+<tr><td class="feat-name">is_ip</td><td class="feat-val">1</td></tr>
+<tr><td class="feat-name">raw_equity</td><td class="feat-val">0.2762</td></tr>
+<tr><td class="feat-name">better_hand_pct</td><td class="feat-val">0.6667</td></tr>
+<tr><td class="feat-name">villain_fold_equity_estimate</td><td class="feat-val">0.4475</td></tr>
+<tr><td class="feat-name">has_showdown_value</td><td class="feat-val">0</td></tr>
+<tr><td class="feat-name">pot_size</td><td class="feat-val">90.0</td></tr>
+<tr><td class="feat-name">to_call</td><td class="feat-val">0.0000</td></tr>
+<tr><td class="feat-name">is_3bet_pot</td><td class="feat-val">0</td></tr>
+<tr><td class="feat-name">villain_aggression_count</td><td class="feat-val">0</td></tr>
+
+</tbody></table>
+
+<h3>Pass 1 Panel Traces (3/4 &mdash; BET 3 / CHECK 1)</h3>
+<details class="panel">
+<summary><span class="panel-id">P1</span> &mdash; 
+<span class="action-tag bet">BET</span> 
+(confidence: <strong>MEDIUM</strong>) &nbsp; Override: <span class="tag no">NO</span></summary>
+<div class="panel-body">
+<h4>Expert Reasoning</h4>
+<p class="reasoning">AhJh on Qh9d5h7c turn, hero CO. Description says hero is OOP not-facing-bet — semi-bluff lead spot. NFD + overcard (A). draw_outs implied ~15 (9 hearts + 3 aces + 3 jacks ignoring blockers). Predicate: fb=0, npo=2, vcb=1, vrc=1, whp=0.31 FAILS (&lt;0.55), evr=0.28 FAILS (&lt;0.35), SPR=1.11 OK. Multiple preconditions fail → override clause does NOT fire. Instead I apply [v3 addition §3.A] DO NOT Rule 10 / §3.C Step 3 enhancement: at compressed SPR in a checked-to spot, evaluate BET as value-extraction / equity-denial candidate. Here hero&#x27;s equity is drawing (28%) but fold-equity is meaningful (VFEE=0.45 on a Qh9d5h turn); NFD + blocker qualifies for KB 1.7 semi-bluff raise conditions in spirit — here as a semi-bluff lead. BET ~50-60% pot.</p>
+<h4>Feature Attention</h4>
+<p><strong>PRIMARY:</strong> has_flush_draw, flush_draw_rank, draw_outs, villain_fold_equity_estimate, improvement_probability<br><strong>CONFIRMED:</strong> flush_block_pct, villain_checked_back, villain_range_capped, spr, equity_vs_range</p>
+<h4>Intentions</h4>
+<p>semi_bluff, deny_equity</p>
+<h4>Street Plan</h4>
+<p>Bet ~55% turn; on heart-complete river bet thin for value, on non-heart give up.</p>
+<h4>Factor Conflicts</h4>
+<p>§3.A DO NOT Rule 10 engages: don&#x27;t default to CHECK. The override clause itself does NOT fire (whp + evr fail) — I am careful to cite §3.A not the Stream B.2 override clause.</p>
+<h4>Alternatives Considered</h4>
+<ul><li>CHECK: rejected — [v3 addition §3.A / DO NOT Rule 10] the compressed-SPR default is BET; NFD+blocker is a classic semi-bluff hand that loses EV to passive play.</li><li>RAISE (if facing bet): N/A — we&#x27;re not facing a bet.</li></ul>
+</div>
+</details>
+<details class="panel">
+<summary><span class="panel-id">P2</span> &mdash; 
+<span class="action-tag bet">BET</span> 
+(confidence: <strong>MEDIUM</strong>) &nbsp; Override: <span class="tag no">NO</span></summary>
+<div class="panel-body">
+<h4>Expert Reasoning</h4>
+<p class="reasoning">AhJh on Qh9d5h7c, CO leading turn as semi-bluff. Override clause does NOT fire: whp=0.31 &lt; 0.55 and evr=0.28 &lt; 0.35. But [v3 addition §3.A] DO NOT Rule 10 applies — at compressed SPR in a checked-to spot, default is to evaluate BET. NFD+Ah+overcard is a strong semi-bluff hand with good barrel equity on heart rivers. BET ~55%.</p>
+<h4>Feature Attention</h4>
+<p><strong>PRIMARY:</strong> has_flush_draw, flush_draw_rank, draw_outs, villain_fold_equity_estimate, improvement_probability<br><strong>CONFIRMED:</strong> villain_checked_back, spr</p>
+<h4>Intentions</h4>
+<p>semi_bluff, deny_equity</p>
+<h4>Street Plan</h4>
+<p>Bet turn; barrel heart/A/J rivers; give up bricks.</p>
+<h4>Factor Conflicts</h4>
+<p>None. override_clause_fired=false (whp+evr preconditions fail).</p>
+<h4>Alternatives Considered</h4>
+<ul><li>CHECK: rejected per §3.A.</li></ul>
+</div>
+</details>
+<details class="panel">
+<summary><span class="panel-id">P3</span> &mdash; 
+<span class="action-tag check">CHECK</span> 
+(confidence: <strong>MEDIUM</strong>) &nbsp; Override: <span class="tag no">NO</span></summary>
+<div class="panel-body">
+<h4>Expert Reasoning</h4>
+<p class="reasoning">AhJh semi-bluff candidate in 3-way — but DO NOT Rule 2 warns against barreling draws into two opponents (3-way fold equity ~36%). The NFD + Ah blocker is one of the few candidates KB 1.7 allows for aggression, but 1.7 specifically references raise-spots (check-raise or raise-on-flop). Here we are OOP leading the turn into two players in checked-to spot; if we bet and get called/raised by a single villain we lose our draw-equity realization. Override clause does NOT fire (whp/evr fail). §3.A DO NOT Rule 10 is real but it&#x27;s about value+protection — not about semi-bluffing draws into two players. On balance: CHECK to realize equity (28%) cheaply. This is a difficulty-3 decision; I acknowledge §3.A tension but elect pot-control.</p>
+<h4>Feature Attention</h4>
+<p><strong>PRIMARY:</strong> draw_outs, has_flush_draw, improvement_probability<br><strong>CONFIRMED:</strong> villain_checked_back, flush_draw_rank, spr, equity_vs_range</p>
+<h4>Intentions</h4>
+<p>realize_equity</p>
+<h4>Street Plan</h4>
+<p>Check turn; bet heart/A/J rivers for value, fold to big bet otherwise.</p>
+<h4>Factor Conflicts</h4>
+<p>§3.A (DO NOT Rule 10) says don&#x27;t default to CHECK; DO NOT Rule 2 says don&#x27;t barrel draws 3-way. Two DO NOT rules pulling opposite directions. I elect CHECK because the rule-2 concern is hand-specific (we&#x27;re drawing, not made), whereas rule-10 generalizes to made hands.</p>
+<h4>Alternatives Considered</h4>
+<ul><li>BET (semi-bluff lead): rejected — DO NOT Rule 2 (don&#x27;t barrel draws into 2 opponents); §3.A pulls toward BET but is about value, not semi-bluff.</li></ul>
+</div>
+</details>
+<details class="panel">
+<summary><span class="panel-id">P4</span> &mdash; 
+<span class="action-tag bet">BET</span> 
+(confidence: <strong>LOW</strong>) &nbsp; Override: <span class="tag no">NO</span></summary>
+<div class="panel-body">
+<h4>Expert Reasoning</h4>
+<p class="reasoning">AhJh NFD semi-bluff with CO in 3-way checked-to turn. Override clause doesn&#x27;t fire (whp 0.31, evr 0.28 fail). Tension: §3.A/DO NOT Rule 10 says don&#x27;t default-check at compressed SPR; DO NOT Rule 2 says don&#x27;t barrel draws into 2. KB 1.7 specifically allows nut-flush-draw + blocker semi-bluff RAISES vs bet — we aren&#x27;t facing a bet, but the analog semi-bluff LEAD shares the same EV structure. Betting with 15 outs + 45% fold equity at compressed SPR is +EV on most sim runs. LOW confidence because the 3-way drawing dynamics make this close; I lead rather than check.</p>
+<h4>Feature Attention</h4>
+<p><strong>PRIMARY:</strong> has_flush_draw, flush_draw_rank, draw_outs, villain_fold_equity_estimate, improvement_probability<br><strong>CONFIRMED:</strong> villain_checked_back, spr, flush_block_pct</p>
+<h4>Intentions</h4>
+<p>semi_bluff, deny_equity</p>
+<h4>Street Plan</h4>
+<p>Bet turn; barrel on scare rivers.</p>
+<h4>Factor Conflicts</h4>
+<p>§3.A vs DO NOT Rule 2 — I resolve in favour of §3.A because KB 1.7 specifically carves out NFD+blocker as an aggression candidate.</p>
+<h4>Alternatives Considered</h4>
+<ul><li>CHECK: rejected narrowly — §3.A pulls toward BET; KB 1.7 semi-bluff candidate. But 3-way dilution is real.</li></ul>
+</div>
+</details>
+
+<div class="pass2-box">
+<h3>Pass 2 Review</h3>
+<p><strong>Reviewer action:</strong> <span class="action-tag bet">BET</span> 
+(confidence: <strong>MEDIUM</strong>)
+&nbsp; Solver queue: <strong>NO</strong></p>
+<h4>Reviewer Reasoning</h4>
+<p class="reasoning">Pass 1 majority is correct. The dissenting CHECK panel gave a defensible reason (Rule 2 pulling toward pot-control) but the hand-specific KB 1.7 carve-out overrides that concern. Affirm BET at MEDIUM confidence.</p>
+<h4>Override KB Justification</h4>
+<p class="reasoning">Pass 1 majority BET is the correct action per [v3 addition §3.A] DO NOT Rule 10 and KB Section 1.7. AhJh on Qh9d5h7c = nut-flush-draw + overcard + Ah blocker — exactly the KB 1.7 carve-out from DO NOT Rule 2. The CHECK dissenter (P3) cited DO NOT Rule 2 (don&#x27;t barrel draws into 2 opponents) but that rule itself specifies the exception: &#x27;check-raise only with the nut draw + blocker (KB Section 1.7).&#x27; At compressed SPR (1.11) in a checked-to spot, the analog semi-bluff LEAD shares the EV structure of a KB 1.7 semi-bluff raise. §3.A says don&#x27;t default to CHECK at compressed SPR in checked-to spots. Both §3.A and KB 1.7 pull toward BET. The Stream B.2 override clause itself does NOT fire (whp+evr preconditions fail) but §3.A and §3.C together authorize the semi-bluff lead. I affirm the Pass 1 majority and do NOT override.</p>
+<h4>v3 Citations</h4>
+<p><code>[v3 addition §3.A]</code>, <code>[v3 addition §3.C]</code></p>
+</div>
+
+<div class="final-label">
+<strong>Final Label:</strong> <span class="action-tag bet">BET</span>
+(confidence: <strong>MEDIUM</strong>)
+</div>
+</section>
+<section class="hand" id="MM_IP_TURN_033">
+<h2><span class="num">4</span> <span class="sid">MM_IP_TURN_033</span></h2>
+<p class="hand-desc">boundary with override-the-override</p>
+<table class="meta-table"><tbody>
+<tr><th>Street</th><td>Turn</td></tr>
+<tr><th>Hero Position</th><td><strong>BTN</strong> vs SB, BB</td></tr>
+<tr><th>Hero Cards</th><td><span class="card red">A&hearts;</span> <span class="card black">8&clubs;</span></td></tr>
+<tr><th>Board</th><td><span class="board-label">Flop:</span> <span class="board"><span class="card black">K&spades;</span> <span class="card black">8&spades;</span> <span class="card red">4&hearts;</span></span> &nbsp; <span class="board-label">Turn:</span> <span class="board"><span class="card red">2&hearts;</span></span></td></tr>
+<tr><th>Action History</th><td><code>SB check, BB check, BTN ???</code></td></tr>
+<tr><th>Facing Bet</th><td>NO</td></tr>
+<tr><th>Override Clause Fired</th><td><span class="tag yes">YES</span></td></tr>
+</tbody></table>
+
+<h3>Key Features</h3>
+<table class="feat-table"><tbody>
+<tr><td class="feat-name">villain_checked_back</td><td class="feat-val">1</td></tr>
+<tr><td class="feat-name">villain_range_capped</td><td class="feat-val">1</td></tr>
+<tr><td class="feat-name">worse_hand_pct</td><td class="feat-val">0.7473</td></tr>
+<tr><td class="feat-name">equity_vs_range</td><td class="feat-val">0.3578</td></tr>
+<tr><td class="feat-name">spr</td><td class="feat-val">1.1111</td></tr>
+<tr><td class="feat-name">hero_range_percentile</td><td class="feat-val">0.7843</td></tr>
+<tr><td class="feat-name">villain_air_pct</td><td class="feat-val">0.0370</td></tr>
+<tr><td class="feat-name">villain_draw_pct</td><td class="feat-val">0.3704</td></tr>
+<tr><td class="feat-name">villain_top_pair_plus_pct</td><td class="feat-val">0.2222</td></tr>
+<tr><td class="feat-name">villain_medium_made_pct</td><td class="feat-val">0.3704</td></tr>
+<tr><td class="feat-name">danger_score</td><td class="feat-val">0.0800</td></tr>
+<tr><td class="feat-name">is_ip</td><td class="feat-val">1</td></tr>
+<tr><td class="feat-name">raw_equity</td><td class="feat-val">0.3578</td></tr>
+<tr><td class="feat-name">better_hand_pct</td><td class="feat-val">0.2396</td></tr>
+<tr><td class="feat-name">villain_fold_equity_estimate</td><td class="feat-val">0.3512</td></tr>
+<tr><td class="feat-name">has_showdown_value</td><td class="feat-val">1</td></tr>
+<tr><td class="feat-name">pot_size</td><td class="feat-val">90.0</td></tr>
+<tr><td class="feat-name">to_call</td><td class="feat-val">0.0000</td></tr>
+<tr><td class="feat-name">is_3bet_pot</td><td class="feat-val">0</td></tr>
+<tr><td class="feat-name">villain_aggression_count</td><td class="feat-val">0</td></tr>
+
+</tbody></table>
+
+<h3>Pass 1 Panel Traces (3/4 &mdash; BET 3 / CHECK 1)</h3>
+<details class="panel">
+<summary><span class="panel-id">P1</span> &mdash; 
+<span class="action-tag bet">BET</span> 
+(confidence: <strong>LOW</strong>) &nbsp; Override: <span class="tag yes">YES</span></summary>
+<div class="panel-body">
+<h4>Expert Reasoning</h4>
+<p class="reasoning">Ah8c middle pair + overcard on Ks8s4h2h turn, BTN IP, vcb=1. Predicate: fb=0, npo=2, vcb=1, vrc=1, whp=0.75, evr=0.36 (tightest boundary; within 0.01 of the 0.35 floor), SPR=1.11. All seven hold — override clause fires mechanically. But composition: 37% draws (big!), only 4% air (tiny steal). This is the hardest-to-classify spot in the pilot. Clause fires but confidence is LOW because fold-equity is thin and draw-raise risk is real. Size VERY small (25%) to limit exposure.</p>
+<h4>Feature Attention</h4>
+<p><strong>PRIMARY:</strong> villain_draw_pct, worse_hand_pct, villain_checked_back, villain_range_capped, equity_vs_range<br><strong>CONFIRMED:</strong> villain_air_pct, spr, is_ip</p>
+<h4>Intentions</h4>
+<p>deny_equity, value_extract</p>
+<h4>Street Plan</h4>
+<p>[not recorded]</p>
+<h4>Factor Conflicts</h4>
+<p>Boundary evr (0.36 vs 0.35 floor) + low air (4%) + high draw (37%) create genuine tension. I trust the mechanical predicate but flag LOW confidence.</p>
+<h4>Alternatives Considered</h4>
+<ul><li>CHECK: rejected narrowly — override fires mechanically.</li><li>LARGE BET: rejected — evr at floor + draw share demand small size.</li></ul>
+</div>
+</details>
+<details class="panel">
+<summary><span class="panel-id">P2</span> &mdash; 
+<span class="action-tag bet">BET</span> 
+(confidence: <strong>LOW</strong>) &nbsp; Override: <span class="tag yes">YES</span></summary>
+<div class="panel-body">
+<h4>Expert Reasoning</h4>
+<p class="reasoning">Ah8c on Ks8s4h2h, BTN IP, all 7 preconditions at boundary (evr=0.36). Override fires. Low air + high draw composition makes this uncomfortable. Small bet 25% for protection. LOW confidence.</p>
+<h4>Feature Attention</h4>
+<p><strong>PRIMARY:</strong> villain_draw_pct, worse_hand_pct, villain_checked_back, villain_range_capped, equity_vs_range<br><strong>CONFIRMED:</strong> spr</p>
+<h4>Intentions</h4>
+<p>deny_equity</p>
+<h4>Street Plan</h4>
+<p>[not recorded]</p>
+<h4>Factor Conflicts</h4>
+<p>Boundary evr + low air. LOW confidence.</p>
+<h4>Alternatives Considered</h4>
+<ul><li>CHECK: rejected narrowly — override fires.</li></ul>
+</div>
+</details>
+<details class="panel">
+<summary><span class="panel-id">P3</span> &mdash; 
+<span class="action-tag check">CHECK</span> 
+(confidence: <strong>MEDIUM</strong>) &nbsp; Override: <span class="tag no">NO</span></summary>
+<div class="panel-body">
+<h4>Expert Reasoning</h4>
+<p class="reasoning">Ah8c on Ks8s4h2h, BTN IP. Predicate is at the tightest boundary (evr=0.36, 0.01 above floor). Composition: 37% draws + only 4% air + 22% Kx-dominance. The override clause is designed for spots where villain has SIGNIFICANT air + capped strength. Here the air fraction is negligible; betting gets raised by draws or called by Kx. Per prompt: &#x27;You may still choose CHECK, but you must explicitly name a specific, hand-specific reason that overrides the override.&#x27; My specific reason: (a) only 4% air = no meaningful steal, (b) 37% draw share = check-raise exposure. override_clause_fired=false because I am deliberately NOT applying it.</p>
+<h4>Feature Attention</h4>
+<p><strong>PRIMARY:</strong> villain_air_pct, villain_draw_pct, villain_top_pair_plus_pct, equity_vs_range<br><strong>CONFIRMED:</strong> worse_hand_pct, spr</p>
+<h4>Intentions</h4>
+<p>realize_equity</p>
+<h4>Street Plan</h4>
+<p>[not recorded]</p>
+<h4>Factor Conflicts</h4>
+<p>Same as panel P4 on MM_IP_TURN_003 — mechanical override vs composition-quad nuance.</p>
+<h4>Alternatives Considered</h4>
+<ul><li>BET: rejected — mechanical predicate fires, but hand-specific reason (4% air floor, 37% draw) overrides the override per §3 clause guidance.</li></ul>
+</div>
+</details>
+<details class="panel">
+<summary><span class="panel-id">P4</span> &mdash; 
+<span class="action-tag bet">BET</span> 
+(confidence: <strong>LOW</strong>) &nbsp; Override: <span class="tag yes">YES</span></summary>
+<div class="panel-body">
+<h4>Expert Reasoning</h4>
+<p class="reasoning">Ah8c on Ks8s4h2h, BTN IP. All 7 preconditions hold. Override fires. I defer to the mechanical predicate. Small bet 25%. LOW confidence given boundary evr + low air.</p>
+<h4>Feature Attention</h4>
+<p><strong>PRIMARY:</strong> villain_checked_back, villain_range_capped, worse_hand_pct, equity_vs_range<br><strong>CONFIRMED:</strong> villain_draw_pct, spr</p>
+<h4>Intentions</h4>
+<p>deny_equity</p>
+<h4>Street Plan</h4>
+<p>[not recorded]</p>
+<h4>Factor Conflicts</h4>
+<p>Low air + high draw; I flag via LOW confidence not by overriding the clause.</p>
+<h4>Alternatives Considered</h4>
+<ul><li>CHECK: rejected — mechanical override fires; I default to clause compliance unless a strong reason overrides.</li></ul>
+</div>
+</details>
+
+<div class="pass2-box">
+<h3>Pass 2 Review</h3>
+<p><strong>Reviewer action:</strong> <span class="action-tag bet">BET</span> 
+(confidence: <strong>LOW</strong>)
+&nbsp; Solver queue: <strong>YES</strong></p>
+<h4>Reviewer Reasoning</h4>
+<p class="reasoning">Same pattern as MM_IP_TURN_003. Affirm mechanical override; LOW confidence; solver-queue to inform future v3 iteration.</p>
+<h4>Override KB Justification</h4>
+<p class="reasoning">Pass 1 majority BET is correct mechanically: all 7 Stream B.2 override-clause preconditions hold [v3 addition — Stream B.2 override clause]. This is the tightest-boundary hand in the pilot (evr=0.36 vs 0.35 floor). The CHECK dissenter (P3) correctly identified the low-air / high-draw composition as an issue and cited the override-the-override path. However, per prompt: the override-the-override requires &#x27;board run-out danger, a concrete read, or a narrow-value vs commit-trap analysis.&#x27; Low air% + high draw share is close to but does not explicitly meet those criteria. I affirm BET at LOW confidence, matching the majority&#x27;s own LOW-confidence framing. enqueue_for_solver=true: this and MM_IP_TURN_003 share the pattern (4% air + 33-37% draws) — solver feedback would clarify whether the override should have a composition-quad guard.</p>
+<h4>v3 Citations</h4>
+<p><code>[v3 addition — Stream B.2 override clause]</code>, <code>[v3 addition §3.A]</code></p>
+</div>
+
+<div class="final-label">
+<strong>Final Label:</strong> <span class="action-tag bet">BET</span>
+(confidence: <strong>LOW</strong>)
+</div>
+</section>
+<section class="hand" id="PFR_CONT_025">
+<h2><span class="num">5</span> <span class="sid">PFR_CONT_025</span></h2>
+<p class="hand-desc">MW-27-style flop vcb=0 negative control</p>
+<table class="meta-table"><tbody>
+<tr><th>Street</th><td>Flop</td></tr>
+<tr><th>Hero Position</th><td><strong>BTN</strong> vs SB, BB</td></tr>
+<tr><th>Hero Cards</th><td><span class="card red">A&hearts;</span> <span class="card red">A&diams;</span></td></tr>
+<tr><th>Board</th><td><span class="board-label">Flop:</span> <span class="board"><span class="card black">J&spades;</span> <span class="card red">6&diams;</span> <span class="card black">2&clubs;</span></span></td></tr>
+<tr><th>Action History</th><td><code>SB check, BB check, BTN ???</code></td></tr>
+<tr><th>Facing Bet</th><td>NO</td></tr>
+<tr><th>Override Clause Fired</th><td><span class="tag no">NO</span></td></tr>
+</tbody></table>
+
+<h3>Key Features</h3>
+<table class="feat-table"><tbody>
+<tr><td class="feat-name">villain_checked_back</td><td class="feat-val">0</td></tr>
+<tr><td class="feat-name">villain_range_capped</td><td class="feat-val">1</td></tr>
+<tr><td class="feat-name">worse_hand_pct</td><td class="feat-val">0.9774</td></tr>
+<tr><td class="feat-name">equity_vs_range</td><td class="feat-val">0.7758</td></tr>
+<tr><td class="feat-name">spr</td><td class="feat-val">1.1111</td></tr>
+<tr><td class="feat-name">hero_range_percentile</td><td class="feat-val">0.9756</td></tr>
+<tr><td class="feat-name">villain_air_pct</td><td class="feat-val">0.5926</td></tr>
+<tr><td class="feat-name">villain_draw_pct</td><td class="feat-val">0.0000</td></tr>
+<tr><td class="feat-name">villain_top_pair_plus_pct</td><td class="feat-val">0.1852</td></tr>
+<tr><td class="feat-name">villain_medium_made_pct</td><td class="feat-val">0.2222</td></tr>
+<tr><td class="feat-name">danger_score</td><td class="feat-val">0.0000</td></tr>
+<tr><td class="feat-name">is_ip</td><td class="feat-val">1</td></tr>
+<tr><td class="feat-name">raw_equity</td><td class="feat-val">0.7758</td></tr>
+<tr><td class="feat-name">better_hand_pct</td><td class="feat-val">0.0203</td></tr>
+<tr><td class="feat-name">villain_fold_equity_estimate</td><td class="feat-val">0.6639</td></tr>
+<tr><td class="feat-name">has_showdown_value</td><td class="feat-val">1</td></tr>
+<tr><td class="feat-name">pot_size</td><td class="feat-val">90.0</td></tr>
+<tr><td class="feat-name">to_call</td><td class="feat-val">0.0000</td></tr>
+<tr><td class="feat-name">is_3bet_pot</td><td class="feat-val">0</td></tr>
+<tr><td class="feat-name">villain_aggression_count</td><td class="feat-val">0</td></tr>
+
+</tbody></table>
+
+<h3>Pass 1 Panel Traces (4/4 &mdash; BET 4)</h3>
+<details class="panel">
+<summary><span class="panel-id">P1</span> &mdash; 
+<span class="action-tag bet">BET</span> 
+(confidence: <strong>HIGH</strong>) &nbsp; Override: <span class="tag no">NO</span></summary>
+<div class="panel-body">
+<h4>Expert Reasoning</h4>
+<p class="reasoning">AhAd on Js6d2c dry rainbow flop, BTN PFA IP after two checks. This is a FLOP — villain_checked_back=0 (no prior street) — precondition (3) FAILS, so override clause does NOT fire. Standard PFA c-bet for value on a dry board: whp=0.98, evr=0.78, composition 59% air + 22% medium-made = 81% target. Size small (25-33%) for max fold-equity on air + thin-value from Jx/underpair. Negative control preserved: even though the spirit of §3.D MW CHECK-lean pattern whispers &#x27;bet here&#x27;, I do NOT fire the override clause because vcb=0.</p>
+<h4>Feature Attention</h4>
+<p><strong>PRIMARY:</strong> worse_hand_pct, villain_air_pct, is_preflop_aggressor, equity_vs_range<br><strong>CONFIRMED:</strong> villain_fold_equity_estimate, spr, is_ip, villain_range_capped</p>
+<h4>Intentions</h4>
+<p>value_extract, deny_equity</p>
+<h4>Street Plan</h4>
+<p>Bet 25% flop; barrel turn bricks; slow on overcard/flush turns.</p>
+<h4>Factor Conflicts</h4>
+<p>None. I explicitly set override_clause_fired=false even though the logic of &#x27;bet here&#x27; applies — the clause precondition (3) fails mechanically.</p>
+<h4>Alternatives Considered</h4>
+<ul><li>CHECK: rejected — AA PFA on dry flop is a standard c-bet.</li></ul>
+</div>
+</details>
+<details class="panel">
+<summary><span class="panel-id">P2</span> &mdash; 
+<span class="action-tag bet">BET</span> 
+(confidence: <strong>HIGH</strong>) &nbsp; Override: <span class="tag no">NO</span></summary>
+<div class="panel-body">
+<h4>Expert Reasoning</h4>
+<p class="reasoning">AA PFA on Js6d2c flop. Override clause does NOT fire (vcb=0 on flop). Standard small c-bet: 25% pot to target the 59% air and 22% Jx/medium-made.</p>
+<h4>Feature Attention</h4>
+<p><strong>PRIMARY:</strong> worse_hand_pct, is_preflop_aggressor, villain_air_pct, equity_vs_range<br><strong>CONFIRMED:</strong> villain_fold_equity_estimate, spr, is_ip</p>
+<h4>Intentions</h4>
+<p>value_extract, deny_equity</p>
+<h4>Street Plan</h4>
+<p>[not recorded]</p>
+<h4>Factor Conflicts</h4>
+<p>None. override_clause_fired=false (negative-control).</p>
+<h4>Alternatives Considered</h4>
+<ul><li>CHECK: rejected.</li></ul>
+</div>
+</details>
+<details class="panel">
+<summary><span class="panel-id">P3</span> &mdash; 
+<span class="action-tag bet">BET</span> 
+(confidence: <strong>HIGH</strong>) &nbsp; Override: <span class="tag no">NO</span></summary>
+<div class="panel-body">
+<h4>Expert Reasoning</h4>
+<p class="reasoning">AA on Jxx dry rainbow, standard PFA small c-bet. Override clause precondition (3) fails because vcb=0 on flop; negative control upheld. No clause citation.</p>
+<h4>Feature Attention</h4>
+<p><strong>PRIMARY:</strong> worse_hand_pct, equity_vs_range, is_preflop_aggressor, villain_air_pct<br><strong>CONFIRMED:</strong> spr, is_ip</p>
+<h4>Intentions</h4>
+<p>value_extract, deny_equity</p>
+<h4>Street Plan</h4>
+<p>[not recorded]</p>
+<h4>Factor Conflicts</h4>
+<p>None. override_clause_fired=false.</p>
+<h4>Alternatives Considered</h4>
+<ul><li>CHECK: rejected.</li></ul>
+</div>
+</details>
+<details class="panel">
+<summary><span class="panel-id">P4</span> &mdash; 
+<span class="action-tag bet">BET</span> 
+(confidence: <strong>HIGH</strong>) &nbsp; Override: <span class="tag no">NO</span></summary>
+<div class="panel-body">
+<h4>Expert Reasoning</h4>
+<p class="reasoning">Exploit: PFA on dry Jxx gets folds from air and calls from Jx/underpair. 25% pot small-stab. Override does NOT fire — vcb=0 on flop.</p>
+<h4>Feature Attention</h4>
+<p><strong>PRIMARY:</strong> villain_air_pct, worse_hand_pct, is_preflop_aggressor, villain_fold_equity_estimate<br><strong>CONFIRMED:</strong> equity_vs_range, spr</p>
+<h4>Intentions</h4>
+<p>value_extract, deny_equity</p>
+<h4>Street Plan</h4>
+<p>[not recorded]</p>
+<h4>Factor Conflicts</h4>
+<p>None. override_clause_fired=false (negative control preserved even though &#x27;bet here&#x27; instinct applies).</p>
+<h4>Alternatives Considered</h4>
+<ul><li>CHECK: rejected.</li></ul>
+</div>
+</details>
+
+<p class="no-pass2">Pass 2 not triggered (4/4 agreement).</p>
+
+<div class="final-label">
+<strong>Final Label:</strong> <span class="action-tag bet">BET</span>
+(confidence: <strong>HIGH</strong>)
+</div>
+</section>
+
+</body></html>
