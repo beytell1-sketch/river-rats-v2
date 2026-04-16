@@ -370,9 +370,140 @@ Per Scope §5.3:
 
 ---
 
+## 3.5 Pilot Labelling Review — Qualitative Prompt-Behaviour Gate (Phase 3.5)
+
+**Added per `review/comms/MAIN_TERMINAL_UPDATE_2026-04-16-c.md`.**
+Inserted between Phase 3 (calibration, accuracy gate) and Phase 4
+(production labelling, ~400 hands). Phase 3's 23/28 does not prove
+the panels are reasoning the way the v3 prompt intends — only that
+they got the right answers on known hands. Phase 3.5 catches prompt
+defects on 15–20 hands before they get amplified 20× across the
+full supplement.
+
+### 3.5.1 Pilot hand selection
+
+Sample 15–20 hands from Phase 1 output (NOT in the Phase 3
+calibration exam). Stratified to exercise the new prompt features:
+
+- **6–8 predicate-matching hands** — should trigger the Stream B.2
+  override clause (preconditions satisfied per §2 predicate)
+- **3–4 non-predicate hands** — override clause must NOT fire
+  (negative control)
+- **2–3 hands exercising Scope §3 additions** (whichever §3
+  additions the architect lands) — should cite the new guidance
+- **2–3 reversal-shaped hands** — boundary spots at MEDIUM
+  confidence
+
+Deliverable: `review/comms/PHASE_3_5_PILOT_SAMPLE_2026-04-16.md`
+listing hand IDs + selection rationale per hand.
+
+### 3.5.2 Run full pipeline on the pilot set
+
+- Pass 1: 4 independent panels label all pilot hands (same as
+  Phase 4 §4.1 plumbing)
+- Pass 2: 2 review panels handle disagreements (same as §4.2)
+- Assembly: aggregate labels + reasoning traces
+- **Preserve ALL reasoning text verbatim** — `expert_reasoning`,
+  `factor_conflicts`, `alternatives_considered`, Pass 2
+  override-KB-justification fields. Raw traces are the gate input.
+
+Deliverable: `training-data/v23_pilot_labelled.jsonl` — NOT merged
+into the main supplement CSV until Phase 3.5 passes.
+
+### 3.5.3 Qualitative review — five-point gate
+
+Builder reads the reasoning output against the five criteria below.
+This is NOT an accuracy check — accuracy was Phase 3.
+
+**Criterion 1 — Override clause behaviour.**
+- Predicate-matching hands (6–8): Pass 1 cites the override (by
+  text or by reasoning invoking its preconditions). **Target:
+  ≥ 80% show explicit override engagement.**
+- Non-predicate hands (3–4): Pass 1 does NOT fire the override.
+  **Target: 100%** — the clause must not leak to spots where
+  preconditions don't hold.
+
+**Criterion 2 — Scope §3 additions engagement.**
+- Do Pass 1 panels cite the new §3 guidance on the 2–3 hands
+  selected for this? **Target: ≥ 80% cite at least one §3
+  addition.**
+
+**Criterion 3 — Inter-panel variance.**
+- On predicate-matching hands, do the 4 panels agree more than
+  they did in v2.2 on equivalent MEDIUM-confidence spots?
+  **Target: ≥ 70% of predicate-matching pilot hands show 4/4
+  agreement.**
+- Flag (do not auto-fail): any hand where v3 has MORE variance
+  than v2 would on the same shape. Investigate.
+
+**Criterion 4 — Pass 2 engagement with new guidance.**
+- On any pilot hand reaching Pass 2, reviewer cites v3 prompt
+  sections (override clause, §3 additions) rather than reverting
+  to v2-era reasoning. **Target: 100% of Pass 2 decisions cite
+  v3 guidance where applicable.** Failures here mean Pass 2
+  reviewers didn't absorb the new prompt.
+
+**Criterion 5 — Reasoning quality + coherence.**
+- No grammatical/structural regressions vs v2
+- No template-like repetition (panels writing the same
+  boilerplate across hands)
+- `factor_conflicts` + `alternatives_considered` remain
+  specific to the hand, not generic
+
+**PASS criteria (all must hold):**
+- Criteria 1, 2, 4 meet their targets → PASS
+- Criterion 3 target met OR documented increase-in-variance
+  investigated and explained → PASS
+- Criterion 5 meets a qualitative "no regression vs v2" bar
+  → PASS
+
+**Any criterion failing → Phase 3.5 FAIL → return to prompt
+redesign per §3.5.4.**
+
+### 3.5.4 Failure handling
+
+On Phase 3.5 FAIL — do NOT proceed to Phase 4. Instead:
+
+1. Identify which criterion failed and why
+2. Revise the v3 prompt (override clause wording, §3 addition
+   phrasing, Pass 2 instructions)
+3. Re-run Phase 3 calibration on revised prompt (23/28 + reversals)
+4. Re-run Phase 3.5 pilot on revised prompt with a **new pilot
+   set** (different hands — don't train-on-the-test)
+5. Loop until pass
+
+Document each iteration in
+`review/comms/PHASE_3_5_PILOT_ITERATION_<N>_2026-04-16.md`.
+
+### 3.5.5 Owner touchpoint
+
+After builder's review lands, owner spot-reads reasoning traces
+for 3–5 of the pilot hands (~30 minutes). Quick sanity check.
+If owner flags something the builder missed → prompt redesign.
+
+Deliverable: `review/comms/PHASE_3_5_PILOT_REVIEW_2026-04-16.md`
+— builder's review + five-point verdict. Owner adds a comment
+section confirming or flagging.
+
+### 3.5.6 Effort cost
+
+- Pilot generation + labelling: 15–20 hands × 4 panels = 60–80
+  agent calls (Pass 1) + 0–10 Pass 2 calls. ~1–2 hours with
+  parallel panels.
+- Builder qualitative review: 1 builder call. ~1–2 hours.
+- Owner spot-check: 30 minutes.
+- Added latency: ~half a day.
+- Value: catches prompt defects on 15–20 hands instead of
+  discovering after 400 hands of production labelling (20×
+  amplification avoided).
+
+---
+
 ## 4. Production Labelling — Sequencing (Phase 4)
 
-After calibration gate PASSES:
+**Gate: Phase 4 does NOT begin until Phase 3.5 PASSES.**
+
+After calibration gate PASSES and pilot gate PASSES:
 
 ### 4.1 Pass 1 — 4 independent panels
 
@@ -588,6 +719,25 @@ recovery.
 - **S3.3** Panel redesign iteration count exceeds 3 → escalate to
   Owner for scope revision.
 
+### Phase 3.5 (pilot labelling review)
+- **S3.5.1** Criterion 1 (override clause) fails target on either
+  positive (<80% engagement on predicate hands) or negative
+  (<100% non-engagement on non-predicate hands) → prompt
+  redesign + new pilot set.
+- **S3.5.2** Criterion 2 (§3 additions engagement <80%) fails →
+  prompt redesign.
+- **S3.5.3** Criterion 3 (inter-panel variance <70% 4/4
+  agreement on override hands) fails AND the variance increase
+  is unexplained → prompt redesign.
+- **S3.5.4** Criterion 4 (Pass 2 <100% v3-citation where
+  applicable) fails → Pass 2 instruction rewrite.
+- **S3.5.5** Criterion 5 (reasoning regression vs v2) fails qualitative bar
+  → prompt redesign.
+- **S3.5.6** Owner spot-check flags an issue the builder missed
+  → prompt redesign.
+- **S3.5.7** Pilot iteration count exceeds 3 → escalate to Owner
+  for scope / prompt architecture revision.
+
 ### Phase 4 (labelling)
 - **S4.1** Pass 1 inter-panel disagreement rate > 35% (v2.2
   baseline was ~15% per 3.5C report — 35% is 2× baseline).
@@ -709,6 +859,7 @@ copy v2, apply Scope §3 Additions A-D.
 | Phase 1.5 (solver-sourced) | n/a (Owner-led, external to agent) | n/a | 1-3 Owner solver sessions, 30-90 min each |
 | Phase 2 (assembly QA) | 1 | No | 15 min |
 | Phase 3 (calibration) | 1 × 28 = 28 calls (one per calibration hand) + prompt-only sanity = ~32 | Yes within exam | ~15 min (plus prompt iteration if fail) |
+| Phase 3.5 (pilot review) | 4 panels × ~2 pilot batches = ~8 + 0-2 Pass 2 + 1 builder review = ~10-11 | Yes (panels independent) | ~1-2 hours pipeline + 1-2 hour builder review + 30 min Owner spot-check |
 | Phase 4.1 (Pass 1) | 4 panels × 42 batches = 168 agent calls | Yes (panels independent) | 2-3 hours with parallel panels, 8+ hours serial |
 | Phase 4.2 (Pass 2) | 2 review panels × ~15 disagreement batches = ~30 calls | Yes (panels independent) | 1-2 hours |
 | Phase 4.3 (solver cohort) | 0 agent calls | n/a | Owner-time, parallel with 4.1/4.2 |
