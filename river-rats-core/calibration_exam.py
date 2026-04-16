@@ -72,6 +72,10 @@ _NEW_HARD_ANCHOR_IDS = (
 # ingested into GTO_REVERSAL_HANDS and become 100%-must-pass.
 GROUP_D_REVERSAL_HANDS = {
     'd3688_BB_flop',
+    'd4312_CO_turn',    # Owner pick 2026-04-16: solver-confirmed CHECK (Source B gold-standard)
+    'd9556_BB_flop',    # Owner pick 2026-04-16: Pass 2 solver-confirmed CHECK (Source B)
+    'd2074_BTN_turn',   # Owner pick 2026-04-16: near-bias CHECK label (Source A)
+    'd5466_CO_flop',    # Owner pick 2026-04-16: near-bias CHECK label (Source A)
 }
 
 
