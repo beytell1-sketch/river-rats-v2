@@ -154,8 +154,12 @@ def train(
     Returns the training-report dict (also written to disk).
     """
     # Preflight gate. Default = strict.
+    # When csv_path differs from v2_2_training.csv, pass it to the
+    # preflight so only the target CSV is checked (v2.3+ CSVs are
+    # re-encoded clean; the legacy v2.2 CSV retains known mixed
+    # encoding per ANOMALY-A).
     if not allow_mixed_encoding:
-        _preflight_schema_check()
+        _preflight_schema_check(csv_path=csv_path)
     else:
         logger.warning(
             "--allow-mixed-encoding set: preflight schema check SKIPPED "

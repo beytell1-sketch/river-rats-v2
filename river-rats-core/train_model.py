@@ -34,19 +34,30 @@ from collections import Counter
 # Pre-flight schema gate (ANOMALY-A)
 # =============================================================================
 
-def _preflight_schema_check() -> None:
+def _preflight_schema_check(csv_path: str = None) -> None:
     """
-    Refuse to proceed if any committed training CSV / BP JSONL has
-    non-numeric `street` or `hero_position`. Catches a regression of
-    ANOMALY-A before it corrupts a new model.
+    Refuse to proceed if the training CSV has non-numeric `street` or
+    `hero_position`. Catches a regression of ANOMALY-A before it
+    corrupts a new model.
+
+    If *csv_path* is provided, only that CSV is checked (used by v2.3+
+    trainers that operate on a clean, re-encoded CSV). When *csv_path*
+    is None, falls back to checking the hardcoded v2.2 CSV list (legacy
+    behaviour).
 
     Silent no-op if data files are absent (e.g., stripped-down checkout).
     """
     repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     errors = []
 
+    # Determine which CSVs to check
+    if csv_path is not None:
+        csv_rel_paths = (csv_path,)
+    else:
+        csv_rel_paths = ('training-data/v2_2_training.csv',)
+
     # CSVs (if present)
-    for rel in ('training-data/v2_2_training.csv',):
+    for rel in csv_rel_paths:
         path = os.path.join(repo_root, rel)
         if not os.path.exists(path):
             continue

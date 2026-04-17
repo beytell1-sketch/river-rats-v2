@@ -1,0 +1,45 @@
+{
+  "model_version": "v2_2_port",
+  "provenance": {
+    "recovered_commit": "4b08805",
+    "recovered_script": "review/recovered/train_v2_2_MODEL.py",
+    "port_module": "river-rats-core/train_model_v2_2.py"
+  },
+  "csv_path": "training-data/v2_3_training.csv",
+  "out_model_path": "river-rats-core/models/v2_3_model.json",
+  "allow_mixed_encoding": false,
+  "n_samples": 871,
+  "n_features": 108,
+  "features_raw": 54,
+  "features_attn": 54,
+  "class_distribution": {
+    "RAISE": 48,
+    "CALL": 57,
+    "FOLD": 75,
+    "BET": 547,
+    "CHECK": 144
+  },
+  "class_weights": {
+    "FOLD": 4.0,
+    "BET": 1.0,
+    "CHECK": 3.8,
+    "CALL": 4.0,
+    "RAISE": 3.0
+  },
+  "best_iteration": 103,
+  "holdout_test_accuracy": 0.9428571428571428,
+  "cv_accuracies": [
+    0.9542857142857143,
+    0.9597701149425287,
+    0.9655172413793104,
+    0.9195402298850575,
+    0.9482758620689655
+  ],
+  "cv_mean": 0.9494778325123152,
+  "cv_std": 0.016025069270285134,
+  "hyperparameters": {
+    "n_estimators": 800,
+    "max_depth": 5,
+    "learning_rate": 0.05
+  }
+}
