@@ -1,0 +1,26 @@
+{
+  "model_version": "v2_3_clean",
+  "csv_path": "training-data/v2_3_clean_training.csv",
+  "out_model_path": "river-rats-core/models/v2_3_clean_model.json",
+  "class_weighting": "NONE",
+  "n_samples": 637,
+  "n_features": 108,
+  "class_distribution": {
+    "RAISE": 48,
+    "CALL": 89,
+    "FOLD": 75,
+    "BET": 288,
+    "CHECK": 137
+  },
+  "best_iteration": 157,
+  "holdout_test_accuracy": 0.9453125,
+  "cv_accuracies": [
+    0.9296875,
+    0.921875,
+    0.937007874015748,
+    0.9133858267716536,
+    0.952755905511811
+  ],
+  "cv_mean": 0.9309424212598426,
+  "cv_std": 0.013450983443894008
+}
