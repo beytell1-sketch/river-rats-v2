@@ -1,0 +1,33 @@
+{
+  "model_version": "v2_3_capped",
+  "experiment": "Option A \u2014 RAISE weight capped at 1.50",
+  "csv_path": "/home/rupert/river-rats-v2/training-data/v2_3_iter2_training.csv",
+  "out_model_path": "/home/rupert/river-rats-v2/river-rats-core/models/v2_3_capped_model.json",
+  "n_samples": 688,
+  "n_features": 108,
+  "class_distribution": {
+    "RAISE": 48,
+    "CALL": 57,
+    "FOLD": 75,
+    "BET": 367,
+    "CHECK": 141
+  },
+  "class_weights_balanced": {
+    "FOLD": 1.8333,
+    "CHECK": 0.9735,
+    "CALL": 2.3913,
+    "BET": 0.3754,
+    "RAISE": 1.5
+  },
+  "best_iteration": 113,
+  "holdout_test_accuracy": 0.9130434782608695,
+  "cv_accuracies": [
+    0.9420289855072463,
+    0.9565217391304348,
+    0.9565217391304348,
+    0.9562043795620438,
+    0.9416058394160584
+  ],
+  "cv_mean": 0.9505765365492437,
+  "cv_std": 0.007153985187438066
+}
