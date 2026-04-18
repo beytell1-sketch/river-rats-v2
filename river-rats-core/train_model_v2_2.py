@@ -41,7 +41,7 @@ Rules
 -----
 - Default output path is ``models/v2_2_model_port.json`` — this
   module does NOT overwrite the canonical ``v2_2_model.json``.
-- The 108-column contract (54 raw + 54 ``attn_*``) is a contract
+- The 110-column contract (55 raw + 55 ``attn_*``) is a contract
   with ``evaluate_v2_2.py`` and with ``v2_2_model.json``. Do not
   reorder columns — encoding order is taken from the CSV header.
 """

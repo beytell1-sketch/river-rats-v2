@@ -61,8 +61,8 @@ PILOT_XGB_CONFIG_SUBSET = dict(
 # ═══════════════════════════════════════════════════════════════════
 
 def test_feature_columns_count():
-    """FEATURE_COLUMNS must have exactly 54 entries — the entire pipeline depends on this."""
-    assert len(FEATURE_COLUMNS) == 54
+    """FEATURE_COLUMNS must have exactly 55 entries — the entire pipeline depends on this."""
+    assert len(FEATURE_COLUMNS) == 55
 
 
 def test_action_classes_order():
@@ -94,7 +94,7 @@ def test_build_enriched_record_flags():
     assert result['attention_flags'][FEATURE_COLUMNS[0]] == 0   # untagged
     assert result['attention_flags'][FEATURE_COLUMNS[1]] == 0   # untagged
     assert result['attention_flags'][FEATURE_COLUMNS[2]] == 1   # tagged
-    assert result['n_tagged'] == 52
+    assert result['n_tagged'] == 53
     assert result['label'] == 'CHECK'
 
 
@@ -215,11 +215,11 @@ def _write_temp_csv(tmp_path, n_rows, columns, label_col='label', labels=None):
 
 
 def test_load_feature_csv_shape(tmp_path):
-    """load_feature_csv must return X of (20, 54) and y of (20,) with dtype int32."""
+    """load_feature_csv must return X of (20, 55) and y of (20,) with dtype int32."""
     filepath = _write_temp_csv(str(tmp_path), 20, list(FEATURE_COLUMNS), 'label')
     X, y, col_names = load_feature_csv(filepath, list(FEATURE_COLUMNS), 'label')
 
-    assert X.shape == (20, 54)
+    assert X.shape == (20, 55)
     assert y.shape == (20,)
     assert y.dtype == np.int32
 
@@ -383,24 +383,24 @@ def test_assemble_produces_correct_files(tmp_path, monkeypatch):
     assert len(rows) == 21, f"base.csv should have 1 header + 20 data rows, got {len(rows)}"
     assert len(rows[0]) == 55, f"base.csv should have 55 columns, got {len(rows[0])}"
 
-    # Check pilot_20_attention.csv: 109 columns
+    # Check pilot_20_attention.csv: 111 columns (55 raw + 55 attn + 1 label)
     with open(tmp_path / 'pilot_20_attention.csv') as f:
         reader = csv.reader(f)
         header = next(reader)
-    assert len(header) == 109, f"attention.csv should have 109 columns, got {len(header)}"
+    assert len(header) == 111, f"attention.csv should have 111 columns, got {len(header)}"
 
-    # Check pilot_20_attention_levels.csv: 109 columns
+    # Check pilot_20_attention_levels.csv: 111 columns
     with open(tmp_path / 'pilot_20_attention_levels.csv') as f:
         reader = csv.reader(f)
         header = next(reader)
-    assert len(header) == 109, f"levels.csv should have 109 columns, got {len(header)}"
+    assert len(header) == 111, f"levels.csv should have 111 columns, got {len(header)}"
 
     # Check pilot_20_intentions.csv: 54 + N_tags columns
     with open(tmp_path / 'pilot_20_intentions.csv') as f:
         reader = csv.reader(f)
         header = next(reader)
     n_tags = sum(1 for col in header if col.startswith('intent_'))
-    assert len(header) == 54 + n_tags, f"intentions.csv columns mismatch"
+    assert len(header) == 55 + n_tags, f"intentions.csv columns mismatch"
 
     # Check pilot_20_enriched.jsonl: 20 valid JSON lines
     with open(tmp_path / 'pilot_20_enriched.jsonl') as f:

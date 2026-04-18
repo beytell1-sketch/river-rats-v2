@@ -108,10 +108,8 @@ class TestBridgeWithOracle:
         assert captured, "Failed to reach postflop"
         feat = captured['features']
         arr = GtoOracle.features_from_dict(feat)
-        # gto_model.FEATURE_COLUMNS is 54: Phase 3A promoted features 49-54
-        # (hero_range_percentile, has_showdown_value, villain_fold_equity_estimate,
-        # flush_draw_rank, is_preflop_aggressor, villain_medium_made_pct).
-        assert arr.shape == (54,)
+        # gto_model.FEATURE_COLUMNS is 55: includes board_adjusted_hrp.
+        assert arr.shape == (55,)
         import numpy as np
         assert all(isinstance(v, (int, float, np.floating, np.integer)) for v in arr)
 

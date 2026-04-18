@@ -57,9 +57,11 @@ FEATURE_COLUMNS = (
     "is_preflop_aggressor",
     # feature 54: medium/weak made hand pct in villain range
     "villain_medium_made_pct",
+    # feature 55: board-adjusted hero range percentile
+    "board_adjusted_hrp",
 )
 
-N_FEATURES = len(FEATURE_COLUMNS)  # 54
+N_FEATURES = len(FEATURE_COLUMNS)  # 55
 N_CLASSES = len(ACTION_CLASSES)     # 5
 
 

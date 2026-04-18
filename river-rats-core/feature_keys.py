@@ -81,6 +81,9 @@ class F:
     # Step 15: new feature 54
     VILLAIN_MEDIUM_MADE_PCT = 'villain_medium_made_pct'
 
+    # Step 16: new feature 55 — board-adjusted hero range percentile
+    BOARD_ADJUSTED_HRP = 'board_adjusted_hrp'
+
     # Metadata fields (underscore prefix, not in model)
     META_NUM_OPPONENTS = '_num_opponents'
     META_NUM_RAISES = '_num_raises_this_street'

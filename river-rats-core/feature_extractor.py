@@ -1045,6 +1045,8 @@ FEATURE_COLUMNS = [
     'is_preflop_aggressor',
     # Step 15: feature 54
     'villain_medium_made_pct',
+    # Step 16: feature 55 — board-adjusted hero range percentile
+    'board_adjusted_hrp',
 ]
 
 LABEL_COLUMN = 'action'
@@ -1078,6 +1080,11 @@ def add_derived_features(features: Dict) -> Dict:
         features['spr'] = round(DEFAULT_EFFECTIVE_STACK / pot, 4)
     else:
         features['spr'] = 99.0  # Cap at high value for zero/tiny pots
+
+    # board_adjusted_hrp: collapses HRP when equity is low (board doesn't connect)
+    # Computed later in extract_all_features after hero_range_percentile is set.
+    # Placeholder here; overwritten in extract_all_features Step 16.
+    features['board_adjusted_hrp'] = 0.0
 
     return features
 
@@ -1664,6 +1671,14 @@ def extract_all_features(hand: Dict) -> Dict:
     _hero_pos = features.get('_hero_pos_raw', 'BTN')
     features[F.IS_PREFLOP_AGGRESSOR] = int(
         _opener_pos is not None and _opener_pos.upper() == _hero_pos.upper()
+    )
+
+    # Step 16: board_adjusted_hrp = hero_range_percentile * equity_vs_range
+    # Collapses HRP when equity is low (board doesn't connect with hero hand).
+    features[F.BOARD_ADJUSTED_HRP] = round(
+        features.get(F.HERO_RANGE_PERCENTILE, 0.0)
+        * features.get(F.EQUITY_VS_RANGE, 0.0),
+        6,
     )
 
     return features

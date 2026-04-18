@@ -142,6 +142,10 @@ def _make_feature_dict(**overrides) -> dict:
         'board_favour': 0.0, 'num_callers_to_bet': 0.0, 'facing_raise': 0.0,
         'flush_block_pct': 0.0, 'overcard_outs': 0.0,
         'improvement_probability': 0.0,
+        'hero_range_percentile': 0.5, 'has_showdown_value': 0.0,
+        'villain_fold_equity_estimate': 0.5, 'flush_draw_rank': 0.0,
+        'is_preflop_aggressor': 0.0, 'villain_medium_made_pct': 0.0,
+        'board_adjusted_hrp': 0.275,
     }
     defaults.update(overrides)
     return defaults
@@ -164,7 +168,7 @@ class TestConstants:
         assert N_RAISE_CLASSES == 2
 
     def test_feature_count(self):
-        assert N_FEATURES == 54
+        assert N_FEATURES == 55
 
     def test_feature_columns_match_gto_model(self):
         """Feature columns must be identical to gto_model.py."""
@@ -515,7 +519,7 @@ class TestFeaturesFromDict:
     def test_output_shape(self):
         feat_dict = _make_feature_dict()
         arr = SizingOracle.features_from_dict(feat_dict)
-        assert arr.shape == (54,)
+        assert arr.shape == (55,)
 
     def test_output_dtype(self):
         feat_dict = _make_feature_dict()

@@ -30,10 +30,10 @@ def _make_hand(**overrides):
 
 
 class TestFeatureContract:
-    def test_feature_extractor_has_54_columns(self):
-        # feature_extractor.FEATURE_COLUMNS is the CSV export surface: 54
-        # columns (features 1-54, Phase 3A promotion).
-        assert len(FEATURE_COLUMNS) == 54
+    def test_feature_extractor_has_55_columns(self):
+        # feature_extractor.FEATURE_COLUMNS is the CSV export surface: 55
+        # columns (features 1-55, includes board_adjusted_hrp).
+        assert len(FEATURE_COLUMNS) == 55
 
     def test_v8_features_preserved(self):
         # First 38 features unchanged from v8
@@ -41,26 +41,27 @@ class TestFeatureContract:
 
     def test_gto_model_matches_feature_extractor(self):
         # gto_model, sizing_oracle, train_model, and feature_extractor all
-        # share the same 54-feature surface after Phase 3A promotion.
-        assert len(GTO_COLS) == 54
-        assert list(GTO_COLS[:54]) == list(FEATURE_COLUMNS)
+        # share the same 55-feature surface.
+        assert len(GTO_COLS) == 55
+        assert list(GTO_COLS[:55]) == list(FEATURE_COLUMNS)
         assert GTO_COLS[52] == 'is_preflop_aggressor'
         assert GTO_COLS[53] == 'villain_medium_made_pct'
+        assert GTO_COLS[54] == 'board_adjusted_hrp'
 
     def test_sizing_feature_surface(self):
-        # Sizing model is promoted to 54 features in Phase 3A.
-        assert len(SZ_COLS) == 54
-        assert len(TSM_COLS) == 54
-        # All 54 features of feature_extractor FEATURE_COLUMNS match sizing
+        # Sizing model has 55 features.
+        assert len(SZ_COLS) == 55
+        assert len(TSM_COLS) == 55
+        # All 55 features of feature_extractor FEATURE_COLUMNS match sizing
         assert list(FEATURE_COLUMNS) == list(SZ_COLS)
 
     def test_train_model_tracks_sizing_surface(self):
-        # train_model and sizing model share the same 54-feature surface.
+        # train_model and sizing model share the same 55-feature surface.
         assert list(TM_COLS) == list(SZ_COLS)
 
     def test_n_features_consistent(self):
-        assert GTO_N == 54
-        assert SZ_N == 54
+        assert GTO_N == 55
+        assert SZ_N == 55
 
 
 class TestNumOpponentsExtraction:
@@ -206,6 +207,7 @@ class TestOpenerAwareRanges:
         range_features = {
             'villain_top_pair_plus_pct', 'villain_draw_pct', 'villain_air_pct',
             'villain_range_capped', 'board_favour', 'hero_range_percentile',
+            'board_adjusted_hrp',
         }
         for col in FEATURE_COLUMNS:
             tol = 0.15 if col in range_features else 0.05

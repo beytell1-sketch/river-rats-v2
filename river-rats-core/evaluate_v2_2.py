@@ -13,8 +13,8 @@ Ported from the recovered scripts committed at ``4b08805``:
 
 Inference contract
 ------------------
-- 108 features: 54 raw (via ``feature_extractor.extract_all_features``
-  for FB-40, via ``feat_dict`` for pre-extracted MW-50) + 54 ``attn_*``.
+- 110 features: 55 raw (via ``feature_extractor.extract_all_features``
+  for FB-40, via ``feat_dict`` for pre-extracted MW-50) + 55 ``attn_*``.
 - ``attn_* = 1`` at inference (best-performing strategy; see
   recovered ``eval_FB40_attn_per_feature.py`` ablations).
 - Column order is taken from the training CSV header — do NOT
@@ -27,7 +27,7 @@ Inference contract
 Guards
 ------
 - Track 1 completeness guard: every FB-40 hand must produce a
-  feat_dict with all 54 FEATURE_COLUMNS (re-extraction step).
+  feat_dict with all 55 FEATURE_COLUMNS (re-extraction step).
 - Track 2 dtype guard: every numeric feature must be numeric before
   oracle scoring (rejects residual string leakage like
   ``street='flop'``).

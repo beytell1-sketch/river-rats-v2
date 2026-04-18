@@ -75,13 +75,13 @@ def _mw_style_incomplete_feat_dict():
 
 class TestFeaturesFromDictHardError:
 
-    def test_complete_dict_returns_array_of_54(self):
-        """A complete feat_dict produces a length-54 numpy array without error."""
+    def test_complete_dict_returns_array_of_55(self):
+        """A complete feat_dict produces a length-55 numpy array without error."""
         import numpy as np
         from gto_model import GtoOracle
         feat = _complete_feat_dict()
         arr = GtoOracle.features_from_dict(feat)
-        assert arr.shape == (54,), f"Expected shape (54,), got {arr.shape}"
+        assert arr.shape == (55,), f"Expected shape (55,), got {arr.shape}"
 
     def test_mw_style_incomplete_raises(self):
         """
@@ -200,8 +200,8 @@ class TestValidateFeatDict:
 
 class TestExtractAllFeaturesCompleteness:
 
-    def test_standard_flop_hand_has_all_54_columns(self):
-        """extract_all_features on a normal flop hand returns all 54 FEATURE_COLUMNS."""
+    def test_standard_flop_hand_has_all_55_columns(self):
+        """extract_all_features on a normal flop hand returns all 55 FEATURE_COLUMNS."""
         feat = _complete_feat_dict()
         missing = [col for col in FEATURE_COLUMNS if col not in feat]
         assert not missing, f"extract_all_features missing columns: {missing}"
@@ -273,7 +273,7 @@ class TestDtypeGuard:
         feat['has_flush_draw'] = False
         # Must not raise
         arr = GtoOracle.features_from_dict(feat)
-        assert arr.shape == (54,)
+        assert arr.shape == (55,)
 
     def test_none_value_is_rejected(self):
         """None in a numeric slot must also be caught by the dtype guard."""
