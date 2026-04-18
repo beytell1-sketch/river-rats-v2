@@ -1,0 +1,70 @@
+{
+  "model_version": "v2_3_2",
+  "csv_path": "/home/rupert/river-rats-v2/river-rats-core/../training-data/v2_3_2_training.csv",
+  "out_model_path": "/home/rupert/river-rats-v2/river-rats-core/models/v2_3_2_model.json",
+  "class_weighting": "NONE",
+  "n_samples": 716,
+  "n_features": 110,
+  "class_distribution": {
+    "RAISE": 48,
+    "CALL": 89,
+    "FOLD": 75,
+    "BET": 323,
+    "CHECK": 181
+  },
+  "best_iteration": 138,
+  "holdout_test_accuracy": 0.9027777777777778,
+  "cv_accuracies": [
+    0.9236111111111112,
+    0.9230769230769231,
+    0.9790209790209791,
+    0.9230769230769231,
+    0.958041958041958
+  ],
+  "cv_mean": 0.941365578865579,
+  "cv_std": 0.02315254530134422,
+  "hyperparameters": {
+    "n_estimators": 800,
+    "max_depth": 5,
+    "learning_rate": 0.05,
+    "objective": "multi:softprob",
+    "num_class": 5,
+    "eval_metric": "mlogloss",
+    "use_label_encoder": false,
+    "random_state": 42,
+    "early_stopping_rounds": 50,
+    "verbosity": 0
+  },
+  "per_class": {
+    "FOLD": {
+      "precision": 0.9375,
+      "recall": 1.0,
+      "f1": 0.967741935483871,
+      "support": 15
+    },
+    "CHECK": {
+      "precision": 0.967741935483871,
+      "recall": 0.8333333333333334,
+      "f1": 0.8955223880597015,
+      "support": 36
+    },
+    "CALL": {
+      "precision": 0.7619047619047619,
+      "recall": 0.8888888888888888,
+      "f1": 0.8205128205128205,
+      "support": 18
+    },
+    "BET": {
+      "precision": 0.9142857142857143,
+      "recall": 0.9846153846153847,
+      "f1": 0.9481481481481482,
+      "support": 65
+    },
+    "RAISE": {
+      "precision": 0.8333333333333334,
+      "recall": 0.5,
+      "f1": 0.625,
+      "support": 10
+    }
+  }
+}
