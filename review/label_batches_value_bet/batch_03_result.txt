@@ -1,0 +1,427 @@
+```json
+{
+  "situation_id": "VALUE_BET_3WAY_020",
+  "hand_bucket": "strong_made",
+  "action": "BET",
+  "confidence": "HIGH",
+  "difficulty": 1,
+
+  "reasoning": "This is a strong_made hand — AA overpair on a Ts6s3d2h turn board, beaten only by sets and the specific rare two-pairs. Equity 76.9% with worse_hand_pct 95% means virtually all of villain's continuing range is behind. Both opponents checked back the flop and SB/CO-first-checked the turn showing capped/weak composition (air_pct 49%). At SPR 1.11 with a flush draw live (two spades) and straight draws present, checking risks free cards on a board where every remaining runner-runner can hurt. IP value bet extracts from worse Tx, pocket pairs, and the few draws, and protects vs a river that brings a spade or broadway card. This matches the d3178 anchor pattern (BET AA checked-to at compressed SPR).",
+
+  "intentions_raw": "I want to build the pot with a hand that dominates ~95% of villain's range and deny equity to any backdoor draws or middle-pair holdings that could catch a scary river. Checking squanders value and invites bad turns/rivers for free.",
+  "intentions": ["value_extract", "deny_equity"],
+
+  "street_plan_raw": "Bet turn ~50-66% pot given compressed SPR; if called, bet river on most non-spade non-broadway runouts for value, check back a scary river that brings a flush or straight completer.",
+  "street_plan_tags": ["barrel_value", "give_up_on_complete"],
+
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "villain_top_pair_plus_pct": "CONFIRMED",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_air_pct": "PRIMARY",
+    "villain_medium_made_pct": "CONFIRMED",
+    "is_ip": "PRIMARY",
+    "hero_range_percentile": "CONFIRMED",
+    "villain_fold_equity_estimate": "CONFIRMED",
+    "danger_score": "PRIMARY",
+    "spr": "PRIMARY",
+    "is_strong_made": "CONFIRMED",
+    "worse_hand_pct": "PRIMARY",
+    "villain_checked_back": "CONFIRMED"
+  },
+
+  "tier1_removals": {},
+
+  "proposed_tags": [],
+
+  "alternatives_considered": [
+    "CHECK: rejected — AA on a turn board with draws present at SPR 1.11 must bet. Checking concedes equity to backdoor diamonds/spades and straight draws, leaves thin value against an air-heavy range, and misaligns with the d3178 anchor (BET AA at compressed SPR)."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "VALUE_BET_3WAY_021",
+  "hand_bucket": "strong_made",
+  "action": "BET",
+  "confidence": "HIGH",
+  "difficulty": 1,
+
+  "reasoning": "This is a strong_made hand — AA overpair on a Kd7c2s2h paired turn. Equity 87.7%, worse_hand_pct 97.4%, better_hand_pct only 2.3% (KK/22/K2s). Board is static (rainbow-ish, paired low card) — danger_score 0.23 is low. Villain range is ≥40% TP+ (Kx) and 47% air; betting extracts from every Kx that can't fold and folds out air that has some river equity. At SPR 1.11 this is a commit-sized value bet. IP, checked through, anchor pattern d3178 (BET AA on river checked-to at compressed SPR) applies directly to the turn analog.",
+
+  "intentions_raw": "AA crushes ~97% of villain's continuing range. I bet to extract value from the substantial Kx portion and any pocket pairs/draws, while denying cheap equity realization to air on the river.",
+  "intentions": ["value_extract"],
+
+  "street_plan_raw": "Bet turn around 50-66% pot given SPR 1.11; barrel any non-K, non-trips-completing river for value; slow down if the board pairs again or a K falls.",
+  "street_plan_tags": ["barrel_value", "continue_on_blank"],
+
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_air_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "is_ip": "PRIMARY",
+    "hero_range_percentile": "CONFIRMED",
+    "villain_fold_equity_estimate": "CONFIRMED",
+    "danger_score": "CONFIRMED",
+    "spr": "PRIMARY",
+    "is_strong_made": "CONFIRMED",
+    "worse_hand_pct": "PRIMARY",
+    "villain_checked_back": "CONFIRMED"
+  },
+
+  "tier1_removals": {},
+
+  "proposed_tags": [],
+
+  "alternatives_considered": [
+    "CHECK: rejected — checking AA at compressed SPR on a board where 53% of villain's range is Kx (value target) leaves substantial value uncollected. Trap is incorrect here: villain checked twice, showing they will not build the pot for hero."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "VALUE_BET_3WAY_022",
+  "hand_bucket": "strong_made",
+  "action": "BET",
+  "confidence": "HIGH",
+  "difficulty": 1,
+
+  "reasoning": "This is a strong_made hand — AA overpair on Kd7c2s2h turn. Equity 88.7%, worse_hand_pct 97.0%, better_hand_pct 2.8%. BTN with SB and BB checking to hero; both blinds checked the prior street too. Villain composition: 52% TP+ (mostly Kx that can't fold one street), 48% air. At SPR 1.11 a value bet commits for stacks and extracts from all worse Kx while folding out air that retains some river equity. Matches d3178 BET-AA-at-compressed-SPR anchor.",
+
+  "intentions_raw": "AA is ahead of ~97% of villain's range. I want to build the pot against Kx and charge any backdoor draws before the river.",
+  "intentions": ["value_extract"],
+
+  "street_plan_raw": "Bet turn 50-66% pot; barrel river on blanks, check back if a K or board-pairing card falls.",
+  "street_plan_tags": ["barrel_value", "continue_on_blank"],
+
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_air_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "is_ip": "PRIMARY",
+    "hero_range_percentile": "CONFIRMED",
+    "villain_fold_equity_estimate": "CONFIRMED",
+    "danger_score": "CONFIRMED",
+    "spr": "PRIMARY",
+    "is_strong_made": "CONFIRMED",
+    "worse_hand_pct": "PRIMARY",
+    "villain_checked_back": "CONFIRMED"
+  },
+
+  "tier1_removals": {},
+
+  "proposed_tags": [],
+
+  "alternatives_considered": [
+    "CHECK: rejected — slowplaying AA 3-way at SPR 1.11 when villain has 52% Kx concedes clear value. Villain's second check makes it unlikely they'll bet river."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "VALUE_BET_3WAY_023",
+  "hand_bucket": "strong_made",
+  "action": "BET",
+  "confidence": "HIGH",
+  "difficulty": 1,
+
+  "reasoning": "This is a strong_made hand — AA overpair on Kd7c2s2h turn. Equity 88.5%, worse_hand_pct 97.0%, better_hand_pct 2.8%. BTN IP vs HJ and BB, both of whom checked. Composition: 53% TP+, 47% air. At SPR 1.11 this is a value bet — commit-sized on a dry paired board against a value-heavy continuing range. d3178 anchor pattern.",
+
+  "intentions_raw": "I want to extract value from the large Kx portion of villain's range while I still can, and fold out air before a river brings an ace or scary card that kills my action.",
+  "intentions": ["value_extract"],
+
+  "street_plan_raw": "Bet turn ~50-66% pot; barrel blank rivers, slow down on a K or paired turn-of-board runout.",
+  "street_plan_tags": ["barrel_value", "continue_on_blank"],
+
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_air_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "is_ip": "PRIMARY",
+    "hero_range_percentile": "CONFIRMED",
+    "villain_fold_equity_estimate": "CONFIRMED",
+    "danger_score": "CONFIRMED",
+    "spr": "PRIMARY",
+    "is_strong_made": "CONFIRMED",
+    "worse_hand_pct": "PRIMARY",
+    "villain_checked_back": "CONFIRMED"
+  },
+
+  "tier1_removals": {},
+
+  "proposed_tags": [],
+
+  "alternatives_considered": [
+    "CHECK: rejected — at SPR 1.11 with 88% equity and villain containing 53% Kx, checking leaves stacks uncollected that get in easily via turn bet + river jam."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "VALUE_BET_3WAY_024",
+  "hand_bucket": "strong_made",
+  "action": "BET",
+  "confidence": "HIGH",
+  "difficulty": 1,
+
+  "reasoning": "This is a strong_made hand — AA overpair on Kd7c2s2h turn. Equity 86.9%, worse_hand_pct 97.4%, better_hand_pct 2.3%. BTN vs CO and SB, both checked. Composition: 55% TP+, 45% air. SPR 1.11 means a value bet commits the stacks. d3178 anchor applies.",
+
+  "intentions_raw": "AA is miles ahead; I bet to build the pot against the 55% of villain's range that is Kx or better-than-second-pair and to take it down against air.",
+  "intentions": ["value_extract"],
+
+  "street_plan_raw": "Bet turn 50-66% pot; barrel blank rivers, check back if a K or low pair completes trips/fullhouse risk.",
+  "street_plan_tags": ["barrel_value", "continue_on_blank"],
+
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_air_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "is_ip": "PRIMARY",
+    "hero_range_percentile": "CONFIRMED",
+    "villain_fold_equity_estimate": "CONFIRMED",
+    "danger_score": "CONFIRMED",
+    "spr": "PRIMARY",
+    "is_strong_made": "CONFIRMED",
+    "worse_hand_pct": "PRIMARY",
+    "villain_checked_back": "CONFIRMED"
+  },
+
+  "tier1_removals": {},
+
+  "proposed_tags": [],
+
+  "alternatives_considered": [
+    "CHECK: rejected — the value loss from checking a commit-sized overpair spot is real; villain will not barrel river enough to make trapping profitable given they checked twice."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "VALUE_BET_3WAY_025",
+  "hand_bucket": "strong_made",
+  "action": "BET",
+  "confidence": "HIGH",
+  "difficulty": 1,
+
+  "reasoning": "This is a strong_made hand — AA overpair on Kd7c2s2h turn. Equity 86.3%, worse_hand_pct 97.4%, better_hand_pct 2.3%. CO IP vs SB and BB; both blinds checked the turn. Composition: 56% TP+, 44% air. At SPR 1.11 value bet commits stacks. d3178 anchor.",
+
+  "intentions_raw": "AA crushes ~97% of the range; I bet to extract from the dense Kx fraction and deny showdown equity to air before an ace or fourth suit turns up on the river.",
+  "intentions": ["value_extract"],
+
+  "street_plan_raw": "Bet turn 50-66% pot; barrel blank rivers, slow down on paired or A-hitting runouts.",
+  "street_plan_tags": ["barrel_value", "continue_on_blank"],
+
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_air_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "is_ip": "PRIMARY",
+    "hero_range_percentile": "CONFIRMED",
+    "villain_fold_equity_estimate": "CONFIRMED",
+    "danger_score": "CONFIRMED",
+    "spr": "PRIMARY",
+    "is_strong_made": "CONFIRMED",
+    "worse_hand_pct": "PRIMARY",
+    "villain_checked_back": "CONFIRMED"
+  },
+
+  "tier1_removals": {},
+
+  "proposed_tags": [],
+
+  "alternatives_considered": [
+    "CHECK: rejected — checking AA with 86% equity at SPR 1.11 against a 56% Kx range is a clear value leak. The d3178 anchor specifically rejects CHECK in this structure."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "VALUE_BET_3WAY_026",
+  "hand_bucket": "strong_made",
+  "action": "BET",
+  "confidence": "HIGH",
+  "difficulty": 2,
+
+  "reasoning": "This is a strong_made hand — AA overpair on 9h9c4d2h turn. Equity 71.9%, worse_hand_pct 86.7%. better_hand_pct is 13.1% (9x trips is the main threat), which is meaningful but not enough to turn AA into pot control at SPR 1.11. Composition: 48% TP+ (9x and higher pairs), only 7% air, ~45% weaker pairs/draws in the remainder. The board is paired and two-toned (two hearts) so backdoor flush + straight draws live. Value bet extracts from underpairs (TT-JJ-QQ-KK, 66-88, pocket pairs) that cannot fold one bet and charges flush/gutshot draws. Checking lets a heart or broadway pair come free. BET is correct even with 13% behind — the value from the worse fraction dominates the cost when 9x rarely check-raises.",
+
+  "intentions_raw": "Even allowing for trip 9s, AA beats ~87% of villain's range; I want to bet to charge flush draws, straight draws, and underpairs that call one bet but not two.",
+  "intentions": ["value_extract", "deny_equity"],
+
+  "street_plan_raw": "Bet turn ~50% pot; barrel non-heart non-broadway blanks on river for thinner value, check back if a heart or broadway card completes obvious draws.",
+  "street_plan_tags": ["barrel_value", "give_up_on_complete"],
+
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_air_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "is_ip": "PRIMARY",
+    "hero_range_percentile": "CONFIRMED",
+    "villain_fold_equity_estimate": "CONFIRMED",
+    "danger_score": "PRIMARY",
+    "spr": "PRIMARY",
+    "is_strong_made": "CONFIRMED",
+    "worse_hand_pct": "PRIMARY",
+    "better_hand_pct": "CONFIRMED",
+    "villain_checked_back": "CONFIRMED"
+  },
+
+  "tier1_removals": {},
+
+  "proposed_tags": [],
+
+  "alternatives_considered": [
+    "CHECK: rejected — pot control argument has some merit given 13% trips risk, but SPR 1.11 means hero is committed anyway if villain leads river. Checking gives free cards to flush/straight draws and passes up value from underpairs. BET is better EV.",
+    "CHECK-trap: rejected — villain checked twice, so no aggression to induce. Trap fails when villain lacks a bluffing range."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "VALUE_BET_3WAY_027",
+  "hand_bucket": "strong_made",
+  "action": "BET",
+  "confidence": "HIGH",
+  "difficulty": 2,
+
+  "reasoning": "This is a strong_made hand — AA overpair on 9h9c4d2h turn. Equity 71.6%, worse_hand_pct 86.7%, better_hand_pct 13.1% (9x trips). BTN IP vs HJ and BB, both checked. Composition: 53% TP+, 9% air, ~38% weaker made/pocket pairs and draws. At SPR 1.11 value bet extracts from underpairs, middle pairs, and charges heart flush draws. Same logic as 026 — 13% trips risk is insufficient to flip a clear value bet to CHECK when most equity comes from non-trips holdings and the board has backdoor draws that benefit from protection.",
+
+  "intentions_raw": "AA beats ~87% of villain's range. I bet to collect value from underpairs and middle pairs and to charge the heart flush draw and straight draws before they realize equity for free.",
+  "intentions": ["value_extract", "deny_equity"],
+
+  "street_plan_raw": "Bet turn ~50% pot; barrel blank rivers for thin value, check back heart/broadway draw-completers.",
+  "street_plan_tags": ["barrel_value", "give_up_on_complete"],
+
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_air_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "is_ip": "PRIMARY",
+    "hero_range_percentile": "CONFIRMED",
+    "villain_fold_equity_estimate": "CONFIRMED",
+    "danger_score": "PRIMARY",
+    "spr": "PRIMARY",
+    "is_strong_made": "CONFIRMED",
+    "worse_hand_pct": "PRIMARY",
+    "better_hand_pct": "CONFIRMED",
+    "villain_checked_back": "CONFIRMED"
+  },
+
+  "tier1_removals": {},
+
+  "proposed_tags": [],
+
+  "alternatives_considered": [
+    "CHECK: rejected — trips risk exists but 87% worse, SPR 1.11, and live backdoor draws all push to BET. Checking fails to deny equity to flush draws.",
+    "CHECK-trap: rejected — villain checked twice and is not constructing a bluffing range to trap into."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "VALUE_BET_3WAY_028",
+  "hand_bucket": "strong_made",
+  "action": "BET",
+  "confidence": "HIGH",
+  "difficulty": 2,
+
+  "reasoning": "This is a strong_made hand — AA overpair on 9h9c4d2h turn. Equity 74.4%, worse_hand_pct 83.5%, better_hand_pct 16.2% (9x trips fraction slightly higher because villain_range_capped=0 here — CO opener's range includes more premium-adjacent holdings like TT/JJ that don't threaten AA). Composition: 37% TP+, 17% air, ~46% weaker pairs/draws. At SPR 1.11 with hearts and straights live, bet extracts from dense underpair fraction and charges draws. 16% behind is notable but the other 84% contains enough value-targets to make BET clearly +EV.",
+
+  "intentions_raw": "AA is ahead of 84% of villain's range. I want value from the big underpair/middle-pair fraction and I want to deny cheap equity to the heart flush and straight draws.",
+  "intentions": ["value_extract", "deny_equity"],
+
+  "street_plan_raw": "Bet turn around 50% pot; barrel blank rivers for value, check back draw-completers (heart, 3, 5, 6).",
+  "street_plan_tags": ["barrel_value", "give_up_on_complete"],
+
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "villain_top_pair_plus_pct": "CONFIRMED",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_air_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "is_ip": "PRIMARY",
+    "hero_range_percentile": "CONFIRMED",
+    "villain_fold_equity_estimate": "CONFIRMED",
+    "danger_score": "PRIMARY",
+    "spr": "PRIMARY",
+    "is_strong_made": "CONFIRMED",
+    "worse_hand_pct": "PRIMARY",
+    "better_hand_pct": "CONFIRMED",
+    "villain_checked_back": "CONFIRMED"
+  },
+
+  "tier1_removals": {},
+
+  "proposed_tags": [],
+
+  "alternatives_considered": [
+    "CHECK: rejected — 16% trips risk is the highest of the 9-high group but still leaves 84% worse. At SPR 1.11 with live draws, BET remains higher EV than pot control.",
+    "CHECK-trap: rejected — both opponents checked, no aggression to trap against."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "VALUE_BET_3WAY_029",
+  "hand_bucket": "strong_made",
+  "action": "BET",
+  "confidence": "HIGH",
+  "difficulty": 2,
+
+  "reasoning": "This is a strong_made hand — AA overpair on 9h9c4d2h turn. Equity 71.0%, worse_hand_pct 83.7%, better_hand_pct 16.0% (9x trips). CO IP vs SB and BB, both checked. Composition: 56% TP+, 11% air, ~33% weaker pairs/draws. Same structural spot as 026-028: AA at compressed SPR on a paired wet-ish board, checked to hero. Value bet charges draws and extracts from underpairs. Trips risk at 16% is not decisive because (a) villain rarely check-raises at SPR 1.11, and (b) the worse-hand value dominates the pot-control argument.",
+
+  "intentions_raw": "I'm ahead of 84% of the range. I want to bet to extract value from underpairs/middle pairs and charge the heart flush + gutshot straight draws.",
+  "intentions": ["value_extract", "deny_equity"],
+
+  "street_plan_raw": "Bet turn ~50% pot; barrel blank rivers, give up on obvious draw-completers.",
+  "street_plan_tags": ["barrel_value", "give_up_on_complete"],
+
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_air_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "is_ip": "PRIMARY",
+    "hero_range_percentile": "CONFIRMED",
+    "villain_fold_equity_estimate": "CONFIRMED",
+    "danger_score": "PRIMARY",
+    "spr": "PRIMARY",
+    "is_strong_made": "CONFIRMED",
+    "worse_hand_pct": "PRIMARY",
+    "better_hand_pct": "CONFIRMED",
+    "villain_checked_back": "CONFIRMED"
+  },
+
+  "tier1_removals": {},
+
+  "proposed_tags": [],
+
+  "alternatives_considered": [
+    "CHECK: rejected — trips risk 16% with SPR 1.11 doesn't justify CHECK when 56% of villain's range is one-pair value target and the board has live flush/straight draws. BET is higher EV.",
+    "CHECK-trap: rejected — villain checked twice, so no bluff-catching opportunity to induce."
+  ]
+}
+```

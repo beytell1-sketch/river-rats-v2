@@ -1,0 +1,388 @@
+```json
+{
+  "situation_id": "VALUE_BET_3WAY_030",
+  "hand_bucket": "strong_made",
+  "action": "BET",
+  "confidence": "HIGH",
+  "difficulty": 1,
+
+  "reasoning": "This is a strong_made hand — AA is an overpair on a paired 994 turn with two hearts, and hero's equity is 69.77% with better_hand_pct only 16.0% and worse_hand_pct 83.7%. Both opponents checked the turn (villain_checked_back=1, villain_aggression_count=0), showing weakness; villain_air_pct=0.094 but villain_top_pair_plus_pct=0.531 reflects a paired-board range that scoops 9x and overpairs into the TP+ bucket — hero still dominates most of it at worse_hand_pct 0.84. SPR 1.11 means betting commits stacks; checking back gives free cards to the ~9% draws and the two non-zero hearts that could pick up a river flush draw. Clear value BET in IP at compressed SPR, matching the d3178 anchor pattern (AA checked-to at compressed SPR = BET).",
+
+  "intentions_raw": "I have an overpair that beats 84% of villain's continuing range. At SPR ~1.1 the pot is effectively an all-in decision, and I want worse overpairs, pocket pairs, Ax/Kx with equity, and hearts to pay me off rather than realize free equity against my two red cards.",
+  "intentions": ["value_extract"],
+
+  "street_plan_raw": "Bet turn for value at compressed SPR, call off on any brick river given stacks are already committed; only slow down if a heart completes and villain jams into me.",
+  "street_plan_tags": ["barrel_value", "continue_on_blank"],
+
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "worse_hand_pct": "PRIMARY",
+    "better_hand_pct": "PRIMARY",
+    "villain_top_pair_plus_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_air_pct": "CONFIRMED",
+    "villain_fold_equity_estimate": "CONFIRMED",
+    "is_ip": "PRIMARY",
+    "spr": "PRIMARY",
+    "villain_checked_back": "PRIMARY",
+    "danger_score": "CONFIRMED",
+    "hero_range_percentile": "CONFIRMED"
+  },
+
+  "tier1_removals": {},
+
+  "proposed_tags": [],
+
+  "alternatives_considered": [
+    "CHECK: rejected — with 69.77% equity, IP, both opponents showing weakness, and SPR 1.1 (stacks committed), checking back surrenders value to the ~9% air and lets the two hearts on board free-roll river flush equity. The d3178 anchor is explicit that AA checked-to at compressed SPR is a BET."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "VALUE_BET_3WAY_031",
+  "hand_bucket": "strong_made",
+  "action": "BET",
+  "confidence": "HIGH",
+  "difficulty": 1,
+
+  "reasoning": "This is a strong_made hand — AA overpair under the K on Kh9d3c2h turn. Equity vs range is 70.97% with better_hand_pct 6.3% and worse_hand_pct 93.4%, i.e. hero beats nearly everything villain continues with. The composition triple shows villain_top_pair_plus_pct 0.165 (<20% 'thin on value' per KB 1.9), villain_air_pct 0.111, villain_medium_made_pct/remainder ~0.72 — the continuing range is dominated by second-pair / underpairs / draws / weak Kx that AA crushes. Action history has villain_aggression_count=1 with villain_checked_back=1 (flop bet then checked turn), a turn-weakness signal. At SPR 1.11 the bet is essentially a geometric all-in, and this is the d3178 anchor pattern: AA checked-to at compressed SPR = BET.",
+
+  "intentions_raw": "AA beats 93% of villain's continuing range on this K-high turn. I want Kx, 9x, and small pocket pairs with showdown value to pay me off, and draws to pay the wrong price. Villain bet flop and gave up turn — that's exactly when I extract.",
+  "intentions": ["value_extract"],
+
+  "street_plan_raw": "Bet turn for value; at compressed SPR I'm committed to calling or jamming any brick river, only slowing if a scary runout hits and villain suddenly jams.",
+  "street_plan_tags": ["barrel_value", "continue_on_blank"],
+
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "worse_hand_pct": "PRIMARY",
+    "better_hand_pct": "PRIMARY",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_medium_made_pct": "CONFIRMED",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_air_pct": "CONFIRMED",
+    "villain_fold_equity_estimate": "CONFIRMED",
+    "spr": "PRIMARY",
+    "villain_checked_back": "PRIMARY",
+    "villain_aggression_count": "CONFIRMED",
+    "danger_score": "CONFIRMED",
+    "hero_range_percentile": "CONFIRMED",
+    "is_ip": "CONFIRMED"
+  },
+
+  "tier1_removals": {},
+
+  "proposed_tags": [],
+
+  "alternatives_considered": [
+    "CHECK: rejected — OOP pot control would apply if villain's range were heavy with Kx+ (≥40% TP+ bucket). Here villain_top_pair_plus_pct is only 0.165 (thin on value) and worse_hand_pct is 93.4%. Checking surrenders value at compressed SPR with a hand that is essentially top of range."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "VALUE_BET_3WAY_032",
+  "hand_bucket": "strong_made",
+  "action": "BET",
+  "confidence": "HIGH",
+  "difficulty": 1,
+
+  "reasoning": "Strong_made — AA overpair under the K on Kh9d3c2h turn, OOP in BB vs HJ and BTN. Equity 70.80% with better_hand_pct 8.7% and worse_hand_pct 90.4%. Composition: villain_top_pair_plus_pct 0.169 (<20% 'thin on value'), villain_air_pct 0.106, leaving ~72% medium/weak made and draws that AA beats. Villain bet a prior street and checked back the turn (villain_aggression_count=1, villain_checked_back=1) — turn weakness signal. SPR 1.11 means a turn bet is geometrically committing. This is the d3178 pattern: AA checked-to at compressed SPR = BET, and the OOP penalty is insufficient when worse_hand_pct ≥ 90% and villain_TP+ is in the <20% bucket (KB Example 6 framework).",
+
+  "intentions_raw": "My overpair beats 90%+ of villain's range on a turn where they showed weakness. I want worse Kx, 9x, pocket pairs, and draws to pay; checking back after a flop bet means they're mostly giving up, and at SPR 1.1 I can't afford to check and let hearts/combo draws free-roll.",
+  "intentions": ["value_extract"],
+
+  "street_plan_raw": "Bet turn for value; stacks are effectively committed, so I'm calling any brick river jam and only slowing down if a truly scary runout (heart flush, straight-completing card) changes the composition.",
+  "street_plan_tags": ["barrel_value", "continue_on_blank"],
+
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "worse_hand_pct": "PRIMARY",
+    "better_hand_pct": "PRIMARY",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_medium_made_pct": "CONFIRMED",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_air_pct": "CONFIRMED",
+    "villain_fold_equity_estimate": "CONFIRMED",
+    "spr": "PRIMARY",
+    "villain_checked_back": "PRIMARY",
+    "villain_aggression_count": "CONFIRMED",
+    "danger_score": "CONFIRMED",
+    "hero_range_percentile": "CONFIRMED",
+    "is_ip": "CONFIRMED"
+  },
+
+  "tier1_removals": {},
+
+  "proposed_tags": [],
+
+  "alternatives_considered": [
+    "CHECK: rejected — OOP pot control applies when villain_TP+ is ≥40%. Here it's 0.169 (thin on value) with worse_hand_pct 90.4%. Per Example 6, when villain_TP+ is in the <20% bucket and worse_hand_pct is ≥90% on a static board, the OOP default flips to BET."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "VALUE_BET_3WAY_033",
+  "hand_bucket": "strong_made",
+  "action": "BET",
+  "confidence": "HIGH",
+  "difficulty": 1,
+
+  "reasoning": "Strong_made — AA overpair on Kh9d3c2h turn, BB OOP vs CO and BTN. Equity 71.00% with better_hand_pct 10.1% and worse_hand_pct 89.2%. Composition: villain_top_pair_plus_pct 0.165 (<20% 'thin on value'), villain_air_pct 0.111, remainder ~72% medium/weak made hands AA beats. Villain bet a prior street then checked turn (villain_aggression_count=1, villain_checked_back=1). SPR 1.11 commits stacks. Same d3178 / Example 6 pattern as 031/032 — AA checked-to at compressed SPR with thin-on-value villain composition is a BET, OOP notwithstanding.",
+
+  "intentions_raw": "AA beats ~89% of this range, villains checked turn after flop aggression, SPR 1.1 means my bet is essentially all-in. I want worse Kx, 9x, underpairs, and any remaining draws to put money in; checking leaves too much value behind and gives free cards on a board with heart / straight outs still live.",
+  "intentions": ["value_extract"],
+
+  "street_plan_raw": "Bet turn for value at committed SPR; call a jam, jam a raise, only slow down if a heart / straight card completes and villain leads the river.",
+  "street_plan_tags": ["barrel_value", "continue_on_blank"],
+
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "worse_hand_pct": "PRIMARY",
+    "better_hand_pct": "PRIMARY",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_medium_made_pct": "CONFIRMED",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_air_pct": "CONFIRMED",
+    "villain_fold_equity_estimate": "CONFIRMED",
+    "spr": "PRIMARY",
+    "villain_checked_back": "PRIMARY",
+    "villain_aggression_count": "CONFIRMED",
+    "danger_score": "CONFIRMED",
+    "hero_range_percentile": "CONFIRMED",
+    "is_ip": "CONFIRMED"
+  },
+
+  "tier1_removals": {},
+
+  "proposed_tags": [],
+
+  "alternatives_considered": [
+    "CHECK: rejected — same reasoning as 031/032. OOP pot control requires a ≥40% TP+ villain composition; 0.165 does not qualify and 89% worse_hand_pct makes BET the clear value play at compressed SPR."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "VALUE_BET_3WAY_034",
+  "hand_bucket": "strong_made",
+  "action": "BET",
+  "confidence": "HIGH",
+  "difficulty": 2,
+
+  "reasoning": "Strong_made — AA overpair on a paired JcJd2h3c turn, BB OOP vs HJ and BTN. Equity 74.50% with better_hand_pct 9.3% and worse_hand_pct 89.9% — AA is near the top of hero's own range and dominates most of villain's continuing range. Composition: villain_top_pair_plus_pct 0.430 (≥40% 'meaningful value density' — this reflects the paired-J board folding Jx and boats into TP+), villain_air_pct 0.549 (very high), villain_medium_made_pct/remainder ~0.02. The air is large, TP+ is mostly Jx (not all full houses or better), and worse_hand_pct 0.899 confirms AA still dominates. danger_score 0.53 is elevated but board is mostly static on the turn. Villain bet a prior street and checked turn (villain_aggression_count=1, villain_checked_back=1). SPR 1.11 — d3178 anchor territory. Bet gets value from underpairs, 22/33 (now boats — caveat), Ax with showdown value, and denies equity to the air fraction. The JxX range is small enough vs worse_hand_pct 0.899 to make betting clearly +EV.",
+
+  "intentions_raw": "AA beats ~90% of villain's range even on a paired J board — the 43% TP+ is mostly Jx, not full houses, and worse_hand_pct 0.9 proves it. I want the 55% air plus underpairs to fold or pay off, and I can't afford to check at SPR 1.1 when stacks are about to go in.",
+  "intentions": ["value_extract", "deny_equity"],
+
+  "street_plan_raw": "Bet turn for value; call a jam, and on a blank river jam for remaining stack. Slow down only if the turn bet gets raised by a passive player who'd never raise without Jx+.",
+  "street_plan_tags": ["barrel_value", "continue_on_blank"],
+
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "worse_hand_pct": "PRIMARY",
+    "better_hand_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_top_pair_plus_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_fold_equity_estimate": "CONFIRMED",
+    "spr": "PRIMARY",
+    "villain_checked_back": "PRIMARY",
+    "villain_aggression_count": "CONFIRMED",
+    "danger_score": "CONFIRMED",
+    "hero_range_percentile": "CONFIRMED",
+    "is_ip": "CONFIRMED"
+  },
+
+  "tier1_removals": {},
+
+  "proposed_tags": [],
+
+  "alternatives_considered": [
+    "CHECK: rejected — villain_top_pair_plus_pct is 0.430 but worse_hand_pct is 0.899, meaning the Jx in the TP+ bucket is offset by how much weaker stuff AA beats. At compressed SPR with 74.5% equity, checking wastes value against a range that's 55% air plus underpairs.",
+    "RAISE: not applicable, facing_bet=0 and no bet to raise."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "VALUE_BET_3WAY_035",
+  "hand_bucket": "strong_made",
+  "action": "BET",
+  "confidence": "HIGH",
+  "difficulty": 2,
+
+  "reasoning": "Strong_made — AA overpair on paired JcJd2h3c turn, BB OOP vs CO and BTN. Equity 73.25% with better_hand_pct 12.2% and worse_hand_pct 87.0%. Composition: villain_top_pair_plus_pct 0.404 (≥40% bucket — dominated by Jx on the paired board), villain_air_pct 0.580 (very high), remainder ~2%. worse_hand_pct 0.870 confirms that despite the TP+ label, AA still dominates a large portion of the range because Jx (trips) is a small combo count relative to the entire TP+ bucket which here includes overpairs below AA. Villain bet prior street, checked turn (villain_aggression_count=1, villain_checked_back=1). SPR 1.11. Same d3178 pattern — AA at compressed SPR checked-to is a BET; the big air fraction and dominated underpairs make value extraction clear.",
+
+  "intentions_raw": "AA beats 87% of this range, the air fraction is 58%, and SPR 1.1 means I can't check and expect to realize equity cleanly. I bet to get value from underpairs, Ax with showdown, and air that folds, before a scary river can change anything.",
+  "intentions": ["value_extract", "deny_equity"],
+
+  "street_plan_raw": "Bet turn for value; commit stacks on brick rivers; slow down only if passive villain check-raises (signal of Jx+).",
+  "street_plan_tags": ["barrel_value", "continue_on_blank"],
+
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "worse_hand_pct": "PRIMARY",
+    "better_hand_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_top_pair_plus_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_fold_equity_estimate": "CONFIRMED",
+    "spr": "PRIMARY",
+    "villain_checked_back": "PRIMARY",
+    "villain_aggression_count": "CONFIRMED",
+    "danger_score": "CONFIRMED",
+    "hero_range_percentile": "CONFIRMED",
+    "is_ip": "CONFIRMED"
+  },
+
+  "tier1_removals": {},
+
+  "proposed_tags": [],
+
+  "alternatives_considered": [
+    "CHECK: rejected — with 87% worse_hand_pct, 58% air in villain's range, and compressed SPR, checking surrenders value and lets villain's air realize equity for free. The TP+ number (0.404) looks heavy but is offset by worse_hand_pct remaining ≥87%."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "VALUE_BET_3WAY_036",
+  "hand_bucket": "strong_made",
+  "action": "BET",
+  "confidence": "HIGH",
+  "difficulty": 2,
+
+  "reasoning": "Strong_made — AA overpair on paired JcJd2h3c turn, SB OOP vs CO and BTN. Equity 71.10% with better_hand_pct 13.2% and worse_hand_pct 86.5%. Composition is identical to 035: villain_top_pair_plus_pct 0.404, villain_air_pct 0.580, ~2% remainder. Villain bet previously, checked turn (villain_aggression_count=1, villain_checked_back=1). SPR 1.11 — geometric commit. Even the worst of the three same-board variants, AA still dominates 86.5% of the continuing range, villain is 58% air, and the d3178 anchor mandates a BET at compressed SPR with AA checked-to. SB is the deepest OOP seat 3-way, but the composition triple + SPR override the positional default (KB Example 6 framework).",
+
+  "intentions_raw": "AA beats 86.5% of villain's range, villain showed weakness by checking turn, and SPR 1.1 compresses the decision into essentially all-in. I bet to get value from the underpairs/Jx and deny equity to the 58% air fraction.",
+  "intentions": ["value_extract", "deny_equity"],
+
+  "street_plan_raw": "Bet turn; call or jam brick rivers; slow down only on explicit raise from a passive villain.",
+  "street_plan_tags": ["barrel_value", "continue_on_blank"],
+
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "worse_hand_pct": "PRIMARY",
+    "better_hand_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_top_pair_plus_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_fold_equity_estimate": "CONFIRMED",
+    "spr": "PRIMARY",
+    "villain_checked_back": "PRIMARY",
+    "villain_aggression_count": "CONFIRMED",
+    "danger_score": "CONFIRMED",
+    "hero_range_percentile": "CONFIRMED",
+    "is_ip": "CONFIRMED"
+  },
+
+  "tier1_removals": {},
+
+  "proposed_tags": [],
+
+  "alternatives_considered": [
+    "CHECK: rejected — same logic as 034/035. SB OOP position amplifies the positional penalty slightly, but composition (58% air, worse_hand_pct 86.5%) and SPR 1.1 make BET the clear value action. Per KB Example 6, when equity ≥70% and villain_TP+ is offset by large air, OOP checks only if equity is marginal."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "VALUE_BET_3WAY_038",
+  "hand_bucket": "strong_made",
+  "action": "BET",
+  "confidence": "MEDIUM",
+  "difficulty": 2,
+
+  "reasoning": "Strong_made — AA overpair on a monotone Qs5s7s2h turn, SB OOP vs CO and BTN. Hero holds AhAd (no spade blocker). Equity has dropped to 56.67% — typical monotone compression — with better_hand_pct 11.5% and worse_hand_pct 88.2%. Composition: villain_top_pair_plus_pct 0.165 (<20% 'thin on value'), villain_air_pct 0.461, villain_draw_pct ~0 on turn (draws already in/out), remainder ~37% medium/weak made. danger_score 0.60, board_favour +0.13 (slightly favours hero's preflop range). Villain bet a prior street, checked turn (villain_aggression_count=1, villain_checked_back=1). SPR 1.11 commits stacks. Key: the monotone board is scary but any made flush would typically lead turn 3-way; villain checking back signals no flush yet (a flush would not check this board multiway). The composition shows 46% air and 17% TP+, and worse_hand_pct is 88%. At compressed SPR, checking and letting spade rivers free-roll is worse than betting now to charge non-spade draws and hope flushes slow-played, then re-evaluate on river.",
+
+  "reasoning_cont": "This is the marginal hand in the batch — without a spade blocker, any AsXs villain hand already beats AA. But compositionally the flush combos are a minority of villain's range, and the checking-back signal reinforces that. BET is correct but MEDIUM confidence reflects the flush-card exposure.",
+
+  "intentions_raw": "Even on a monotone board, AA beats 88% of villain's continuing range and they showed weakness by checking turn. I bet to get value from worse Qx, 7x, underpairs, and to charge one-card flush draws a bad price; with SPR 1.1 I'm effectively committing, and checking surrenders too much equity on a board where any spade kills me.",
+  "intentions": ["value_extract", "deny_equity"],
+
+  "street_plan_raw": "Bet turn to charge draws and get value from worse made hands; brick non-spade river, commit; spade river, check and evaluate (likely check-fold to a large jam).",
+  "street_plan_tags": ["bet_protect_evaluate", "give_up_on_complete"],
+
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "worse_hand_pct": "PRIMARY",
+    "better_hand_pct": "PRIMARY",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_medium_made_pct": "CONFIRMED",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_fold_equity_estimate": "CONFIRMED",
+    "spr": "PRIMARY",
+    "villain_checked_back": "PRIMARY",
+    "villain_aggression_count": "CONFIRMED",
+    "danger_score": "PRIMARY",
+    "hero_range_percentile": "CONFIRMED",
+    "is_ip": "CONFIRMED"
+  },
+
+  "tier1_removals": {},
+
+  "proposed_tags": [],
+
+  "alternatives_considered": [
+    "CHECK: rejected but closer than other hands in the batch — the monotone board and no-spade blocker argue for pot control. Overridden because worse_hand_pct is 88%, villain_TP+ is only 0.165 (thin on value), and compressed SPR 1.1 means 'pot control' isn't really available — a checked turn becomes a river decision for stacks anyway. Better to bet now while villain still has air to fold and worse pairs to call."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "VALUE_BET_3WAY_040",
+  "hand_bucket": "strong_made",
+  "action": "BET",
+  "confidence": "HIGH",
+  "difficulty": 1,
+
+  "reasoning": "Strong_made — AA overpair on a dry, disconnected Ts6s3d2h turn, SB OOP vs CO and BTN. Equity 74.88% with better_hand_pct 4.5% and worse_hand_pct 95.2% — AA is at the top of hero's range and crushes villain's continuing range. Composition: villain_top_pair_plus_pct 0.213 (~20% bucket), villain_air_pct 0.493, remainder ~29% medium/weak made hands AA beats. danger_score 0.38, board_favour +0.09 (slight hero edge). Villain bet previously, checked turn (villain_aggression_count=1, villain_checked_back=1). SPR 1.11 — geometric commit. With worse_hand_pct 0.952, this is about as clear a value bet as AA gets in this batch: checking surrenders equity to 49% air and lets 8 / 9 / spade / club backdoor turn→river draws realize free equity. d3178 anchor pattern.",
+
+  "intentions_raw": "AA beats 95% of villain's range on a dry turn where villain showed weakness. I bet to get value from Tx, 6x, underpairs, and to fold out 49% air; SPR 1.1 means this is essentially an all-in decision that I want to make while I'm still the one representing strength.",
+  "intentions": ["value_extract"],
+
+  "street_plan_raw": "Bet turn for value; jam or call any brick river; only slow down if an obvious draw-completing card falls and villain leads big (rare given action history).",
+  "street_plan_tags": ["barrel_value", "continue_on_blank"],
+
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "worse_hand_pct": "PRIMARY",
+    "better_hand_pct": "PRIMARY",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_medium_made_pct": "CONFIRMED",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_fold_equity_estimate": "CONFIRMED",
+    "spr": "PRIMARY",
+    "villain_checked_back": "PRIMARY",
+    "villain_aggression_count": "CONFIRMED",
+    "danger_score": "CONFIRMED",
+    "hero_range_percentile": "CONFIRMED",
+    "is_ip": "CONFIRMED"
+  },
+
+  "tier1_removals": {},
+
+  "proposed_tags": [],
+
+  "alternatives_considered": [
+    "CHECK: rejected — 95.2% worse_hand_pct, 49% villain air, dry board, compressed SPR. There is no reasonable case for pot control when AA dominates essentially the entire continuing range and checking gives away both fold equity on air and value from worse pairs."
+  ]
+}
+```

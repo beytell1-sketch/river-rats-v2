@@ -1,0 +1,342 @@
+--- HAND: VALUE_BET_3WAY_030 ---
+Situation ID: VALUE_BET_3WAY_030
+Hero cards: AhAd
+Board: 9h9c4d2h
+Street: turn
+Hero position: CO
+Villain positions: HJ, BB
+Num opponents: 2
+Pot: 90.0
+To call: 0.0
+Facing bet: 0
+Action history: BB check, HJ check, CO ???
+
+Key features:
+  raw_equity: 0.6977
+  equity_vs_range: 0.6977
+  pot_odds: 0.0000
+  is_ip: 1
+  hand_category: 10
+  is_made_hand: 1
+  is_strong_made: 1
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.2300
+  spr: 1.1111
+  villain_top_pair_plus_pct: 0.5312
+  villain_air_pct: 0.0938
+  villain_range_capped: 1
+  board_favour: -0.2312
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 0
+  villain_checked_back: 1
+  better_hand_pct: 0.1596
+  worse_hand_pct: 0.8373
+
+--- HAND: VALUE_BET_3WAY_031 ---
+Situation ID: VALUE_BET_3WAY_031
+Hero cards: AhAd
+Board: Kh9d3c2h
+Street: turn
+Hero position: SB
+Villain positions: CO, BTN
+Num opponents: 2
+Pot: 90.0
+To call: 0.0
+Facing bet: 0
+Action history: SB ???
+
+Key features:
+  raw_equity: 0.7097
+  equity_vs_range: 0.7097
+  pot_odds: 0.0000
+  is_ip: 0
+  hand_category: 9
+  is_made_hand: 1
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.3800
+  spr: 1.1111
+  villain_top_pair_plus_pct: 0.1653
+  villain_air_pct: 0.1113
+  villain_range_capped: 0
+  board_favour: 0.1347
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 1
+  villain_checked_back: 1
+  better_hand_pct: 0.0629
+  worse_hand_pct: 0.9341
+
+--- HAND: VALUE_BET_3WAY_032 ---
+Situation ID: VALUE_BET_3WAY_032
+Hero cards: AhAd
+Board: Kh9d3c2h
+Street: turn
+Hero position: BB
+Villain positions: HJ, BTN
+Num opponents: 2
+Pot: 90.0
+To call: 0.0
+Facing bet: 0
+Action history: BB ???
+
+Key features:
+  raw_equity: 0.7080
+  equity_vs_range: 0.7080
+  pot_odds: 0.0000
+  is_ip: 0
+  hand_category: 9
+  is_made_hand: 1
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.3800
+  spr: 1.1111
+  villain_top_pair_plus_pct: 0.1688
+  villain_air_pct: 0.1055
+  villain_range_capped: 0
+  board_favour: 0.1312
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 1
+  villain_checked_back: 1
+  better_hand_pct: 0.0866
+  worse_hand_pct: 0.9043
+
+--- HAND: VALUE_BET_3WAY_033 ---
+Situation ID: VALUE_BET_3WAY_033
+Hero cards: AhAd
+Board: Kh9d3c2h
+Street: turn
+Hero position: BB
+Villain positions: CO, BTN
+Num opponents: 2
+Pot: 90.0
+To call: 0.0
+Facing bet: 0
+Action history: BB ???
+
+Key features:
+  raw_equity: 0.7100
+  equity_vs_range: 0.7100
+  pot_odds: 0.0000
+  is_ip: 0
+  hand_category: 9
+  is_made_hand: 1
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.3800
+  spr: 1.1111
+  villain_top_pair_plus_pct: 0.1653
+  villain_air_pct: 0.1113
+  villain_range_capped: 0
+  board_favour: 0.1347
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 1
+  villain_checked_back: 1
+  better_hand_pct: 0.1008
+  worse_hand_pct: 0.8915
+
+--- HAND: VALUE_BET_3WAY_034 ---
+Situation ID: VALUE_BET_3WAY_034
+Hero cards: AhAd
+Board: JcJd2h3c
+Street: turn
+Hero position: BB
+Villain positions: HJ, BTN
+Num opponents: 2
+Pot: 90.0
+To call: 0.0
+Facing bet: 0
+Action history: BB ???
+
+Key features:
+  raw_equity: 0.7450
+  equity_vs_range: 0.7450
+  pot_odds: 0.0000
+  is_ip: 0
+  hand_category: 10
+  is_made_hand: 1
+  is_strong_made: 1
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.5300
+  spr: 1.1111
+  villain_top_pair_plus_pct: 0.4304
+  villain_air_pct: 0.5485
+  villain_range_capped: 0
+  board_favour: -0.1304
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 1
+  villain_checked_back: 1
+  better_hand_pct: 0.0927
+  worse_hand_pct: 0.8985
+
+--- HAND: VALUE_BET_3WAY_035 ---
+Situation ID: VALUE_BET_3WAY_035
+Hero cards: AhAd
+Board: JcJd2h3c
+Street: turn
+Hero position: BB
+Villain positions: CO, BTN
+Num opponents: 2
+Pot: 90.0
+To call: 0.0
+Facing bet: 0
+Action history: BB ???
+
+Key features:
+  raw_equity: 0.7325
+  equity_vs_range: 0.7325
+  pot_odds: 0.0000
+  is_ip: 0
+  hand_category: 10
+  is_made_hand: 1
+  is_strong_made: 1
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.5300
+  spr: 1.1111
+  villain_top_pair_plus_pct: 0.4038
+  villain_air_pct: 0.5803
+  villain_range_capped: 0
+  board_favour: -0.1038
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 1
+  villain_checked_back: 1
+  better_hand_pct: 0.1221
+  worse_hand_pct: 0.8702
+
+--- HAND: VALUE_BET_3WAY_036 ---
+Situation ID: VALUE_BET_3WAY_036
+Hero cards: AhAd
+Board: JcJd2h3c
+Street: turn
+Hero position: SB
+Villain positions: CO, BTN
+Num opponents: 2
+Pot: 90.0
+To call: 0.0
+Facing bet: 0
+Action history: SB ???
+
+Key features:
+  raw_equity: 0.7110
+  equity_vs_range: 0.7110
+  pot_odds: 0.0000
+  is_ip: 0
+  hand_category: 10
+  is_made_hand: 1
+  is_strong_made: 1
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.5300
+  spr: 1.1111
+  villain_top_pair_plus_pct: 0.4038
+  villain_air_pct: 0.5803
+  villain_range_capped: 0
+  board_favour: -0.1038
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 1
+  villain_checked_back: 1
+  better_hand_pct: 0.1320
+  worse_hand_pct: 0.8651
+
+--- HAND: VALUE_BET_3WAY_038 ---
+Situation ID: VALUE_BET_3WAY_038
+Hero cards: AhAd
+Board: Qs5s7s2h
+Street: turn
+Hero position: SB
+Villain positions: CO, BTN
+Num opponents: 2
+Pot: 90.0
+To call: 0.0
+Facing bet: 0
+Action history: SB ???
+
+Key features:
+  raw_equity: 0.5667
+  equity_vs_range: 0.5667
+  pot_odds: 0.0000
+  is_ip: 0
+  hand_category: 9
+  is_made_hand: 1
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.5954
+  spr: 1.1111
+  villain_top_pair_plus_pct: 0.1653
+  villain_air_pct: 0.4610
+  villain_range_capped: 0
+  board_favour: 0.1347
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 1
+  villain_checked_back: 1
+  better_hand_pct: 0.1153
+  worse_hand_pct: 0.8818
+
+--- HAND: VALUE_BET_3WAY_040 ---
+Situation ID: VALUE_BET_3WAY_040
+Hero cards: AhAd
+Board: Ts6s3d2h
+Street: turn
+Hero position: SB
+Villain positions: CO, BTN
+Num opponents: 2
+Pot: 90.0
+To call: 0.0
+Facing bet: 0
+Action history: SB ???
+
+Key features:
+  raw_equity: 0.7488
+  equity_vs_range: 0.7488
+  pot_odds: 0.0000
+  is_ip: 0
+  hand_category: 9
+  is_made_hand: 1
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.3800
+  spr: 1.1111
+  villain_top_pair_plus_pct: 0.2130
+  villain_air_pct: 0.4928
+  villain_range_capped: 0
+  board_favour: 0.0870
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 1
+  villain_checked_back: 1
+  better_hand_pct: 0.0453
+  worse_hand_pct: 0.9518
+

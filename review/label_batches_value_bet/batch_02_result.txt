@@ -1,0 +1,367 @@
+```json
+{
+  "situation_id": "VALUE_BET_3WAY_009",
+  "hand_bucket": "strong_made",
+  "action": "BET",
+  "confidence": "HIGH",
+  "difficulty": 1,
+  "reasoning": "This is a strong_made hand — AA overpair on a paired JJ23 board counts as aces-up two pair with only Jx/22/33 beating us (better_hand_pct=0.132, worse_hand_pct=0.865, is_strong_made=1). Equity 0.716 is dominant 3-way. Both opponents checked turn, IP with SPR 1.11, so a bet commits on river. Hero's range percentile is near the top of the checked-to spot and villain composition shows 50% TP+ (includes some Jx trips) plus 44% air — we fold out equity and get called by Kx/Qx overcards, pocket pairs, and occasional Jx. Checking surrenders value on a locked-in committed SPR line. BET.",
+  "intentions_raw": "I want worse pocket pairs, unpaired broadways with showdown curiosity, and occasional worse made hands to call so I extract value before showdown, given both opponents showed weakness by checking turn.",
+  "intentions": ["value_extract"],
+  "street_plan_raw": "Bet turn around 50-66% pot; at SPR 1.11 this is a commit line — I am calling any shove and betting/calling river on most brick runouts.",
+  "street_plan_tags": ["barrel_value", "bet_regardless"],
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "worse_hand_pct": "PRIMARY",
+    "better_hand_pct": "PRIMARY",
+    "is_strong_made": "PRIMARY",
+    "danger_score": "CONFIRMED",
+    "spr": "PRIMARY",
+    "is_ip": "PRIMARY",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "villain_checked_back": "CONFIRMED",
+    "hero_range_percentile": "CONFIRMED",
+    "villain_fold_equity_estimate": "CONFIRMED"
+  },
+  "tier1_removals": {},
+  "proposed_tags": [],
+  "alternatives_considered": [
+    "CHECK: rejected — AA with 71.6% equity and 86.5% of villain's range worse is clear value. SPR 1.11 means stacks go in on river anyway; checking turn only loses a street of value to hands that would have called a 50% bet."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "VALUE_BET_3WAY_010",
+  "hand_bucket": "strong_made",
+  "action": "BET",
+  "confidence": "HIGH",
+  "difficulty": 1,
+  "reasoning": "Strong_made AA on JJ23 paired turn — aces-up, beats 89.8% of villain's range (better_hand_pct=0.099). Equity 0.782 is dominant 3-way. Both SB and BB checked turn, IP, SPR 1.11 means we are price-committed on river. Villain composition shows 41% TP+ (a chunk of which is Jx trips, but weighted mostly toward overpairs/Kx/Qx) and 56% air — betting folds some equity, gets called by worse Ax/Kx/Qx/pocket pairs, and occasionally stacks a slow-played Jx. Clear value bet.",
+  "intentions_raw": "I'm betting to get value from worse overpairs, Kx/Qx floats, and pocket pairs that will curiosity-call a small-to-medium sizing; both blinds showed weakness by checking.",
+  "intentions": ["value_extract"],
+  "street_plan_raw": "Bet ~50-66% turn; at SPR 1.11 this commits and I stack off on any non-J brick river.",
+  "street_plan_tags": ["barrel_value", "bet_regardless"],
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "worse_hand_pct": "PRIMARY",
+    "better_hand_pct": "PRIMARY",
+    "is_strong_made": "PRIMARY",
+    "danger_score": "CONFIRMED",
+    "spr": "PRIMARY",
+    "is_ip": "PRIMARY",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "villain_checked_back": "CONFIRMED",
+    "hero_range_percentile": "CONFIRMED",
+    "villain_fold_equity_estimate": "CONFIRMED"
+  },
+  "tier1_removals": {},
+  "proposed_tags": [],
+  "alternatives_considered": [
+    "CHECK: rejected — 78% equity with 90% worse hands and two blinds showing weakness is straightforward value. Checking back discards an EV-positive bet against two wide, weak checked ranges."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "VALUE_BET_3WAY_011",
+  "hand_bucket": "medium_made",
+  "action": "CHECK",
+  "confidence": "MEDIUM",
+  "difficulty": 2,
+  "reasoning": "Board is Qs5s7s2h — three spades are on the board and hero holds AhAd with no spade blocker. Any villain card that is a spade makes a flush; villain_top_pair_plus_pct=0.165 in this row buckets into the composition but INCLUDES any one-spade flushes in villain's continuing range. Equity is only 0.588 with danger_score=0.60 and board_favour slightly against hero's unblocked overpair. At SPR 1.11 a bet is a stack-off line: the hands that continue disproportionately beat AA (any flush) while most non-spade air folds cheaply anyway. Hero's AA is a medium_made hand on this three-flush texture — the overpair value has collapsed. CHECK to control pot and realize showdown; call a small river bet selectively.",
+  "intentions_raw": "I don't want to bloat the pot and commit stacks with an overpair on a three-flush board I can't block, when most of villain's continuing range is flushes that crush me and most worse hands fold anyway.",
+  "intentions": ["pot_control"],
+  "street_plan_raw": "Check back turn, plan to check-call a small river bet on non-spade-pair runouts and fold to large sizing or a paired-board full-house river.",
+  "street_plan_tags": ["check_pot_control", "pot_control_check_call"],
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "danger_score": "PRIMARY",
+    "hero_range_percentile": "CONFIRMED",
+    "has_showdown_value": "PRIMARY",
+    "is_ip": "PRIMARY",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "spr": "PRIMARY",
+    "flush_danger": "PRIMARY",
+    "is_monotone": "CONFIRMED",
+    "better_hand_pct": "CONFIRMED",
+    "worse_hand_pct": "CONFIRMED"
+  },
+  "tier1_removals": {
+    "villain_fold_equity_estimate": "removed — this is a CHECK, not a bet decision"
+  },
+  "proposed_tags": [],
+  "alternatives_considered": [
+    "BET: rejected — on a three-spade board with no spade blocker and SPR 1.11, a bet commits against a continuing range that disproportionately contains made flushes. Worse hands (non-spade pairs and air) mostly fold, so the EV of betting is dominated by getting stacked by flushes.",
+    "BET small (25% pot): rejected — SPR 1.11 means even a small turn bet is a commit line 3-way; the sizing does not meaningfully reduce the stack-off risk against flushes."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "VALUE_BET_3WAY_012",
+  "hand_bucket": "medium_made",
+  "action": "CHECK",
+  "confidence": "MEDIUM",
+  "difficulty": 2,
+  "reasoning": "Qs5s7s2h three-flush turn with hero holding AhAd (no spade blocker). Equity only 0.559, danger 0.60. Villain composition shows 33% TP+ (a meaningful portion of which is made one-card flushes from the blinds' suited holdings) and 41% air. SPR 1.11 makes any bet a stack-off line. Hero's unblocked AA is a medium_made hand on this texture: it beats air that folds and loses to the flushes that call. The negative board_favour (-0.033) confirms the texture is not hero-favoured. CHECK for pot control and realize showdown cheaply.",
+  "intentions_raw": "My overpair has collapsed to a bluff catcher on a three-flush board I can't block, so I check to keep the pot small and only see a cheap showdown rather than stacking off against likely flushes.",
+  "intentions": ["pot_control"],
+  "street_plan_raw": "Check back turn, plan to check-call a small river bet on bricks and fold to large river sizing, fold any spade-pair river.",
+  "street_plan_tags": ["check_pot_control", "pot_control_check_call"],
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "danger_score": "PRIMARY",
+    "hero_range_percentile": "CONFIRMED",
+    "has_showdown_value": "PRIMARY",
+    "is_ip": "PRIMARY",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "spr": "PRIMARY",
+    "flush_danger": "PRIMARY",
+    "is_monotone": "CONFIRMED",
+    "board_favour": "CONFIRMED",
+    "better_hand_pct": "CONFIRMED",
+    "worse_hand_pct": "CONFIRMED"
+  },
+  "tier1_removals": {
+    "villain_fold_equity_estimate": "removed — this is a CHECK, not a bet decision"
+  },
+  "proposed_tags": [],
+  "alternatives_considered": [
+    "BET small: rejected — SPR 1.11 turns any turn bet into a commit line. On a three-flush board without the Ace of spades to block nut flush combos, the calling range is flush-heavy and worse made hands mostly fold. EV of betting is negative relative to checking back and winning showdown against the air portion.",
+    "BET large: rejected — worse because it commits even faster against made flushes."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "VALUE_BET_3WAY_013",
+  "hand_bucket": "medium_made",
+  "action": "CHECK",
+  "confidence": "MEDIUM",
+  "difficulty": 2,
+  "reasoning": "Qs5s7s2h three-flush turn; hero holds AhAd with no spade blocker. Equity 0.559, danger 0.60. Villain composition shows 28% TP+ and 44% air with board_favour only +0.019. At SPR 1.11 a bet is a stack-off line, and the continuing range after a bet is flush-heavy relative to the folding-air range hero collects. Hero's AA is a medium_made hand on this texture — a bluff catcher that prefers to get to showdown cheaply rather than build a pot it cannot defend. CHECK.",
+  "intentions_raw": "I keep the pot small and realize my showdown value because on this three-flush texture without a spade blocker my overpair is a bluff catcher, not a value bet.",
+  "intentions": ["pot_control"],
+  "street_plan_raw": "Check back turn, plan to check-call a small river bet on most bricks and fold to larger sizings or to any river that pairs a spade.",
+  "street_plan_tags": ["check_pot_control", "pot_control_check_call"],
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "danger_score": "PRIMARY",
+    "hero_range_percentile": "CONFIRMED",
+    "has_showdown_value": "PRIMARY",
+    "is_ip": "PRIMARY",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "spr": "PRIMARY",
+    "flush_danger": "PRIMARY",
+    "is_monotone": "CONFIRMED",
+    "better_hand_pct": "CONFIRMED",
+    "worse_hand_pct": "CONFIRMED"
+  },
+  "tier1_removals": {
+    "villain_fold_equity_estimate": "removed — this is a CHECK, not a bet decision"
+  },
+  "proposed_tags": [],
+  "alternatives_considered": [
+    "BET small: rejected — on a three-spade board without the Ace of spades, the betting line commits stacks at SPR 1.11 against a calling range that disproportionately contains made flushes while non-spade air folds. The worse made hands that would call are thin, and the flushes that stack us are numerous."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "VALUE_BET_3WAY_014",
+  "hand_bucket": "medium_made",
+  "action": "CHECK",
+  "confidence": "MEDIUM",
+  "difficulty": 2,
+  "reasoning": "Qs5s7s2h three-flush turn; AhAd has no spade blocker. Equity 0.564, danger 0.60. Villain composition: 26% TP+, 41% air, and this row includes the ≈40% remainder that contains pocket pairs and weaker made hands. At SPR 1.11 a turn bet is a stack-off line. Without a spade blocker, the continuing range is heavy with made flushes relative to the worse-hand portion that would call. AA is a medium_made bluff catcher on this texture, not a value hand. CHECK and realize showdown cheaply.",
+  "intentions_raw": "On a three-flush board I can't block, my overpair is a bluff catcher — I check to keep the pot small and let worse hands bluff or showdown for free rather than commit stacks against flushes.",
+  "intentions": ["pot_control"],
+  "street_plan_raw": "Check back turn, plan to check-call one small river bet on bricks and fold to larger sizing or to any spade river that completes board pairs.",
+  "street_plan_tags": ["check_pot_control", "pot_control_check_call"],
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "danger_score": "PRIMARY",
+    "hero_range_percentile": "CONFIRMED",
+    "has_showdown_value": "PRIMARY",
+    "is_ip": "PRIMARY",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "spr": "PRIMARY",
+    "flush_danger": "PRIMARY",
+    "is_monotone": "CONFIRMED",
+    "better_hand_pct": "CONFIRMED",
+    "worse_hand_pct": "CONFIRMED"
+  },
+  "tier1_removals": {
+    "villain_fold_equity_estimate": "removed — this is a CHECK, not a bet decision"
+  },
+  "proposed_tags": [],
+  "alternatives_considered": [
+    "BET small: rejected — SPR 1.11 commits stacks. Without the As, the continuing range is flush-dominated; hero is reverse-implied and loses more EV to the flushes that raise/call than gains from the thin worse hands."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "VALUE_BET_3WAY_016",
+  "hand_bucket": "strong_made",
+  "action": "BET",
+  "confidence": "HIGH",
+  "difficulty": 1,
+  "reasoning": "AhAd overpair on Ts6s3d2h — two-tone, low-connectivity, hero has no spade but the board is only two-tone (not three-flush). Equity 0.742, better_hand_pct only 0.045, worse_hand_pct 0.952. Danger_score 0.38 is moderate (turned 2h creates very few new draws). Villain composition: 37% TP+ and 48% air — both checked turn, IP with SPR 1.11. This is a textbook thin-value spot with hero far ahead of villain's range. Betting folds out equity (overcards, backdoor fragments) and gets called by worse Tx, pocket pairs 22-99, and weak draws. Clear BET.",
+  "intentions_raw": "I bet to extract value from worse Tx, underpairs, and flush draws while denying free cards to overcards and backdoor equity on a relatively static two-tone board.",
+  "intentions": ["value_extract", "deny_equity"],
+  "street_plan_raw": "Bet ~50% turn; at SPR 1.11 this is a commit line, so I am betting/calling most river runouts that don't obviously complete a flush or straight.",
+  "street_plan_tags": ["barrel_value", "continue_on_blank"],
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "worse_hand_pct": "PRIMARY",
+    "better_hand_pct": "PRIMARY",
+    "danger_score": "PRIMARY",
+    "is_ip": "PRIMARY",
+    "spr": "CONFIRMED",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "villain_checked_back": "CONFIRMED",
+    "villain_fold_equity_estimate": "CONFIRMED",
+    "hero_range_percentile": "CONFIRMED"
+  },
+  "tier1_removals": {},
+  "proposed_tags": [],
+  "alternatives_considered": [
+    "CHECK: rejected — 74% equity with 95% of villain's range worse on a T-high two-tone board is not a pot-control spot. Checking leaves value against both blinds' air and weak made hands and gives free turns to backdoor equity."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "VALUE_BET_3WAY_017",
+  "hand_bucket": "strong_made",
+  "action": "BET",
+  "confidence": "HIGH",
+  "difficulty": 1,
+  "reasoning": "AhAd on Ts6s3d2h two-tone — overpair with equity 0.761 and 95.2% of villain's range worse. Danger 0.38 (low). Villain composition: 31% TP+, 47% air. Both opponents checked turn; hero is IP with SPR 1.11. Betting extracts value from worse Tx, pocket pairs 22-99, weak flush and gutshot draws, and denies equity to overcards. This is a clean value spot — checking is a leak.",
+  "intentions_raw": "I bet to get value from worse Tx, underpairs, and draws on a two-tone board while denying equity to overcards and backdoor combos.",
+  "intentions": ["value_extract", "deny_equity"],
+  "street_plan_raw": "Bet around 50% turn; SPR 1.11 makes this a commit line, so I bet/call most non-obvious-completion river cards.",
+  "street_plan_tags": ["barrel_value", "continue_on_blank"],
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "worse_hand_pct": "PRIMARY",
+    "better_hand_pct": "PRIMARY",
+    "danger_score": "PRIMARY",
+    "is_ip": "PRIMARY",
+    "spr": "CONFIRMED",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "villain_checked_back": "CONFIRMED",
+    "villain_fold_equity_estimate": "CONFIRMED",
+    "hero_range_percentile": "CONFIRMED"
+  },
+  "tier1_removals": {},
+  "proposed_tags": [],
+  "alternatives_considered": [
+    "CHECK: rejected — 76% equity with 95% of villain's range worse on a low two-tone board is straightforward value, and both opponents showing weakness by checking only amplifies the EV of betting thin."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "VALUE_BET_3WAY_018",
+  "hand_bucket": "strong_made",
+  "action": "BET",
+  "confidence": "HIGH",
+  "difficulty": 1,
+  "reasoning": "AhAd on Ts6s3d2h two-tone — overpair, equity 0.781, worse_hand_pct 0.956. Danger 0.38. Villain composition: 22% TP+, 48% air, board_favour +0.078 (favours hero). IP with SPR 1.11, both blinds checked turn. Textbook value bet — hero crushes the checked-to range and faces minimal risk of being dominated (only 4.2% better hands).",
+  "intentions_raw": "I bet to get value from worse Tx, pocket pairs, and draws, and to deny equity to overcards on a board that slightly favours my range.",
+  "intentions": ["value_extract", "deny_equity"],
+  "street_plan_raw": "Bet around 50% turn; SPR 1.11 makes this a commit line, so I bet/call most brick rivers.",
+  "street_plan_tags": ["barrel_value", "continue_on_blank"],
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "worse_hand_pct": "PRIMARY",
+    "better_hand_pct": "PRIMARY",
+    "danger_score": "PRIMARY",
+    "board_favour": "CONFIRMED",
+    "is_ip": "PRIMARY",
+    "spr": "CONFIRMED",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "villain_checked_back": "CONFIRMED",
+    "villain_fold_equity_estimate": "CONFIRMED",
+    "hero_range_percentile": "CONFIRMED"
+  },
+  "tier1_removals": {},
+  "proposed_tags": [],
+  "alternatives_considered": [
+    "CHECK: rejected — 78% equity against a range that is 96% worse is not a pot-control hand. Villain's air is over 48% and won't pay a river bet if turn checks through; bet now to build the pot."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "VALUE_BET_3WAY_019",
+  "hand_bucket": "strong_made",
+  "action": "BET",
+  "confidence": "HIGH",
+  "difficulty": 1,
+  "reasoning": "AhAd on Ts6s3d2h two-tone — overpair with equity 0.778 and 95.6% of villain's range worse. Danger 0.38. Villain composition: 31% TP+, 47% air. IP with SPR 1.11, both checked turn. Only 4.2% of villain's range beats AA here, and the betting line gets value from worse Tx, pocket pairs, and draws while denying equity to overcards. Straightforward value bet.",
+  "intentions_raw": "I bet for value against worse Tx, pocket pairs, and draws, and to charge overcard equity on a two-tone board.",
+  "intentions": ["value_extract", "deny_equity"],
+  "street_plan_raw": "Bet around 50% turn; at SPR 1.11 this is a commit line, so I bet/call most brick rivers.",
+  "street_plan_tags": ["barrel_value", "continue_on_blank"],
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "worse_hand_pct": "PRIMARY",
+    "better_hand_pct": "PRIMARY",
+    "danger_score": "PRIMARY",
+    "is_ip": "PRIMARY",
+    "spr": "CONFIRMED",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "villain_checked_back": "CONFIRMED",
+    "villain_fold_equity_estimate": "CONFIRMED",
+    "hero_range_percentile": "CONFIRMED"
+  },
+  "tier1_removals": {},
+  "proposed_tags": [],
+  "alternatives_considered": [
+    "CHECK: rejected — 78% equity, 96% worse hands in villain's range, and both opponents showing weakness. Checking back only loses value against a range that won't barrel turn-checked-through river often enough to recoup the missed street."
+  ]
+}
+```
