@@ -1,0 +1,387 @@
+```json
+{
+  "situation_id": "LITMUS_A4d_Qs5s7s_turn",
+  "hand_bucket": "air",
+  "action": "CHECK",
+  "confidence": "HIGH",
+  "difficulty": 1,
+  "reasoning": "This is an air hand — Ad4d on Qs5s7sKc has no pair, no flush draw (hero holds no spade on a three-spade board), and no straight draw; only a lone ace overcard. With 4.3% equity, 75% of villain's range better, and villain_top_pair_plus_pct at 26% (≥20% 'some value' bucket) plus 22% air, pure-bluff fold equity is ~0.22 * 0.22 ≈ 5% combined — far below the 3-way threshold. On a monotone spade board with no hero block and villains who already declined to bet, betting prints money for villain's flushed/Qx continues. The only coherent line is to check behind and take the free card, even though hero almost never wins at showdown.",
+  "intentions_raw": "I have nothing and can't represent anything credible on a three-spade board I don't block. I'm checking to realize what tiny equity remains (ace-high showdown vs air, runner-runner) and avoid getting check-raised by a flush or paid off by Qx/Kx.",
+  "intentions": ["pot_control"],
+  "street_plan_raw": "Check behind the turn; on the river, check-fold to any bet and take whatever ace-high showdown value appears against villain's air if both check again.",
+  "street_plan_tags": ["check_pot_control", "check_evaluate"],
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "is_ip": "CONFIRMED",
+    "has_showdown_value": "PRIMARY",
+    "overcard_outs": "PRIMARY",
+    "villain_fold_equity_estimate": "PRIMARY",
+    "danger_score": "CONFIRMED",
+    "flush_danger": "PRIMARY",
+    "villain_checked_back": "CONFIRMED",
+    "better_hand_pct": "CONFIRMED"
+  },
+  "tier1_removals": {
+    "hero_range_percentile": "removed — feature not provided in the input row; composition quad and raw equity are sufficient to classify this as air with no fold-equity path"
+  },
+  "proposed_tags": [
+    {"category": "action_tag", "name": "check_give_up", "definition": "Checking air to see showdown cheaply when fold equity is insufficient and no semi-bluff condition is met. Distinct from check_pot_control (which implies showdown value worth protecting) and check_trap (monster inducing aggression)."}
+  ],
+  "alternatives_considered": [
+    "BET (bluff): rejected — on a three-spade board with hero holding no spade, villains continue with any made hand or completed flush. Combined fold equity against two opponents is well below the 3-way ~49% breakeven; DO NOT Rule 2 applies."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "LITMUS_T5h_JJ2_turn",
+  "hand_bucket": "air",
+  "action": "CHECK",
+  "confidence": "HIGH",
+  "difficulty": 1,
+  "reasoning": "This is an air hand — Th5h on JcJd2h3c has no pair and no live flush draw (three total hearts on a dead turn is backdoor-only, already dead at this point since only one card remains). Raw equity is 7% with 82% of villain's range better. villain_top_pair_plus_pct is 40.7% (≥40% 'meaningful value density') and the board is paired — paired boards trap bluffs per DO NOT Rule 3 (checking player often has trips). Even with villain_air_pct at 56%, combined fold equity for two opponents is ~0.56 * 0.56 ≈ 31%, below 3-way breakeven, and the 40% TP+ density includes trip Jacks and overpairs that never fold. Check behind and give up.",
+  "intentions_raw": "I have nothing, villains checked a paired board where they love to trap with trips, and the value density in their range is too high to bluff through. I'm giving up and taking showdown with whatever tiny equity remains.",
+  "intentions": ["pot_control"],
+  "street_plan_raw": "Check behind the turn; on the river, check-fold to any bet and take showdown if both check.",
+  "street_plan_tags": ["check_pot_control", "check_evaluate"],
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "is_ip": "CONFIRMED",
+    "has_showdown_value": "PRIMARY",
+    "overcard_outs": "PRIMARY",
+    "villain_fold_equity_estimate": "PRIMARY",
+    "villain_checked_back": "CONFIRMED",
+    "better_hand_pct": "CONFIRMED",
+    "danger_score": "CONFIRMED"
+  },
+  "tier1_removals": {
+    "hero_range_percentile": "removed — feature not provided; paired board + 40% TP+ composition is already decisive."
+  },
+  "proposed_tags": [
+    {"category": "action_tag", "name": "check_give_up", "definition": "Checking air to see showdown cheaply when fold equity is insufficient and no semi-bluff condition is met."}
+  ],
+  "alternatives_considered": [
+    "BET (bluff): rejected — paired board with trips in villain's range means the top of villain's calling range never folds. DO NOT Rule 2 (don't barrel air into two opponents) and DO NOT Rule 3 (paired board, checking player has trips more often) both apply."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "AIR_CHECK_3WAY_001",
+  "hand_bucket": "air",
+  "action": "CHECK",
+  "confidence": "HIGH",
+  "difficulty": 1,
+  "reasoning": "This is an air hand — Th9h on Qs5s7s2h has no pair, no flush draw (hero holds zero spades on a three-spade board), and the pipeline reports no straight draw (draw_outs=0). Raw equity is 3.9% with 92.5% of villain's range better and only 5.8% worse. Even with villain_air_pct 40.7%, combined fold equity for two opponents is ~0.41 * 0.41 ≈ 17%, far below the 3-way ~49% breakeven. On a monotone spade board with no hero spade block, bluffing runs into completed flushes, Qx, and spade draws. Check behind and give up.",
+  "intentions_raw": "I have no pair, no flush, no real draw, and no blocker to villain's flush combos. I'm checking to give up — betting into two opponents who never fold their flushes or top pair is lighting money on fire.",
+  "intentions": ["pot_control"],
+  "street_plan_raw": "Check behind turn; on river, check-fold to any bet — hero has no showdown value worth defending.",
+  "street_plan_tags": ["check_pot_control", "check_evaluate"],
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "is_ip": "CONFIRMED",
+    "has_showdown_value": "PRIMARY",
+    "overcard_outs": "PRIMARY",
+    "villain_fold_equity_estimate": "PRIMARY",
+    "flush_danger": "PRIMARY",
+    "villain_checked_back": "CONFIRMED",
+    "better_hand_pct": "CONFIRMED"
+  },
+  "tier1_removals": {
+    "hero_range_percentile": "removed — not provided in input; composition quad + monotone board dynamics already drive the decision"
+  },
+  "proposed_tags": [
+    {"category": "action_tag", "name": "check_give_up", "definition": "Checking air to see showdown cheaply when fold equity is insufficient and no semi-bluff condition is met."}
+  ],
+  "alternatives_considered": [
+    "BET (bluff): rejected — monotone spade board where hero holds no spade. Fold equity into two opponents is ~17%, well below 3-way breakeven. DO NOT Rule 2 applies."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "AIR_CHECK_3WAY_002",
+  "hand_bucket": "air",
+  "action": "CHECK",
+  "confidence": "HIGH",
+  "difficulty": 1,
+  "reasoning": "This is an air hand — Th9h on Qs5s7s2h (same hand/board as 001, different villain seats). Raw equity is 3.2%, better_hand_pct 92.5%, worse_hand_pct 5.8%. villain_air_pct is 43.8% and villain_top_pair_plus_pct is 28.1% (≥20% 'some value' bucket). On a monotone spade board with no hero spade blocker, combined fold equity is ~0.44 * 0.44 ≈ 19%, still far below the 3-way ~49% breakeven. No nut draw, no blocker — no basis for a semi-bluff per KB Section 1.7.",
+  "intentions_raw": "I have nothing, no spade, and no ability to fold out the spade-completed or Qx portion of either range. Checking behind gives up cheaply and keeps the pot controlled.",
+  "intentions": ["pot_control"],
+  "street_plan_raw": "Check behind turn; on river, check-fold to any bet.",
+  "street_plan_tags": ["check_pot_control", "check_evaluate"],
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "is_ip": "CONFIRMED",
+    "has_showdown_value": "PRIMARY",
+    "overcard_outs": "PRIMARY",
+    "villain_fold_equity_estimate": "PRIMARY",
+    "flush_danger": "PRIMARY",
+    "villain_checked_back": "CONFIRMED",
+    "better_hand_pct": "CONFIRMED"
+  },
+  "tier1_removals": {
+    "hero_range_percentile": "removed — not provided in input; the monotone-board + no-blocker composition already drives the decision"
+  },
+  "proposed_tags": [
+    {"category": "action_tag", "name": "check_give_up", "definition": "Checking air to see showdown cheaply when fold equity is insufficient and no semi-bluff condition is met."}
+  ],
+  "alternatives_considered": [
+    "BET (bluff): rejected — insufficient fold equity on a monotone board without a spade blocker. DO NOT Rule 2."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "AIR_CHECK_3WAY_003",
+  "hand_bucket": "air",
+  "action": "CHECK",
+  "confidence": "HIGH",
+  "difficulty": 2,
+  "reasoning": "This is an air hand — Th9h on Qs5s7s2h. Raw equity is 2.75%, worse_hand_pct only 5.1%. villain_top_pair_plus_pct is 16.5% (<20% 'thin on value' bucket) and villain_air_pct is 46.1% — compositionally the most bluff-friendly spot in the batch. However, hero holds air, not a thin-value hand, so the thin-value pathway doesn't apply. For a pure bluff, combined fold equity is ~0.46 * 0.46 ≈ 21% — still short of the ~49% breakeven — and on a monotone spade board with no hero spade block, the non-air continuing combos (flushes, Qx, spade draws) never fold to a turn bet. Check behind.",
+  "intentions_raw": "My hand has no equity, and even though villain's range is thin on value, my bluff doesn't fold spade-completed hands or Qx — which is most of the non-air range on a monotone board. Checking gives up.",
+  "intentions": ["pot_control"],
+  "street_plan_raw": "Check behind turn; on river, check-fold to any bet.",
+  "street_plan_tags": ["check_pot_control", "check_evaluate"],
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "is_ip": "CONFIRMED",
+    "has_showdown_value": "PRIMARY",
+    "overcard_outs": "PRIMARY",
+    "villain_fold_equity_estimate": "PRIMARY",
+    "flush_danger": "PRIMARY",
+    "villain_checked_back": "CONFIRMED",
+    "villain_aggression_count": "CONFIRMED",
+    "better_hand_pct": "CONFIRMED"
+  },
+  "tier1_removals": {
+    "hero_range_percentile": "removed — not provided in input; monotone board dynamics + air hand are already decisive"
+  },
+  "proposed_tags": [
+    {"category": "action_tag", "name": "check_give_up", "definition": "Checking air to see showdown cheaply when fold equity is insufficient and no semi-bluff condition is met."}
+  ],
+  "alternatives_considered": [
+    "BET (small bluff): rejected — despite the <20% TP+ 'thin on value' composition, fold equity is still ~21% on a monotone board where no made spade folds. Pure-air bluffs into two opponents need nut draw + blocker per KB 1.7; hero has neither.",
+    "BET (tiny blocker-bet for equity realization): rejected — hero has no showdown value to protect, so there's nothing to realize. Checking is strictly better."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "AIR_CHECK_3WAY_004",
+  "hand_bucket": "air",
+  "action": "CHECK",
+  "confidence": "HIGH",
+  "difficulty": 1,
+  "reasoning": "This is an air hand — Th9h on Qs5s7s2h from the CO. Raw equity 3.0%, better_hand_pct 92.8%, worse_hand_pct 5.1%. villain_top_pair_plus_pct is 33.3% (≥20% 'some value' bucket), villain_air_pct 40.7%. On a monotone spade board with no hero spade blocker, combined fold equity ~0.41*0.41 ≈ 17%, far below 3-way breakeven. board_favour -0.03 tilts toward villain. No nut-draw + blocker per KB 1.7, so no semi-bluff exception. Check.",
+  "intentions_raw": "I have nothing and no spade blocker. Bluffing into two checked ranges on a monotone board that slightly favours them just donates chips. I'm checking to give up.",
+  "intentions": ["pot_control"],
+  "street_plan_raw": "Check behind turn; on river, check-fold to any bet.",
+  "street_plan_tags": ["check_pot_control", "check_evaluate"],
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "is_ip": "CONFIRMED",
+    "has_showdown_value": "PRIMARY",
+    "overcard_outs": "PRIMARY",
+    "villain_fold_equity_estimate": "PRIMARY",
+    "flush_danger": "PRIMARY",
+    "villain_checked_back": "CONFIRMED",
+    "better_hand_pct": "CONFIRMED",
+    "board_favour": "CONFIRMED"
+  },
+  "tier1_removals": {
+    "hero_range_percentile": "removed — not provided in input; composition quad and board texture already drive the decision"
+  },
+  "proposed_tags": [
+    {"category": "action_tag", "name": "check_give_up", "definition": "Checking air to see showdown cheaply when fold equity is insufficient and no semi-bluff condition is met."}
+  ],
+  "alternatives_considered": [
+    "BET (bluff): rejected — no spade block on a monotone board. DO NOT Rule 2."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "AIR_CHECK_3WAY_005",
+  "hand_bucket": "air",
+  "action": "CHECK",
+  "confidence": "HIGH",
+  "difficulty": 1,
+  "reasoning": "This is an air hand — Th9h on Qs5s7s2h from the CO, HJ/BB villains. Raw equity 3.3%, better_hand_pct 92.8%. villain_top_pair_plus_pct 28.1% (≥20% bucket), villain_air_pct 43.75%. HJ's range is tighter than a BB/SB's, which narrows the non-air portion toward strong Qx, overpairs, and completed flushes — exactly the hands that never fold. Combined fold equity ~0.44 * 0.44 ≈ 19%, below 3-way breakeven. No blocker, no draw, no semi-bluff path. Check.",
+  "intentions_raw": "Air with no spade, and HJ's portion of the range is value-dense on this board. Betting bluffs into two opponents who have no reason to fold their flushes or Qx. Giving up is clearly best.",
+  "intentions": ["pot_control"],
+  "street_plan_raw": "Check behind turn; on river, check-fold to any bet.",
+  "street_plan_tags": ["check_pot_control", "check_evaluate"],
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "is_ip": "CONFIRMED",
+    "has_showdown_value": "PRIMARY",
+    "overcard_outs": "PRIMARY",
+    "villain_fold_equity_estimate": "PRIMARY",
+    "flush_danger": "PRIMARY",
+    "villain_checked_back": "CONFIRMED",
+    "better_hand_pct": "CONFIRMED"
+  },
+  "tier1_removals": {
+    "hero_range_percentile": "removed — not provided in input; composition + monotone board sufficient"
+  },
+  "proposed_tags": [
+    {"category": "action_tag", "name": "check_give_up", "definition": "Checking air to see showdown cheaply when fold equity is insufficient and no semi-bluff condition is met."}
+  ],
+  "alternatives_considered": [
+    "BET (bluff): rejected — monotone board + no spade block + tighter HJ range = fold equity well under the 49% 3-way threshold."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "AIR_CHECK_3WAY_006",
+  "hand_bucket": "air",
+  "action": "CHECK",
+  "confidence": "HIGH",
+  "difficulty": 1,
+  "reasoning": "This is an air hand — Td6d on Jh8h3h3c has no pair, no flush draw (hero holds zero hearts on a three-heart paired board), and no straight draw (draw_outs=0). Raw equity is 4.2%, worse_hand_pct only 7.9%. villain_top_pair_plus_pct is 81.25% — the ≥60% 'heavy with strong hands' bucket per KB Section 1.9 — and villain_air_pct is 0.00%. Combined fold equity is literally zero. board_favour is -0.5125. This is the worst possible bluff spot: paired flush board, 0% air, no blocker, no draw. Check and give up.",
+  "intentions_raw": "Villain's range is 81% top pair or better with zero air, on a paired flush board I don't block. Bluffing is strictly lighting money on fire. I'm checking behind because I have no value and no fold equity.",
+  "intentions": ["pot_control"],
+  "street_plan_raw": "Check behind turn; on river, check-fold to any bet.",
+  "street_plan_tags": ["check_pot_control", "check_evaluate"],
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "is_ip": "CONFIRMED",
+    "has_showdown_value": "PRIMARY",
+    "overcard_outs": "PRIMARY",
+    "villain_fold_equity_estimate": "PRIMARY",
+    "flush_danger": "PRIMARY",
+    "villain_checked_back": "CONFIRMED",
+    "board_favour": "PRIMARY",
+    "better_hand_pct": "CONFIRMED"
+  },
+  "tier1_removals": {
+    "hero_range_percentile": "removed — not provided in input; the ≥60% TP+ composition with 0% air is already decisive on its own"
+  },
+  "proposed_tags": [
+    {"category": "action_tag", "name": "check_give_up", "definition": "Checking air to see showdown cheaply when fold equity is insufficient and no semi-bluff condition is met."}
+  ],
+  "alternatives_considered": [
+    "BET (bluff): rejected — 0% air in villain's range means fold equity is structurally zero. DO NOT Rule 2 applies with extreme prejudice."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "AIR_CHECK_3WAY_007",
+  "hand_bucket": "air",
+  "action": "CHECK",
+  "confidence": "HIGH",
+  "difficulty": 1,
+  "reasoning": "This is an air hand — Td6d on Jh8h3h3c (same hand/board as 006), CO/SB villains. Raw equity 2.7%, worse_hand_pct 3.9%. villain_top_pair_plus_pct is 64.2% (≥60% 'heavy with strong hands') and villain_air_pct is 0.00%. Combined fold equity is effectively zero; board_favour is -0.34. villain_aggression_count=1 (prior-street aggression) adds a layer of range narrowing on top of an already value-dense composition. No bluff can profit here. Check.",
+  "intentions_raw": "Villains have 64% top pair or better and 0% air on a paired flush board that favours them heavily. I have nothing and no blocker. Bluffing is mathematically impossible to profit.",
+  "intentions": ["pot_control"],
+  "street_plan_raw": "Check behind turn; on river, check-fold to any bet.",
+  "street_plan_tags": ["check_pot_control", "check_evaluate"],
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "is_ip": "CONFIRMED",
+    "has_showdown_value": "PRIMARY",
+    "overcard_outs": "PRIMARY",
+    "villain_fold_equity_estimate": "PRIMARY",
+    "flush_danger": "PRIMARY",
+    "villain_checked_back": "CONFIRMED",
+    "villain_aggression_count": "CONFIRMED",
+    "board_favour": "PRIMARY",
+    "better_hand_pct": "CONFIRMED"
+  },
+  "tier1_removals": {
+    "hero_range_percentile": "removed — not provided in input; composition quad is already decisive"
+  },
+  "proposed_tags": [
+    {"category": "action_tag", "name": "check_give_up", "definition": "Checking air to see showdown cheaply when fold equity is insufficient and no semi-bluff condition is met."}
+  ],
+  "alternatives_considered": [
+    "BET (bluff): rejected — 0% air means zero fold equity. The decision is trivial."
+  ]
+}
+```
+
+```json
+{
+  "situation_id": "AIR_CHECK_3WAY_008",
+  "hand_bucket": "air",
+  "action": "CHECK",
+  "confidence": "HIGH",
+  "difficulty": 1,
+  "reasoning": "This is an air hand — Td6d on Jh8h3h3c from CO, SB/BB villains. Raw equity 3.6%, worse_hand_pct 3.8%. villain_top_pair_plus_pct is 81.5% (≥60% 'heavy with strong hands'), villain_air_pct 0.00%. board_favour -0.5148 — the board favours villains massively. Combined fold equity is essentially zero; no blocker, no draw, no showdown value. Check.",
+  "intentions_raw": "The composition triple leaves no room for a bluff: 81% top pair or better and 0% air. My hand has no equity and no way to win without improving miracles. I'm checking to give up cheaply.",
+  "intentions": ["pot_control"],
+  "street_plan_raw": "Check behind turn; on river, check-fold to any bet.",
+  "street_plan_tags": ["check_pot_control", "check_evaluate"],
+  "feature_attention": {
+    "equity_vs_range": "PRIMARY",
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "is_ip": "CONFIRMED",
+    "has_showdown_value": "PRIMARY",
+    "overcard_outs": "PRIMARY",
+    "villain_fold_equity_estimate": "PRIMARY",
+    "flush_danger": "PRIMARY",
+    "villain_checked_back": "CONFIRMED",
+    "board_favour": "PRIMARY",
+    "better_hand_pct": "CONFIRMED"
+  },
+  "tier1_removals": {
+    "hero_range_percentile": "removed — not provided in input; composition quad is already decisive"
+  },
+  "proposed_tags": [
+    {"category": "action_tag", "name": "check_give_up", "definition": "Checking air to see showdown cheaply when fold equity is insufficient and no semi-bluff condition is met."}
+  ],
+  "alternatives_considered": [
+    "BET (bluff): rejected — 0% air in a value-heavy range on a board favouring villains. Zero fold equity."
+  ]
+}
+```

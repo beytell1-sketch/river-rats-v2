@@ -38,9 +38,9 @@ BATCH_DIR = os.path.join(os.path.dirname(__file__), '..', 'review', 'label_batch
 
 # Known top-level metadata keys for flat BP-series records (no nested feat_dict).
 _FLAT_METADATA_KEYS = {
-    'situation_id', 'hero_cards', 'board_cards', 'hero_position',
+    'situation_id', 'hero_cards', 'board_cards', 'board', 'hero_position',
     'villain_positions', 'street', 'pot', 'to_call', 'facing_bet',
-    'num_opponents', 'action_string', 'description',
+    'num_opponents', 'action_string', 'action_history', 'description',
 }
 
 
@@ -67,15 +67,23 @@ def _normalise_flat_situation(sit: dict) -> dict:
     return nested
 
 
-def prepare_batches(input_path: str, batch_size: int = 10):
+def prepare_batches(input_path: str, batch_size: int = 10,
+                    prompt_path: str = None, batch_dir: str = None):
     """Split situations JSONL into batch files for agent dispatch.
 
     Each batch file contains the situation text for batch_size hands.
     The agent context (prompt + knowledge base) is saved separately.
+
+    prompt_path: optional override for the labelling prompt (defaults to
+        calibration_exam._PROMPT, which is gto_labeller_v3.md).
+    batch_dir: optional override for the output directory (defaults to
+        module-level BATCH_DIR).
     """
     # Load and validate context
-    context = load_agent_context()
+    context = load_agent_context(prompt_path=prompt_path)
     print(f"Agent context loaded ({len(context)} chars)")
+    if prompt_path:
+        print(f"  Using prompt: {prompt_path}")
 
     # Load situations
     situations = []
@@ -84,9 +92,12 @@ def prepare_batches(input_path: str, batch_size: int = 10):
             situations.append(json.loads(line))
     print(f"Loaded {len(situations)} situations")
 
+    # Resolve batch dir
+    out_dir = batch_dir or BATCH_DIR
+
     # Save context
-    os.makedirs(BATCH_DIR, exist_ok=True)
-    context_path = os.path.join(BATCH_DIR, 'agent_context.txt')
+    os.makedirs(out_dir, exist_ok=True)
+    context_path = os.path.join(out_dir, 'agent_context.txt')
     with open(context_path, 'w') as f:
         f.write(context)
 
@@ -95,7 +106,7 @@ def prepare_batches(input_path: str, batch_size: int = 10):
     for i in range(0, len(situations), batch_size):
         batch = situations[i:i + batch_size]
         batch_id = i // batch_size + 1
-        batch_path = os.path.join(BATCH_DIR, f'batch_{batch_id:02d}.txt')
+        batch_path = os.path.join(out_dir, f'batch_{batch_id:02d}.txt')
 
         with open(batch_path, 'w') as f:
             for sit in batch:
@@ -149,7 +160,7 @@ def prepare_batches(input_path: str, batch_size: int = 10):
         print(f"  Batch {batch_id}: {len(batch)} hands → {batch_path}")
 
     # Save master index
-    index_path = os.path.join(BATCH_DIR, 'batch_index.json')
+    index_path = os.path.join(out_dir, 'batch_index.json')
     with open(index_path, 'w') as f:
         json.dump({
             'total_situations': len(situations),
@@ -158,7 +169,7 @@ def prepare_batches(input_path: str, batch_size: int = 10):
             'batches': batches,
         }, f, indent=2)
 
-    print(f"\n  {len(batches)} batches prepared in {BATCH_DIR}")
+    print(f"\n  {len(batches)} batches prepared in {out_dir}")
     print(f"  Agent context: {context_path}")
     print(f"  Index: {index_path}")
     print(f"\n  Dispatch each batch as a subagent with the context file.")
@@ -205,10 +216,12 @@ def parse_agent_output(text: str) -> list:
     return results
 
 
-def collect_results(situations_path: str, output_path: str):
+def collect_results(situations_path: str, output_path: str,
+                    batch_dir: str = None):
     """Collect agent outputs from batch result files and merge with situations.
 
-    Expects result files at: BATCH_DIR/batch_XX_result.txt
+    Expects result files at: <batch_dir>/batch_XX_result.txt (defaults to
+    module-level BATCH_DIR).
     """
     # Load original situations for feat_dict
     situations_by_id = {}
@@ -217,8 +230,11 @@ def collect_results(situations_path: str, output_path: str):
             sit = json.loads(line)
             situations_by_id[sit['situation_id']] = sit
 
+    # Resolve batch dir
+    in_dir = batch_dir or BATCH_DIR
+
     # Load batch index
-    index_path = os.path.join(BATCH_DIR, 'batch_index.json')
+    index_path = os.path.join(in_dir, 'batch_index.json')
     with open(index_path) as f:
         index = json.load(f)
 
@@ -229,7 +245,7 @@ def collect_results(situations_path: str, output_path: str):
 
     for batch_meta in index['batches']:
         batch_id = batch_meta['batch_id']
-        result_path = os.path.join(BATCH_DIR, f'batch_{batch_id:02d}_result.txt')
+        result_path = os.path.join(in_dir, f'batch_{batch_id:02d}_result.txt')
 
         if not os.path.exists(result_path):
             missing.extend(batch_meta['situation_ids'])
@@ -299,18 +315,25 @@ if __name__ == '__main__':
     prep.add_argument('--input', type=str,
                       default=os.path.join(DATA_DIR, '3way_situations.jsonl'))
     prep.add_argument('--batch-size', type=int, default=10)
+    prep.add_argument('--prompt', type=str, default=None,
+                      help='Path to labelling prompt (default: gto_labeller_v3.md)')
+    prep.add_argument('--batch-dir', type=str, default=None,
+                      help='Output directory for batch files (default: review/label_batches)')
 
     coll = sub.add_parser('collect', help='Collect agent results into labelled JSONL')
     coll.add_argument('--situations', type=str,
                       default=os.path.join(DATA_DIR, '3way_situations.jsonl'))
     coll.add_argument('--output', type=str,
                       default=os.path.join(DATA_DIR, '3way_labelled.jsonl'))
+    coll.add_argument('--batch-dir', type=str, default=None,
+                      help='Input directory for batch result files')
 
     args = parser.parse_args()
 
     if args.command == 'prepare':
-        prepare_batches(args.input, args.batch_size)
+        prepare_batches(args.input, args.batch_size,
+                        prompt_path=args.prompt, batch_dir=args.batch_dir)
     elif args.command == 'collect':
-        collect_results(args.situations, args.output)
+        collect_results(args.situations, args.output, batch_dir=args.batch_dir)
     else:
         parser.print_help()

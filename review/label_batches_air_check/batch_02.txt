@@ -1,0 +1,380 @@
+--- HAND: AIR_CHECK_3WAY_009 ---
+Situation ID: AIR_CHECK_3WAY_009
+Hero cards: Td6d
+Board: Jh8h3h3c
+Street: turn
+Hero position: CO
+Villain positions: HJ, BB
+Num opponents: 2
+Pot: 90.0
+To call: 0.0
+Facing bet: 0
+Action history: BB check, HJ check, CO ???
+
+Key features:
+  raw_equity: 0.0293
+  equity_vs_range: 0.0293
+  pot_odds: 0.0000
+  is_ip: 1
+  hand_category: 0
+  is_made_hand: 0
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.7454
+  spr: 1.1111
+  villain_top_pair_plus_pct: 0.8125
+  villain_air_pct: 0.0000
+  villain_range_capped: 1
+  board_favour: -0.5125
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 0
+  villain_checked_back: 1
+  better_hand_pct: 0.9617
+  worse_hand_pct: 0.0383
+
+--- HAND: AIR_CHECK_3WAY_010 ---
+Situation ID: AIR_CHECK_3WAY_010
+Hero cards: Td6d
+Board: Jh8h3h3c
+Street: turn
+Hero position: BTN
+Villain positions: SB, BB
+Num opponents: 2
+Pot: 90.0
+To call: 0.0
+Facing bet: 0
+Action history: SB check, BB check, BTN ???
+
+Key features:
+  raw_equity: 0.0367
+  equity_vs_range: 0.0367
+  pot_odds: 0.0000
+  is_ip: 1
+  hand_category: 0
+  is_made_hand: 0
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.7454
+  spr: 1.1111
+  villain_top_pair_plus_pct: 0.7037
+  villain_air_pct: 0.0000
+  villain_range_capped: 1
+  board_favour: -0.4037
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 0
+  villain_checked_back: 1
+  better_hand_pct: 0.9168
+  worse_hand_pct: 0.0790
+
+--- HAND: AIR_CHECK_3WAY_011 ---
+Situation ID: AIR_CHECK_3WAY_011
+Hero cards: Th8h
+Board: Kd9d4d2h
+Street: turn
+Hero position: BTN
+Villain positions: CO, SB
+Num opponents: 2
+Pot: 90.0
+To call: 0.0
+Facing bet: 0
+Action history: SB check, CO check, BTN ???
+
+Key features:
+  raw_equity: 0.0208
+  equity_vs_range: 0.0208
+  pot_odds: 0.0000
+  is_ip: 1
+  hand_category: 0
+  is_made_hand: 0
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.5954
+  spr: 1.1111
+  villain_top_pair_plus_pct: 0.1812
+  villain_air_pct: 0.2941
+  villain_range_capped: 0
+  board_favour: 0.1188
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 1
+  villain_checked_back: 1
+  better_hand_pct: 0.9595
+  worse_hand_pct: 0.0351
+
+--- HAND: AIR_CHECK_3WAY_012 ---
+Situation ID: AIR_CHECK_3WAY_012
+Hero cards: Th8h
+Board: Kd9d4d2h
+Street: turn
+Hero position: CO
+Villain positions: SB, BB
+Num opponents: 2
+Pot: 90.0
+To call: 0.0
+Facing bet: 0
+Action history: SB check, BB check, CO ???
+
+Key features:
+  raw_equity: 0.0235
+  equity_vs_range: 0.0235
+  pot_odds: 0.0000
+  is_ip: 1
+  hand_category: 0
+  is_made_hand: 0
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.5954
+  spr: 1.1111
+  villain_top_pair_plus_pct: 0.3333
+  villain_air_pct: 0.1852
+  villain_range_capped: 1
+  board_favour: -0.0333
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 0
+  villain_checked_back: 1
+  better_hand_pct: 0.9598
+  worse_hand_pct: 0.0349
+
+--- HAND: AIR_CHECK_3WAY_013 ---
+Situation ID: AIR_CHECK_3WAY_013
+Hero cards: Th8h
+Board: Kd9d4d2h
+Street: turn
+Hero position: CO
+Villain positions: HJ, BB
+Num opponents: 2
+Pot: 90.0
+To call: 0.0
+Facing bet: 0
+Action history: BB check, HJ check, CO ???
+
+Key features:
+  raw_equity: 0.0235
+  equity_vs_range: 0.0235
+  pot_odds: 0.0000
+  is_ip: 1
+  hand_category: 0
+  is_made_hand: 0
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.5954
+  spr: 1.1111
+  villain_top_pair_plus_pct: 0.3438
+  villain_air_pct: 0.2500
+  villain_range_capped: 1
+  board_favour: -0.0438
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 0
+  villain_checked_back: 1
+  better_hand_pct: 0.9598
+  worse_hand_pct: 0.0349
+
+--- HAND: AIR_CHECK_3WAY_014 ---
+Situation ID: AIR_CHECK_3WAY_014
+Hero cards: Th8h
+Board: Kd9d4d2h
+Street: turn
+Hero position: BTN
+Villain positions: SB, BB
+Num opponents: 2
+Pot: 90.0
+To call: 0.0
+Facing bet: 0
+Action history: SB check, BB check, BTN ???
+
+Key features:
+  raw_equity: 0.0375
+  equity_vs_range: 0.0375
+  pot_odds: 0.0000
+  is_ip: 1
+  hand_category: 0
+  is_made_hand: 0
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.5954
+  spr: 1.1111
+  villain_top_pair_plus_pct: 0.2963
+  villain_air_pct: 0.2593
+  villain_range_capped: 1
+  board_favour: 0.0037
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 0
+  villain_checked_back: 1
+  better_hand_pct: 0.8771
+  worse_hand_pct: 0.1186
+
+--- HAND: AIR_CHECK_3WAY_015 ---
+Situation ID: AIR_CHECK_3WAY_015
+Hero cards: Th8h
+Board: Kd9d4d2h
+Street: turn
+Hero position: BTN
+Villain positions: HJ, BB
+Num opponents: 2
+Pot: 90.0
+To call: 0.0
+Facing bet: 0
+Action history: BB check, HJ check, BTN ???
+
+Key features:
+  raw_equity: 0.0288
+  equity_vs_range: 0.0288
+  pot_odds: 0.0000
+  is_ip: 1
+  hand_category: 0
+  is_made_hand: 0
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.5954
+  spr: 1.1111
+  villain_top_pair_plus_pct: 0.3438
+  villain_air_pct: 0.2500
+  villain_range_capped: 1
+  board_favour: -0.0438
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 0
+  villain_checked_back: 1
+  better_hand_pct: 0.8771
+  worse_hand_pct: 0.1186
+
+--- HAND: AIR_CHECK_3WAY_016 ---
+Situation ID: AIR_CHECK_3WAY_016
+Hero cards: Th9h
+Board: Ac6c2c2h
+Street: turn
+Hero position: CO
+Villain positions: SB, BB
+Num opponents: 2
+Pot: 90.0
+To call: 0.0
+Facing bet: 0
+Action history: SB check, BB check, CO ???
+
+Key features:
+  raw_equity: 0.0257
+  equity_vs_range: 0.0257
+  pot_odds: 0.0000
+  is_ip: 1
+  hand_category: 0
+  is_made_hand: 0
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.8954
+  spr: 1.1111
+  villain_top_pair_plus_pct: 0.8889
+  villain_air_pct: 0.1111
+  villain_range_capped: 1
+  board_favour: -0.5889
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 0
+  villain_checked_back: 1
+  better_hand_pct: 0.9126
+  worse_hand_pct: 0.0656
+
+--- HAND: AIR_CHECK_3WAY_017 ---
+Situation ID: AIR_CHECK_3WAY_017
+Hero cards: Th9h
+Board: Ac6c2c2h
+Street: turn
+Hero position: CO
+Villain positions: HJ, BB
+Num opponents: 2
+Pot: 90.0
+To call: 0.0
+Facing bet: 0
+Action history: BB check, HJ check, CO ???
+
+Key features:
+  raw_equity: 0.0235
+  equity_vs_range: 0.0235
+  pot_odds: 0.0000
+  is_ip: 1
+  hand_category: 0
+  is_made_hand: 0
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.8954
+  spr: 1.1111
+  villain_top_pair_plus_pct: 0.8438
+  villain_air_pct: 0.1562
+  villain_range_capped: 1
+  board_favour: -0.5438
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 0
+  villain_checked_back: 1
+  better_hand_pct: 0.9126
+  worse_hand_pct: 0.0656
+
+--- HAND: AIR_CHECK_3WAY_018 ---
+Situation ID: AIR_CHECK_3WAY_018
+Hero cards: Th9h
+Board: Ac6c2c2h
+Street: turn
+Hero position: BTN
+Villain positions: SB, BB
+Num opponents: 2
+Pot: 90.0
+To call: 0.0
+Facing bet: 0
+Action history: SB check, BB check, BTN ???
+
+Key features:
+  raw_equity: 0.0250
+  equity_vs_range: 0.0250
+  pot_odds: 0.0000
+  is_ip: 1
+  hand_category: 0
+  is_made_hand: 0
+  is_strong_made: 0
+  is_monster: 0
+  draw_outs: 0
+  has_flush_draw: 0
+  has_straight_draw: 0
+  danger_score: 0.8954
+  spr: 1.1111
+  villain_top_pair_plus_pct: 0.6667
+  villain_air_pct: 0.3333
+  villain_range_capped: 1
+  board_favour: -0.3667
+  num_callers_to_bet: 0
+  facing_raise: 0
+  villain_aggression_count: 0
+  villain_checked_back: 1
+  better_hand_pct: 0.8725
+  worse_hand_pct: 0.1099
+

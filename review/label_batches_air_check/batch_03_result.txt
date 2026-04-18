@@ -1,0 +1,432 @@
+```json
+{
+  "situation_id": "AIR_CHECK_3WAY_019",
+  "hand_bucket": "air",
+  "action": "CHECK",
+  "confidence": "HIGH",
+  "difficulty": 1,
+
+  "reasoning": "This is an air hand: Th9h on Ac6c2c2h has no pair, no flush draw (no club), no straight draw, 0 outs, and raw equity 0.0217. Villain range is dominated by TP+ (0.8438) on a monotone-turned-paired ace-high board — fold equity against two opponents is negligible because the overwhelming majority of their continuing range is Ax, clubs, and trips that cannot fold. SPR is 1.11, so any bet commits stacks into a range that crushes hero. CHECK and give up the hand is the only profitable action for pure air 3-way (KB §1.1, §1.4).",
+
+  "intentions_raw": "I have literally nothing — no pair, no draw, 2% equity — and villain's range is 84% top-pair-or-better on a monotone paired ace board. I cannot fold anyone out, I cannot realize equity beyond showdown, so I give up cheaply by checking behind.",
+  "intentions": ["pot_control"],
+
+  "feature_attention": {
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "equity_vs_range": "PRIMARY",
+    "has_showdown_value": "PRIMARY",
+    "overcard_outs": "CONFIRMED",
+    "villain_fold_equity_estimate": "PRIMARY",
+    "is_ip": "CONFIRMED",
+    "hero_range_percentile": "CONFIRMED",
+    "spr": "CONFIRMED",
+    "danger_score": "CONFIRMED",
+    "villain_checked_back": "CONFIRMED",
+    "better_hand_pct": "CONFIRMED"
+  },
+
+  "tier1_removals": {},
+
+  "proposed_tags": [],
+
+  "alternatives_considered": [
+    "BET (bluff): rejected — pure air 3-way has no profitable bluff. With villain_top_pair_plus_pct = 0.84 on a monotone paired ace-high board, fold equity against two opponents is well below the ~49% breakeven for a pot-sized bluff (KB §1.1). SPR 1.11 means any bet is committing."
+  ],
+
+  "street_plan_raw": "River is already on the board — this is the turn, and after checking behind I fold to any river bet with zero equity to realize.",
+  "street_plan_tags": ["check_pot_control", "pot_control_check_call"]
+}
+```
+
+```json
+{
+  "situation_id": "AIR_CHECK_3WAY_020",
+  "hand_bucket": "air",
+  "action": "CHECK",
+  "confidence": "HIGH",
+  "difficulty": 1,
+
+  "reasoning": "This is an air hand: Th9h on Ac6c2c2h with raw equity 0.0022 — essentially drawing dead on a monotone paired ace board. Villain range is 0.539 TP+ and 0.461 air; even though the air fraction is meaningful, the TP+ half (Ax, trips, flushes) never folds on a board this static at SPR 1.11. Fold equity across two opponents multiplies down — cannot approach the ~49% breakeven. CHECK and give up (KB §1.1, §1.4).",
+
+  "intentions_raw": "Hero has 0.2% equity on a monotone paired ace board. The TP+ half of villain's range is essentially locked in at this SPR, and I have no showdown value. Checking costs nothing and avoids bluffing into a range that can't fold.",
+  "intentions": ["pot_control"],
+
+  "feature_attention": {
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "equity_vs_range": "PRIMARY",
+    "has_showdown_value": "PRIMARY",
+    "overcard_outs": "CONFIRMED",
+    "villain_fold_equity_estimate": "PRIMARY",
+    "is_ip": "CONFIRMED",
+    "hero_range_percentile": "CONFIRMED",
+    "spr": "CONFIRMED",
+    "danger_score": "CONFIRMED",
+    "villain_checked_back": "CONFIRMED",
+    "better_hand_pct": "CONFIRMED",
+    "villain_aggression_count": "CONFIRMED"
+  },
+
+  "tier1_removals": {},
+
+  "proposed_tags": [],
+
+  "alternatives_considered": [
+    "BET (bluff): rejected — essentially 0% equity against a range where more than half is TP+ on a static SPR-1.1 board. Even with villain_air_pct 0.461, combined fold equity against two opponents is far below ~49% (KB §1.1). Bluff-to-value ratio 3-way is 1:4 or tighter (§1.4), and the only bluffs that survive are ones with nut blockers or strong draws — hero has neither."
+  ],
+
+  "street_plan_raw": "Turn was checked through — I close action by checking, hand ends by taking it to showdown with zero equity, fold to any river action.",
+  "street_plan_tags": ["check_pot_control", "pot_control_check_call"]
+}
+```
+
+```json
+{
+  "situation_id": "AIR_CHECK_3WAY_021",
+  "hand_bucket": "air",
+  "action": "CHECK",
+  "confidence": "HIGH",
+  "difficulty": 1,
+
+  "reasoning": "This is an air hand: Th9h on JcJd2h3c has no pair, no draw, 0 outs, raw equity 0.072. On a paired board the TP+ fraction (0.50) contains every Jx trips combo plus overpairs — a range that cannot fold at SPR 1.11. Paired boards also crush bluff fold equity because villains know the bluffer's range is narrower. Hero holds no relevant blocker. CHECK is the only profitable line for air with no showdown value and no fold equity (KB §1.1, §1.4, DO NOT Rule 2).",
+
+  "intentions_raw": "I have T9-high on a paired jack board with 7% equity and zero fold equity — villain has half their range as trips-or-better that never folds, and the air half doesn't call either. I check back and concede.",
+  "intentions": ["pot_control"],
+
+  "feature_attention": {
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "equity_vs_range": "PRIMARY",
+    "has_showdown_value": "PRIMARY",
+    "overcard_outs": "CONFIRMED",
+    "villain_fold_equity_estimate": "PRIMARY",
+    "is_ip": "CONFIRMED",
+    "hero_range_percentile": "CONFIRMED",
+    "spr": "CONFIRMED",
+    "is_paired": "CONFIRMED",
+    "villain_checked_back": "CONFIRMED",
+    "better_hand_pct": "CONFIRMED"
+  },
+
+  "tier1_removals": {},
+
+  "proposed_tags": [],
+
+  "alternatives_considered": [
+    "BET (bluff): rejected — pure air with no blocker on a paired board. Jx is unfoldable, overpairs are unfoldable, and SPR 1.11 means any bet commits. 3-way fold equity required is ~49% for a pot-sized bluff (KB §1.1) and the combined fold probability here falls well short. DO NOT Rule 2: pure bluffs 3-way are unprofitable."
+  ],
+
+  "street_plan_raw": "Turn checks through; with zero equity I take it to showdown intending to fold any river bet.",
+  "street_plan_tags": ["check_pot_control", "pot_control_check_call"]
+}
+```
+
+```json
+{
+  "situation_id": "AIR_CHECK_3WAY_022",
+  "hand_bucket": "air",
+  "action": "CHECK",
+  "confidence": "HIGH",
+  "difficulty": 2,
+
+  "reasoning": "This is an air hand: Th9h on JcJd2h3c has no pair, no draw, 9% equity. Villain_air_pct 0.556 is high (blinds-only villains, no flop aggression, paired board missed them), which tempts a thin bluff — but villain_top_pair_plus_pct is still 0.41, which is the '≥40% meaningful value density' bucket (KB §1.9), and on a paired board TP+ is trips and overpairs that never fold at SPR 1.11. Combined fold equity against two opponents does not clear the ~49% bluff breakeven (KB §1.1). Hero has no blocker, no draw, no showdown value. CHECK is correct even against the soft ranges here.",
+
+  "intentions_raw": "Villain range is pretty weak (56% air) but the 41% TP+ portion is trips and overpairs that cannot fold on this paired board at SPR 1.11 — so my fold equity is capped below breakeven, and with 9% equity and no showdown value I have nothing to protect. I give up by checking.",
+  "intentions": ["pot_control"],
+
+  "feature_attention": {
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "equity_vs_range": "PRIMARY",
+    "has_showdown_value": "PRIMARY",
+    "overcard_outs": "CONFIRMED",
+    "villain_fold_equity_estimate": "PRIMARY",
+    "is_ip": "CONFIRMED",
+    "hero_range_percentile": "CONFIRMED",
+    "spr": "CONFIRMED",
+    "is_paired": "CONFIRMED",
+    "villain_checked_back": "CONFIRMED",
+    "better_hand_pct": "CONFIRMED"
+  },
+
+  "tier1_removals": {},
+
+  "proposed_tags": [],
+
+  "alternatives_considered": [
+    "BET (thin bluff): rejected — villain_air_pct 0.556 looks bluffable, but the 0.41 TP+ chunk is unfoldable trips/overpairs on this paired SPR-1.1 board. Fold equity from air alone is ~0.56 × ~0.56 ≈ 0.31, below the ~49% breakeven for a pot-sized bluff (KB §1.1). Hero has no blocker or side equity (DO NOT Rule 2)."
+  ],
+
+  "street_plan_raw": "Turn checks through behind both blinds; with 9% equity I surrender and fold to any river bet.",
+  "street_plan_tags": ["check_pot_control", "pot_control_check_call"]
+}
+```
+
+```json
+{
+  "situation_id": "AIR_CHECK_3WAY_023",
+  "hand_bucket": "air",
+  "action": "CHECK",
+  "confidence": "HIGH",
+  "difficulty": 1,
+
+  "reasoning": "This is an air hand: Th9h on JcJd2h3c, 8.9% raw equity, no made hand, no draw, 0 outs. Villain_top_pair_plus_pct 0.50 on a paired board means trips-dominated, unfoldable at SPR 1.11. Villain_air_pct 0.44 is meaningful but insufficient combined fold equity against the non-folding half. Hero has no blocker, no showdown value, and is in the '78% better_hand_pct' zone. CHECK and give up (KB §1.1, §1.4, DO NOT Rule 2).",
+
+  "intentions_raw": "Air hand on a paired board with 50% TP+ villain range — trips do not fold, so fold equity is capped. I have no blocker and no draw, so I cannot bluff profitably. I check back and concede.",
+  "intentions": ["pot_control"],
+
+  "feature_attention": {
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "equity_vs_range": "PRIMARY",
+    "has_showdown_value": "PRIMARY",
+    "overcard_outs": "CONFIRMED",
+    "villain_fold_equity_estimate": "PRIMARY",
+    "is_ip": "CONFIRMED",
+    "hero_range_percentile": "CONFIRMED",
+    "spr": "CONFIRMED",
+    "is_paired": "CONFIRMED",
+    "villain_checked_back": "CONFIRMED",
+    "better_hand_pct": "CONFIRMED"
+  },
+
+  "tier1_removals": {},
+
+  "proposed_tags": [],
+
+  "alternatives_considered": [
+    "BET (bluff): rejected — fold equity against a paired-board range where 50% is trips-or-overpair does not clear the ~49% pot-sized-bluff breakeven 3-way (KB §1.1). No blocker, no side equity (DO NOT Rule 2)."
+  ],
+
+  "street_plan_raw": "Turn checks through — I take the hand to showdown and surrender any river bet with zero equity.",
+  "street_plan_tags": ["check_pot_control", "pot_control_check_call"]
+}
+```
+
+```json
+{
+  "situation_id": "AIR_CHECK_3WAY_024",
+  "hand_bucket": "air",
+  "action": "CHECK",
+  "confidence": "HIGH",
+  "difficulty": 2,
+
+  "reasoning": "This is an air hand: Th9h on JcJd2h3c, 5% raw equity, no pair, no draw. Villain_air_pct 0.58 (high) and villain_top_pair_plus_pct 0.40 (right at the 'meaningful value density' threshold per KB §1.9). CO villain also fired on the flop (villain_aggression_count = 1) before checking turn — which means CO's turn-checking range still includes Jx that slowplayed and overpairs pot-controlling. At SPR 1.11 on a paired board TP+ is never folding. Hero has no blocker and no showdown value. Fold equity against two opponents is insufficient for pure air (KB §1.1, DO NOT Rule 2). CHECK.",
+
+  "intentions_raw": "Villain air is 58% but one villain actually fired the flop and now checked turn — that means their TP+ hands are present and strong. I have no pair, no blocker, no showdown value, 5% equity. Betting into a paired SPR-1.1 board with pure air is a fold-equity calculation that fails 3-way. I check back.",
+  "intentions": ["pot_control"],
+
+  "feature_attention": {
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "equity_vs_range": "PRIMARY",
+    "has_showdown_value": "PRIMARY",
+    "overcard_outs": "CONFIRMED",
+    "villain_fold_equity_estimate": "PRIMARY",
+    "is_ip": "CONFIRMED",
+    "hero_range_percentile": "CONFIRMED",
+    "spr": "CONFIRMED",
+    "is_paired": "CONFIRMED",
+    "villain_checked_back": "CONFIRMED",
+    "villain_aggression_count": "CONFIRMED",
+    "better_hand_pct": "CONFIRMED"
+  },
+
+  "tier1_removals": {},
+
+  "proposed_tags": [],
+
+  "alternatives_considered": [
+    "BET (thin bluff): rejected — high air fraction (0.58) tempts a bluff but paired-board TP+ at 40% never folds at SPR 1.11. CO's prior-street aggression signals Jx slowplays in the turn check. Hero has no blocker, no side equity; DO NOT Rule 2 (no pure bluffs 3-way) applies."
+  ],
+
+  "street_plan_raw": "I check back, end the hand going to showdown with 5% equity, folding to any river bet.",
+  "street_plan_tags": ["check_pot_control", "pot_control_check_call"]
+}
+```
+
+```json
+{
+  "situation_id": "AIR_CHECK_3WAY_025",
+  "hand_bucket": "air",
+  "action": "CHECK",
+  "confidence": "HIGH",
+  "difficulty": 1,
+
+  "reasoning": "This is an air hand: Th9h on JcJd2h3c, 6.2% raw equity, no pair, no draw, 0 outs. Villain_top_pair_plus_pct 0.52 on a paired board means unfoldable trips + overpairs dominate. Villain_air_pct 0.41 but combined fold probability against two opponents is far below the ~49% pot-bluff breakeven (KB §1.1). No blocker, no showdown value, 85% of the range beats hero. CHECK is the only profitable action (DO NOT Rule 2).",
+
+  "intentions_raw": "Air on a paired board with a value-heavy villain range at SPR 1.11 — trips never fold. I cannot bluff profitably 3-way, I have no showdown equity, so I give up by checking.",
+  "intentions": ["pot_control"],
+
+  "feature_attention": {
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "equity_vs_range": "PRIMARY",
+    "has_showdown_value": "PRIMARY",
+    "overcard_outs": "CONFIRMED",
+    "villain_fold_equity_estimate": "PRIMARY",
+    "is_ip": "CONFIRMED",
+    "hero_range_percentile": "CONFIRMED",
+    "spr": "CONFIRMED",
+    "is_paired": "CONFIRMED",
+    "villain_checked_back": "CONFIRMED",
+    "better_hand_pct": "CONFIRMED"
+  },
+
+  "tier1_removals": {},
+
+  "proposed_tags": [],
+
+  "alternatives_considered": [
+    "BET (bluff): rejected — 52% TP+ on paired board, SPR 1.11, hero has zero blocker and zero showdown value. Combined fold equity against two opponents is well below the ~49% pot-bluff breakeven (KB §1.1). DO NOT Rule 2 — no pure bluffs 3-way."
+  ],
+
+  "street_plan_raw": "I check back; hand proceeds to showdown with 6% equity, fold to any river bet.",
+  "street_plan_tags": ["check_pot_control", "pot_control_check_call"]
+}
+```
+
+```json
+{
+  "situation_id": "AIR_CHECK_3WAY_026",
+  "hand_bucket": "air",
+  "action": "CHECK",
+  "confidence": "HIGH",
+  "difficulty": 1,
+
+  "reasoning": "This is an air hand: Th8d on 9h9c4d2h has no pair (board pair is 99), no draw, no outs, 6.5% raw equity. Villain_top_pair_plus_pct 0.48 on a paired board = trips-heavy, never folds at SPR 1.11. Critically, villain_air_pct is only 0.074 — the range is overwhelmingly made hands and the remainder is mostly medium/weak pairs. Fold equity is essentially absent. Hero has no blocker, no showdown value, 86% better_hand_pct. CHECK is the only correct action (KB §1.1, DO NOT Rule 2).",
+
+  "intentions_raw": "Villain air is just 7% — the range is overwhelmingly made hands on a paired board at SPR 1.11. I have T-high with no pair, no draw, and no fold equity. I check back and accept the loss.",
+  "intentions": ["pot_control"],
+
+  "feature_attention": {
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "equity_vs_range": "PRIMARY",
+    "has_showdown_value": "PRIMARY",
+    "overcard_outs": "CONFIRMED",
+    "villain_fold_equity_estimate": "PRIMARY",
+    "is_ip": "CONFIRMED",
+    "hero_range_percentile": "CONFIRMED",
+    "spr": "CONFIRMED",
+    "is_paired": "CONFIRMED",
+    "villain_checked_back": "CONFIRMED",
+    "better_hand_pct": "CONFIRMED"
+  },
+
+  "tier1_removals": {},
+
+  "proposed_tags": [],
+
+  "alternatives_considered": [
+    "BET (bluff): rejected — villain_air_pct 0.074 means almost no folding hands exist in the range. Combined 3-way fold equity is far below ~49% breakeven. No blocker, no side equity (DO NOT Rule 2)."
+  ],
+
+  "street_plan_raw": "I check back and take the hand to showdown; fold to any river bet with zero equity.",
+  "street_plan_tags": ["check_pot_control", "pot_control_check_call"]
+}
+```
+
+```json
+{
+  "situation_id": "AIR_CHECK_3WAY_027",
+  "hand_bucket": "air",
+  "action": "CHECK",
+  "confidence": "HIGH",
+  "difficulty": 1,
+
+  "reasoning": "This is an air hand: Th8d on 9h9c4d2h, 7.6% raw equity, no pair, no draw. Villain_top_pair_plus_pct 0.53 on a paired board, villain_air_pct only 0.094 — fold equity is nearly zero. At SPR 1.11 trips and overpairs never fold. Hero has no blocker and no showdown value. CHECK is forced by the bucket-first logic for air 3-way (KB §1.1, §1.4, DO NOT Rule 2).",
+
+  "intentions_raw": "Villain range is over half trips-plus and under 10% air on a paired board at SPR 1.11. With T-high and no draw I have no fold equity and no equity to protect. I check and surrender.",
+  "intentions": ["pot_control"],
+
+  "feature_attention": {
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "equity_vs_range": "PRIMARY",
+    "has_showdown_value": "PRIMARY",
+    "overcard_outs": "CONFIRMED",
+    "villain_fold_equity_estimate": "PRIMARY",
+    "is_ip": "CONFIRMED",
+    "hero_range_percentile": "CONFIRMED",
+    "spr": "CONFIRMED",
+    "is_paired": "CONFIRMED",
+    "villain_checked_back": "CONFIRMED",
+    "better_hand_pct": "CONFIRMED"
+  },
+
+  "tier1_removals": {},
+
+  "proposed_tags": [],
+
+  "alternatives_considered": [
+    "BET (bluff): rejected — 9% air in villain's range means fold equity is essentially zero; a pot-sized bluff needs ~49% fold probability 3-way (KB §1.1). DO NOT Rule 2 — no pure bluffs 3-way, no blocker, no draw."
+  ],
+
+  "street_plan_raw": "Check back, see showdown with 8% equity, fold to any river action.",
+  "street_plan_tags": ["check_pot_control", "pot_control_check_call"]
+}
+```
+
+```json
+{
+  "situation_id": "AIR_CHECK_3WAY_028",
+  "hand_bucket": "air",
+  "action": "CHECK",
+  "confidence": "HIGH",
+  "difficulty": 2,
+
+  "reasoning": "This is an air hand: Th8d on 9h9c4d2h, 5.5% raw equity, no pair, no draw. Villain_top_pair_plus_pct 0.37 (just under the 'meaningful value density' threshold) and villain_air_pct 0.175 — softer range than the other hands in this batch, and villain_aggression_count = 1 means one villain fired the flop and then checked turn. That flop bet + turn check signals TP+ slowplay or pot control with mid pairs, not pure give-up. Even at 0.37 TP+, trips on a paired board at SPR 1.11 never fold. Hero holds no blocker, no showdown value, and 95% better_hand_pct. Combined fold equity across two opponents is far below ~49% pot-bluff breakeven. CHECK (KB §1.1, DO NOT Rule 2).",
+
+  "intentions_raw": "Villain range is softer here (37% TP+) but prior flop aggression means trips are still present, unfolding at SPR 1.11. With only 17% air and no blocker or showdown value, my bluff cannot generate enough fold equity. I check back and accept the spot.",
+  "intentions": ["pot_control"],
+
+  "feature_attention": {
+    "villain_top_pair_plus_pct": "PRIMARY",
+    "villain_air_pct": "PRIMARY",
+    "villain_draw_pct": "CONFIRMED",
+    "villain_medium_made_pct": "CONFIRMED",
+    "equity_vs_range": "PRIMARY",
+    "has_showdown_value": "PRIMARY",
+    "overcard_outs": "CONFIRMED",
+    "villain_fold_equity_estimate": "PRIMARY",
+    "is_ip": "CONFIRMED",
+    "hero_range_percentile": "CONFIRMED",
+    "spr": "CONFIRMED",
+    "is_paired": "CONFIRMED",
+    "villain_checked_back": "CONFIRMED",
+    "villain_aggression_count": "CONFIRMED",
+    "better_hand_pct": "CONFIRMED"
+  },
+
+  "tier1_removals": {},
+
+  "proposed_tags": [],
+
+  "alternatives_considered": [
+    "BET (thin bluff): rejected — even with the softest villain composition in this batch (TP+ 0.37), the flop bettor's trips remain in the turn-check range, and 17% air is not enough to generate ~49% combined fold probability across two opponents (KB §1.1). Hero has no blocker, no draw, no showdown value — DO NOT Rule 2 applies."
+  ],
+
+  "street_plan_raw": "I check back, take it to showdown with 5% equity, fold to any river bet.",
+  "street_plan_tags": ["check_pot_control", "pot_control_check_call"]
+}
+```
