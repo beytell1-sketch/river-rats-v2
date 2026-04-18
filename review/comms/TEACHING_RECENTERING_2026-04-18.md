@@ -74,9 +74,27 @@ Grouped and pre-classified as a DRAFT for owner to redirect.
 |---|---|---|
 | `commitment_desc` | **FLAG when SPR < 2** | Genuine attention-demanding signal; not obvious from raw pot math |
 | `danger_score` | **FLAG when >0.5** (numeric) | Show number always; surface as flag when materially high |
-| `blocker_desc` | **FLAG, observation-only phrasing** | Instead of "Hero's cards block X%" → "X% of villain's flush combos contain a card in hero's hand." NEUTRAL phrasing. Moves to flag window; only fires at meaningful threshold |
+| `blocker_desc` | **DELETE now, redesign as deferred flag pair** | Current sentence "Hero's cards block X%" is biased in the *wrong* direction (positive-sounding) — for weak-made bluff-catchers it's actually negative. Two-flag redesign (bluff-catch-negative + bluff-betting-positive) is L4/L5 work; queued for deep design session |
 
-**This changes commit i:** instead of "delete blocker_desc entirely" → "move to flag window with neutral phrasing + threshold gate." Your call — I recommend this revision because blocker IS the kind of range-reasoning flag the new architecture wants.
+**Commit i stays as DELETE** (Option B from the original directive). The current sentence misleads more than it teaches. Queued for proper redesign later.
+
+### D.1 Deferred — blocker flag redesign (L4/L5)
+
+Owner-flagged 2026-04-18 — scope when we pick it up:
+
+**Flag 1 — Bluff-catch negative blocker:**
+- Trigger: facing bet + flush-possible board (3+ suited) + hero holds that suit + hero weak-made (single pair, not top pair) + villain range likely suited-high-card heavy (tight/early-position)
+- Meaning: hero blocks villain's bluff candidates → villain's bets more value-weighted → hero's bluff-catch weakens
+- Observation-only phrasing: "Your Kh removes ~12 of villain's flush-draw combos from their betting range."
+
+**Flag 2 — Bluff-betting positive blocker:**
+- Trigger: hero betting as bluff/semi-bluff + flush-possible board + hero holds that suit + villain range weighted to flush-completing calls
+- Meaning: hero removes villain's call combos → bluff works more often
+- Observation-only phrasing mirrors flag 1
+
+Same feature (blocker count), two triggers (hero action context), two different flag surfaces. Range-combinatoric reasoning conditioned on hero's action. Level 4-5 material.
+
+Design session needed before implementation — not a commit-i-scope decision.
 
 ### E. NUMERIC DASHBOARD
 
