@@ -1,15 +1,22 @@
 """generate_air_check_v231.py — v2.3.1 Layer 2 AIR-CHECK counter-example generator.
 
 Produces the missing counter-example class per MAIN_TERMINAL_UPDATE_2026-04-18-g
-§Layer 2, with adjustments from REVIEW_BUILDER_AIR_CHECK_PLAN (commit 0a2467e):
+§Layer 2, with adjustments from REVIEW_BUILDER_AIR_CHECK_PLAN (0a2467e) and
+resolutions from MAIN_TERMINAL_DECISION_2026-04-18-h (95e9221):
 
-  - num_opponents in {1, 2} — HU + 3-way split (~15-20 BP each, 30-40 total)
-  - hard-fail on litmus miss: A4d/Qs5s7s and T5h/JJ2 MUST pass predicate
-  - expanded monotone board pool (4 boards across suits)
+  - Two output streams: 3-way (labelled for v2.3.1) and HU (v2.4 prep, unlabelled)
+  - Litmus seeds shifted to TURN with flop check-through (Path B, Blocker 2):
+    bridge computes villain_checked_back from prior streets only, so the
+    predicate only fires on turn+. Layer 1 (board_adjusted_hrp) handles the
+    literal flop playtest spots at inference; Layer 2 teaches the broader
+    air+vcb=1+checked-through pattern on turn+.
+  - Hard-fail on 3-way litmus miss (both litmus specs must pass predicate);
+    HU is opportunistic with no litmus requirement.
+  - Expanded monotone board pool (4 boards across suits)
 
 Outputs:
-  training-data/v23_air_check_3way.jsonl   (target 15-20 BP; OS ~25)
-  training-data/v23_air_check_hu.jsonl     (target 15-20 BP; OS ~25)
+  training-data/v23_air_check_3way.jsonl   (target 30-40 BP; labelled for v2.3.1)
+  training-data/v23_air_check_hu.jsonl     (opportunistic; v2.4 prep, unlabelled)
 
 Predicate (per update-g §Layer 2):
   facing_bet=0, villain_checked_back=1, is_made_hand=0,
@@ -26,7 +33,6 @@ from __future__ import annotations
 import sys
 import os
 import json
-from dataclasses import replace as dc_replace
 from typing import Callable, Dict, List, Tuple
 
 _REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -127,23 +133,46 @@ def _all_cards() -> List[str]:
     return [r + s for r in _RANKS for s in _SUITS]
 
 
+def _has_flush_draw_with_board(hero_cards: List[str], board: List[str]) -> bool:
+    """Cheap flush-draw check: any single suit appears 4+ times across hero+board."""
+    from collections import Counter
+    suits = [c[1] for c in hero_cards] + [c[1] for c in board]
+    return max(Counter(suits).values()) >= 4
+
+
 def _pick_air_hole_cards(
     board: List[str],
     max_hands: int,
     used: set,
 ) -> List[List[str]]:
-    """Pick up to max_hands 2-card combos that evaluate as AIR on board."""
+    """Pick up to max_hands 2-card combos that evaluate as AIR on board
+    AND have draw_outs<=2 (cheap check via hand_evaluator). Iterates
+    ranks from middle outward to prefer disconnected-from-board hands
+    (helps predicate equity_vs_range<0.35 without dragging in straight
+    connectors at either rank extreme)."""
     dead = set(board) | used
-    available = [c for c in _all_cards() if c not in dead]
+    # Mid-rank outward ordering: T, 9, 8, J, 7, Q, 6, K, 5, A, 4, 3, 2.
+    # This prefers mid-rank offsuit hands which tend to be disconnected
+    # from most board textures (avoids the A-high "too much equity"
+    # class AND the low-connector "straight draw" class).
+    rank_order = ['T', '9', '8', 'J', '7', 'Q', '6', 'K', '5', 'A', '4', '3', '2']
+    ordered_cards = [r + s for r in rank_order for s in _SUITS]
+    available = [c for c in ordered_cards if c not in dead]
     found: List[List[str]] = []
     for i in range(len(available)):
         for j in range(i + 1, len(available)):
             cards = [available[i], available[j]]
             try:
-                if _is_air(cards, board):
-                    found.append(cards)
-                    if len(found) >= max_hands:
-                        return found
+                ev = evaluate_hand(cards, board)
+                if ev.category not in AIR_CATS:
+                    continue
+                if ev.draw_outs > 2:
+                    continue
+                if _has_flush_draw_with_board(cards, board):
+                    continue
+                found.append(cards)
+                if len(found) >= max_hands:
+                    return found
             except Exception:
                 continue
     return found
@@ -311,42 +340,55 @@ def _checked_through_history(
 
 # =============================================================================
 # Litmus seeds — HARD FAIL if either misses predicate (REVIEW adjustment #2)
+# Shifted to TURN per Decision-h Blocker 2: bridge computes vcb from prior
+# streets only. Same hero + flop + villain weakness context, one street later.
 # =============================================================================
 LITMUS_SEEDS: List[Tuple[str, SituationSpec]] = []
+
+# Safe turn cards per Decision-h §Blocker 2 guidance. NOTE: initial
+# guidance suggested "low non-spade" (2c/3d/4h) but those cards open a
+# gutshot straight for A4d (4-5-7-low → A2345 wheel needs a 3, giving
+# draw_outs=4 and failing the predicate). Any low card 2-8 opens some
+# wheel/connector for A4. High non-spade picks preserve air cleanly.
+# Probed empirically: Kc gives draw_outs=0, equity_vs_range=0.038 (air).
+_LITMUS_TURN_A = 'Kc'  # A4d air-preserving: no flush, no pair, no straight
+_LITMUS_TURN_B = '3c'  # T5h air-preserving: offsuit, doesn't pair JJ2, no draws
 
 
 def _build_litmus_seeds() -> None:
     LITMUS_SEEDS.clear()
 
-    # A4d on Qs5s7s — BTN hero, SB+BB villains, flop checked-to IP.
-    board_a = ['Qs', '5s', '7s']
-    hist_a = _checked_through_history('flop', 'BTN', ['SB', 'BB'], 'BTN')
+    # A4d on Qs5s7s, turn 2c — BTN hero, SB+BB villains, flop check-through.
+    flop_a = ['Qs', '5s', '7s']
+    board_a = flop_a + [_LITMUS_TURN_A]
+    hist_a = _checked_through_history('turn', 'BTN', ['SB', 'BB'], 'BTN')
     spec_a = _make_spec(
         hero_cards=['Ad', '4d'],
         board=board_a,
         hero_pos='BTN',
         villain_positions=['SB', 'BB'],
-        street='flop',
+        street='turn',
         action_history=hist_a,
         opener_position='BTN',
         num_opponents=2,
     )
-    LITMUS_SEEDS.append(('LITMUS_A4d_Qs5s7s', spec_a))
+    LITMUS_SEEDS.append(('LITMUS_A4d_Qs5s7s_turn', spec_a))
 
-    # T5h on JJ2 — BTN hero, SB+BB villains, flop checked-to IP.
-    board_b = ['Jc', 'Jd', '2h']
-    hist_b = _checked_through_history('flop', 'BTN', ['SB', 'BB'], 'BTN')
+    # T5h on JJ2, turn 3c — BTN hero, SB+BB villains, flop check-through.
+    flop_b = ['Jc', 'Jd', '2h']
+    board_b = flop_b + [_LITMUS_TURN_B]
+    hist_b = _checked_through_history('turn', 'BTN', ['SB', 'BB'], 'BTN')
     spec_b = _make_spec(
         hero_cards=['Th', '5h'],
         board=board_b,
         hero_pos='BTN',
         villain_positions=['SB', 'BB'],
-        street='flop',
+        street='turn',
         action_history=hist_b,
         opener_position='BTN',
         num_opponents=2,
     )
-    LITMUS_SEEDS.append(('LITMUS_T5h_JJ2', spec_b))
+    LITMUS_SEEDS.append(('LITMUS_T5h_JJ2_turn', spec_b))
 
 
 # =============================================================================
@@ -360,41 +402,49 @@ def _build_checked_through_specs(
     max_per_archetype: int = 5,
     target: int = 25,
 ) -> List[Tuple[SituationSpec, str]]:
-    """Walk (archetype × board × street) combinations, pick AIR hero hands,
-    build checked-through specs. Stops at target count."""
+    """Walk (board × archetype × street) combinations (board outermost for
+    diversity), pick one AIR hero hand per cell, build checked-through specs.
+    Stops at target count."""
     specs: List[Tuple[SituationSpec, str]] = []
     used: set = set()
+    picks_per_archetype: Dict[str, int] = {}
 
-    street_cycle_idx = 0
-    for hero_pos, villain_positions, opener in archetypes:
-        picked_for_archetype = 0
-        for flop in board_pool:
+    # Multi-pass over boards to stay within max_per_archetype while still
+    # distributing across the pool. Each pass adds at most one hand per
+    # (archetype × street) cell.
+    for pass_idx in range(3):
+        for flop_idx, flop in enumerate(board_pool):
             if len(specs) >= target:
                 return specs
-            if picked_for_archetype >= max_per_archetype:
-                break
-            street = streets[street_cycle_idx % len(streets)]
-            street_cycle_idx += 1
+            # Rotate archetype order per board to avoid always using the
+            # same archetype-first ordering.
+            rotated = archetypes[flop_idx % len(archetypes):] + archetypes[:flop_idx % len(archetypes)]
+            for hero_pos, villain_positions, opener in rotated:
+                if len(specs) >= target:
+                    return specs
+                key = f'{hero_pos}_{tuple(villain_positions)}'
+                if picks_per_archetype.get(key, 0) >= max_per_archetype:
+                    continue
+                # Pick the pass_idx'th street choice (cycles through streets).
+                street = streets[(pass_idx + flop_idx) % len(streets)]
 
-            # Build board by street
-            if street == 'flop':
-                board = list(flop)
-            elif street == 'turn':
-                turn = _safe_turn_card(flop, [])
-                board = flop + [turn]
-            else:
-                continue  # river not generated
+                # Build board by street
+                if street == 'turn':
+                    turn = _safe_turn_card(flop, [])
+                    board = flop + [turn]
+                elif street == 'flop':
+                    # Hero must be last to act on flop for villains to have checked.
+                    if _PFO[hero_pos] <= max(_PFO[v] for v in villain_positions):
+                        continue
+                    board = list(flop)
+                else:
+                    continue  # river not generated
 
-            # Hero IP requirement for flop (needs villains to have checked first).
-            if street == 'flop' and _PFO[hero_pos] <= max(_PFO[v] for v in villain_positions):
-                continue
-
-            hist = _checked_through_history(street, hero_pos, villain_positions, opener)
-
-            heroes = _pick_air_hole_cards(board, max_hands=2, used=used)
-            for hero in heroes:
-                if len(specs) >= target or picked_for_archetype >= max_per_archetype:
-                    break
+                hist = _checked_through_history(street, hero_pos, villain_positions, opener)
+                heroes = _pick_air_hole_cards(board, max_hands=1, used=used)
+                if not heroes:
+                    continue
+                hero = heroes[0]
                 spec = _make_spec(
                     hero_cards=hero,
                     board=board,
@@ -412,19 +462,19 @@ def _build_checked_through_specs(
                 )
                 specs.append((spec, desc))
                 used.add(tuple(sorted(hero)))
-                picked_for_archetype += 1
+                picks_per_archetype[key] = picks_per_archetype.get(key, 0) + 1
     return specs
 
 
-def build_3way_specs(target: int = 25) -> List[Tuple[SituationSpec, str]]:
-    """3-way AIR-CHECK: IP flop + IP/OOP turn."""
+def build_3way_specs(target: int = 40) -> List[Tuple[SituationSpec, str]]:
+    """3-way AIR-CHECK, turn-only (vcb=1 requires prior-street checks)."""
     ip = _build_checked_through_specs(
         ARCHETYPES_3WAY_IP,
-        streets=['flop', 'turn'],
+        streets=['turn'],
         num_opponents=2,
         board_pool=FLOP_BOARDS_ALL,
-        max_per_archetype=4,
-        target=target - 6,  # reserve room for OOP-turn
+        max_per_archetype=6,
+        target=target - 10,
     )
     remaining = target - len(ip)
     oop = _build_checked_through_specs(
@@ -432,21 +482,21 @@ def build_3way_specs(target: int = 25) -> List[Tuple[SituationSpec, str]]:
         streets=['turn'],
         num_opponents=2,
         board_pool=FLOP_BOARDS_ALL,
-        max_per_archetype=3,
+        max_per_archetype=4,
         target=remaining,
     )
     return ip + oop
 
 
-def build_hu_specs(target: int = 25) -> List[Tuple[SituationSpec, str]]:
-    """HU AIR-CHECK: IP flop + IP/OOP turn."""
+def build_hu_specs(target: int = 30) -> List[Tuple[SituationSpec, str]]:
+    """HU AIR-CHECK, turn-only. Opportunistic yield (v2.4 prep)."""
     ip = _build_checked_through_specs(
         ARCHETYPES_HU_IP,
-        streets=['flop', 'turn'],
+        streets=['turn'],
         num_opponents=1,
         board_pool=FLOP_BOARDS_ALL,
-        max_per_archetype=4,
-        target=target - 6,
+        max_per_archetype=5,
+        target=target - 8,
     )
     remaining = target - len(ip)
     oop = _build_checked_through_specs(
@@ -454,7 +504,7 @@ def build_hu_specs(target: int = 25) -> List[Tuple[SituationSpec, str]]:
         streets=['turn'],
         num_opponents=1,
         board_pool=FLOP_BOARDS_ALL,
-        max_per_archetype=3,
+        max_per_archetype=4,
         target=remaining,
     )
     return ip + oop
@@ -605,8 +655,8 @@ def _verify_litmus(records_3way: List[dict]) -> List[str]:
 
 
 def main(
-    target_3way: int = 20,
-    target_hu: int = 20,
+    target_3way: int = 38,  # +2 litmus seeds = 40 total (upper bound of 30-40)
+    target_hu: int = 30,
 ) -> bool:
     print('=' * 72)
     print('v2.3.1 Layer 2 — AIR-CHECK counter-example generator')
@@ -718,16 +768,21 @@ def main(
     print(f'  HU predicate pass-through:    '
           f'{sh[4]}/{sh[0]} = {sh[4]/max(1,sh[0]):.0%}')
 
-    # Litmus reverify on final written file
-    litmus_ok = all(
-        any(json.loads(l).get('situation_id') == sid
-            for l in open(out_3way))
-        for sid, _ in LITMUS_SEEDS
-    )
-    if not litmus_ok:
-        print('\n**LITMUS FINAL CHECK FAILED** — seeds missing from 3-way output')
+    # Litmus reverify on final written 3-way file (HU not required)
+    with open(out_3way) as f:
+        written_ids = {json.loads(l).get('situation_id') for l in f if l.strip()}
+    missing_litmus = [sid for sid, _ in LITMUS_SEEDS if sid not in written_ids]
+    if missing_litmus:
+        print(f'\n**LITMUS FINAL CHECK FAILED** — missing from 3-way output: {missing_litmus}')
         return False
     print(f'\n  litmus final: BOTH PRESENT in {out_3way}')
+
+    # ---- 3-way yield gate (target 30-40 BP) ----
+    if written_3way < 30:
+        print(f'\n**YIELD GATE**: 3-way written={written_3way} < 30 (target 30-40)')
+        return False
+    if written_3way > 50:
+        print(f'\n  [warn] 3-way written={written_3way} exceeds upper target 50; trim?')
 
     return True
 
