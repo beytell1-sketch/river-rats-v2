@@ -1,0 +1,731 @@
+================================================================================
+BATCH 01 — FLIPPED HANDS RE-LABELLING (v3.1 protocol)
+9 hands from FB-40 / MW-50 holdout suites that flipped v2.3.1 → v2.3.2
+================================================================================
+
+Reviewer role: combined v3.1 Labelling Agent + GTO Reviewer.
+Reviewer disposition: label on poker merits per v3.1 (no override clauses),
+then compare against holdout label and v2.3.2 prediction, classify as
+REGRESSION / CORRECTION / MIXED / UNCLEAR.
+
+NOTE on feature blanks: FB-04, FB-24, FB-35, FB-40 arrived with all-zero
+features (summariser artifact). I label from hand + board + street + action
+history, which is sufficient for these spots — each is an unambiguous
+situation. This is called out explicitly per hand.
+
+================================================================================
+HAND 1 — FB-04
+================================================================================
+
+Hero: Ac5c    Board: Kc 8c 4d (flop)    Position: BB (3-way)
+Villains: CO (bettor), BTN (folded)
+Action: BB check, CO bet 45 into 90 (pot-sized), BTN fold, hero to act.
+Pot now 135, to call 45 (closing action heads-up vs CO after BTN folded).
+
+HOLDOUT: RAISE    v2.3.2: CALL
+
+Step 1 — bucket: DRAWING. Nut flush draw (Ac with two clubs on board),
+no made hand, gutshot? With Ac5c on Kc8c4d we have 4c/A/5/K gaps — no
+gutshot. Pure nut flush draw. ~9 outs + 3 ace overcard outs (roughly)
+~= ~12 outs / 35% equity vs random.
+
+Step 2 — situation: BTN folded, action is now heads-up vs CO with BB
+closing. Fold equity from one opponent (CO), not two — BTN already out.
+CO bet pot-sized 3-way, which is a strong-ish sizing but possible with a
+wide c-bet range given the Kxx flop favours CO. Hero has the Ac blocker
+to CO's nut flush combos. Two-tone board with K high. SPR is now ~2 after
+call.
+
+Step 3 — actions:
+  FOLD: too much equity (nut flush draw) for the price, clearly wrong.
+  CALL: standard default with a nut flush draw at reasonable price. Pot
+    odds 45/(135+45) = 25%, hero has ~35%+ equity including overcards
+    and flush outs. Profitable call with realization.
+  RAISE: KB 1.7 semi-bluff conditions. Nut draw ✓. Ace blocker ✓.
+    Side equity: Ace overcard (3 outs) — modest. BUT: BTN already
+    folded, so this is now effectively HU. The "3-way semi-bluff
+    caveats" are softened. Against one opponent who bet pot on a board
+    that favours their range, a raise with nut flush draw + Ace blocker
+    + overcard is a strong solver line. Worked Example 9 applies at
+    even higher force HU vs 3-way.
+  The hand is effectively HU now (one opponent has already folded
+    before hero acts). Solver raise frequency for AsXs-type nut-draw
+    holdings HU on two-tone K-high boards facing a pot-size c-bet is
+    high (often 50%+ when you have the Ace blocker + backdoor
+    side-equity).
+
+Step 4 — choose: RAISE is best on merit. KB 1.7 all-four conditions are
+  met: nut draw, blocker, side equity, and position/flow are favourable
+  (one opponent already gone, hero closing HU with a nut draw + blocker).
+  Even with no side equity beyond an ace overcard, solver supports raise
+  here.
+Alt evaluated: CALL is close (it is the default non-set mixed-label
+  instruction in KB 1.7). However, the combination of BTN already
+  folding + Ace blocker + nut flush draw on a two-tone board pushes
+  toward RAISE as the modal solver action.
+
+v3.1 judgment: RAISE (could also accept CALL as a close mix).
+Confidence: MEDIUM (due to feature blanks; hand-only analysis).
+
+Classification vs holdout (RAISE) and v2.3.2 (CALL):
+  HOLDOUT = RAISE matches v3.1 modal answer.
+  v2.3.2 = CALL is the "default for non-set mixed labels" from KB 1.7.
+    It is not wrong — it is the conservative mix.
+  This is a MIXED spot. Both are defensible. Holdout's RAISE is slightly
+    preferred by Worked Example 9 logic; v2.3.2's CALL is the KB 1.7
+    "default for mixed raise/call hands".
+
+CLASSIFICATION: **MIXED**    Confidence: MEDIUM
+Rationale: KB 1.7 explicitly calls this a solver-mixed zone and tells
+  the labeller to default to CALL for non-set hands in the mix. v2.3.2
+  took that default. Holdout went with the RAISE path. Neither is wrong.
+
+================================================================================
+HAND 2 — FB-24
+================================================================================
+
+Hero: Ah Kc    Board: Ad 9c 3h 2s Kd (river)    Position: BTN (3-way)
+Villains: BB (bettor), CO (folded)
+Action: (flop/turn undisclosed) → river BB bets 90 into 120, CO fold,
+hero to act. Pot 210, to call 90. Pot odds 90/(120+90+90) = 30%.
+
+HOLDOUT: RAISE    v2.3.2: CALL
+
+Step 1 — bucket: STRONG MADE (two pair, top and second-pair, A+K on
+  A93-2-K). The K river gave hero top two pair. This is a very strong
+  made hand on this runout.
+
+Step 2 — situation: River, BTN closing action, facing lead from BB
+  after CO folded. Action is HU effectively. The King on the river is a
+  brutal card for BB's range if BB was leading/calling earlier — A9,
+  AK, A3, A2, 99, 33, 22, K-something, any sets (999/333/222) fills up,
+  KK fills up. Specifically: sets of 9s/3s/2s now have full houses (99
+  full of Ks, 33 full of Ks, 22 full of Ks), and AKs is possible in
+  BB's preflop range (premium combos in BB flat/overcall). Also KK
+  filled up on river. Straight-wise A2345 / 23456 cannot fall (no T
+  needed actually wait — impossible). Wheel: A2345 would need a 4 or 5,
+  neither there. So straights are out.
+
+  So better hands in BB's river-betting range: AA (3 combos), 99/33/22
+  (3 combos of sets that rivered boats), AK (3 combos of 2-pair now
+  tied or above — actually AK is TIE with hero's AK, not better), KK
+  (if BB leads it after checking turn — possible), AKs fills tied.
+
+  Full houses BB can credibly have leading river: 9x full (99), 3x
+  full (33), 2x full (22), KK, AA.
+  Two-pair ties: AK combos. But hero blocks 2 of those.
+  Worse value BB could lead: A9 (A9s in overcall range), A3s, A2s,
+    some Kx that turned pair — but those rarely lead river after
+    checking earlier; this looks like a polarised river lead.
+
+Step 3 — actions:
+  FOLD: Way too strong to fold top two pair on this board for 30% pot
+    odds. Reject.
+  CALL: Standard value-catch with top two pair. Hero beats Ax two-pair
+    tries, A-with-kicker, bluffs with missed draws.
+  RAISE: For value, hoping to get called by worse (A9, A3s, AKo ties
+    fund hero's raise with tied combos). But BB's river lead range is
+    polarised — worse hands rarely call a raise, better hands (full
+    houses) crush it.
+
+  KB Factor 5 check-raise signal: BB LEADS the river, not a
+    check-raise. BB's unsolicited river lead into the PFA after the
+    board pairs is NOT the "check-raise = nuts" pattern (that's DO NOT
+    Rule #3 for raising — doesn't apply directly). But BB lead on a
+    paired river into two opponents still polarises heavily toward
+    nuts or air.
+
+Step 4 — choose: CALL is the correct action. Top two pair is a clear
+  bluff-catcher vs BB's polarised river lead. Raising for value folds
+  out bluffs and gets called / raised by better.
+
+Alternatives: RAISE rejected — turns hand into a bluff catcher only
+  facing re-raise; no worse value-hand calls.
+FOLD rejected — equity vs bluffs + thin value comfortably beats
+  30% pot odds.
+
+v3.1 judgment: CALL. Confidence: HIGH.
+
+Classification vs holdout (RAISE) and v2.3.2 (CALL):
+  v3.1 agrees with v2.3.2.
+  Holdout RAISE is poker-incorrect here: BB's river lead range on a
+  board that pairs the PFA's top card is too polarised to raise for
+  thin value. v3.1 methodology (bucket + situation + composition) leads
+  to CALL.
+
+CLASSIFICATION: **CORRECTION**    Confidence: HIGH
+Rationale: v2.2-era holdout label is poker-stale. v2.3.2 predicts the
+  current-truth answer. A player who raises top two pair vs a paired-
+  river lead against a polarised range bleeds EV.
+
+================================================================================
+HAND 3 — FB-35
+================================================================================
+
+Hero: Ah 9h    Board: Kh 6h 3d Qc (turn)    Position: CO (3-way)
+Villains: BTN (bettor), BB (folded)
+Action: BB check, CO (hero) check, BTN bet 90 into 150, BB fold, hero to
+act. Pot 240, to call 90. Pot odds 90/(150+90+90) = 27.3%.
+
+HOLDOUT: CALL    v2.3.2: FOLD
+
+Step 1 — bucket: DRAWING. Nut flush draw (Ah with two hearts on board)
+  + Ace overcard. No pair, no straight draw. ~9 outs to nut flush + 3
+  outs to top pair = ~12 outs / ~26% by river one card. Actually on
+  turn to river: 9 flush outs / 46 unseen = ~19.6%, + ~6.5% for ace =
+  ~26% raw. But equity vs BTN's betting range will be lower because
+  BTN has value hands.
+
+Step 2 — situation: BB checks, hero (CO) checks, BTN bets 90 into 150
+  on turn after everybody checked flop. BTN's turn bet after flop
+  checked-through is a polarised probe: value (Kx, Qx, sets) and
+  occasional bluffs with backdoor equity. BB already folded so hero
+  closes action.
+  Hero has nut flush draw + Ace blocker to BTN's nut flush range.
+  Pot odds 27.3%, equity ~26% raw but AH blocker reduces villain's
+  nut-flush combos. Implied odds reasonable on flush completion.
+
+Step 3 — actions:
+  FOLD: pot odds 27%, hero has nut flush draw + overcard. This is a
+    routine call unless villain's range is very strong value. Probe
+    bet range after flop checked-through is not purely value.
+  CALL: correct default with a nut flush draw getting ~3.7:1 plus
+    overcard + Ace blocker + implied odds when the flush comes in.
+  RAISE: KB 1.7 — nut draw ✓, blocker (Ah) ✓, but OOP-equivalent
+    here (hero is the middle seat with no player behind now that BB
+    folded — actually CO is acting last against BTN — hero IS closing).
+    Side equity: Ace overcard. Facing a turn probe, however, a raise
+    turns the hand into a check-raise-sized semi-bluff that commits
+    significant chips with a draw. Standard 3-way solver line: CALL
+    the turn, realize equity, pressure river when the flush comes.
+
+  Pot odds formula check: 90 / (150 + 90 + 90) = 90/330 = 27.3%. Hero
+  equity is borderline but Ah blocker + overcards push it positive.
+
+Step 4 — choose: CALL. This is a textbook drawing call with a nut
+  flush draw + ace overcard + blocker at ~27% pot odds.
+
+Alternatives:
+  FOLD rejected — pot odds met with nut flush draw; implied odds on
+    completion.
+  RAISE rejected — turn raise with a draw OOP-equivalent leaves hero
+    vulnerable to 3-bet; CALL realises equity cheaply.
+
+v3.1 judgment: CALL. Confidence: HIGH.
+
+Classification vs holdout (CALL) and v2.3.2 (FOLD):
+  v3.1 agrees with holdout. v2.3.2 is wrong to FOLD a nut flush draw
+  at pot odds. This looks like a genuine model regression — the model
+  learned to be more fold-heavy and over-applied it to a clean drawing
+  call.
+
+CLASSIFICATION: **REGRESSION**    Confidence: HIGH
+Rationale: Nut flush draw + overcard at 27% pot odds is a standard call.
+  Holdout label reflects current GTO truth. v2.3.2 degraded on this
+  boundary.
+
+================================================================================
+HAND 4 — FB-40
+================================================================================
+
+Hero: 6s 5s    Board: Kc 8c 4d (flop)    Position: BB (3-way)
+Villains: BTN (bettor), CO (checked)
+Action: BB check, CO check, BTN bet 30 into 90 (1/3 pot), BB to act.
+Pot 120, to call 30. Pot odds 30/(90+30+30) = 20%.
+
+HOLDOUT: FOLD    v2.3.2: CALL
+
+Step 1 — bucket: AIR+GUTSHOT/BACKDOOR. 65ss on Kc8c4d. Gutshot straight
+  draw (7 makes the wheel — wait, 6547 would need 7 for 45678, 5-high
+  straight needs A2345 no wait 6s5s on K-8-4: need 7-6-5-4-X? let's
+  re-check. 6-5 with 4 on board. Outs to make a straight: 7 (for 4-5-6-7-X
+  needing one more, actually: 3-4-5-6-7 needs a 3 AND 7, or 4-5-6-7-8
+  needs 7 and already has 8). So 7 completes 4-5-6-7-8 straight (inside
+  straight draw / gutshot using 8 on board). That's 4 outs (four 7s).
+  Also 6s5s has backdoor flush draw (spades). Pair outs: 5, 6 (pairing
+  might give 2 pair but bottom pairs aren't really value). Clubs on
+  board means no club outs. Total real outs: 4 gutshot outs.
+  This is a BACKDOOR/GUTSHOT air hand — KB 1.7 explicitly: "gutshot-only
+  or backdoor-only = check/fold."
+
+Step 2 — situation: BTN bets 30 into 90 (small 33% sizing) after CO
+  checked. Very small bet is BTN's range probe on K-high. BB must close
+  with a speculative hand. Pot odds 20%. Hero equity with 4 gutshot
+  outs = 4/47 ≈ 8.5% one card, ~16% by river (if they continued)…
+  but hero can't see river for free from OOP.
+
+Step 3 — actions:
+  FOLD: KB 1.7 explicit — gutshot only / backdoor-only = check/fold.
+    Hero is OOP, no made hand, 4 outs, no nut draw.
+  CALL: 20% pot odds vs ~9% immediate equity is a clear fold on raw
+    math. Implied odds argument: on completion (a 7), hero makes a
+    disguised straight and can extract. But flush completes on turn
+    for BTN (two clubs on board). Plus facing CO still to come
+    potentially — actually CO checked, so they're essentially capped
+    weak, but could still float.
+    Implied odds are poor: OOP, small stack leverage, BTN polarised
+    small-bet range.
+  RAISE: preposterous with no draw equity, no fold equity 3-way.
+
+Step 4 — choose: FOLD. Cleanly fits KB 1.7 "gutshot-only = check/fold"
+  and DO NOT Rule #2 ("don't barrel/continue with gutshots 3-way").
+  OOP in a 3-way pot with 4 outs, even at 20% pot odds, is a losing
+  continuation when you factor EQR (~60-80% OOP in BB = realised
+  equity below needed threshold) and the presence of the non-folded CO
+  behind (who called a check + could check-raise).
+
+Alternatives:
+  CALL rejected — KB 1.7 explicit; implied odds insufficient OOP with
+    only 4 outs; danger of further action.
+  RAISE rejected — no fold equity, no hand.
+
+v3.1 judgment: FOLD. Confidence: HIGH.
+
+Classification vs holdout (FOLD) and v2.3.2 (CALL):
+  v3.1 agrees with holdout FOLD. v2.3.2 is wrong.
+  This is a REGRESSION — v2.3.2 is loosening the BB cold-calling range
+  into a gutshot-only spot against a 33%-pot bet. KB 1.7 is explicit.
+
+CLASSIFICATION: **REGRESSION**    Confidence: HIGH
+Rationale: Classic KB 1.7 violation in v2.3.2. The fold is the
+  textbook-correct action for a gutshot-only, OOP, non-nut draw.
+
+================================================================================
+HAND 5 — d0182_BTN_turn
+================================================================================
+
+Hero: Ac Jc    Board: 9s Ad 3s 4c (turn)    Position: BTN (IP, 3-way)
+Villains: CO, BB. Pot 80, to call 0, checked to hero.
+Features: equity=0.5595, hand_category=6 (made hand, TP+),
+  danger=0.58 (flush draw live on spades), SPR=1.25,
+  villain_tp_plus=0.19, villain_air=0.39, villain_draw=0.00,
+  villain_medium_made=0.00, villain_aggression_count=1,
+  villain_checked_back=1, better_hand_pct=0.11, worse_hand_pct=0.88.
+
+HOLDOUT: BET    v2.3.2: CHECK
+
+Step 1 — bucket: STRONG MADE. Top pair top kicker (AJ on A-9-3-4) with
+  no flush blocker (Ac not spade). This is TPTK. DO NOT Rule #5:
+  "don't treat TP as strong hand — TPTK is pot-control candidate."
+  But equity=56% vs 3-way and 88% worse, with only 11% better. That's
+  a strong TP, borderline strong-made bucket per KB.
+
+Step 2 — situation: IP (BTN), turn, SPR 1.25 (committed), checked
+  through on flop (villain_aggression=1 happened earlier pre-flop/flop
+  presumably, then villain_checked_back=1 means one villain checked
+  when could bet). BB and CO both checked to hero on turn.
+  Danger_score=0.58 — spades are live for flush. Two spades on board;
+  flush draws continue.
+  Villain composition: TP+ only 19%, AIR 39%, draw 0% (surprisingly
+  low — pipeline may not be seeing spade flush draws as draws here),
+  medium_made 0%. Very polarised range: 19% strong, 39% air, ~42% in
+  remainder bucket (medium made, small pairs).
+  Worse_hand_pct 88% — a lot of hands hero beats (9x, 3x, 4x, pocket
+  pairs below A).
+
+Step 3 — actions:
+  BET: IP at compressed SPR (1.25), TPTK with 88% worse, facing a
+    checked-through turn, two spades on board (protection needed).
+    DO NOT Rule #4 (don't auto-c-bet) — BUT hero isn't auto-c-betting;
+    hero's value strength supports a bet. Classic solver turn probe
+    for value + protection with TPTK on a two-tone board IP.
+    Facing the flush draw on board, checking gives free cards.
+    Value: worse Ax-with-kicker, 9x (2-pair tries), small pairs. Air
+    folds out (deny equity), draws priced out or called thin.
+    Bet sizing would be small-medium (25-50% pot) at SPR 1.25.
+  CHECK: Pot control + induce from missed spades. But at SPR 1.25,
+    checking turn then facing river bet = hero will often be in an
+    awkward spot, and free cards to flush draws are bad.
+  RAISE: n/a, not facing a bet.
+
+Step 4 — choose: BET. Strong made hand, IP, compressed SPR, vulnerable
+  board (two spades), high worse_hand_pct (88%), two opponents who
+  both checked. This is a value+protection bet. KB Example 2 pattern
+  (thin value IP with air-heavy villain range) applies here with
+  stronger support because equity is higher and board is more dynamic.
+  Also parallels d2410 calibration anchor (see next hand).
+
+Alt evaluated: CHECK — defensible as pure pot control with TPTK on A-
+  high. Rejected because two spades live + SPR 1.25 mean free cards are
+  too expensive, and 88% worse + 39% air supports clear +EV bet.
+
+v3.1 judgment: BET. Confidence: HIGH.
+
+Classification vs holdout (BET) and v2.3.2 (CHECK):
+  v3.1 agrees with holdout. v2.3.2 is wrong. This is the calibration-
+  anchor pattern (very similar to d2410_CO_turn — see note below).
+
+CLASSIFICATION: **REGRESSION**    Confidence: HIGH
+Rationale: v2.3.2 is systematically under-betting TPTK IP at compressed
+  SPR with vulnerable boards and air-heavy villains. Matches the
+  calibration-anchor pattern the v3.1 prompt flags.
+
+================================================================================
+HAND 6 — d2410_CO_turn  [CALIBRATION ANCHOR]
+================================================================================
+
+Hero: Jc Ks    Board: Jd 9d 3h 6d (turn)    Position: CO (3-way)
+Villains: BTN, BB. Pot 80, to call 0, checked to hero.
+Features: equity=0.4335, hand_cat=7 (TP+), danger=0.60 (three diamonds
+  on board = flush complete risk), SPR=1.25, villain_tp_plus=0.32,
+  villain_air=0.22, villain_draw=0.16, villain_medium_made=0.00,
+  villain_aggression_count=0, villain_checked_back=1,
+  better_hand_pct=0.17, worse_hand_pct=0.82, villain_range_capped=1.
+
+HOLDOUT: BET    v2.3.2: CHECK
+
+This is one of the **v3.1 Calibration Anchors (Calibration Notes,
+section around line 678 of the v3.1 prompt).** Expert label: BET.
+
+Step 1 — bucket: STRONG MADE. TPTK (jacks, king kicker) on J-9-3-6 with
+  three diamonds on the board. Hero has no diamond (Jc Ks). Hero's
+  made-hand strength is top pair best kicker, but board now has 3
+  diamonds so any Ad/Qd in villain range is flush.
+
+Step 2 — situation: CO is sandwich-ish (BTN behind) but checked through
+  from all prior action (villain_aggression=0, villain_checked_back=1
+  — BTN checked behind on an earlier street). SPR 1.25 — committed.
+  Composition: TP+ 32% (≥20% bucket "some value but mostly weaker
+  holdings"), draw 16% (flush draw combos), air 22%, medium_made 0%
+  (+ 30% in remainder bucket).
+  A 4th diamond arrived on the turn (6d). Flush is now MADE by any
+  single diamond in villain's range. Hero's TPTK no longer dominates a
+  diamond-holding villain.
+  worse_hand_pct 82% — still good. better_hand_pct 17% — includes
+  flushes + sets + 2-pairs.
+
+Step 3 — actions:
+  BET: calibration anchor says BET. Rationale: compressed SPR, passive
+    villains (both checked), hero has showdown+value equity, must
+    build pot with top pair kicker advantage. Betting denies equity
+    to 22% air and charges weaker Jx / pocket pairs / 9x. Fold equity
+    from air is meaningful.
+  CHECK: defensible with 3-flush on board, turning TPTK into a
+    bluff-catcher. But the anchor says BET — and the reasoning is:
+    at SPR 1.25 with 82% worse hands and passive villains, the value
+    from worse Jx + pocket pairs + 9x + some draws calling a small
+    bet outweighs the downside of getting check-raised by flushes
+    (which would also bet themselves given the line).
+
+Step 4 — choose: BET. This is the explicit v3.1 calibration anchor.
+  Confidence: HIGH per anchor.
+
+If I were tempted to CHECK (3-flush scares me), the anchor says:
+  "BET top pair with kicker advantage when checked to at compressed
+  SPR with passive villain." The scary diamond on turn is the whole
+  point of the anchor — it's TESTING whether the labeller pot-controls
+  inappropriately. Anchor says BET, so BET.
+
+Alt evaluated: CHECK — rejected, violates calibration anchor without
+  sufficient countervailing reason (3-flush alone is not enough;
+  passive villains + compressed SPR + 82% worse still value-bet).
+
+v3.1 judgment: BET. Confidence: HIGH (anchor-pinned).
+
+Classification vs holdout (BET) and v2.3.2 (CHECK):
+  v3.1 agrees with holdout AND with the calibration anchor.
+  v2.3.2 CHECK directly violates the anchor.
+
+CLASSIFICATION: **REGRESSION**    Confidence: HIGH
+Rationale: Explicit calibration anchor violation. v2.3.2 is wrong per
+  v3.1 spec. This is the single strongest REGRESSION signal in the
+  batch.
+
+================================================================================
+HAND 7 — d2788_BTN_flop
+================================================================================
+
+Hero: Ad Qc    Board: 9h Qd Jc (flop)    Position: BTN (IP, 3-way)
+Villains: UTG, BB. Pot 80, to call 0, checked to hero.
+Features: equity=0.4645, hand_cat=8 (TP+), danger=0.50 (connected,
+  straights + flush draw), SPR=1.25, villain_tp_plus=0.37,
+  villain_air=0.24, villain_draw=0.08, villain_medium_made=0.00,
+  villain_aggression_count=1, villain_checked_back=0,
+  better_hand_pct=0.12, worse_hand_pct=0.86, villain_range_capped=0.
+
+HOLDOUT: BET    v2.3.2: CHECK
+
+Step 1 — bucket: STRONG MADE. Top pair top kicker (AQ on Q-high) plus
+  gutshot to the nut straight (K makes AKQJT — broadway). Strong made
+  with redraw. 46% equity 3-way, 86% worse.
+
+Step 2 — situation: IP (BTN), flop, SPR 1.25 (committed), checked to
+  hero. villain_aggression=1 but checked_back=0 — that likely means
+  UTG was PFA (raise preflop =1 aggression action) and now checked
+  flop. So both villains checked.
+  Composition: TP+ 37% (close to ≥40% bucket), draw 8%, air 24%, and
+  ~31% in remainder. Moderately value-heavy range. Danger 0.50 —
+  connected Q-J-9 is a dynamic board. Straight draws (KT, T8, 87 type),
+  no flush (rainbow with 9h Qd Jc).
+  better_hand_pct 12% — KK/AA (overpairs), sets (QQ/JJ/99 that might
+  have bet — but checked here), KT for made straight (possible in BB
+  range), JJ/99 for sets. Two-pair QJ would be a beat.
+
+Step 3 — actions:
+  BET: IP at SPR 1.25 with TPTK on connected board. Strong value +
+    protection bet. 86% worse, 24% air. Charges draws (straight
+    draws), gets called by worse Qx, Jx with straight draw, pocket
+    pairs. On a dynamic board, checking gives draws + overcards free
+    cards at bad price.
+  CHECK: DO NOT Rule #5 — don't treat TP as strong; TPTK is a pot-
+    control candidate. On a very wet board (Q-J-9 connected, draws
+    live), checking is reasonable to realise showdown equity and
+    avoid getting raised. But at SPR 1.25, checking flop then facing
+    turn action is awkward. The solver on Q-high connected boards IP
+    does bet a meaningful fraction with TPTK + gutshot.
+
+Step 4 — choose: BET. Strong made IP with top pair top kicker +
+  gutshot to nut straight on a connected board at committed SPR. 86%
+  worse + 24% air + passive villains = clear value + protection bet.
+  TPTK exception: DO NOT Rule #5 applies when hand is pot-control-only
+  with no redraw. Here AQ has a gutshot to nut straight which adds
+  equity realisation.
+
+Alt evaluated: CHECK — defensible for pot control on a very dangerous
+  connected board (straights live). Reasonable minority action but not
+  modal. Difficulty 2 (standard): equity and composition support BET
+  despite board danger.
+
+v3.1 judgment: BET. Confidence: MEDIUM-HIGH.
+
+Classification vs holdout (BET) and v2.3.2 (CHECK):
+  v3.1 agrees with holdout. v2.3.2 CHECK is the over-pot-control error
+  again. Same pattern as d0182 and d2410.
+
+CLASSIFICATION: **REGRESSION**    Confidence: MEDIUM-HIGH
+Rationale: Same calibration-anchor pattern. TPTK IP + redraw at
+  compressed SPR with passive villains should BET. v2.3.2 is over-
+  checking the TP+kicker-advantage class. Very consistent with d2410
+  anchor regression.
+
+================================================================================
+HAND 8 — d4781_CO_flop
+================================================================================
+
+Hero: Kd Qc    Board: 7h Ks 9h (flop)    Position: CO (3-way)
+Villains: BTN, BB. Pot 80, to call 0, checked to hero.
+Features: equity=0.5495, hand_cat=7 (TP+), danger=0.25 (two-tone with
+  flush draw), SPR=1.25, villain_tp_plus=0.22, villain_air=0.05,
+  villain_draw=0.32, villain_medium_made=0.00,
+  villain_aggression_count=0, villain_checked_back=0,
+  better_hand_pct=0.09, worse_hand_pct=0.90, villain_range_capped=1.
+
+HOLDOUT: BET    v2.3.2: CHECK
+
+Step 1 — bucket: STRONG MADE. Top pair, second-best kicker (KQ on K-9-7
+  with two hearts). No redraw (Kd Qc, no heart). 55% equity 3-way, 90%
+  worse — very strong made position.
+
+Step 2 — situation: CO (sandwich-ish — BTN behind). SPR 1.25
+  (committed). Both prior actors checked (villain_aggression=0). Very
+  passive line. villain_range_capped=1 (but DO NOT Rule #8/9 — don't
+  use as postflop signal).
+  Composition: TP+ 22%, draw 32% (big flush-draw presence), air 5%,
+  medium 0%, remainder ~41%. The composition triple says villain range
+  is DRAW-heavy. Protection is critical.
+  danger 0.25 (moderate — flush draw live). worse_hand_pct 90% — KQ
+  dominates most of villain's continuing range.
+
+Step 3 — actions:
+  BET: Protection + value. 32% draws in villain range — must charge
+    them. 90% worse, TP-good-kicker. SPR 1.25 — committed. Betting
+    folds out marginal holdings and makes draws pay. Even if called
+    by a better K (KQ dominated by AK/KJ unlikely in BTN/BB check
+    lines at SPR 1.25), the draw-heavy composition justifies
+    protection.
+  CHECK: DO NOT Rule #5 (TP pot control). But with 32% villain draw %,
+    checking turn gives equity to flush draws and straight draws for
+    free. KB Example 4 pattern — "protection is critical when
+    multiple opponents have draws." Example 4 is sets, but the
+    principle scales to strong-made hands vs draw-heavy ranges.
+  Actually: CO is middle position (BTN behind). That's a factor —
+    BTN could check-raise. But BTN check-raise into 2 opponents ≈ the
+    nuts (DO NOT Rule #3), and BTN's check-raise range is narrow
+    enough that hero isn't fearing it excessively at SPR 1.25.
+
+Step 4 — choose: BET. Strong made hand, ~90% worse, ~32% draws in
+  villain range on a two-tone board at SPR 1.25. Protection bet is
+  clearly preferred over CHECK. A small sizing (25-33% pot) charges
+  draws cheaply.
+
+Alt evaluated: CHECK — defensible if worried about BTN check-raise,
+  but BTN X/R range is too narrow to overcome the protection EV loss
+  from letting draws improve free. Minority line.
+
+v3.1 judgment: BET. Confidence: HIGH.
+
+Classification vs holdout (BET) and v2.3.2 (CHECK):
+  v3.1 agrees with holdout. Same pattern.
+
+CLASSIFICATION: **REGRESSION**    Confidence: HIGH
+Rationale: Strong-made hero with high worse_hand_pct + draw-heavy
+  villain composition + committed SPR should always BET 3-way per KB
+  Example 4 logic. v2.3.2 under-betting the protection class.
+
+================================================================================
+HAND 9 — d8411_BB_turn
+================================================================================
+
+Hero: Ac 8h    Board: 6c 8c 2d 3c (turn)    Position: BB (OOP, 3-way)
+Villains: HJ, BTN. Pot 80, to call 0, checked to hero.
+Features: equity=0.665, hand_cat=8 (TP+), draw_outs=9 (flush draw),
+  has_flush_draw=1, flush_block_pct=0.16, flush_draw_rank=0 (!? —
+  hero has Ac, which SHOULD be rank 14; feature pipeline appears to
+  be under-reporting rank, flag data issue but reason from hand),
+  danger=0.75, SPR=1.25, villain_tp_plus=0.21, villain_air=0.57,
+  villain_draw=0.02, villain_medium_made=0.00,
+  villain_aggression_count=1, villain_checked_back=1,
+  better_hand_pct=0.15, worse_hand_pct=0.84.
+
+[Data quality flag: `flush_draw_rank=0` with Ac in hand is anomalous —
+the Ac gives hero the nut flush draw, rank 14. The 0 appears to be an
+indexing artifact. Reasoning proceeds from hand cards directly per DO
+NOT Rule #11 / v3.1 §3.B guidance to reason from the hand when
+features look wrong.]
+
+Step 1 — bucket: STRONG MADE + NUT FLUSH DRAW. Top pair (8s) with ace
+  kicker — actually wait: board is 6c 8c 2d 3c. Hero has Ac 8h.
+  Middle pair of 8s (since 6 is low card, 8 is middle card above 6
+  and 2/3). Kicker Ace. So hero has PAIR OF 8s WITH ACE KICKER +
+  NUT FLUSH DRAW (Ac for clubs, 3 clubs on board).
+  This is a MONSTER semi-bluff hand: middle pair + nut flush draw +
+  high kicker. 66.5% equity 3-way is huge.
+
+Step 2 — situation: OOP (BB), turn, SPR 1.25. Both villains checked
+  turn (villain_aggression=1 from preflop, checked_back=1 on flop).
+  Extremely passive action. Composition: TP+ 21%, air 57% (!),
+  draw 2%, medium 0%. Wildly air-heavy range.
+  Hero blocks villain's nut flush combos with Ac (flush_block_pct
+  nominally 0.16, but with Ac specifically blocking AcXc flush-
+  complete combos, effective block is higher).
+  worse_hand_pct 84%. better_hand_pct 15% (sets, overpairs, two-pair,
+  made flushes).
+
+Step 3 — actions:
+  BET: KB 1.7 semi-bluff all conditions met PLUS hero also has a made
+    hand (middle pair). This is strictly stronger than a pure semi-
+    bluff: value + nut flush draw + protection. 57% air in villain's
+    range means huge fold equity. SPR 1.25 — committed. OOP normally
+    argues CHECK, but KB Example 6 applies: "High equity overrides
+    OOP default when composition triple shows thin value in villain
+    range and worse_hand_pct is high." Here TP+ 21% (<40% bucket —
+    "some value but mostly weaker") and air 57% — textbook Example 6
+    exception.
+    Value: gets called by worse pairs (6x, small pairs, some 8x
+    weaker kicker), folds out air.
+    Also: 3 clubs on board, so turn-to-river hero has 9 flush outs
+    if called — clean semi-bluff backup.
+  CHECK: Pot control OOP with flush draw + pair. Would induce from
+    villain's air/bluff range, but 57% air is more likely to just
+    check behind than bluff OOP-ish. Checking wastes value.
+
+Step 4 — choose: BET. Near-strongest combo class: middle pair + nut
+  flush draw + Ace kicker + blocker + high worse_hand_pct + air-heavy
+  villain composition + SPR 1.25 committed. Small bet (33% pot)
+  extracts value and protects vs the 15% better hands still capable
+  of outdrawing hero's pair.
+
+Alt evaluated: CHECK — defensible pure pot-control/deception. Rejected
+  because the composition (57% air) and committed SPR + vulnerable
+  board (3 clubs live) strongly favour immediate bet.
+
+v3.1 judgment: BET. Confidence: HIGH.
+
+Classification vs holdout (BET) and v2.3.2 (CHECK):
+  v3.1 agrees with holdout. Same systematic pattern.
+
+CLASSIFICATION: **REGRESSION**    Confidence: HIGH
+Rationale: v2.3.2 over-checks yet again in a clean value+semi-bluff
+  spot where KB Example 6 OOP-value-override applies with strong
+  support. The 57% air + nut flush draw + committed SPR combo is
+  unambiguous BET.
+
+================================================================================
+SUMMARY TABLE
+================================================================================
+
+| sid                 | holdout | v2.3.2 | v3.1   | class       | conf      |
+|---------------------|---------|--------|--------|-------------|-----------|
+| FB-04               | RAISE   | CALL   | RAISE/CALL (mix) | MIXED       | MEDIUM    |
+| FB-24               | RAISE   | CALL   | CALL   | CORRECTION  | HIGH      |
+| FB-35               | CALL    | FOLD   | CALL   | REGRESSION  | HIGH      |
+| FB-40               | FOLD    | CALL   | FOLD   | REGRESSION  | HIGH      |
+| d0182_BTN_turn      | BET     | CHECK  | BET    | REGRESSION  | HIGH      |
+| d2410_CO_turn [anchor] | BET  | CHECK  | BET    | REGRESSION  | HIGH      |
+| d2788_BTN_flop      | BET     | CHECK  | BET    | REGRESSION  | MED-HIGH  |
+| d4781_CO_flop       | BET     | CHECK  | BET    | REGRESSION  | HIGH      |
+| d8411_BB_turn       | BET     | CHECK  | BET    | REGRESSION  | HIGH      |
+
+================================================================================
+FINAL COUNT
+================================================================================
+
+REGRESSIONS: 7  (FB-35, FB-40, d0182, d2410, d2788, d4781, d8411)
+CORRECTIONS: 1  (FB-24)
+MIXED:       1  (FB-04)
+UNCLEAR:     0
+
+================================================================================
+CALIBRATION ANCHOR CHECK
+================================================================================
+
+d2410_CO_turn is an explicit v3.1 calibration anchor (§ Calibration
+Notes). The anchor mandates BET. v2.3.2 predicts CHECK. v3.1 judgment
+BET (matches anchor). This is a HARD regression signal: v2.3.2 fails
+the calibration anchor directly.
+
+================================================================================
+DECISION-MATRIX RECOMMENDATION
+================================================================================
+
+Decision matrix:
+  3+ corrections → ship v2.3.2 with holdout refresh note
+  Mixed         → ship with holdout caveat, solver follow-up
+  3+ regressions → revisit Path C scope
+
+Observed: **7 regressions, 1 correction, 1 mixed.**
+
+**Recommendation: REVISIT PATH C SCOPE.** The retrain is producing
+systematic regressions on a specific, coherent, poker-meaningful class
+of hands — TPTK / top-pair-with-kicker-advantage / strong-made IP or
+sandwich hands at compressed SPR with passive villains and/or
+draw/air-heavy compositions. 5 of the 7 regressions (d0182, d2410,
+d2788, d4781, d8411) follow the identical pattern:
+
+  • Hero has strong-made hand with high worse_hand_pct (82-90%)
+  • Checked to at compressed SPR (1.25)
+  • Villain composition supports betting (either high air or high
+    draw %)
+  • v2.3.2 CHECKS when solver/holdout/v3.1 all say BET
+
+This is the EXACT class of hand the d2410 calibration anchor was
+designed to protect. v2.3.2 regressed on its own calibration anchor.
+
+The FB-35 and FB-40 regressions are separate failure modes:
+  • FB-35: v2.3.2 folds a nut flush draw at pot odds (over-fold)
+  • FB-40: v2.3.2 calls a gutshot-only OOP at 20% pot odds
+    (over-loose)
+
+These two show v2.3.2's drift in both directions on drawing spots —
+over-folding good draws while over-calling weak draws — which is
+internally incoherent and suggests training-data boundary shift rather
+than genuine learning.
+
+FB-24 is a legitimate CORRECTION — the v2.2-era holdout label
+(RAISE top-two on a paired river lead) was poker-stale, and v2.3.2
+correctly predicts CALL.
+
+FB-04 is genuinely MIXED — KB 1.7 explicitly calls this spot a mix
+and the v2.3.2 default (CALL) is defensible.
+
+**Net verdict:**
+  7 regressions ≫ 3-regression threshold for revisiting Path C.
+  The calibration anchor d2410 failed directly.
+  The regressions are not noise — they form a coherent pattern
+  (under-betting compressed-SPR strong-made IP spots with passive
+  villains and vulnerable boards).
+
+**Ship v2.3.2? NO. Revisit Path C scope before release.** The one
+correction (FB-24) and one mixed (FB-04) do not offset 7 coherent
+regressions, one of which violates an explicit v3.1 calibration
+anchor.

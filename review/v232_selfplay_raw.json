@@ -1,0 +1,130 @@
+{
+  "config": {
+    "model": "v2_3_1_model.json",
+    "num_deals": 2000,
+    "seed": 42,
+    "total_games": 12000,
+    "n_features_total": 110,
+    "n_features_raw": 55
+  },
+  "metrics": {
+    "check_to_hero_low_bet_pct": 49.2,
+    "facing_bet_3way_count": 148,
+    "threeway_postflop_yield_pct": 4.2,
+    "total_postflop_decisions": 17820,
+    "bet_actions_per_1000_deals": 2679.5,
+    "passive_loop_broken": true,
+    "check_to_hero_n_spots": 600
+  },
+  "bet_prob_distribution": {
+    "count": 600,
+    "percentiles": {
+      "p10": 0.003374946827534586,
+      "p25": 0.005794184631668031,
+      "p50": 0.08025189023464918,
+      "p75": 0.6242029143031687,
+      "p90": 0.9856570606352761
+    },
+    "mean": 0.308,
+    "median": 0.0803
+  },
+  "postflop_action_shares_pct": {
+    "FOLD": 10.42087542087542,
+    "CHECK": 40.29180695847362,
+    "CALL": 19.21436588103255,
+    "BET": 29.21436588103255,
+    "RAISE": 0.8585858585858586
+  },
+  "position_action_breakdown": {
+    "UTG": {
+      "FOLD": 84,
+      "CHECK": 445,
+      "CALL": 234,
+      "BET": 284,
+      "RAISE": 24
+    },
+    "BTN": {
+      "FOLD": 442,
+      "CHECK": 1005,
+      "CALL": 1050,
+      "BET": 725,
+      "RAISE": 52
+    },
+    "CO": {
+      "FOLD": 167,
+      "CHECK": 858,
+      "CALL": 509,
+      "BET": 485,
+      "RAISE": 12
+    },
+    "SB": {
+      "FOLD": 149,
+      "CHECK": 810,
+      "CALL": 256,
+      "BET": 674,
+      "RAISE": 6
+    },
+    "HJ": {
+      "FOLD": 183,
+      "CHECK": 572,
+      "CALL": 419,
+      "BET": 437,
+      "RAISE": 1
+    },
+    "BB": {
+      "FOLD": 832,
+      "CHECK": 3490,
+      "CALL": 956,
+      "BET": 2601,
+      "RAISE": 58
+    }
+  },
+  "board_adjusted_hrp_stats": {
+    "n": 2974,
+    "mean": 0.2467,
+    "median": 0.1633,
+    "nonzero_pct": 97.0
+  },
+  "street_actions": {
+    "preflop_FOLD": 56645,
+    "preflop_CHECK": 0,
+    "preflop_CALL": 3299,
+    "preflop_BET": 0,
+    "preflop_RAISE": 11970,
+    "flop_FOLD": 747,
+    "flop_CHECK": 3378,
+    "flop_CALL": 1347,
+    "flop_BET": 2057,
+    "flop_RAISE": 43,
+    "turn_FOLD": 468,
+    "turn_CHECK": 2167,
+    "turn_CALL": 1243,
+    "turn_BET": 1687,
+    "turn_RAISE": 63,
+    "river_FOLD": 642,
+    "river_CHECK": 1635,
+    "river_CALL": 834,
+    "river_BET": 1462,
+    "river_RAISE": 47
+  },
+  "baselines": {
+    "v2_2": {
+      "check_to_hero_low_bet_pct": 63.0,
+      "facing_bet_3way_count": 0,
+      "threeway_postflop_yield_pct": 3.7
+    },
+    "v2_3": {
+      "check_to_hero_low_bet_pct": 0.0,
+      "facing_bet_3way_count": 1269,
+      "threeway_postflop_yield_pct": 5.7,
+      "total_postflop_decisions": 2772,
+      "bet_prob_median": 0.7289,
+      "bet_prob_mean": 0.6966
+    }
+  },
+  "anomalies": [
+    "Facing-bet count collapsed: 148 < 0.7\u00d71269 = 888",
+    "CHECK share spike at postflop: 40.3% > 25% threshold",
+    "Check-to-hero low-BET spots resurgent: 49.2% > 5%"
+  ]
+}
