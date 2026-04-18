@@ -1,0 +1,38 @@
+{
+  "model_version": "v2_3_1",
+  "csv_path": "/home/rupert/river-rats-v2/river-rats-core/../training-data/v2_3_1_training.csv",
+  "out_model_path": "/home/rupert/river-rats-v2/river-rats-core/models/v2_3_1_model.json",
+  "class_weighting": "NONE",
+  "n_samples": 677,
+  "n_features": 110,
+  "class_distribution": {
+    "RAISE": 48,
+    "CALL": 89,
+    "FOLD": 75,
+    "BET": 288,
+    "CHECK": 177
+  },
+  "best_iteration": 100,
+  "holdout_test_accuracy": 0.9117647058823529,
+  "cv_accuracies": [
+    0.9191176470588235,
+    0.9558823529411765,
+    0.9629629629629629,
+    0.9333333333333333,
+    0.9481481481481482
+  ],
+  "cv_mean": 0.943888888888889,
+  "cv_std": 0.015816693371778854,
+  "hyperparameters": {
+    "n_estimators": 800,
+    "max_depth": 5,
+    "learning_rate": 0.05,
+    "objective": "multi:softprob",
+    "num_class": 5,
+    "eval_metric": "mlogloss",
+    "use_label_encoder": false,
+    "random_state": 42,
+    "early_stopping_rounds": 50,
+    "verbosity": 0
+  }
+}

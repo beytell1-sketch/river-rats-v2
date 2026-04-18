@@ -1,0 +1,87 @@
+{
+  "model_version": "v2.3.1",
+  "generated_at_utc": "2026-04-18T08:39:19.719662+00:00",
+  "git_head_sha": "06aea60428091d790f3da38278bece93f91ae238",
+  "training_script": "river-rats-core/train_v2_3_1.py",
+  "assembly_script": "assemble_v23_1.py",
+  "csv_path": "training-data/v2_3_1_training.csv",
+  "csv_sha256": "0da73c5918db8db329a404b54a3e01efd47b4adb5b91847974541d3445ee6e32",
+  "model_artifact": "river-rats-core/models/v2_3_1_model.json",
+  "report_artifact": "river-rats-core/models/v2_3_1_training_report.json",
+  "feature_vector": {
+    "raw_count": 55,
+    "attn_count": 55,
+    "total_count": 110,
+    "new_feature_vs_v2_3": "board_adjusted_hrp"
+  },
+  "data_sources": {
+    "v2_2_base": "training-data/v2_2_training.csv",
+    "phase4_labels": "training-data/pass1_final_labels_v23.jsonl (UMBRELLA excluded)",
+    "pilot_labels": "training-data/v23_pilot_labelled.jsonl",
+    "call_supplement": "training-data/pass1_final_labels_v23_call.jsonl",
+    "air_check_3way_v231": "training-data/v23_air_check_3way_labelled.jsonl (NEW for v2.3.1 Layer 2)"
+  },
+  "source_row_counts": {
+    "Pass1+relabel consensus": 371,
+    "SOLVER revert \u2014 Pass 1 majority RAISE was correct (Pass 2 CALL override wrong)": 1,
+    "Pass 2 \u2014 solver said BET 25%, but owner keeps CHECK in mixed zone": 1,
+    "Pass 2 + SOLVER override (was Pass 2 BET, solver said CHECK)": 2,
+    "Pass 2 \u2014 no solver, Pass 2 CALL stands": 1,
+    "Pass 2 \u2014 solver confirms FOLD (close)": 1,
+    "Pass 2 \u2014 solver confirms FOLD": 2,
+    "Pass 2 + SOLVER override (was Pass 2 CALL, solver said FOLD)": 1,
+    "Pass 2 \u2014 solver mixed (BET combo) but owner keeps CHECK": 2,
+    "panel_unanimous": 197,
+    "pass2_confirmed": 6,
+    "provisional_solver_pending": 4,
+    "pilot_v23": 16,
+    "factory_call_supplement": 32,
+    "factory_air_check_v231": 40
+  },
+  "class_distribution": {
+    "RAISE": 48,
+    "CALL": 89,
+    "FOLD": 75,
+    "BET": 288,
+    "CHECK": 177
+  },
+  "hyperparameters": {
+    "n_estimators": 800,
+    "max_depth": 5,
+    "learning_rate": 0.05,
+    "objective": "multi:softprob",
+    "num_class": 5,
+    "eval_metric": "mlogloss",
+    "use_label_encoder": false,
+    "random_state": 42,
+    "early_stopping_rounds": 50,
+    "verbosity": 0
+  },
+  "train_test_split": {
+    "test_size": 0.2,
+    "stratified": true,
+    "seed": 42
+  },
+  "best_iteration": 100,
+  "holdout_test_accuracy": 0.9117647058823529,
+  "cv_mean": 0.943888888888889,
+  "cv_std": 0.015816693371778854,
+  "related_commits": {
+    "layer_1_board_adjusted_hrp": "80197cd",
+    "layer_2a_override_audit": "1526dbf",
+    "layer_2b_v3_1_prompt": "4a2d28c",
+    "self_play_diagnostic": "4d81c08"
+  },
+  "layer_2_review_thread": [
+    "review/comms/MAIN_TERMINAL_UPDATE_2026-04-18-g.md",
+    "review/comms/BUILDER_AIR_CHECK_PLAN_2026-04-18.md",
+    "review/comms/REVIEW_BUILDER_AIR_CHECK_PLAN_2026-04-18.md",
+    "review/comms/BUILDER_HU_LABELLING_QUERY_2026-04-18.md",
+    "review/comms/BUILDER_BLOCKER_LITMUS_BRIDGE_SEMANTICS_2026-04-18.md",
+    "review/comms/MAIN_TERMINAL_DECISION_2026-04-18-h.md",
+    "review/comms/BUILDER_YIELD_STATS_AIR_CHECK_2026-04-18.md",
+    "review/comms/REVIEW_YIELD_STATS_AIR_CHECK_2026-04-18.md",
+    "review/comms/BUILDER_LABELLING_RESULTS_AIR_CHECK_2026-04-18.md",
+    "review/comms/REVIEW_LABELS_AIR_CHECK_2026-04-18.md"
+  ]
+}
