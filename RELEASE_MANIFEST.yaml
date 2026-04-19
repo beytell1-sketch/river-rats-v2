@@ -1,0 +1,262 @@
+# RELEASE_MANIFEST.yaml
+#
+# Tracks approved integration state across all River Rats streams.
+# Updated by the orchestrator (main terminal) when any stream reaches an
+# approved milestone. Build repos remain independent; this file captures
+# which commits are blessed for integrated use.
+#
+# Read by: humans (what ships together), deployment scripts (which SHAs
+# to check out), playtest correlation (which combination produced a log).
+# Write by: orchestrator on approval gate. Do not edit from build repos.
+#
+# Update procedure:
+#   1. A stream ships a milestone in its own repo (independent)
+#   2. Orchestrator reviews and approves for integration
+#   3. Orchestrator bumps the relevant entry here with a commit referencing
+#      the approval directive in review/comms/
+#   4. Cross-stream consumers can rely on the manifest for coordination
+
+manifest_version: 1.0
+last_updated: 2026-04-19
+updated_by: main_terminal
+
+# ────────────────────────────────────────────────────────────────────
+# DEPLOYED — what owner is playing against right now
+# ────────────────────────────────────────────────────────────────────
+deployed:
+  oracle:
+    repo: river-rats-v2
+    artifact: v2_2_model_shipped.json
+    artifact_path: river-rats-core/models/v2_2_model_shipped.json
+    version_label: v2.2
+    status: production
+    notes: >
+      Self-play had known passive-loop bias, but passes standard gates
+      (72.5% FB-40 / 84.0% MW-50) and doesn't exhibit the air-BET
+      overgeneralization v2.3 introduced. Remains production until v2.4
+      ships clean.
+    approved_in: review/comms/V22_SHIP_DECISION_2026-04-16.md
+
+  teaching_schema:
+    repo: river-rats-teaching
+    commit: 8ed2396
+    version: l3_enriched_v2.2
+    status: path_b_shipped
+    notes: >
+      Path B complete. Zero causal prose (intention_templates deleted,
+      action_signal_lines removed, _blocker_desc deleted in commit i).
+      Observation-only output at L3. Integrates with game prototype
+      cleanly.
+    approved_in: review/comms/REVIEW_PATH_B_COMPLETION_2026-04-18.md
+
+  game_build:
+    repo: river-rats-game
+    commit: f5c1a5a
+    status: prototype_playtest
+    features_landed:
+      - range_bar_v1_horizontal_stacked
+      - action_order_badge_a_inline
+      - shap_attributions_in_log
+      - repo_commit_provenance
+      - teaching_schema_version_tag
+      - mock_backend_warning_banner
+    consumes:
+      oracle_version: v2.2
+      teaching_schema: l3_enriched_v2.2
+    notes: >
+      Local-only; not on GitHub remote yet. Playtest logs write to
+      ~/river-rats-game/playtest-logs/ with full reproducibility payload.
+    approved_in: review/comms/MAIN_TERMINAL_TO_GAME_2026-04-19-w.md
+
+# ────────────────────────────────────────────────────────────────────
+# ITERATION BASELINE — staged, not deployed
+# ────────────────────────────────────────────────────────────────────
+iteration:
+  oracle_v2_3_1:
+    repo: river-rats-v2
+    commit: e663c6f
+    artifact: v2_3_1_model.json
+    artifact_path: river-rats-core/models/v2_3_1_model.json
+    version_label: v2.3.1
+    status: iteration_anchor
+    passes:
+      - standard_gates
+      - air_litmus_check  # A4d/Qs5s7s and T5h/JJ2 flop CHECK 93-98%
+      - broader_inference_sweep  # 94.7%
+    fails:
+      - self_play_systemic  # facing-bet 145 (threshold >=888)
+      - check_share  # 36.2% (threshold <=25%)
+    notes: >
+      Fixes v2.3's air-BET overgeneralization via board_adjusted_hrp
+      feature + 40 air-CHECK counter-examples. Self-play revealed
+      systemic over-CHECK bias. Iteration anchor for v2.4 work.
+    approved_in: review/comms/MAIN_TERMINAL_DIRECTIVE_2026-04-18-t.md
+
+# ────────────────────────────────────────────────────────────────────
+# IN PROGRESS — advancing toward next approved state
+# ────────────────────────────────────────────────────────────────────
+in_progress:
+  oracle_v2_4:
+    repo: river-rats-v2
+    current_head: 8e4604a
+    phase: p1_feature_plans_awaiting_revision_and_scope_ack
+    landed:
+      - p0_calibration_anchor_preflight_gate  # commit 570ece2
+    staged_for_review:
+      - p1_plan_nut_flush_block  # commit ecbfb83, GTO APPROVED_WITH_MODS
+      - p1_plan_draw_block_pct   # commit ecbfb83, GTO flagged SPLIT scope change
+      - p1_plan_nut_made_block_pct  # commit ecbfb83, GTO APPROVED_WITH_MODS
+    owner_blocked_on:
+      - scope_ack_draw_block_split  # split into flush_draw + straight_draw?
+    next_step: owner_decides_scope_then_builder_revises_plans
+    notes: >
+      P0 pre-flight gate landed with 5 seed anchors + retroactive audit.
+      P1 plans written and GTO-reviewed. One scope change needs owner
+      ack: split draw_block_pct into flush_draw_block_pct +
+      straight_draw_block_pct per GTO reviewer (avoids cross-texture
+      dilution). If accepted, feature count goes 55 → 59 raw.
+
+  teaching_v3_0:
+    repo: river-rats-teaching
+    current_head: daf8254
+    phase: plan_v2_1_expert_reviewed_awaiting_implementation
+    planned_schema_version: l3_enriched_v3.0
+    planned_changes:
+      - add_flags_list_flagentry_field
+      - primary_window_reorder_range_first
+      - flag_window_7_active_flags
+      - blocker_placeholder_gated_on_v2_4
+      - l3_prose_cuts  # hand_bucket, hero_position, draw_type_desc, showdown_value_desc, position_desc, forward_plan_desc
+      - new_directional_framing_guard_leak_category
+      - content_api_v4_0
+    next_step: plan_v2_1_implementation_small_commits
+    notes: >
+      Plan v2 + v2.1 written. GTO + V3 expert reviews incorporated
+      into v2.1. Ready to begin implementation phase. Blocker flag
+      stays placeholder until v2.4 oracle features land.
+    approved_in: review/comms/MAIN_TERMINAL_DIRECTIVE_2026-04-18-v.md
+
+  game_ui_second_cut:
+    repo: river-rats-game
+    current_head: f5c1a5a
+    phase: deferred_until_playtest_feedback
+    planned:
+      - pot_odds_chip_on_felt
+    later:
+      - per_seat_stack_visualization
+      - street_timeline
+    notes: >
+      First cut (V1 range bar + Badge A) shipped. Further UI
+      improvements deferred until real playtest produces feedback
+      on which additions matter most.
+
+# ────────────────────────────────────────────────────────────────────
+# ARCHIVED — preserved for reference, NOT for copy-forward
+# ────────────────────────────────────────────────────────────────────
+archived:
+  oracle_v2_3:
+    status: reverted
+    reason: air_bet_overgeneralization
+    reference: review/comms/V23_SHIP_REPORT_2026-04-18.md
+
+  oracle_v2_3_2:
+    status: shelved
+    reason: target_subspace_miscope_plus_concentration_effect
+    reference: review/comms/MAIN_TERMINAL_DIRECTIVE_2026-04-18-t.md
+    notes: >
+      Full 4-tier eval FAILED systemic self-play (CHECK share 40.3%).
+      Artifacts preserved in git history at commit range. Do not copy
+      forward. Root causes logged to memory.
+
+  teaching_phase_2_tier_a:
+    status: superseded
+    reason: v3_philosophy_drift
+    superseded_by: l3_enriched_v2.2  # Path B
+    reference: review/comms/MAIN_TERMINAL_DIRECTIVE_2026-04-18-i.md
+
+# ────────────────────────────────────────────────────────────────────
+# QUEUED WORK — not yet started
+# ────────────────────────────────────────────────────────────────────
+queued:
+  v2_4_ship:
+    depends_on:
+      - p1_feature_plans_approved  # awaiting owner scope ack
+      - all_p1_features_implemented
+      - training_data_expanded_with_new_features
+      - training_run_with_preflight_gate_enforced
+      - full_4_tier_eval_pass  # standard + air litmus + value litmus + self-play
+    ship_criteria: all_gates_pass_with_calibration_anchors_green
+
+  v2_5_candidates:
+    - hand_evaluator_draw_outs_redefinition
+    - hu_counter_examples_v3_2_prompt
+    - retire_flush_block_pct_after_nut_made_block_pct_validates
+    - honest_check_distinct_bucket_if_weights_relax
+
+  teaching_l1_l2_build:
+    depends_on:
+      - l3_playtested_in_game
+      - playtest_feedback_identifies_l3_gaps
+    notes: owner-paced per feedback_playtest_before_lower_levels.md
+
+  game_blocker_flag_pair:
+    depends_on:
+      - oracle_v2_4_ships_with_nut_flush_block_and_draw_blocks
+      - teaching_v3_0_flag_window_ships
+    description: >
+      Two-flag design (bluff-catch negative + bluff-betting positive)
+      per owner's directional analysis. L4/L5 material.
+
+# ────────────────────────────────────────────────────────────────────
+# CROSS-STREAM INTEGRATION CONTRACTS — what each stream relies on
+# ────────────────────────────────────────────────────────────────────
+contracts:
+  feature_vector:
+    count: 55
+    owner: river-rats-v2
+    consumers:
+      - river-rats-v2:gto_model
+      - river-rats-v2:oracle_router
+      - river-rats-v2:shap_explainer
+    expansion_candidate:
+      v2_4: +3_or_+4_blocker_features  # pending owner scope ack
+
+  teaching_schema:
+    current: l3_enriched_v2.2
+    fields_primary:
+      - range_position_desc
+      - villain_tp_pct
+      - villain_medium_made_pct
+      - villain_draw_pct
+      - villain_air_pct
+      - board_favour
+    consumers:
+      - river-rats-game:real_teaching
+      - river-rats-game:prototype_v1
+    planned_v3_0: adds_flags_list_field
+
+  playtest_log_schema:
+    current: river-rats-game/session-log/v2
+    captures:
+      - oracle_model_sha256
+      - oracle_repo_commit
+      - teaching_repo_commit
+      - teaching_schema_version
+      - game_build_commit
+      - full_feature_vector_per_decision
+      - shap_attributions_per_decision
+      - ground_truth_vs_player_visible_split
+    consumers: orchestrator_and_both_team_inboxes
+
+# ────────────────────────────────────────────────────────────────────
+# PENDING OWNER DECISIONS
+# ────────────────────────────────────────────────────────────────────
+pending_owner:
+  - id: v2_4_draw_block_split
+    question: >
+      Accept GTO reviewer's recommendation to split draw_block_pct
+      into flush_draw_block_pct + straight_draw_block_pct?
+    reference: review/comms/BUILDER_V24_P1_CONSOLIDATED_VERDICT_2026-04-19.md
+    impact_if_accepted: feature_vector_55_to_59
+    impact_if_rejected: split_becomes_v2_5_item_plan_2_proceeds_as_combined
+    builder_recommendation: accept_split
