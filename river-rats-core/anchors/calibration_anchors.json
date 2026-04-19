@@ -1,0 +1,144 @@
+{
+  "schema_version": "1.0",
+  "created": "2026-04-19",
+  "source_directive": "review/comms/MAIN_TERMINAL_DIRECTIVE_V24_X_2026-04-19.md",
+  "description": "Calibration anchors — solver-verified or playtest-verified spots that ANY trained model must predict correctly. Runs as Tier 0 before self-play. Catches distribution-shift regressions in seconds.",
+  "tolerance_rules": {
+    "strict": "Top-1 action must equal expected_action. Legal-action mask applied. No margin.",
+    "mixed": "expected_action must appear in top-2 with probability >= 0.20. Used for known solver mixed-strategy spots."
+  },
+  "anchors": [
+    {
+      "anchor_id": "d2410_CO_turn",
+      "origin": "v3.1 prompt Calibration Notes + test_set_50_labelled.jsonl",
+      "rationale": "TPGK on J-high turn, checked-to at compressed SPR ~1.25, worse_hand_pct 0.82, villain air_pct 0.22 + draw_pct 0.16. Solver: BET. This is the anchor v2.3.2 failed — the exact class Path C missed.",
+      "situation": {
+        "hero_cards": ["Jc", "Ks"],
+        "board_cards": ["Jd", "9d", "3h", "6d"],
+        "hero_pos": "CO",
+        "villain_positions": ["BTN", "BB"],
+        "pot": 80.0,
+        "to_call": 0.0,
+        "street": "turn",
+        "action_history": [
+          ["preflop", "CO", "raise"],
+          ["preflop", "BTN", "call"],
+          ["preflop", "BB", "call"],
+          ["flop", "BB", "check"],
+          ["flop", "CO", "check"],
+          ["flop", "BTN", "check"],
+          ["turn", "BB", "check"]
+        ],
+        "opener_position": "CO",
+        "effective_stack": 100.0,
+        "num_opponents": 2
+      },
+      "expected_action": "BET",
+      "tolerance": "strict"
+    },
+    {
+      "anchor_id": "LITMUS_A4d_Qs5s7s_flop",
+      "origin": "v2.3.1 Layer 2 playtest finding — air on monotone, must CHECK (not BET on air)",
+      "rationale": "AIR hero (Ad4d, no spade) on 3-spade flop, checked to at BTN. Historical v2.3 playtest bug: model predicted BET 98.6%. Layer 1 board_adjusted_hrp + Layer 2 air-CHECK counter-examples fixed this to CHECK 93%. Anchor protects the fix.",
+      "situation": {
+        "hero_cards": ["Ad", "4d"],
+        "board_cards": ["Qs", "5s", "7s"],
+        "hero_pos": "BTN",
+        "villain_positions": ["SB", "BB"],
+        "pot": 90.0,
+        "to_call": 0.0,
+        "street": "flop",
+        "action_history": [
+          ["preflop", "BTN", "raise"],
+          ["preflop", "SB", "call"],
+          ["preflop", "BB", "call"],
+          ["flop", "SB", "check"],
+          ["flop", "BB", "check"]
+        ],
+        "opener_position": "BTN",
+        "effective_stack": 450.0,
+        "num_opponents": 2
+      },
+      "expected_action": "CHECK",
+      "tolerance": "strict"
+    },
+    {
+      "anchor_id": "LITMUS_T5h_JJ2_flop",
+      "origin": "v2.3.1 Layer 2 playtest finding — second air-on-paired playtest spot",
+      "rationale": "AIR hero (Th5h, 10-high, no pair) on paired JJ2 board, BTN checked-to. Historical v2.3 bug: model predicted BET 72%. Layer 1 + Layer 2 fixed to CHECK 98%. Anchor protects the fix.",
+      "situation": {
+        "hero_cards": ["Th", "5h"],
+        "board_cards": ["Jc", "Jd", "2h"],
+        "hero_pos": "BTN",
+        "villain_positions": ["SB", "BB"],
+        "pot": 90.0,
+        "to_call": 0.0,
+        "street": "flop",
+        "action_history": [
+          ["preflop", "BTN", "raise"],
+          ["preflop", "SB", "call"],
+          ["preflop", "BB", "call"],
+          ["flop", "SB", "check"],
+          ["flop", "BB", "check"]
+        ],
+        "opener_position": "BTN",
+        "effective_stack": 450.0,
+        "num_opponents": 2
+      },
+      "expected_action": "CHECK",
+      "tolerance": "strict"
+    },
+    {
+      "anchor_id": "LITMUS_AA_7h5d2c_flop",
+      "origin": "v2.3.2 Path C value litmus — overpair on dry board, must BET for value",
+      "rationale": "Hero AA (AhAs) on dry 7h5d2c, BTN checked-to. Overpair with eq >0.70, worse_hand_pct ~0.93, SPR ~1.1. Solver: clear value bet. Anchor protects strong-made-value class across Path C rescopes.",
+      "situation": {
+        "hero_cards": ["Ah", "As"],
+        "board_cards": ["7h", "5d", "2c"],
+        "hero_pos": "BTN",
+        "villain_positions": ["SB", "BB"],
+        "pot": 90.0,
+        "to_call": 0.0,
+        "street": "flop",
+        "action_history": [
+          ["preflop", "BTN", "raise"],
+          ["preflop", "SB", "call"],
+          ["preflop", "BB", "call"],
+          ["flop", "SB", "check"],
+          ["flop", "BB", "check"]
+        ],
+        "opener_position": "BTN",
+        "effective_stack": 450.0,
+        "num_opponents": 2
+      },
+      "expected_action": "BET",
+      "tolerance": "strict"
+    },
+    {
+      "anchor_id": "LITMUS_KQ_KsTs3h_flop",
+      "origin": "v2.3.2 Path C value litmus — TPGK on two-tone board, must BET for value + protection",
+      "rationale": "Hero KhQd (top pair good kicker) on KsTs3h two-tone spades, BTN checked-to. Eq ~0.62, worse_hand_pct ~0.85, draw-heavy board. Solver: BET small for value + protection. Anchor protects TPGK class — mirrors d2410's decision pattern at flop.",
+      "situation": {
+        "hero_cards": ["Kh", "Qd"],
+        "board_cards": ["Ks", "Ts", "3h"],
+        "hero_pos": "BTN",
+        "villain_positions": ["SB", "BB"],
+        "pot": 90.0,
+        "to_call": 0.0,
+        "street": "flop",
+        "action_history": [
+          ["preflop", "BTN", "raise"],
+          ["preflop", "SB", "call"],
+          ["preflop", "BB", "call"],
+          ["flop", "SB", "check"],
+          ["flop", "BB", "check"]
+        ],
+        "opener_position": "BTN",
+        "effective_stack": 450.0,
+        "num_opponents": 2
+      },
+      "expected_action": "BET",
+      "tolerance": "strict"
+    }
+  ]
+}
