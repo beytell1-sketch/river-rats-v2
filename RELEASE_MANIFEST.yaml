@@ -16,9 +16,13 @@
 #      the approval directive in review/comms/
 #   4. Cross-stream consumers can rely on the manifest for coordination
 
-manifest_version: 1.0
+manifest_version: 1.1
 last_updated: 2026-04-19
 updated_by: main_terminal
+changelog:
+  - 1.0 (2026-04-19): initial manifest
+  - 1.1 (2026-04-19): v2.4 P1 scope resolved — draw_block_pct split
+    accepted (flush + straight); feature vector targets 59 raw
 
 # ────────────────────────────────────────────────────────────────────
 # DEPLOYED — what owner is playing against right now
@@ -99,22 +103,32 @@ in_progress:
   oracle_v2_4:
     repo: river-rats-v2
     current_head: 8e4604a
-    phase: p1_feature_plans_awaiting_revision_and_scope_ack
+    phase: stage_1_plan_revision_and_implementation
+    feature_count_target: 59  # 55 + 4 new (split accepted 2026-04-19)
     landed:
       - p0_calibration_anchor_preflight_gate  # commit 570ece2
-    staged_for_review:
-      - p1_plan_nut_flush_block  # commit ecbfb83, GTO APPROVED_WITH_MODS
-      - p1_plan_draw_block_pct   # commit ecbfb83, GTO flagged SPLIT scope change
-      - p1_plan_nut_made_block_pct  # commit ecbfb83, GTO APPROVED_WITH_MODS
-    owner_blocked_on:
-      - scope_ack_draw_block_split  # split into flush_draw + straight_draw?
-    next_step: owner_decides_scope_then_builder_revises_plans
+    planned_features:
+      - nut_flush_block                # P1, boolean, APPROVED_WITH_MODS
+      - flush_draw_block_pct           # P1, continuous (split from draw_block_pct)
+      - straight_draw_block_pct        # P1, continuous (split from draw_block_pct)
+      - nut_made_block_pct             # P1, continuous, APPROVED_WITH_MODS
+    ship_sequence:
+      - stage_1_revise_plans_and_implement_features
+      - stage_2_update_kb_section_1_9
+      - stage_3_derive_v3_2_prompt_from_kb_update
+      - stage_4_expand_training_data_with_distribution_audit
+      - stage_5_retrain_and_full_eval_with_calibration_anchor_preflight
+      - stage_6_ship_gate
+    next_step: builder_revises_3_plans_plus_re_review_of_split_plan
     notes: >
       P0 pre-flight gate landed with 5 seed anchors + retroactive audit.
-      P1 plans written and GTO-reviewed. One scope change needs owner
-      ack: split draw_block_pct into flush_draw_block_pct +
-      straight_draw_block_pct per GTO reviewer (avoids cross-texture
-      dilution). If accepted, feature count goes 55 → 59 raw.
+      P1 plans written, all GTO APPROVED_WITH_MODIFICATIONS. Scope
+      change accepted: draw_block_pct splits into flush_draw_block_pct
+      and straight_draw_block_pct per GTO reviewer + owner's original
+      flush-specific scenario. Multi-stage ship sequence specified;
+      features alone don't close the defensive-blocker ticket — requires
+      features + KB + prompt + re-label + retrain.
+    approved_in: review/comms/MAIN_TERMINAL_DIRECTIVE_2026-04-19-z.md
 
   teaching_v3_0:
     repo: river-rats-teaching
@@ -251,12 +265,12 @@ contracts:
 # ────────────────────────────────────────────────────────────────────
 # PENDING OWNER DECISIONS
 # ────────────────────────────────────────────────────────────────────
-pending_owner:
+pending_owner: []
+
+# Resolved pending items (kept for audit trail)
+resolved_owner_decisions:
   - id: v2_4_draw_block_split
-    question: >
-      Accept GTO reviewer's recommendation to split draw_block_pct
-      into flush_draw_block_pct + straight_draw_block_pct?
-    reference: review/comms/BUILDER_V24_P1_CONSOLIDATED_VERDICT_2026-04-19.md
-    impact_if_accepted: feature_vector_55_to_59
-    impact_if_rejected: split_becomes_v2_5_item_plan_2_proceeds_as_combined
-    builder_recommendation: accept_split
+    resolved_on: 2026-04-19
+    decision: accepted
+    impact: feature_vector_55_to_59
+    reference: review/comms/MAIN_TERMINAL_DIRECTIVE_2026-04-19-z.md
