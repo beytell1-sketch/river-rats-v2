@@ -84,6 +84,13 @@ class F:
     # Step 16: new feature 55 — board-adjusted hero range percentile
     BOARD_ADJUSTED_HRP = 'board_adjusted_hrp'
 
+    # Step 17: v2.4 P1 blocker-direction features 56-59
+    # Spec: review/comms/BUILDER_V24_P1_SPEC_LOCKED_2026-04-19.md
+    NUT_FLUSH_BLOCK = 'nut_flush_block'
+    FLUSH_DRAW_BLOCK_PCT = 'flush_draw_block_pct'
+    STRAIGHT_DRAW_BLOCK_PCT = 'straight_draw_block_pct'
+    NUT_MADE_BLOCK_PCT = 'nut_made_block_pct'
+
     # Metadata fields (underscore prefix, not in model)
     META_NUM_OPPONENTS = '_num_opponents'
     META_NUM_RAISES = '_num_raises_this_street'

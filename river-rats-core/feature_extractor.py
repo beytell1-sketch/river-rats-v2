@@ -1047,6 +1047,12 @@ FEATURE_COLUMNS = [
     'villain_medium_made_pct',
     # Step 16: feature 55 — board-adjusted hero range percentile
     'board_adjusted_hrp',
+    # Step 17: v2.4 P1 blocker-direction features 56-59
+    # See review/comms/BUILDER_V24_P1_SPEC_LOCKED_2026-04-19.md
+    'nut_flush_block',
+    'flush_draw_block_pct',
+    'straight_draw_block_pct',
+    'nut_made_block_pct',
 ]
 
 LABEL_COLUMN = 'action'
@@ -1680,6 +1686,33 @@ def extract_all_features(hand: Dict) -> Dict:
         * features.get(F.EQUITY_VS_RANGE, 0.0),
         6,
     )
+
+    # Step 17: v2.4 P1 blocker-direction features (56-59)
+    # Spec: review/comms/BUILDER_V24_P1_SPEC_LOCKED_2026-04-19.md
+    # Re-uses Step 12's narrowed villain range (_s12_v_range) so flush/
+    # straight/nut-made blocking is measured against the same range as
+    # flush_block_pct — consistent defender-context semantics.
+    try:
+        from blocker_features import (
+            compute_nut_flush_block,
+            compute_block_percentages,
+        )
+        features[F.NUT_FLUSH_BLOCK] = compute_nut_flush_block(
+            hero_cards, board_cards
+        )
+        _s17_block = compute_block_percentages(
+            hero_cards, board_cards, _s12_v_range,
+        )
+        features[F.FLUSH_DRAW_BLOCK_PCT] = _s17_block['flush_draw_block_pct']
+        features[F.STRAIGHT_DRAW_BLOCK_PCT] = _s17_block['straight_draw_block_pct']
+        features[F.NUT_MADE_BLOCK_PCT] = _s17_block['nut_made_block_pct']
+    except Exception:
+        # Defensive: never fail feature extraction on blocker-feature computation.
+        # Default to 0 to keep schema width consistent.
+        features[F.NUT_FLUSH_BLOCK] = 0
+        features[F.FLUSH_DRAW_BLOCK_PCT] = 0.0
+        features[F.STRAIGHT_DRAW_BLOCK_PCT] = 0.0
+        features[F.NUT_MADE_BLOCK_PCT] = 0.0
 
     return features
 
