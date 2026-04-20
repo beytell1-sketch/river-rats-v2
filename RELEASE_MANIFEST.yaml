@@ -16,13 +16,16 @@
 #      the approval directive in review/comms/
 #   4. Cross-stream consumers can rely on the manifest for coordination
 
-manifest_version: 1.1
+manifest_version: 1.2
 last_updated: 2026-04-19
 updated_by: main_terminal
 changelog:
   - 1.0 (2026-04-19): initial manifest
   - 1.1 (2026-04-19): v2.4 P1 scope resolved — draw_block_pct split
     accepted (flush + straight); feature vector targets 59 raw
+  - 1.2 (2026-04-19): v2.4 Stage 1 complete — 4 features implemented,
+    17/17 unit tests PASS, v2.3.1 anchor-gate regression 5/5 PASS,
+    backfill audit clean; Stage 2 (KB §1.9) GO
 
 # ────────────────────────────────────────────────────────────────────
 # DEPLOYED — what owner is playing against right now
@@ -102,33 +105,40 @@ iteration:
 in_progress:
   oracle_v2_4:
     repo: river-rats-v2
-    current_head: 8e4604a
-    phase: stage_1_plan_revision_and_implementation
-    feature_count_target: 59  # 55 + 4 new (split accepted 2026-04-19)
+    current_head: 2aa5d7f
+    phase: stage_2_kb_section_1_9_update
+    feature_count_target: 59
     landed:
-      - p0_calibration_anchor_preflight_gate  # commit 570ece2
-    planned_features:
-      - nut_flush_block                # P1, boolean, APPROVED_WITH_MODS
-      - flush_draw_block_pct           # P1, continuous (split from draw_block_pct)
-      - straight_draw_block_pct        # P1, continuous (split from draw_block_pct)
-      - nut_made_block_pct             # P1, continuous, APPROVED_WITH_MODS
+      - p0_calibration_anchor_preflight_gate   # commit 570ece2
+      - stage_1_feature_implementation         # commit 2aa5d7f
+    stage_1_audit:
+      unit_tests: 17/17 PASS
+      v2_3_1_anchor_regression: 5/5 PASS
+      backfill_sanity_violations: 0
+      nut_flush_block_firing_rate: 11.2%   # healthy
+      defensive_bucket_density: 6.22%      # above 2% target threshold
+    implemented_features:
+      - nut_flush_block                # boolean, in blocker_features.py
+      - flush_draw_block_pct           # continuous 0-1
+      - straight_draw_block_pct        # continuous 0-1
+      - nut_made_block_pct             # continuous 0-1
+    feature_columns_exposed: 55         # gto_model.FEATURE_COLUMNS held back for backward compat; exposes 59 in Stage 5 training
     ship_sequence:
-      - stage_1_revise_plans_and_implement_features
-      - stage_2_update_kb_section_1_9
+      - stage_1_feature_implementation          # COMPLETE (2aa5d7f)
+      - stage_2_update_kb_section_1_9            # IN PROGRESS
       - stage_3_derive_v3_2_prompt_from_kb_update
       - stage_4_expand_training_data_with_distribution_audit
       - stage_5_retrain_and_full_eval_with_calibration_anchor_preflight
       - stage_6_ship_gate
-    next_step: builder_revises_3_plans_plus_re_review_of_split_plan
+    next_step: builder_drafts_kb_section_1_9_diff_then_gto_reviewer_pass
     notes: >
-      P0 pre-flight gate landed with 5 seed anchors + retroactive audit.
-      P1 plans written, all GTO APPROVED_WITH_MODIFICATIONS. Scope
-      change accepted: draw_block_pct splits into flush_draw_block_pct
-      and straight_draw_block_pct per GTO reviewer + owner's original
-      flush-specific scenario. Multi-stage ship sequence specified;
-      features alone don't close the defensive-blocker ticket — requires
-      features + KB + prompt + re-label + retrain.
-    approved_in: review/comms/MAIN_TERMINAL_DIRECTIVE_2026-04-19-z.md
+      Stage 1 clean. Features implemented, tests pass, backward compat
+      preserved via held-back FEATURE_COLUMNS. Stage 2 draft KB §1.9
+      language for each of 4 features: poker-theoretic meaning, when
+      each matters, directional interpretation (bluff-catch vs
+      bluff-bet asymmetry per owner), example cases. GTO reviewer pass
+      before commit.
+    approved_in: review/comms/MAIN_TERMINAL_TO_BUILDER_2026-04-19-aa.md
 
   teaching_v3_0:
     repo: river-rats-teaching
