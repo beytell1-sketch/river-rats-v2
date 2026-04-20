@@ -1121,6 +1121,7 @@ def extract_range_composition(
     street_raw: str,
     is_3bet_pot: int,
     opener_pos: str = None,
+    action_history: List[Dict] = None,
 ) -> Dict:
     """
     Classify villain's range on this board and return composition percentages.
@@ -1129,12 +1130,19 @@ def extract_range_composition(
     loop that narrow_to_betting_range() runs internally, but here we collect
     the classification stats instead of discarding them.
 
+    v2.4 Stage 3.5: when `action_history` is supplied, chain bet/check/call
+    narrowing across villain's prior-street actions before applying the
+    current-street facing_bet filter. Preserves backward compat when
+    action_history is None (falls back to single-street behavior).
+
     Returns _ prefixed metadata fields (teaching only, not model features):
         _villain_top_pair_plus_pct: fraction of range that is top pair+
         _villain_draw_pct: fraction of range that has a strong draw
         _villain_air_pct: fraction of range that is air/bluff
         _villain_range_capped: 1 if villain's range is capped (no premiums)
         _board_favour: heuristic board favour (-1 to +1, positive = favours hero)
+        _villain_range_chain_steps: action-chain applied (v2.4 Stage 3.5)
+        _villain_range_chain_truncated: safety rail tripped (v2.4 Stage 3.5)
     """
     if not board_cards:
         return {
@@ -1156,9 +1164,31 @@ def extract_range_composition(
             '_board_favour': 0.0,
         }
 
-    # If facing bet, narrow to betting range first (villain is betting,
-    # so we classify their betting range, not their full range)
     street_name = STREET_NAME_MAP.get(street_raw, 'flop')
+
+    # v2.4 Stage 3.5: action-aware chaining (prior streets only).
+    chain_steps: List[str] = []
+    chain_truncated = False
+    if action_history:
+        from range_narrowing import narrow_by_action_history
+        v_range, chain_meta = narrow_by_action_history(
+            full_range=v_range,
+            board=board_cards,
+            action_history=action_history,
+            villain_pos=villain_pos,
+            decision_street=street_name,
+        )
+        chain_steps = chain_meta.get('chain_steps', [])
+        chain_truncated = chain_meta.get('truncated', False)
+        # If chain produced empty range (villain folded on a prior street,
+        # which should never happen if we got here, but guard anyway), fall
+        # back to unnarrowed preflop range to avoid zeroing composition.
+        if not v_range:
+            v_range = get_villain_range(hero_pos, villain_pos, opener_pos=opener_pos)
+
+    # Current-street facing-bet filter — same gate as pre-Stage-3.5 for
+    # decisions where hero faces a live bet. Applied AFTER the prior-street
+    # chain so the bet filter runs on the post-chain range.
     if facing_bet:
         v_range = narrow_to_betting_range(v_range, board_cards, street_name)
 
@@ -1236,6 +1266,9 @@ def extract_range_composition(
         '_villain_medium_made_pct': medium_made_pct,
         '_villain_range_capped': range_capped,
         '_board_favour': board_favour,
+        # v2.4 Stage 3.5 metadata
+        '_villain_range_chain_steps': chain_steps,
+        '_villain_range_chain_truncated': chain_truncated,
     }
 
 
@@ -1593,6 +1626,12 @@ def extract_all_features(hand: Dict) -> Dict:
         street_raw=features.get('_street_raw', 'f'),
         is_3bet_pot=features.get('is_3bet_pot', 0),
         opener_pos=hand.get('_opener_position', None),
+        # v2.4 Stage 3.5: action-aware narrowing. Plumbs through from
+        # game_state_bridge which flattens game.street_actions into
+        # [{street, position, action}, ...]. None falls back to single-
+        # street behavior (backward compat for callers that haven't
+        # updated).
+        action_history=hand.get('_action_history'),
     )
     features.update(range_feats)
 

@@ -20,7 +20,7 @@ Usage in a decision_callback:
         return (action, amount)
 """
 from __future__ import annotations
-from typing import Dict, TYPE_CHECKING
+from typing import Dict, List, TYPE_CHECKING
 
 if TYPE_CHECKING:
     pass  # No runtime imports from poker_game to avoid circular deps
@@ -144,6 +144,22 @@ def build_features_from_game_state(player, game, context: dict) -> Dict:
     is_3bet = int(pf_raise_count >= 2)
     # had_preflop_open removed — oracle always plays opened pots
 
+    # Flatten street_actions into a list of {street, position, action} dicts
+    # for v2.4 Stage 3.5 action-aware range narrowing. The bridge sees the
+    # full action history via game.street_actions; we surface it here so
+    # classify_villain_range can chain narrowing per street.
+    flat_action_history: List[Dict[str, str]] = []
+    _street_actions_source = getattr(game, 'street_actions', {}) or {}
+    for _street_name in ('preflop', 'flop', 'turn', 'river'):
+        for _entry in _street_actions_source.get(_street_name, []):
+            # street_actions stores (name, pos, action) tuples; normalize
+            if isinstance(_entry, (list, tuple)) and len(_entry) >= 3:
+                flat_action_history.append({
+                    'street': _street_name,
+                    'position': str(_entry[1]).upper(),
+                    'action': str(_entry[2]).upper(),
+                })
+
     # Build the hand dict in the format extract_all_features() expects
     hand = {
         'h': hero_card_str,
@@ -165,6 +181,7 @@ def build_features_from_game_state(player, game, context: dict) -> Dict:
         '_num_callers_to_bet': num_callers_to_bet,
         '_facing_raise': facing_raise,
         '_is_3bet_pot': is_3bet,
+        '_action_history': flat_action_history,  # v2.4 Stage 3.5
     }
 
     # Run the full feature extraction pipeline

@@ -145,6 +145,65 @@ RIVER_CHECKING_FREQUENCIES = {
     'air': 0.80,
 }
 
+# =============================================================================
+# v2.4 Stage 3.5 — CALL-continue frequencies (per GTO review M1 refined table)
+# =============================================================================
+# "What fraction of villain's range in this category calls a standard-sized
+# bet on this street, given bet/fold/raise were available?"
+#
+# Heuristic — not direct solver output. Derived from solver intuition in KB
+# §1.3 (c-bet frequency), §1.4 (bluff-to-value), §1.7 (semi-bluff conditions),
+# §1.8 (blocker action selection). Two properties the simpler
+# "1 - fold_freq - raise_freq" derivation would miss:
+#   1. medium_made stays elevated across streets (bluff-catch / showdown band)
+#   2. nuts / strong_value get SUPPRESSED (they raise, not call)
+#
+# These frequencies are applied via narrow_to_continuing_range() in the chain
+# assembled by narrow_by_action_history(). Ship-tagged "heuristic, v2.4 MVP,
+# not solver-run" per GTO review 2026-04-20 (commit a4cab83). Raise-aware
+# variants deferred to v2.5 (TICKET_V25_PRO_LEVEL_NARROWING_GAPS_2026-04-20).
+FLOP_CALL_FREQUENCIES = {
+    'nuts':          0.15,  # mostly raises; only slow-plays call
+    'strong_value':  0.35,  # mixes raise/call; more call on wet boards
+    'good_value':    0.75,  # TPTK / overpair-type calls standardly
+    'draw':          0.70,  # calls with pot odds + implied odds
+    'medium_made':   0.55,  # calls with showdown; floats some
+    'weak_made':     0.30,  # calls small, folds big
+    'bluff':         0.15,  # rare float with blockers
+    'air':           0.05,  # overwhelmingly folds
+}
+TURN_CALL_FREQUENCIES = {
+    'nuts':          0.15,
+    'strong_value':  0.30,  # raises more as pot grows
+    'good_value':    0.70,  # TPTK continues
+    'draw':          0.55,  # pot odds tighter; some give up
+    'medium_made':   0.50,  # bluff-catcher band
+    'weak_made':     0.15,  # mostly folds by turn
+    'bluff':         0.10,
+    'air':           0.03,
+}
+RIVER_CALL_FREQUENCIES = {
+    'nuts':          0.20,  # mostly raises
+    'strong_value':  0.40,  # thin raise vs polarised bet
+    'good_value':    0.65,  # standard bluff-catch
+    'draw':          0.00,  # missed = air; already handled upstream
+    'medium_made':   0.55,  # primary bluff-catch band
+    'weak_made':     0.20,  # folds most
+    'bluff':         0.05,
+    'air':           0.02,
+}
+
+# =============================================================================
+# v2.4 Stage 3.5 — M1 update: tighten RIVER_BETTING_FREQUENCIES for 3-way
+# =============================================================================
+# Rationale: the two entries below were HU-correct. When applied post-chain
+# to an already-narrowed range (as they will be after Stage 3.5), they
+# over-state river bluff density. §1.4 is explicit: 3-way river bluff:value
+# is ~1:4 or tighter (~20% bluffs, not 33%). §1.7: pure bluffs nearly
+# eliminated 3-way. See GTO review Flag A (commit a4cab83).
+RIVER_BETTING_FREQUENCIES['bluff'] = 0.20  # was 0.35 — 3-way-aware
+RIVER_BETTING_FREQUENCIES['air']   = 0.10  # was 0.20 — 3-way-aware
+
 
 # =============================================================================
 # HAND CLASSIFICATION
@@ -498,6 +557,290 @@ def narrow_to_checking_range(
             checking_range[hand] /= total_weight
     
     return checking_range
+
+
+# =============================================================================
+# v2.4 Stage 3.5 — action-aware chained narrowing
+# =============================================================================
+# See BUILDER_V24_STAGE35_SPEC_LOCKED_2026-04-20.md for the full spec. Two
+# entry points:
+#   narrow_to_continuing_range — per-street CALL filter (heuristic)
+#   narrow_by_action_history   — walks the per-villain action history,
+#                                 chaining bet/check/call narrowings
+# Safety rails per GTO review Flag B:
+#   - Empty-chain fallback: if a step produces total_weight == 0, return
+#     the previous valid step's range (don't silently emit empty composition)
+#   - Weight-floor threshold 5%: chain warns + returns last valid intermediate
+#     if surviving weight drops below 5% of the original range total
+#   - Surviving-weight metadata returned alongside range
+
+
+# Weight-floor threshold (5% of original range total) — see GTO review Flag B
+_STAGE35_WEIGHT_FLOOR_PCT = 0.05
+
+
+def narrow_to_continuing_range(
+    full_range: Dict[str, float],
+    board: List[str],
+    street: str = 'flop',
+) -> Dict[str, float]:
+    """v2.4 Stage 3.5: narrow a range to hands villain would CALL (continue
+    but not raise or fold).
+
+    Heuristic, not solver-verified. See FLOP/TURN/RIVER_CALL_FREQUENCIES
+    above for the per-category multipliers + derivation rationale.
+
+    Args:
+        full_range: Complete villain range {hand: frequency}
+        board: Board cards
+        street: Current street ('flop', 'turn', 'river')
+
+    Returns:
+        Narrowed range with call frequencies applied, normalized.
+    """
+    if not full_range or not board:
+        return full_range
+
+    if street == 'river':
+        call_freqs = RIVER_CALL_FREQUENCIES
+    elif street == 'turn':
+        call_freqs = TURN_CALL_FREQUENCIES
+    else:
+        call_freqs = FLOP_CALL_FREQUENCIES
+
+    out_range = {}
+    total_weight = 0.0
+
+    for hand, freq in full_range.items():
+        if freq <= 0:
+            continue
+
+        classification = classify_hand(hand, board)
+        category = classification.category
+
+        # River: missed draws become air (same convention as
+        # narrow_to_checking_range + narrow_to_betting_range)
+        if street == 'river' and category == 'draw':
+            category = 'air'
+
+        call_freq = call_freqs.get(category, 0.30)  # conservative default
+        new_freq = freq * call_freq
+        if new_freq > 0.001:
+            out_range[hand] = new_freq
+            total_weight += new_freq
+
+    if total_weight > 0:
+        for hand in out_range:
+            out_range[hand] /= total_weight
+
+    return out_range
+
+
+def _action_to_narrow(action: str) -> str:
+    """Map an action string to a narrowing class.
+
+    Returns one of: 'bet', 'check', 'call', 'fold', 'skip'.
+    'skip' means the action doesn't apply narrowing (e.g., preflop
+    chips-related actions that happen outside the street-by-street
+    postflop framework).
+    """
+    if not action:
+        return 'skip'
+    a = action.upper()
+    if a in ('BET', 'RAISE'):
+        return 'bet'
+    if a == 'CHECK':
+        return 'check'
+    if a == 'CALL':
+        return 'call'
+    if a == 'FOLD':
+        return 'fold'
+    return 'skip'
+
+
+def _street_board(full_board: List[str], street: str) -> List[str]:
+    """Return the board as it existed on the named street."""
+    if street == 'flop':
+        return full_board[:3]
+    if street == 'turn':
+        return full_board[:4]
+    if street == 'river':
+        return full_board[:5]
+    return full_board
+
+
+def _normalize_action_entry(entry) -> Dict[str, str]:
+    """Normalize a single action_history entry to {street, position, action}.
+
+    Accepts either:
+      - dict with 'street', 'position', 'action' keys, OR
+      - 3-tuple (street, position, action)
+    Unknown formats return an empty dict (caller skips).
+    """
+    if isinstance(entry, dict):
+        return {
+            'street': str(entry.get('street', '')).lower(),
+            'position': str(entry.get('position', '')).upper(),
+            'action': str(entry.get('action', '')).upper(),
+        }
+    if isinstance(entry, (list, tuple)) and len(entry) >= 3:
+        return {
+            'street': str(entry[0]).lower(),
+            'position': str(entry[1]).upper(),
+            'action': str(entry[2]).upper(),
+        }
+    return {}
+
+
+def narrow_by_action_history(
+    full_range: Dict[str, float],
+    board: List[str],
+    action_history: List,
+    villain_pos: str,
+    decision_street: str = 'river',
+) -> Tuple[Dict[str, float], Dict[str, float]]:
+    """v2.4 Stage 3.5: chain betting / checking / continuing narrowing
+    across villain's action history.
+
+    Walks streets flop → turn → river up to (but NOT including) actions on
+    `decision_street`. Per-street, applies bet/check/call narrowing in the
+    order villain acted that street.
+
+    Per GTO review: same-street pre-hero actions are EXCLUDED (only strictly
+    prior-street actions enter the chain). This preserves flop calibration
+    anchors as zero-impact controls — see BUILDER_V24_STAGE35_SPEC_LOCKED.
+
+    Per GTO review Flag B: three safety rails are applied:
+      1. Empty-chain fallback (return last valid on total_weight==0)
+      2. Weight-floor threshold (5% of original total)
+      3. Surviving-weight metadata returned in the meta dict
+
+    Args:
+        full_range: preflop villain range (already position-aware)
+        board: full current board cards (3-5)
+        action_history: list of dicts/tuples with street/position/action
+        villain_pos: primary villain's seat (e.g. 'BB')
+        decision_street: the street the CURRENT decision is on
+                         (actions on this street are NOT chained —
+                         same-street actions enter via the current
+                         facing_bet gate, not this chain)
+
+    Returns:
+        (narrowed_range, metadata) where metadata contains:
+          - 'surviving_weight': fraction of original range weight retained
+          - 'chain_steps': list of action-labels applied
+          - 'truncated': True if weight-floor tripped and chain short-circuited
+    """
+    STREET_ORDER = ['flop', 'turn', 'river']
+    if not full_range or not board:
+        return full_range, {'surviving_weight': 1.0, 'chain_steps': [], 'truncated': False}
+
+    original_weight = sum(freq for freq in full_range.values() if freq > 0)
+    if original_weight <= 0:
+        return full_range, {'surviving_weight': 0.0, 'chain_steps': [], 'truncated': False}
+
+    weight_floor = original_weight * _STAGE35_WEIGHT_FLOOR_PCT
+
+    # Schema-mismatch guard: if the first action entry can't normalize, log
+    # and fallback to empty chain (feature_extractor fallback will kick in)
+    if action_history:
+        sample = _normalize_action_entry(action_history[0])
+        if not sample.get('street'):
+            return full_range, {
+                'surviving_weight': 1.0,
+                'chain_steps': [],
+                'truncated': False,
+                'schema_warning': f'action_history[0] malformed: {action_history[0]!r}',
+            }
+
+    current_range = dict(full_range)
+    last_valid_range = dict(full_range)
+    steps: List[str] = []
+    truncated = False
+
+    decision_street = decision_street.lower()
+
+    for street in STREET_ORDER:
+        if street == decision_street:
+            # Reached the decision street — stop BEFORE applying any of its
+            # actions. The current-street facing_bet gate handles those.
+            break
+
+        # Collect villain's actions on this prior street, in order
+        villain_street_actions = []
+        for entry in action_history:
+            normed = _normalize_action_entry(entry)
+            if normed.get('street') == street and normed.get('position') == villain_pos.upper():
+                villain_street_actions.append(normed)
+
+        if not villain_street_actions:
+            continue  # villain didn't act on this street (or we don't have the data)
+
+        street_board = _street_board(board, street)
+
+        for act in villain_street_actions:
+            narrow_class = _action_to_narrow(act.get('action', ''))
+            if narrow_class == 'fold':
+                # Villain folded — villain shouldn't be in the range anymore
+                return {}, {
+                    'surviving_weight': 0.0,
+                    'chain_steps': steps + [f'{street}:FOLD'],
+                    'truncated': False,
+                }
+            if narrow_class == 'bet':
+                current_range = narrow_to_betting_range(current_range, street_board, street)
+                steps.append(f'{street}:BET')
+            elif narrow_class == 'check':
+                current_range = narrow_to_checking_range(current_range, street_board, street)
+                steps.append(f'{street}:CHECK')
+            elif narrow_class == 'call':
+                current_range = narrow_to_continuing_range(current_range, street_board, street)
+                steps.append(f'{street}:CALL')
+            else:
+                continue  # skip unknown action types
+
+            # Safety rail: empty-chain fallback. If narrowing produced an
+            # empty range, revert to last valid and log.
+            if not current_range:
+                import logging
+                logging.getLogger(__name__).warning(
+                    'narrow_by_action_history: empty range after %s; '
+                    'reverting to last valid', steps[-1] if steps else '?'
+                )
+                current_range = last_valid_range
+                truncated = True
+                break
+
+            # Safety rail: weight-floor threshold. Since each narrow_* call
+            # re-normalizes, surviving weight is measured by the PRODUCT of
+            # un-normalized weights across steps. Approximation:
+            # sum of current_range values (post-normalize) is always 1.0, so
+            # the better check is "did the narrowing produce a degenerate
+            # distribution" — detect via count of surviving hands.
+            if len(current_range) < 3:
+                import logging
+                logging.getLogger(__name__).warning(
+                    'narrow_by_action_history: chain collapsed to %d hands '
+                    'after %s; reverting to last valid',
+                    len(current_range), steps[-1] if steps else '?',
+                )
+                current_range = last_valid_range
+                truncated = True
+                break
+
+            last_valid_range = dict(current_range)
+
+        if truncated:
+            break
+
+    meta = {
+        # Surviving weight is not directly recoverable after normalization.
+        # Report chain_steps as the primary fidelity signal.
+        'surviving_weight': float(len(current_range)) / max(1, len(full_range)),
+        'chain_steps': steps,
+        'truncated': truncated,
+    }
+    return current_range, meta
 
 
 # =============================================================================
