@@ -16,7 +16,7 @@
 #      the approval directive in review/comms/
 #   4. Cross-stream consumers can rely on the manifest for coordination
 
-manifest_version: 1.4
+manifest_version: 1.5
 last_updated: 2026-04-20
 updated_by: main_terminal
 changelog:
@@ -30,6 +30,9 @@ changelog:
     expanded interfaces contracts with cross-repo boundary specs
   - 1.4 (2026-04-20): Stage 3.5 inserted — range-narrowing action-
     history fix (owner-flagged); must land before Stage 4 re-label
+  - 1.5 (2026-04-20): split queued.game_blocker_flag_pair into
+    teaching_blocker_flag_design + game_blocker_flag_rendering;
+    owner's 2-flag specs captured inline (per recentering §D.1)
 
 # ────────────────────────────────────────────────────────────────────
 # DEPLOYED — what owner is playing against right now
@@ -241,13 +244,44 @@ queued:
       - playtest_feedback_identifies_l3_gaps
     notes: owner-paced per feedback_playtest_before_lower_levels.md
 
-  game_blocker_flag_pair:
+  teaching_blocker_flag_design:
     depends_on:
-      - oracle_v2_4_ships_with_nut_flush_block_and_draw_blocks
-      - teaching_v3_0_flag_window_ships
+      - oracle_v2_4_ships_with_4_blocker_features  # Stage 6 complete
+      - teaching_v3_0_flag_window_architecture_live
+    scope:
+      - flag_1_bluff_catch_negative: >
+          Trigger: facing bet + flush-possible board (3+ suited) +
+          hero holds suit + weak-made (single pair, not top pair) +
+          villain range likely suited-high-card heavy.
+          Observation-only phrasing: "Your [card] removes ~N of
+          villain's flush-draw combos from their betting range."
+      - flag_2_bluff_betting_positive: >
+          Trigger: hero betting as bluff/semi-bluff + flush-possible
+          board + hero holds suit + villain range weighted to
+          flush-completing calls.
+          Observation-only phrasing: mirrors flag 1 directionally.
+    expert_review_required:
+      - GTO reviewer on poker correctness + thresholds
+      - V3 compliance reviewer on observation-only phrasing
     description: >
-      Two-flag design (bluff-catch negative + bluff-betting positive)
-      per owner's directional analysis. L4/L5 material.
+      L4/L5 two-flag design per owner's directional analysis. Uses
+      the 4 new v2.4 blocker features (nut_flush_block,
+      flush_draw_block_pct, straight_draw_block_pct,
+      nut_made_block_pct). Phrasing must survive the directional-
+      framing guard-leak category ("block/protect/charge/extract/
+      deny" etc.).
+    reference: review/comms/TEACHING_RECENTERING_2026-04-18.md §D.1
+
+  game_blocker_flag_rendering:
+    depends_on:
+      - teaching_blocker_flag_design_ships
+      - content_api_v4_x_with_flagentry_kinds_for_blockers
+    description: >
+      Game adapter renders blocker flags in the flag window once
+      teaching publishes them. Inherits existing flag-window
+      rendering from teaching v3.0 CONTENT_API migration; no new
+      game-side UI work beyond adapter pickup of new FlagEntry
+      kinds.
 
 # ────────────────────────────────────────────────────────────────────
 # CROSS-STREAM INTEGRATION CONTRACTS — what each stream relies on
