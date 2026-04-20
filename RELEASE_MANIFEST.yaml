@@ -16,8 +16,8 @@
 #      the approval directive in review/comms/
 #   4. Cross-stream consumers can rely on the manifest for coordination
 
-manifest_version: 1.2
-last_updated: 2026-04-19
+manifest_version: 1.3
+last_updated: 2026-04-20
 updated_by: main_terminal
 changelog:
   - 1.0 (2026-04-19): initial manifest
@@ -26,6 +26,8 @@ changelog:
   - 1.2 (2026-04-19): v2.4 Stage 1 complete — 4 features implemented,
     17/17 unit tests PASS, v2.3.1 anchor-gate regression 5/5 PASS,
     backfill audit clean; Stage 2 (KB §1.9) GO
+  - 1.3 (2026-04-20): added explicit data-flow pipeline section +
+    expanded interfaces contracts with cross-repo boundary specs
 
 # ────────────────────────────────────────────────────────────────────
 # DEPLOYED — what owner is playing against right now
@@ -234,43 +236,200 @@ queued:
 # ────────────────────────────────────────────────────────────────────
 # CROSS-STREAM INTEGRATION CONTRACTS — what each stream relies on
 # ────────────────────────────────────────────────────────────────────
-contracts:
+# ────────────────────────────────────────────────────────────────────
+# DATA-FLOW PIPELINE — end-to-end flow across the three streams
+# ────────────────────────────────────────────────────────────────────
+# A single hand moves through this pipeline. Each stage produces a
+# well-defined artifact consumed by the next. Cross-repo boundaries
+# are labelled `[repo:module]` so ownership + imports are explicit.
+pipeline:
+  stages:
+    - stage: hand_arrives
+      input: user_action_in_game_or_playtest
+      produced: GameState
+      producer: "[river-rats-game:engine.game_state]"
+      notes: "Hand state + action history + positions + board"
+
+    - stage: feature_extraction
+      input: GameState + hero_perspective
+      produced: feature_vector (55 floats; v2.4 target 59)
+      producer: "[river-rats-v2:feature_extractor.extract_all_features]"
+      consumed_by:
+        - "[river-rats-v2:gto_model]"
+        - "[river-rats-v2:shap_explainer]"
+      cross_repo_bridge: "[river-rats-game:integrations.real_oracle] imports v2 via sys.path"
+
+    - stage: oracle_prediction
+      input: feature_vector
+      produced: OracleOutput (action, probabilities, sizing, top_two_gap)
+      producer: "[river-rats-v2:gto_model.GtoOracle]"
+      consumed_by:
+        - "[river-rats-game:integrations.real_oracle]"
+        - "[river-rats-teaching:interface.l3_renderer_enriched]"
+      model_artifact_current: v2_2_model_shipped.json
+
+    - stage: shap_attribution
+      input: feature_vector + oracle_model + predicted_action
+      produced: shap_values (per-feature), shap_values_by_action (all 5 classes), feature_attention (top-3 PRIMARY)
+      producer: "[river-rats-v2:shap_explainer.ShapExplainer]"
+      consumed_by:
+        - "[river-rats-teaching:interface.l3_renderer_enriched]"
+        - "[river-rats-game:integrations.real_oracle]"
+      performance_note: "~100-300ms per call; game adapter gates on for_position==hero for cost"
+
+    - stage: teaching_render
+      input: feature_vector + OracleOutput + SHAP + enriched_row
+      produced: EnrichedTeachingOutput (v2.2 current; v3.0 planned with flags list)
+      producer: "[river-rats-teaching:interface.l3_renderer_enriched.render_from_enriched]"
+      consumed_by:
+        - "[river-rats-game:integrations.real_teaching]"
+
+    - stage: game_render_and_input
+      input: GameState + OracleOutput + EnrichedTeachingOutput
+      produced: UI_state (user sees primary window + flag window; user acts)
+      producer: "[river-rats-game:prototype_v1]"
+      feeds_back_to: stage_1_hand_arrives
+
+    - stage: playtest_log_capture
+      input: full_hand_state + all_above_artifacts + user_feedback_text
+      produced: session-log.json (schema v2)
+      producer: "[river-rats-game:playtest-logs]"
+      consumed_by:
+        - orchestrator_review
+        - builder_inbox_has_logic_feedback
+        - teaching_inbox_has_teacher_feedback
+
+# ────────────────────────────────────────────────────────────────────
+# INTERFACES — what crosses each cross-repo boundary
+# ────────────────────────────────────────────────────────────────────
+# Each interface is owned by ONE repo but consumed by others.
+# Changes require the owner to bump a version + coordinate with
+# consumers before breaking changes ship.
+interfaces:
   feature_vector:
-    count: 55
     owner: river-rats-v2
+    producer: river-rats-v2:feature_extractor
     consumers:
       - river-rats-v2:gto_model
       - river-rats-v2:oracle_router
       - river-rats-v2:shap_explainer
-    expansion_candidate:
-      v2_4: +3_or_+4_blocker_features  # pending owner scope ack
+    current_count: 55
+    v2_4_target: 59  # +4 blocker features (split approved 2026-04-19)
+    version_rule: "count change requires FEATURE_COLUMNS update + downstream retrain; no hidden additions"
+
+  oracle_output:
+    owner: river-rats-v2
+    producer: river-rats-v2:gto_model.GtoOracle
+    consumers:
+      - river-rats-game:integrations.real_oracle
+      - river-rats-teaching:interface.l3_renderer_enriched
+    contract_fields:
+      - action (str, one of FOLD/CHECK/CALL/BET/RAISE)
+      - confidence (float)
+      - probabilities (dict, sums to 1.0)
+      - sizing_bucket / sizing_pct_pot / sizing_amount (nullable)
+      - top_two_gap (float, used by teaching tightness signal)
+    version_rule: "additive fields OK; removing/renaming requires consumer coordination"
+
+  shap_output:
+    owner: river-rats-v2
+    producer: river-rats-v2:shap_explainer.ShapExplainer
+    consumers:
+      - river-rats-teaching:interface.l3_renderer_enriched
+      - river-rats-game:integrations.real_oracle
+    contract_fields:
+      - shap_values (per-feature for predicted class)
+      - shap_values_by_action (per-feature × 5 classes)
+      - feature_attention (dict of top-3 features tagged PRIMARY)
+    version_rule: "feature_attention PRIMARY tags drive teaching visibility; changes cross-coordinate with teaching"
 
   teaching_schema:
-    current: l3_enriched_v2.2
-    fields_primary:
-      - range_position_desc
-      - villain_tp_pct
-      - villain_medium_made_pct
-      - villain_draw_pct
-      - villain_air_pct
-      - board_favour
+    owner: river-rats-teaching
+    producer: river-rats-teaching:interface.l3_renderer_enriched.render_from_enriched
+    current_version: l3_enriched_v2.2
+    planned_version: l3_enriched_v3.0  # Path B + recentering
     consumers:
-      - river-rats-game:real_teaching
+      - river-rats-game:integrations.real_teaching
       - river-rats-game:prototype_v1
-    planned_v3_0: adds_flags_list_field
+    primary_fields:
+      - range_position_desc
+      - villain_tp_pct / villain_medium_made_pct / villain_draw_pct / villain_air_pct
+      - board_favour
+      - villain_actions_desc
+    planned_v3_0_additions:
+      - flags (List[FlagEntry]) for flag-window rendering
+    planned_v3_0_removals:
+      - hand_bucket prose / draw_type_desc prose / showdown_value_desc
+      - position_desc prose / forward_plan_desc
+      - intention_templates (already removed in Path B)
+    version_rule: "schema version bump when any PRIMARY field renames/removes; game adapter + content_api coordinate"
+    documented_at: river-rats-teaching/interface/CONTENT_API.md
 
   playtest_log_schema:
-    current: river-rats-game/session-log/v2
+    owner: river-rats-game
+    producer: river-rats-game:playtest-logs/session-log
+    current_version: river-rats-game/session-log/v2
+    consumers:
+      - orchestrator_review
+      - river-rats-v2_builder_via_has_logic_feedback
+      - river-rats-teaching_via_has_teacher_feedback
     captures:
-      - oracle_model_sha256
-      - oracle_repo_commit
-      - teaching_repo_commit
-      - teaching_schema_version
+      - oracle_model_sha256 + oracle_repo_commit
+      - teaching_schema_version + teaching_repo_commit
       - game_build_commit
       - full_feature_vector_per_decision
-      - shap_attributions_per_decision
+      - shap_attributions_per_decision  # added 2026-04-19 per gap §1
       - ground_truth_vs_player_visible_split
-    consumers: orchestrator_and_both_team_inboxes
+      - is_real_backend (bool, mock-warning banner trigger)
+    version_rule: "additive fields OK; structural changes bump schema version so consumers can filter by log vintage"
+    documented_at: river-rats-game/playtest-logs/README.md
+
+# ────────────────────────────────────────────────────────────────────
+# CROSS-REPO IMPORT DEPENDENCIES — who reads from whom at runtime
+# ────────────────────────────────────────────────────────────────────
+import_dependencies:
+  river-rats-game:
+    integrations_real_oracle_imports_from:
+      - river-rats-v2/river-rats-core/feature_extractor.py
+      - river-rats-v2/river-rats-core/gto_model.py
+      - river-rats-v2/river-rats-core/shap_explainer.py (added 2026-04-19)
+    integrations_real_teaching_imports_from:
+      - river-rats-teaching/interface/l3_renderer_enriched.py
+    mechanism: sys.path prepend to V2_REPO_PATH + TEACHING_REPO_PATH
+    default_model_path: ~/river-rats-v2/river-rats-core/models/v2_2_model_shipped.json
+
+  river-rats-teaching:
+    interface_l3_renderer_enriched_imports_from:
+      - river-rats-v2 (indirect, via enriched_row input fields)
+    no_direct_v2_imports: true  # teaching reads enriched rows, doesn't import v2 code
+
+  river-rats-v2:
+    no_teaching_or_game_imports: true  # v2 is the root of the dependency graph
+    imports_only_itself_and_stdlib: true
+
+# ────────────────────────────────────────────────────────────────────
+# INTEGRATION CHANGE PROTOCOL — cross-repo coordination rules
+# ────────────────────────────────────────────────────────────────────
+integration_protocol:
+  adding_new_feature_to_vector:
+    owner_acts: river-rats-v2
+    must_coordinate_with:
+      - teaching (new feature may need KB §1.9 language)
+      - game (if feature affects game display)
+    ship_order: v2_implements -> teaching_references_in_KB -> prompt_v_next -> retrain -> game_picks_up_new_model
+    reference_case: v2.4 P1 blocker features (Stage 1-6 sequence)
+
+  adding_new_teaching_field:
+    owner_acts: river-rats-teaching
+    must_coordinate_with:
+      - game (adapter needs to render new field OR gracefully ignore)
+    ship_order: teaching_publishes_v_next -> CONTENT_API_docs_updated -> game_adapter_updated -> game_prototype_updated
+
+  adding_playtest_log_field:
+    owner_acts: river-rats-game
+    must_coordinate_with:
+      - orchestrator (reviewer uses log for triage)
+    ship_order: game_adds_field -> schema_version_bump -> orchestrator_can_filter_by_vintage
 
 # ────────────────────────────────────────────────────────────────────
 # PENDING OWNER DECISIONS
