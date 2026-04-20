@@ -16,7 +16,7 @@
 #      the approval directive in review/comms/
 #   4. Cross-stream consumers can rely on the manifest for coordination
 
-manifest_version: 1.3
+manifest_version: 1.4
 last_updated: 2026-04-20
 updated_by: main_terminal
 changelog:
@@ -28,6 +28,8 @@ changelog:
     backfill audit clean; Stage 2 (KB §1.9) GO
   - 1.3 (2026-04-20): added explicit data-flow pipeline section +
     expanded interfaces contracts with cross-repo boundary specs
+  - 1.4 (2026-04-20): Stage 3.5 inserted — range-narrowing action-
+    history fix (owner-flagged); must land before Stage 4 re-label
 
 # ────────────────────────────────────────────────────────────────────
 # DEPLOYED — what owner is playing against right now
@@ -126,12 +128,26 @@ in_progress:
       - nut_made_block_pct             # continuous 0-1
     feature_columns_exposed: 55         # gto_model.FEATURE_COLUMNS held back for backward compat; exposes 59 in Stage 5 training
     ship_sequence:
-      - stage_1_feature_implementation          # COMPLETE (2aa5d7f)
-      - stage_2_update_kb_section_1_9            # IN PROGRESS
-      - stage_3_derive_v3_2_prompt_from_kb_update
+      - stage_1_feature_implementation              # COMPLETE (2aa5d7f)
+      - stage_2_update_kb_section_1_9                # IN PROGRESS
+      - stage_3_derive_v3_2_prompt_from_kb_update    # parallel with 3.5
+      - stage_3_5_range_narrowing_action_history_fix # NEW (2026-04-20)
       - stage_4_expand_training_data_with_distribution_audit
       - stage_5_retrain_and_full_eval_with_calibration_anchor_preflight
       - stage_6_ship_gate
+    stage_3_5_context:
+      trigger: owner-flagged inspection of playtest logs
+      problem: >
+        classify_villain_range applies narrowing only for current-street
+        facing-bet; cross-street action history (turn check-through →
+        river bet, etc.) is never composed into the range. Blast radius:
+        all villain-range-derived features including the 4 new v2.4
+        blocker features.
+      placement_reason: >
+        Stage 4 re-labels hands with v3.2 prompt + new feature values.
+        If range narrowing is single-street, v2.4 training data bakes
+        wrong villain composition into labels. Must fix before re-label.
+      reference: review/comms/BUILDER_V24_RANGE_NARROWING_EXPERT_REVIEW_2026-04-20.md
     next_step: builder_drafts_kb_section_1_9_diff_then_gto_reviewer_pass
     notes: >
       Stage 1 clean. Features implemented, tests pass, backward compat
