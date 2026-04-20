@@ -16,7 +16,7 @@
 #      the approval directive in review/comms/
 #   4. Cross-stream consumers can rely on the manifest for coordination
 
-manifest_version: 1.5
+manifest_version: 1.6
 last_updated: 2026-04-20
 updated_by: main_terminal
 changelog:
@@ -33,6 +33,9 @@ changelog:
   - 1.5 (2026-04-20): split queued.game_blocker_flag_pair into
     teaching_blocker_flag_design + game_blocker_flag_rendering;
     owner's 2-flag specs captured inline (per recentering §D.1)
+  - 1.6 (2026-04-20): owner audit — queued pro-level range-narrowing
+    gaps; bet-sizing-conditional narrowing and raise-aware call
+    narrowing added to v2.5 candidates; dimensional coverage mapped
 
 # ────────────────────────────────────────────────────────────────────
 # DEPLOYED — what owner is playing against right now
@@ -237,6 +240,26 @@ queued:
     - hu_counter_examples_v3_2_prompt
     - retire_flush_block_pct_after_nut_made_block_pct_validates
     - honest_check_distinct_bucket_if_weights_relax
+    - bet_sizing_conditional_range_narrowing  # owner-flagged 2026-04-20
+    - raise_aware_call_narrowing               # per Stage 3.5 §4.2 doc
+
+  pro_level_narrowing_gaps:
+    # Owner audit 2026-04-20: does current plan match pro-level range
+    # narrowing? Answer: Stage 3.5 closes the biggest bug (action
+    # chaining, dimension 1 of ~8). Remaining gaps documented:
+    covered_by_stage_3_5:
+      - action_history_across_streets
+    queued_for_v2_5:
+      - bet_sizing_conditional_narrowing  # solver-grounded gap, achievable
+      - raise_aware_call_narrowing        # marginal improvement
+    deferred_architectural:
+      - multiway_cross_conditioning       # v2.6+: data structure change
+      - opponent_type_priors              # v3+: new data category
+      - stack_depth_conditioning          # v3+: pairs with opponent priors
+    out_of_scope_permanent:
+      - metagame_history                  # static inference model
+      - live_tells                        # non-live app
+    reference: review/comms/TICKET_V25_PRO_LEVEL_NARROWING_GAPS_2026-04-20.md
 
   teaching_l1_l2_build:
     depends_on:
