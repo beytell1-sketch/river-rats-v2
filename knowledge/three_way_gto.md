@@ -228,6 +228,280 @@ decision, tracked against the next feature-importance audit in
 it as a postflop signal. See DO NOT Rule #8 for the operative
 instruction.
 
+### 1.10 Defensive Blocker Direction — the 4 new v2.4 features
+
+§1.7 and §1.8 cover the **aggressor-side** use of blockers: holding
+a card that removes villain's continuing range from a semi-bluff
+raise line (As on a 2-flush board, supporting a flop raise). The
+solver-verified carve-out in §1.7 is real and narrow.
+
+This section covers the **defender-side** complement: what hero's
+blocker does to villain's **betting** range when hero is facing a
+bet and deciding whether to call / raise / fold. The v2.4 feature
+vector adds four signals that let the labelling agent reason about
+blocker direction per-decision rather than treating "blocker = good"
+as context-free.
+
+**Why a new section.** A known v2.3.2 regression (β-panel
+re-label, 7 of 9 flipped hands) surfaced that the model — and the
+panels — were missing the **densification effect**: hero holding a
+non-nut blocker to villain's draw range REMOVES those draw combos
+from villain's pre-bet range, so when villain bets, the betting
+range is densified toward value. Hero's bluff-catch equity is
+LOWER than `equity_vs_range` alone suggests. See
+`feedback_concentration_effect.md`.
+
+The features:
+
+| # | Name | Direction for hero (high value) |
+|---|---|---|
+| 56 | `nut_flush_block` (0/1) | Aggressor: positive. Defender: slight positive (bluff-catch equity improves). |
+| 57 | `flush_draw_block_pct` (0-1) | Aggressor: neutral. **Defender: negative** (densifies villain to value). |
+| 58 | `straight_draw_block_pct` (0-1) | Aggressor: neutral. **Defender: negative** (same mechanism, straight class). |
+| 59 | `nut_made_block_pct` (0-1) | Aggressor: positive (thin value blocked). **Defender: positive** (villain's value reduced → more bluff-catch equity). |
+
+#### 1.10.1 `nut_flush_block` — the Ace-of-suit bit
+
+**Poker meaning.** Hero holds the Ace of a flush-possible suit on
+the board. The feature is 1 if board has 2+ of one suit (flop) or
+3+ (turn/river) and hero holds A-of-that-suit, AND hero has not
+already made a flush.
+
+**When it matters.**
+- Aggressor-side semi-bluff raise decisions (KB §1.7 canonical —
+  AsQs on Ks·Jd·5s facing bet, raise is +EV specifically because
+  As blocks nut-flush combos)
+- Defender-side bluff-catch decisions on flush-possible boards —
+  direction depends on whether the flush is currently possible
+  or only future-possible
+
+**Direction — texture-dependent, not uniform.**
+
+Aggressor side (hero betting/raising): **positive**. Solver-verified
+carve-out from §1.7. `nut_flush_block == 1` + side equity → RAISE
+candidate.
+
+Defender side (hero facing bet, CALL/FOLD/RAISE deciding):
+**direction flips with street**.
+
+- **2-flush flop** (board has 2 of suit; flush can COMPLETE on
+  future streets). Hero's A-of-suit blocks villain's A-of-suit
+  **semi-bluff** combos (Ax-of-suit as nut-flush-draw). Given
+  villain bet, villain's betting range is densified toward MADE
+  value (§1.10.2 mechanism applied to the ace specifically) →
+  **defender-negative** (fold-lean), same direction as
+  `flush_draw_block_pct`.
+- **3+-flush board** (flush currently possible). Hero's A-of-suit
+  blocks villain's **made** nut-flush combos. Given villain bet,
+  villain's value fraction is reduced → **defender-positive**
+  (call-lean), aligned with `nut_made_block_pct`.
+
+The distinction matters: on a 2-flush flop, the blocker works AGAINST
+hero's call; on a 3-flush turn, the same blocker works FOR hero's call.
+Same card, same board-type suffix, opposite decision direction.
+
+**Example (aggressor / KB §1.7).** Hero AsQs on Ks·Jd·5s facing
+bet. Nut flush draw + overcard + gutshot + ace blocker = §1.7
+RAISE. Solver-verified in Worked Example 9.
+
+**Example (defender, 3-flush — CALL-lean).** Hero AhTd on
+Kh-8h-3h-2c turn, facing villain's bet. Board is 3-flush hearts
+and hero holds the Ah blocker. `nut_flush_block = 1`. Villain's
+nut-flush combos (Ah-Xh) are impossible because hero holds Ah →
+villain's value range on the turn bet is substantially reduced,
+villain is bluffier. With TPGK (K-high pair) as showdown value,
+this is a CLEAR CALL. Without Ah (e.g., KdTd in same spot), fold
+is far closer.
+
+**Example (defender, 2-flush — FOLD-lean).** Hero Ah9c on
+Kh-8h-3d flop, facing villain's pot-sized bet. Board is 2-flush
+(future flush possible on turn/river); hero's Ah blocks villain's
+Ax-of-hearts semi-bluff combos. Villain's pre-bet semi-bluff
+fraction shrinks; villain's betting range is more value-heavy.
+Hero has ace-high (weak made) → hero's bluff-catch equity is LESS
+than `equity_vs_range` alone suggests. FOLD despite the
+"I have the blocker" instinct. Compare to a board where hero's
+non-ace overcards provide similar equity without the
+densification penalty.
+
+#### 1.10.2 `flush_draw_block_pct` — blocking villain's flush semi-bluffs
+
+**Poker meaning.** Fraction of villain's flush-draw combos
+(`nut_flush_draw`, `flush_draw`, `combo_draw`) that hero's hole
+cards remove from villain's range. Higher value = hero is blocking
+more of villain's potential flush-draw semi-bluff candidates.
+
+**When it matters.** Defender decisions on flush-possible boards
+where hero holds partial flush-suit cards. The owner's Apr 18
+example: hero has middle pair + J♠ on Q♠8♠4♥ facing a bet. The
+J♠ blocks villain's spade-suited semi-bluff combos (Q♠J♠, J♠T♠,
+K♠J♠). Given villain bet, villain's range is now more value-heavy
+because the semi-bluff slice shrank relative to value.
+
+**Direction — asymmetric by action context.**
+- Aggressor (hero bet or raise): high value is **near-neutral**.
+  Blocking villain's draws doesn't change their fold response to
+  hero's aggression much — villain folds draws to a bet
+  regardless of whether hero blocks specific combos.
+- **Defender** (hero facing bet, CALL/FOLD deciding): high value
+  is **negative** for hero's equity. Villain's betting range
+  densifies toward value because the semi-bluff fraction is
+  reduced. `equity_vs_range` overstates hero's true bluff-catch
+  equity; lean toward FOLD/CHECK more than equity alone would
+  suggest.
+
+**Example.** Hero 8♠9h on Q♠8♥4♠ facing villain's 1.5×-pot bet.
+Pot-odds break-even = 37.5%. `equity_vs_range = 0.38`,
+`flush_draw_block_pct = 0.52` — hero holds one spade (8♠) that
+blocks ~half of villain's flush-draw combos. Naive reading: "I
+have middle pair + blocker; 0.38 clears 0.375 pot odds; call."
+Correct reading: villain's betting range is densified by ~52%
+removal of the semi-bluff slice; hero's true equity vs the
+densified calling range drops below ~0.30, under the 0.375
+break-even. FOLD. (Compare to the same hand without the spade
+blocker — 8♥9h — where villain's semi-bluffs remain in range,
+hero's true bluff-catch equity stays near 0.38, and CALL
+becomes correct. Same hand shape, blocker direction flips the
+decision.)
+
+#### 1.10.3 `straight_draw_block_pct` — blocking villain's straight semi-bluffs
+
+**Poker meaning.** Fraction of villain's straight-draw combos
+(`oesd`, `gutshot`, `combo_draw`) hero's hole cards remove. Same
+mechanic as `flush_draw_block_pct` applied to straight-draw class.
+
+**When it matters.** Connected boards where hero holds a card in
+the middle of the straight range but not a made straight. Example:
+9h-8s-5c flop, hero holds Th (blocks ~half of villain's JT/T9 OESD
+combos) + a marginal-made hand.
+
+**Direction.** Same asymmetry as §1.10.2:
+- Aggressor: near-neutral
+- **Defender: negative** (densifies to value)
+
+**Example.** Hero T♣7♣ on 9h-8s-5c facing a bet. Hero's T♣ blocks
+JT/T9 OESD combos from villain's range; hero also has the pair of
+7s (bottom pair) on the board. `straight_draw_block_pct ≈ 0.35`.
+Villain's betting range is more value-weighted than range
+composition suggests — the JT/T9 semi-bluff slice shrinks relative
+to villain's made hands (8x, 9x, 55, 88). Combine with hero's weak
+bottom-pair made hand → CHECK/FOLD is correct, not CALL despite
+a naive 0.40 equity-vs-range reading.
+
+#### 1.10.4 `nut_made_block_pct` — blocking villain's value
+
+**Poker meaning.** Fraction of villain's nut-made combos —
+straight-flush, quads, full-house, nut_flush, nut_straight, top_set
+(and strong_flush when A-of-suit is on board as the effective nut)
+— that hero's hole cards remove from villain's range.
+
+**When it matters.** Any decision where villain's nut-made fraction
+is a meaningful part of their range (flush-possible boards, paired
+boards with full-house threats, etc.).
+
+**Direction.**
+- Aggressor **thin value bet / raise with medium-strong hand**:
+  high value is **negative**. Hero's thin-value target is reduced
+  because villain's top calling hands are blocked; villain calls
+  less often with non-nut made hands. Does NOT apply to pure
+  bluffs (blocking villain's value combos is irrelevant when hero
+  is betting to fold villain out, not to extract from worse made
+  hands).
+- **Defender** (facing bet, bluff-catch deciding): high value is
+  **positive**. Villain's stack-off range is reduced; villain's
+  bets must contain relatively more bluffs. Hero's bluff-catch
+  equity is HIGHER than `equity_vs_range` alone suggests. Lean
+  CALL.
+
+**Example (defender, aligned with d2410 calibration anchor
+pattern).** Hero JcKs on Jd-9d-3h-6d turn, checked to at
+compressed SPR. Paired-board nut-made class for villain is top_set
+(JJ trips) + full_house candidates. Hero's Jc removes half of
+villain's possible JJ combos (hero holds one of the four Jacks in
+the deck; board holds one). `nut_made_block_pct` captures this
+removal. With trips-of-jacks blocked from villain's range,
+villain's betting range is less value-heavy → hero's TPGK
+(K-kicker pair of Jacks) converts from thin call to strong value
+bet. Matches the d2410 calibration-anchor reasoning.
+
+### 1.11 Implication for labelling — the covering triple
+
+These four features together encode blocker direction as a
+**covering triple** in the feature subspace. The labelling agent
+must use them TOGETHER, not in isolation:
+
+1. **`nut_flush_block`** says "I have THE block" (binary, high signal;
+   direction texture-dependent per §1.10.1)
+2. **`flush_draw_block_pct` + `straight_draw_block_pct`** say "I'm
+   blocking villain's semi-bluffs" (defender-negative, aggressor-neutral)
+3. **`nut_made_block_pct`** says "I'm blocking villain's value
+   combos" (defender-positive, aggressor-negative for thin-value)
+
+When hero is defending with a marginal made hand on a draw-heavy
+board, check whether `{flush,straight}_draw_block_pct` is high
+(densification toward value → fold lean) or whether
+`nut_made_block_pct` is high (villain value blocked → call lean).
+Use `equity_vs_range` as the EQUITY baseline, then ADJUST by these
+blocker features for the **directional** correction.
+
+**Multi-signal resolution — what to do when signals co-fire.**
+A defender may see BOTH `flush_draw_block_pct > 0.2` (fold-lean)
+AND `nut_made_block_pct > 0.2` (call-lean) on the same decision.
+The features pull in opposite directions. Rule:
+
+- If `nut_made_block_pct − (flush_draw_block_pct + straight_draw_block_pct) / 2 > 0.15`,
+  **net CALL lean** — villain's value blocked more than villain's
+  draws. Call-bias wins.
+- If `(flush_draw_block_pct + straight_draw_block_pct) / 2 − nut_made_block_pct > 0.15`,
+  **net FOLD lean** — villain's draws blocked more than villain's
+  value. Fold-bias wins.
+- Smaller net differences (|delta| ≤ 0.15): blocker signals approximately
+  cancel; decide on `equity_vs_range` + `villain_top_pair_plus_pct`
+  alone. Do not tag blocker features as PRIMARY in this case.
+
+This rule is a labelling heuristic for panel feature-attention
+decisions, not a solver-verified threshold. Revisit when
+Stage 5 training exposes the model's learned interaction.
+
+**Combo-draw double-counting caveat.** A villain combo classified
+as `combo_draw` (flush draw + straight draw simultaneously) is
+counted in BOTH `flush_draw_block_pct` AND
+`straight_draw_block_pct` when hero blocks it. This is intentional
+— blocking a combo-draw removes a combo from each class's
+denominator. But it means the two percentages can sum above 1.0
+on connected-two-tone boards with meaningful combo-draw coverage.
+Use each feature independently; do not add them.
+
+`flush_block_pct` (feature 46) remains in the feature vector
+pending the Stage 5 retirement A/B test. It is superseded on
+aggressor-side reasoning by `nut_flush_block` (specific-blocker
+case) and on defender-side by the split-direction features above.
+Until retirement is decided, treat `flush_block_pct` as a generic
+aggregate signal and prefer the more specific features for action
+decisions.
+
+### 1.12 DO NOT Rule 6 update — expanded
+
+DO NOT Rule 6 (blocker over-weighting) was written when the only
+blocker signal was `flush_block_pct` (aggregate). With the four
+new features, the operative instruction becomes:
+
+- **DO NOT** treat `flush_block_pct` as a defensive CALL signal.
+  It aggregates nut-flush and flush-draw blocking into one scalar
+  that has opposite defender-side directions.
+- **DO** use `nut_made_block_pct` as a defender CALL signal
+  (villain's nut range shrinks → more bluff-catch equity).
+- **DO** use `flush_draw_block_pct` and `straight_draw_block_pct`
+  as defender FOLD signals when hero has a marginal made hand
+  (densification effect).
+- **DO** use `nut_flush_block` as a semi-bluff RAISE trigger per
+  §1.7 (aggressor) OR as a defender signal subject to the
+  texture-flip rule in §1.10.1 (2-flush flop = negative,
+  3-flush = positive).
+
+The forward-pointer in Rule 6 itself (§5, DO NOT Rules) references
+this sub-section by number.
+
 ---
 
 ## 2. Decision Framework
@@ -886,7 +1160,12 @@ run matter ~40% less 3-way (need to block both opponents). But
 blockers for deciding RAISE vs CALL with a strong draw or made hand
 are still critical — solver shows suit holdings swing raise
 frequency by 40+ percentage points for the same hand. See Section
-1.8.
+1.8. **Defender-side blocker direction (v2.4):** see §1.10-§1.12
+for the four blocker-direction features
+(`nut_flush_block`, `flush_draw_block_pct`, `straight_draw_block_pct`,
+`nut_made_block_pct`) that encode when a blocker works FOR hero's
+CALL (nut-made blocked → more bluff-catch) vs AGAINST hero's CALL
+(draws blocked → densification toward value).
 
 **7. DO NOT analyze streets in isolation.** A pot-sized flop bet
 3-way leaves SPR ~1.5 on the turn. The flop decision must account
