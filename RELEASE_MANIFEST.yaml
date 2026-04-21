@@ -16,7 +16,7 @@
 #      the approval directive in review/comms/
 #   4. Cross-stream consumers can rely on the manifest for coordination
 
-manifest_version: 1.8
+manifest_version: 1.9
 last_updated: 2026-04-22
 updated_by: main_terminal
 changelog:
@@ -45,6 +45,13 @@ changelog:
     23 MUSTs) + labelling-pipeline consumers chain-clean before
     re-label opens. coaching/ collapse partial-scope
     (only stale duplicates deletable now; full collapse → v2.5+).
+  - 1.9 (2026-04-22): owner audit caught attention-flag vocabulary
+    gap. v2.2 trained on 108 cols (54 raw + 54 attention from
+    Exp 3 supervised attention; attn_draw_outs was #1 feature).
+    v2.4 adds 4 raw blockers but plan had no attention-vocabulary
+    expansion. NEW MUSTs #24-#27 added cross-cutting Stage 2/3/4/5.
+    Per-stage gates updated to require attention-layer parity.
+    Reference: review/comms/MAIN_TERMINAL_ATTENTION_FLAG_GAP_2026-04-22.md
 
 # ────────────────────────────────────────────────────────────────────
 # DEPLOYED — what owner is playing against right now
@@ -144,21 +151,32 @@ in_progress:
     feature_columns_exposed: 55         # gto_model.FEATURE_COLUMNS held back for backward compat; exposes 59 in Stage 5 training
     ship_sequence:
       - stage_1_feature_implementation                # COMPLETE (2aa5d7f)
-      - stage_2_update_kb_section_1_9                  # IN PROGRESS — gates Stage 3
-      - stage_3_derive_v3_2_prompt_from_kb_update      # gates Stage 4 (per MUST #21)
+      - stage_2_update_kb_section_1_9                  # IN PROGRESS — gates Stage 3; INCLUDES attention-tag conventions per MUST #24
+      - stage_3_derive_v3_2_prompt_from_kb_update      # gates Stage 4 (per MUST #21); INCLUDES new mandatory-tag rules per MUST #25
       - stage_3_5_range_narrowing_action_history_fix   # 23 MUSTs (per RECONCILIATION_BLUEPRINT_2026-04-21 + RESEARCH_FINDINGS_2026-04-21)
-      # ──── Stage 4 gate hardened 2026-04-22 ────
+      # ──── Stage 4 gate hardened 2026-04-22 (manifest v1.8 + v1.9) ────
       # Stage 4 cannot open until ALL of:
       #   1. Stage 2 KB §1.9 complete + GTO-reviewed
+      #      AND includes attention-tag conventions for 4 new blocker
+      #      features (MUST #24)
       #   2. Stage 3 v3.2 prompt complete + derives from updated KB
+      #      AND instructs labellers on tagging the 4 new blocker
+      #      features as PRIMARY/CONFIRMED (MUST #25)
       #   3. Stage 3.5 all 23 MUSTs landed + audits clean
       #   4. Labelling-pipeline consumers chain-clean (MUST #20 + #22):
       #      - calibration_exam.py hand_dict carries _action_history
       #      - reference_evaluator.py hand_dict carries _action_history
       #      - any other surface that displays feature values to labellers
-      # Without all 4: labellers tag PRIMARY/CONFIRMED on inconsistent values,
-      # corrupting training data + KB-derived prompt + model loop.
+      #   5. Training-data writer captures expanded attention-flag
+      #      columns (MUST #26); audit column for vocabulary version
+      # Without all 5: labellers tag PRIMARY/CONFIRMED on inconsistent
+      # values OR cannot tag new features at all, corrupting training
+      # data + KB-derived prompt + model loop.
       - stage_4_expand_training_data_with_distribution_audit
+      # ──── Stage 5 gate (MUST #27) ────
+      # Stage 5 cannot complete until trainer reads expanded
+      # feature + attention vocabulary from CSV header (no hardcoded
+      # 108); end-to-end column-count consistency verified.
       - stage_5_retrain_and_full_eval_with_calibration_anchor_preflight
       - stage_6_ship_gate
     stage_3_5_context:
