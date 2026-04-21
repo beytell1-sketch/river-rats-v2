@@ -16,7 +16,7 @@
 #      the approval directive in review/comms/
 #   4. Cross-stream consumers can rely on the manifest for coordination
 
-manifest_version: 1.9
+manifest_version: 1.10
 last_updated: 2026-04-22
 updated_by: main_terminal
 changelog:
@@ -52,6 +52,17 @@ changelog:
     expansion. NEW MUSTs #24-#27 added cross-cutting Stage 2/3/4/5.
     Per-stage gates updated to require attention-layer parity.
     Reference: review/comms/MAIN_TERMINAL_ATTENTION_FLAG_GAP_2026-04-22.md
+  - 1.10 (2026-04-22): CORRECTION pass — orchestrator wrote v1.9
+    without reading project state on GitHub. Stage 2 was actually
+    COMPLETE on 2026-04-20 (BUILDER_V24_STAGE2_COMPLETE_2026-04-20.md);
+    KB sections are §1.10/§1.11/§1.12 (NEW v2.4 work), NOT §1.9
+    (which is the unchanged "Preflop geometry" section). KB §1.11
+    already contains PRIMARY-tagging guidance for the 4 new
+    blockers. MUST #24 RETRACTED, MUST #25 reframed as Stage 3
+    deliverable (already in builder's plan). MUSTs #26 + #27 +
+    vocabulary-version audit column REMAIN as real gaps. Manifest
+    references corrected throughout.
+    Reference: review/comms/MAIN_TERMINAL_ATTENTION_FLAG_GAP_CORRECTION_2026-04-22.md
 
 # ────────────────────────────────────────────────────────────────────
 # DEPLOYED — what owner is playing against right now
@@ -131,12 +142,13 @@ iteration:
 in_progress:
   oracle_v2_4:
     repo: river-rats-v2
-    current_head: 2aa5d7f
-    phase: stage_2_kb_section_1_9_update
+    current_head: 8c4466c                       # latest manifest-bumping commit; Stage 2 work landed earlier (verify per BUILDER_V24_STAGE2_COMPLETE_2026-04-20.md)
+    phase: stage_3_v3_2_prompt_derivation       # Stage 2 COMPLETE 2026-04-20; Stage 3.5 blueprint-v2 in flight
     feature_count_target: 59
     landed:
-      - p0_calibration_anchor_preflight_gate   # commit 570ece2
-      - stage_1_feature_implementation         # commit 2aa5d7f
+      - p0_calibration_anchor_preflight_gate    # commit 570ece2
+      - stage_1_feature_implementation          # commit 2aa5d7f
+      - stage_2_kb_sections_1_10_to_1_12        # COMPLETE 2026-04-20; KB §1.10-§1.12 + Rule 6 expansion + GTO-reviewed (APPROVED_WITH_MODIFICATIONS, all 6 fixes applied). Reference: BUILDER_V24_STAGE2_COMPLETE_2026-04-20.md
     stage_1_audit:
       unit_tests: 17/17 PASS
       v2_3_1_anchor_regression: 5/5 PASS
@@ -150,33 +162,36 @@ in_progress:
       - nut_made_block_pct             # continuous 0-1
     feature_columns_exposed: 55         # gto_model.FEATURE_COLUMNS held back for backward compat; exposes 59 in Stage 5 training
     ship_sequence:
-      - stage_1_feature_implementation                # COMPLETE (2aa5d7f)
-      - stage_2_update_kb_section_1_9                  # IN PROGRESS — gates Stage 3; INCLUDES attention-tag conventions per MUST #24
-      - stage_3_derive_v3_2_prompt_from_kb_update      # gates Stage 4 (per MUST #21); INCLUDES new mandatory-tag rules per MUST #25
-      - stage_3_5_range_narrowing_action_history_fix   # 23 MUSTs (per RECONCILIATION_BLUEPRINT_2026-04-21 + RESEARCH_FINDINGS_2026-04-21)
-      # ──── Stage 4 gate hardened 2026-04-22 (manifest v1.8 + v1.9) ────
+      - stage_1_feature_implementation                       # COMPLETE (2aa5d7f)
+      - stage_2_kb_sections_1_10_to_1_12                      # COMPLETE 2026-04-20 — adds NEW §1.10/§1.11/§1.12; §1.9 was untouched (existing "Preflop geometry" section). KB §1.11 includes blocker PRIMARY-tagging guidance.
+      - stage_3_derive_v3_2_prompt_from_kb_update             # IN PROGRESS — adds new feature_attention guidance to v3.2 (defender-side blocker PRIMARY tagging per §1.10.1 + §1.11). Updates DO NOT Rule 6 per §1.12.
+      - stage_3_5_range_narrowing_action_history_fix          # blueprint v2 in flight (untracked locally as of 2026-04-22); 23 MUSTs from MULTIAGENT_RECONCILIATION_BLUEPRINT_2026-04-21 + RESEARCH_FINDINGS_2026-04-21; minus retracted MUST #24, plus retained #25/#26/#27 from ATTENTION_FLAG_GAP_CORRECTION_2026-04-22
+      # ──── Stage 4 gate hardened 2026-04-22 (manifest v1.8/v1.9/v1.10) ────
       # Stage 4 cannot open until ALL of:
-      #   1. Stage 2 KB §1.9 complete + GTO-reviewed
-      #      AND includes attention-tag conventions for 4 new blocker
-      #      features (MUST #24)
+      #   1. Stage 2 KB §1.10-§1.12 already COMPLETE + GTO-reviewed ✅
       #   2. Stage 3 v3.2 prompt complete + derives from updated KB
-      #      AND instructs labellers on tagging the 4 new blocker
-      #      features as PRIMARY/CONFIRMED (MUST #25)
+      #      AND extends bucket-mandatory tag table for the 4 new
+      #      blocker features (per builder Stage 2 plan; not a missed
+      #      gap, just upcoming Stage 3 deliverable)
       #   3. Stage 3.5 all 23 MUSTs landed + audits clean
       #   4. Labelling-pipeline consumers chain-clean (MUST #20 + #22):
       #      - calibration_exam.py hand_dict carries _action_history
       #      - reference_evaluator.py hand_dict carries _action_history
       #      - any other surface that displays feature values to labellers
       #   5. Training-data writer captures expanded attention-flag
-      #      columns (MUST #26); audit column for vocabulary version
-      # Without all 5: labellers tag PRIMARY/CONFIRMED on inconsistent
-      # values OR cannot tag new features at all, corrupting training
-      # data + KB-derived prompt + model loop.
+      #      columns (MUST #26); audit column for vocabulary version.
+      #      Without this: labellers' PRIMARY tags for new blockers
+      #      get silently dropped at CSV write — same v2.3.2-class
+      #      silent-failure mode at the attention layer.
+      # Without all 5: labellers either tag inconsistent values or
+      # cannot tag new features at all OR tags get dropped at write,
+      # corrupting training data + KB-derived prompt + model loop.
       - stage_4_expand_training_data_with_distribution_audit
       # ──── Stage 5 gate (MUST #27) ────
       # Stage 5 cannot complete until trainer reads expanded
       # feature + attention vocabulary from CSV header (no hardcoded
-      # 108); end-to-end column-count consistency verified.
+      # 108 per Exp 3 RESULTS_FEATURE_ATTENTION_TRAINING_2026-04-14);
+      # end-to-end column-count consistency verified.
       - stage_5_retrain_and_full_eval_with_calibration_anchor_preflight
       - stage_6_ship_gate
     stage_3_5_context:
