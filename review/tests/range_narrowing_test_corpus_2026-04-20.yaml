@@ -1,0 +1,2297 @@
+# ==============================================================================
+# River Rats v2.4 Stage 3.5 — Range-Narrowing Test Corpus
+# ==============================================================================
+# Generated: 2026-04-20
+# Purpose: Exercise narrow_by_action_history + narrow_to_continuing_range on
+#          synthetic + reproduced hand shapes. Feeds unit tests + retroactive
+#          audits for the Stage 3.5 action-chain range-narrowing fix.
+#
+# Philosophy:
+#   - Coverage > precision. 75 cases, expected values are APPROXIMATE and
+#     should be refined against the eventual reference implementation.
+#   - Each category exercises a distinct failure mode of the pre-fix code.
+#   - All percentages are fractional (0.30 == 30%), rounded to 2 dp.
+#
+# Expected-value derivation:
+#   Baseline composition (generic single-raised-pot preflop opener, post
+#   position filter, pre action chain):
+#     TP+ (nuts + strong_value + good_value):     ~0.30
+#     medium_made:                                ~0.15
+#     draw:                                       ~0.15
+#     air (+ bluffs/weak_made collapsed):         ~0.40
+#   All per-street frequency tables from range_narrowing.py (solver-grounded
+#   for BET/CHECK; heuristic per M1 review for CALL).
+#
+# Notes column conventions:
+#   - "[pre]" = pre-fix behaviour (single-street narrow only, or none)
+#   - "[post]" = post-fix behaviour (full chain via narrow_by_action_history)
+#   - "[approx]" = values derived by hand from frequency tables, refine in CI
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# A. Simple chains (10 cases) — single action per street, pure chains.
+# ------------------------------------------------------------------------------
+
+- id: "T_A01_invalid_schema_sentinel"
+  category: "A. Simple chains"
+  description: "SCHEMA SENTINEL: uses CHECK_RAISE as a single action token (invalid; should be CHECK then RAISE). Must be filtered by action normaliser, not crash chain."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc", "2h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK_RAISE"}      # invalid token
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: null
+    villain_medium_made_pct: null
+    villain_draw_pct: null
+    villain_air_pct: null
+  expected_composition_post_fix:
+    villain_tp_pct: null
+    villain_medium_made_pct: null
+    villain_draw_pct: null
+    villain_air_pct: null
+  notes: "SAFETY. CHECK_RAISE is not a legal normalised action (see _action_to_narrow — maps unknowns to 'skip'). Chain should skip the entry and continue. Expected behaviour: no crash, chain proceeds with only the preflop actions (which are themselves skipped since chain operates flop→river). Proper line in T_A01b."
+
+- id: "T_A01b_bet_only_chain_3street"
+  category: "A. Simple chains"
+  description: "Villain donks flop, barrels turn, barrels river."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc", "2h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "BET"}
+    - {street: "flop",    position: "BTN", action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "BET"}
+    - {street: "turn",    position: "BTN", action: "CALL"}
+    - {street: "river",   position: "BB",  action: "BET"}
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.72
+    villain_medium_made_pct: 0.06
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.22
+  expected_composition_post_fix:
+    villain_tp_pct: 0.86
+    villain_medium_made_pct: 0.02
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.12
+  notes: "[approx] Triple-barrel line. Chain tightens top-pair-plus further vs preflop∩river-bet only."
+
+- id: "T_A02_check_only_chain_3street"
+  category: "A. Simple chains"
+  description: "Villain checks flop, turn, river (calls hero bets or we check back)."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc", "2h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "CHECK"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+    - {street: "turn",    position: "BTN", action: "CHECK"}
+    - {street: "river",   position: "BB",  action: "CHECK"}
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.23
+    villain_medium_made_pct: 0.30
+    villain_draw_pct: 0.05
+    villain_air_pct: 0.42
+  notes: "[approx] Triple-check line. Medium hands ELEVATED (showdown-value range). Draws collapse on river."
+
+- id: "T_A03_bet_check_bet_chain"
+  category: "A. Simple chains"
+  description: "Villain bets flop, checks turn, bets river (delayed probe / polarisation shift)."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc", "2h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "BET"}
+    - {street: "flop",    position: "BTN", action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+    - {street: "turn",    position: "BTN", action: "CHECK"}
+    - {street: "river",   position: "BB",  action: "BET"}
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.72
+    villain_medium_made_pct: 0.06
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.22
+  expected_composition_post_fix:
+    villain_tp_pct: 0.65
+    villain_medium_made_pct: 0.05
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.30
+  notes: "[approx] Bet-check-bet. Turn check SOFTENS the top of range; river bet repolarises. More air than pure triple-barrel."
+
+- id: "T_A04_check_bet_check_chain"
+  category: "A. Simple chains"
+  description: "Villain checks flop, bets turn when checked to, checks river."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc", "2h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "CHECK"}
+    - {street: "turn",    position: "BB",  action: "BET"}
+    - {street: "turn",    position: "BTN", action: "CALL"}
+    - {street: "river",   position: "BB",  action: "CHECK"}
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.40
+    villain_medium_made_pct: 0.25
+    villain_draw_pct: 0.05
+    villain_air_pct: 0.30
+  notes: "[approx] Probe-bet-checkback. Turn bet lifts TP+; river check keeps mediums. Classic polarised-then-give-up."
+
+- id: "T_A05_check_bet_bet_chain"
+  category: "A. Simple chains"
+  description: "Villain checks flop, then barrels turn and river."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc", "2h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "CHECK"}
+    - {street: "turn",    position: "BB",  action: "BET"}
+    - {street: "turn",    position: "BTN", action: "CALL"}
+    - {street: "river",   position: "BB",  action: "BET"}
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.72
+    villain_medium_made_pct: 0.06
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.22
+  expected_composition_post_fix:
+    villain_tp_pct: 0.84
+    villain_medium_made_pct: 0.03
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.13
+  notes: "[approx] Check-then-double-barrel (delayed cbet). Very strong range — flop check was sandbag/weak mix."
+
+- id: "T_A06_bet_bet_check_chain"
+  category: "A. Simple chains"
+  description: "Villain bets flop, bets turn, checks river (gave up, pot-controlled)."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc", "2h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "BET"}
+    - {street: "flop",    position: "BTN", action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "BET"}
+    - {street: "turn",    position: "BTN", action: "CALL"}
+    - {street: "river",   position: "BB",  action: "CHECK"}
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.50
+    villain_medium_made_pct: 0.35
+    villain_draw_pct: 0.02
+    villain_air_pct: 0.13
+  notes: "[approx] Bet-bet-check. Strong line then give-up — condensed at mediums + TP+. Classic two-barrel-give-up shape."
+
+- id: "T_A07_check_check_bet_chain"
+  category: "A. Simple chains"
+  description: "Villain checks flop and turn, bets river (delayed probe / polarised river stab)."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc", "2h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "CHECK"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+    - {street: "turn",    position: "BTN", action: "CHECK"}
+    - {street: "river",   position: "BB",  action: "BET"}
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.72
+    villain_medium_made_pct: 0.06
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.22
+  expected_composition_post_fix:
+    villain_tp_pct: 0.60
+    villain_medium_made_pct: 0.05
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.35
+  notes: "[approx] OWNER SCENARIO SHAPE. Turn check-through + river bet. Range polarised; more air than pre-fix shows because turn-check filter already kept capped hands."
+
+- id: "T_A08_bet_check_check_chain"
+  category: "A. Simple chains"
+  description: "Villain bets flop, then gives up turn and river."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc", "2h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "BET"}
+    - {street: "flop",    position: "BTN", action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+    - {street: "turn",    position: "BTN", action: "CHECK"}
+    - {street: "river",   position: "BB",  action: "CHECK"}
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.38
+    villain_medium_made_pct: 0.30
+    villain_draw_pct: 0.03
+    villain_air_pct: 0.29
+  notes: "[approx] One-and-done cbet. Mediums + weak made concentrated by the shape."
+
+- id: "T_A09_flop_decision_facing_bet_only"
+  category: "A. Simple chains"
+  description: "Flop decision, villain open-bet. No prior chain. Post-fix matches pre-fix at flop."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "BET"}
+  decision_street: "flop"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.48
+    villain_medium_made_pct: 0.13
+    villain_draw_pct: 0.14
+    villain_air_pct: 0.25
+  expected_composition_post_fix:
+    villain_tp_pct: 0.48
+    villain_medium_made_pct: 0.13
+    villain_draw_pct: 0.14
+    villain_air_pct: 0.25
+  notes: "[approx] CONTROL case. Flop decision — per spec, same-street actions are NOT chained. Pre/post identical."
+
+- id: "T_A10_flop_decision_checked_to"
+  category: "A. Simple chains"
+  description: "Flop decision, villain checked to hero. Post-fix matches pre-fix (no prior street)."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+  decision_street: "flop"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  notes: "[approx] CONTROL. Flop decision, villain checked to hero — same-street action excluded per spec. Preflop-only baseline."
+
+# ------------------------------------------------------------------------------
+# B. Double-action per street (5 cases) — check-raise and related shapes.
+# ------------------------------------------------------------------------------
+
+- id: "T_B01_flop_check_raise_call_chain"
+  category: "B. Double-action per street"
+  description: "Villain checks flop, check-raises hero's cbet, hero calls. Decision on turn facing check."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "BET"}
+    - {street: "flop",    position: "BB",  action: "RAISE"}
+    - {street: "flop",    position: "BTN", action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+  decision_street: "turn"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.78
+    villain_medium_made_pct: 0.08
+    villain_draw_pct: 0.08
+    villain_air_pct: 0.06
+  notes: "[approx] Check-raise line. Chain applies flop-CHECK then flop-BET narrowing (two actions on same street). Very tight range by turn."
+
+- id: "T_B02_invalid_villain_bets_and_raises_same_street"
+  category: "B. Double-action per street"
+  description: "INVALID SHAPE: villain bets turn then raises turn (cannot raise own bet). Chain should log and return."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc", "2h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "CHECK"}
+    - {street: "turn",    position: "BB",  action: "BET"}
+    - {street: "turn",    position: "BB",  action: "RAISE"}   # invalid; should never arise
+    - {street: "turn",    position: "BTN", action: "FOLD"}
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: null
+    villain_medium_made_pct: null
+    villain_draw_pct: null
+    villain_air_pct: null
+  expected_composition_post_fix:
+    villain_tp_pct: null
+    villain_medium_made_pct: null
+    villain_draw_pct: null
+    villain_air_pct: null
+  notes: "INVARIANT VIOLATION. Chain would apply turn-BET twice (both map to betting range). Log + flag, do not crash. Expected behaviour: chain warns, output approx = double-bet-narrowed range but flagged invalid upstream."
+
+- id: "T_B03_preflop_limp_reraise_shifts_baseline"
+  category: "B. Double-action per street"
+  description: "Preflop limp-reraise. Baseline range should shift from opener-range to 3bet-range. Baseline-shift test."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BB"   # after the 3bet
+  board: ["Qh", "7s", "5d"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "3BET"}
+    - {street: "preflop", position: "BTN", action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "BET"}
+  decision_street: "flop"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.52
+    villain_medium_made_pct: 0.11
+    villain_draw_pct: 0.11
+    villain_air_pct: 0.26
+  expected_composition_post_fix:
+    villain_tp_pct: 0.52
+    villain_medium_made_pct: 0.11
+    villain_draw_pct: 0.11
+    villain_air_pct: 0.26
+  notes: "[approx] Baseline-shift case. get_villain_range should pick BB-3bet range (tighter: more TP+, fewer mediums). Chain is trivial at flop. Tests that baseline selection uses opener=BB (the 3bettor)."
+
+- id: "T_B04_turn_check_raise_call_chain"
+  category: "B. Double-action per street"
+  description: "Turn check-raise. Villain checks turn, check-raises hero's bet, hero calls. Decision on river."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc", "2h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "BET"}
+    - {street: "flop",    position: "BTN", action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+    - {street: "turn",    position: "BTN", action: "BET"}
+    - {street: "turn",    position: "BB",  action: "RAISE"}
+    - {street: "turn",    position: "BTN", action: "CALL"}
+    - {street: "river",   position: "BB",  action: "BET"}
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.72
+    villain_medium_made_pct: 0.06
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.22
+  expected_composition_post_fix:
+    villain_tp_pct: 0.92
+    villain_medium_made_pct: 0.01
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.07
+  notes: "[approx] Bet-call-flop / x/r turn / river bet. Very strong range; extreme concentration at TP+."
+
+- id: "T_B05_flop_bet_raise_call_three_step"
+  category: "B. Double-action per street"
+  description: "Hero opens, villain calls preflop. Flop: villain bets, hero raises, villain calls. Decision on turn checked to hero."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "BET"}
+    - {street: "flop",    position: "BTN", action: "RAISE"}
+    - {street: "flop",    position: "BB",  action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+  decision_street: "turn"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.55
+    villain_medium_made_pct: 0.25
+    villain_draw_pct: 0.05
+    villain_air_pct: 0.15
+  notes: "[approx] Donk-then-call-a-raise. Two actions on flop: BET + CALL. Range condensed but not polarised."
+
+# ------------------------------------------------------------------------------
+# C. CALL edge cases (8 cases) — exercising narrow_to_continuing_range Option A.
+# ------------------------------------------------------------------------------
+
+- id: "T_C01_call_flop_call_turn_face_river_bet"
+  category: "C. CALL edge cases"
+  description: "Multi-street call chain. Villain calls flop bet, calls turn bet, then leads river."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc", "2h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "BET"}
+    - {street: "flop",    position: "BB",  action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+    - {street: "turn",    position: "BTN", action: "BET"}
+    - {street: "turn",    position: "BB",  action: "CALL"}
+    - {street: "river",   position: "BB",  action: "BET"}
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.72
+    villain_medium_made_pct: 0.06
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.22
+  expected_composition_post_fix:
+    villain_tp_pct: 0.70
+    villain_medium_made_pct: 0.10
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.20
+  notes: "[approx] Villain has check-called twice then donks river. CALL narrowing lifts mediums modestly, then river bet drops them. Shape tests: (1) two CHECK + two CALL actions on flop/turn, (2) surviving weight after call-continuing."
+
+- id: "T_C02_call_raise_on_flop_then_facing_turn_bet"
+  category: "C. CALL edge cases"
+  description: "Hero raises villain's flop bet, villain calls. Facing-raise call = tighter, but v2.4 uses generic CALL narrow."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "BET"}
+    - {street: "flop",    position: "BTN", action: "RAISE"}
+    - {street: "flop",    position: "BB",  action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "BET"}
+  decision_street: "turn"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.78
+    villain_medium_made_pct: 0.10
+    villain_draw_pct: 0.09
+    villain_air_pct: 0.03
+  expected_composition_post_fix:
+    villain_tp_pct: 0.85
+    villain_medium_made_pct: 0.05
+    villain_draw_pct: 0.07
+    villain_air_pct: 0.03
+  notes: "[approx] Known limitation: raise-call is tighter than bet-call, but Stage 3.5 ships generic CALL narrow. Flag via v2.5 backlog ref."
+
+- id: "T_C03_small_bet_call"
+  category: "C. CALL edge cases"
+  description: "Villain calls a small (25% pot) flop bet. Sizing-agnostic — same narrow as big call."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "BET", size_pct_pot: 0.25}
+    - {street: "flop",    position: "BB",  action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+  decision_street: "turn"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.40
+    villain_medium_made_pct: 0.27
+    villain_draw_pct: 0.18
+    villain_air_pct: 0.15
+  notes: "[approx] Tests sizing-agnostic CALL narrow. Same expected output as T_C04 (large call) — v2.4 limitation."
+
+- id: "T_C04_large_bet_call"
+  category: "C. CALL edge cases"
+  description: "Villain calls a large (100% pot) flop bet. Should narrow tighter than small call; doesn't in v2.4."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "BET", size_pct_pot: 1.00}
+    - {street: "flop",    position: "BB",  action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+  decision_street: "turn"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.40
+    villain_medium_made_pct: 0.27
+    villain_draw_pct: 0.18
+    villain_air_pct: 0.15
+  notes: "[approx] Same output as T_C03. Tests that sizing is ignored in CALL narrow (known v2.4 limit)."
+
+- id: "T_C05_call_then_face_check_bet_river"
+  category: "C. CALL edge cases"
+  description: "Flop call + turn check-through + river bet. Layered: CALL → CHECK → (decision facing BET)."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc", "2h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "BET"}
+    - {street: "flop",    position: "BB",  action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+    - {street: "turn",    position: "BTN", action: "CHECK"}
+    - {street: "river",   position: "BB",  action: "BET"}
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.72
+    villain_medium_made_pct: 0.06
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.22
+  expected_composition_post_fix:
+    villain_tp_pct: 0.55
+    villain_medium_made_pct: 0.07
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.38
+  notes: "[approx] CALL + CHECK-through then river donk bet = turns to bluff-heavy polarisation. More air than pre-fix."
+
+- id: "T_C06_floated_flop_then_bets_turn"
+  category: "C. CALL edge cases"
+  description: "Villain floats flop (in position), then attacks turn when checked to."
+  hero_position: "BB"
+  villain_position: "BTN"
+  opener: "BB"
+  board: ["Qh", "7s", "5d", "Kc"]
+  action_history:
+    - {street: "preflop", position: "BB",  action: "RAISE"}
+    - {street: "preflop", position: "BTN", action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "BET"}
+    - {street: "flop",    position: "BTN", action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+    - {street: "turn",    position: "BTN", action: "BET"}
+  decision_street: "turn"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.60
+    villain_medium_made_pct: 0.08
+    villain_draw_pct: 0.12
+    villain_air_pct: 0.20
+  expected_composition_post_fix:
+    villain_tp_pct: 0.55
+    villain_medium_made_pct: 0.05
+    villain_draw_pct: 0.20
+    villain_air_pct: 0.20
+  notes: "[approx] Classic float + stab. Chain: flop-CALL + turn-BET. More draws survive vs pre-fix (turn alone)."
+
+- id: "T_C07_double_call_then_river_check"
+  category: "C. CALL edge cases"
+  description: "Villain calls flop + turn, then checks river to hero. Nutty or give-up?"
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc", "2h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "BET"}
+    - {street: "flop",    position: "BB",  action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+    - {street: "turn",    position: "BTN", action: "BET"}
+    - {street: "turn",    position: "BB",  action: "CALL"}
+    - {street: "river",   position: "BB",  action: "CHECK"}
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.45
+    villain_medium_made_pct: 0.45
+    villain_draw_pct: 0.02
+    villain_air_pct: 0.08
+  notes: "[approx] Bluffcatch-shape. Heavy medium (mediums that called twice and checked river). TP+ from sets slowplaying."
+
+- id: "T_C08_call_chain_into_fold_midstream"
+  category: "C. CALL edge cases"
+  description: "Villain calls flop, then folds turn. Chain should return empty range (villain out of hand)."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "BET"}
+    - {street: "flop",    position: "BB",  action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+    - {street: "turn",    position: "BTN", action: "BET"}
+    - {street: "turn",    position: "BB",  action: "FOLD"}
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: null
+    villain_medium_made_pct: null
+    villain_draw_pct: null
+    villain_air_pct: null
+  expected_composition_post_fix:
+    villain_tp_pct: null
+    villain_medium_made_pct: null
+    villain_draw_pct: null
+    villain_air_pct: null
+  notes: "Villain folded. Chain returns empty range. Feature extractor should not compute composition for a folded primary villain on river."
+
+# ------------------------------------------------------------------------------
+# D. Street-transition edge cases (6 cases) — decisions at exact boundaries.
+# ------------------------------------------------------------------------------
+
+- id: "T_D01_first_decision_flop_no_prior_postflop"
+  category: "D. Street-transition edge cases"
+  description: "First postflop decision. Villain open-bets flop. Chain has no prior streets to process."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "BET"}
+  decision_street: "flop"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.48
+    villain_medium_made_pct: 0.13
+    villain_draw_pct: 0.14
+    villain_air_pct: 0.25
+  expected_composition_post_fix:
+    villain_tp_pct: 0.48
+    villain_medium_made_pct: 0.13
+    villain_draw_pct: 0.14
+    villain_air_pct: 0.25
+  notes: "[approx] CONTROL. Pre==post because decision street is flop; no prior-street actions in chain. facing_bet still applies same-street narrowing downstream."
+
+- id: "T_D02_first_turn_decision_after_preflop_only"
+  category: "D. Street-transition edge cases"
+  description: "Hand went straight to turn action (flop was all-in? uncommon but possible). Chain has flop=empty."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    # no flop actions recorded (data gap or all-in)
+    - {street: "turn",    position: "BB",  action: "BET"}
+  decision_street: "turn"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.58
+    villain_medium_made_pct: 0.08
+    villain_draw_pct: 0.14
+    villain_air_pct: 0.20
+  expected_composition_post_fix:
+    villain_tp_pct: 0.58
+    villain_medium_made_pct: 0.08
+    villain_draw_pct: 0.14
+    villain_air_pct: 0.20
+  notes: "[approx] No flop actions to chain. Turn narrowing applies same-street (via facing_bet gate, not chain). Tests: empty-street skip."
+
+- id: "T_D03_river_decision_after_turn_check_through"
+  category: "D. Street-transition edge cases"
+  description: "OWNER'S SCENARIO. Turn check-through → river villain bet. Flop was villain-bet-and-called."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc", "2h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "BET"}
+    - {street: "flop",    position: "BTN", action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+    - {street: "turn",    position: "BTN", action: "CHECK"}
+    - {street: "river",   position: "BB",  action: "BET"}
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.72
+    villain_medium_made_pct: 0.06
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.22
+  expected_composition_post_fix:
+    villain_tp_pct: 0.70
+    villain_medium_made_pct: 0.04
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.26
+  notes: "[approx] THE SCENARIO. Flop-BET + turn-CHECK + river-BET chain. Turn-check capped, river-bet repolarised — more air than pre-fix shows."
+
+- id: "T_D04_river_decision_after_turn_bet_bet_line"
+  category: "D. Street-transition edge cases"
+  description: "Double-barrel. Villain bets flop, bets turn, bets river. All three bets in chain."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc", "2h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "BET"}
+    - {street: "flop",    position: "BTN", action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "BET"}
+    - {street: "turn",    position: "BTN", action: "CALL"}
+    - {street: "river",   position: "BB",  action: "BET"}
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.72
+    villain_medium_made_pct: 0.06
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.22
+  expected_composition_post_fix:
+    villain_tp_pct: 0.88
+    villain_medium_made_pct: 0.02
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.10
+  notes: "[approx] Pure triple-barrel. Most extreme TP+ concentration in the corpus."
+
+- id: "T_D05_turn_decision_after_flop_check_through"
+  category: "D. Street-transition edge cases"
+  description: "Flop check-through (hero checks back), villain bets turn. d2410 anchor shape."
+  hero_position: "CO"
+  villain_position: "BB"
+  opener: "CO"
+  board: ["Jd", "9d", "3h", "6d"]
+  action_history:
+    - {street: "preflop", position: "CO",  action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "CO",  action: "CHECK"}
+    - {street: "turn",    position: "BB",  action: "BET"}
+  decision_street: "turn"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.58
+    villain_medium_made_pct: 0.08
+    villain_draw_pct: 0.14
+    villain_air_pct: 0.20
+  expected_composition_post_fix:
+    villain_tp_pct: 0.62
+    villain_medium_made_pct: 0.06
+    villain_draw_pct: 0.20
+    villain_air_pct: 0.12
+  notes: "[approx] d2410 SHAPE (not the anchor itself — see T_H01). Flop-CHECK + turn-BET chain. Tests that flop-check narrowing feeds into turn-bet."
+
+- id: "T_D06_river_decision_no_prior_villain_actions"
+  category: "D. Street-transition edge cases"
+  description: "All-in preflop line, river card arrived, villain decisionally silent. Degenerate chain."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc", "2h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    # no postflop villain actions — unusual, should be rare
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  notes: "[approx] Edge/degenerate. Chain has no villain actions on any street → returns baseline preflop range. Pre==post."
+
+# ------------------------------------------------------------------------------
+# E. Multiway (5 cases) — 3-way+ primary-villain tracking.
+# ------------------------------------------------------------------------------
+
+- id: "T_E01_3way_flop_primary_is_opener"
+  category: "E. Multiway"
+  description: "3-way flop. Hero is SB caller, primary villain = CO opener, third player = BB cold-call."
+  hero_position: "SB"
+  villain_position: "CO"
+  opener: "CO"
+  board: ["Qh", "7s", "5d"]
+  action_history:
+    - {street: "preflop", position: "CO", action: "RAISE"}
+    - {street: "preflop", position: "BTN", action: "FOLD"}
+    - {street: "preflop", position: "SB", action: "CALL"}
+    - {street: "preflop", position: "BB", action: "CALL"}
+    - {street: "flop",    position: "SB", action: "CHECK"}
+    - {street: "flop",    position: "BB", action: "CHECK"}
+    - {street: "flop",    position: "CO", action: "BET"}
+  decision_street: "flop"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.48
+    villain_medium_made_pct: 0.13
+    villain_draw_pct: 0.14
+    villain_air_pct: 0.25
+  expected_composition_post_fix:
+    villain_tp_pct: 0.48
+    villain_medium_made_pct: 0.13
+    villain_draw_pct: 0.14
+    villain_air_pct: 0.25
+  notes: "[approx] Multiway flop cbet. Pre==post (flop decision). Tests: chain filter selects CO's actions only (ignores BB's check)."
+
+- id: "T_E02_3way_turn_primary_changed_after_fold"
+  category: "E. Multiway"
+  description: "3-way preflop → BB folds flop. Primary villain on turn may shift. Test primary-tracking."
+  hero_position: "SB"
+  villain_position: "CO"
+  opener: "CO"
+  board: ["Qh", "7s", "5d", "Kc"]
+  action_history:
+    - {street: "preflop", position: "CO", action: "RAISE"}
+    - {street: "preflop", position: "BTN", action: "FOLD"}
+    - {street: "preflop", position: "SB", action: "CALL"}
+    - {street: "preflop", position: "BB", action: "CALL"}
+    - {street: "flop",    position: "SB", action: "CHECK"}
+    - {street: "flop",    position: "BB", action: "CHECK"}
+    - {street: "flop",    position: "CO", action: "BET"}
+    - {street: "flop",    position: "SB", action: "CALL"}
+    - {street: "flop",    position: "BB", action: "FOLD"}
+    - {street: "turn",    position: "SB", action: "CHECK"}
+    - {street: "turn",    position: "CO", action: "BET"}
+  decision_street: "turn"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.58
+    villain_medium_made_pct: 0.08
+    villain_draw_pct: 0.14
+    villain_air_pct: 0.20
+  expected_composition_post_fix:
+    villain_tp_pct: 0.78
+    villain_medium_made_pct: 0.05
+    villain_draw_pct: 0.08
+    villain_air_pct: 0.09
+  notes: "[approx] Primary villain = CO throughout (doesn't change). Tests: fold-handling for non-primary (BB) doesn't break chain."
+
+- id: "T_E03_3way_flop_primary_is_bettor_not_opener"
+  category: "E. Multiway"
+  description: "3-way flop: BTN opens, BB + hero call. BTN checks, BB bets. Primary = BB (the bettor)."
+  hero_position: "SB"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "SB", action: "CALL"}
+    - {street: "preflop", position: "BB", action: "CALL"}
+    - {street: "flop",    position: "SB", action: "CHECK"}
+    - {street: "flop",    position: "BB", action: "BET"}
+  decision_street: "flop"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.40
+    villain_medium_made_pct: 0.14
+    villain_draw_pct: 0.14
+    villain_air_pct: 0.32
+  expected_composition_post_fix:
+    villain_tp_pct: 0.40
+    villain_medium_made_pct: 0.14
+    villain_draw_pct: 0.14
+    villain_air_pct: 0.32
+  notes: "[approx] Tests: baseline range for BB-defend (not BTN-open). Primary-villain = BB (donk-out bettor), not BTN."
+
+- id: "T_E04_4way_primary_as_bettor"
+  category: "E. Multiway"
+  description: "4-way flop: UTG opens, hero (CO), BTN, BB call. BB donks — primary villain = BB."
+  hero_position: "CO"
+  villain_position: "BB"
+  opener: "UTG"
+  board: ["Qh", "7s", "5d"]
+  action_history:
+    - {street: "preflop", position: "UTG", action: "RAISE"}
+    - {street: "preflop", position: "CO",  action: "CALL"}
+    - {street: "preflop", position: "BTN", action: "CALL"}
+    - {street: "preflop", position: "SB",  action: "FOLD"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "BET"}
+  decision_street: "flop"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.42
+    villain_medium_made_pct: 0.13
+    villain_draw_pct: 0.13
+    villain_air_pct: 0.32
+  expected_composition_post_fix:
+    villain_tp_pct: 0.42
+    villain_medium_made_pct: 0.13
+    villain_draw_pct: 0.13
+    villain_air_pct: 0.32
+  notes: "[approx] 4-way donk. Tests: baseline is BB-cold-call-defend-multiway, strong donk filter. Note M1 tightened 3-way river bluff freq."
+
+- id: "T_E05_3way_turn_chain_through_mw_flop"
+  category: "E. Multiway"
+  description: "3-way flop cbet + call, then turn checked to hero. Tests chain with non-primary actions present."
+  hero_position: "BB"
+  villain_position: "BTN"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "SB",  action: "CALL"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "SB",  action: "CHECK"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "BET"}
+    - {street: "flop",    position: "SB",  action: "FOLD"}
+    - {street: "flop",    position: "BB",  action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+    - {street: "turn",    position: "BTN", action: "CHECK"}
+  decision_street: "turn"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.62
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.10
+    villain_air_pct: 0.13
+  notes: "[approx] Turn check-through decision after MW flop cbet. Chain extracts only BTN actions (flop-BET). Tests: non-primary filter."
+
+# ------------------------------------------------------------------------------
+# F. Board-texture variety (10 cases) — same action line, different textures.
+# ------------------------------------------------------------------------------
+
+- id: "T_F01_monotone_flush_flop_bet_call_turn_bet"
+  category: "F. Board-texture variety"
+  description: "Monotone flop Jh8h3h → hero bets, villain calls; turn 2h (4-flush)."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Jh", "8h", "3h", "2h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "BET"}
+    - {street: "flop",    position: "BB",  action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+  decision_street: "turn"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.35
+    villain_medium_made_pct: 0.22
+    villain_draw_pct: 0.28
+    villain_air_pct: 0.15
+  notes: "[approx] Monotone flop → draws heavily retained (flush-draw category). Tests: board-texture sensitivity through classify_hand."
+
+- id: "T_F02_paired_board_bet_call_turn"
+  category: "F. Board-texture variety"
+  description: "Paired flop JJ2 → villain checks, hero bets, villain calls."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Jc", "Jd", "2h", "3c"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "BET"}
+    - {street: "flop",    position: "BB",  action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+  decision_street: "turn"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.35
+    villain_medium_made_pct: 0.30
+    villain_draw_pct: 0.05
+    villain_air_pct: 0.30
+  notes: "[approx] Paired board → few draws, many floats. Range retains air (blockers) + mediums."
+
+- id: "T_F03_connected_straight_flop_bet_call"
+  category: "F. Board-texture variety"
+  description: "Connected flop 9s8c7d → villain check-call. Straight-draw heavy."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["9s", "8c", "7d", "2h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "BET"}
+    - {street: "flop",    position: "BB",  action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+  decision_street: "turn"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.25
+    villain_draw_pct: 0.32
+    villain_air_pct: 0.13
+  notes: "[approx] Connected flop → heavy OESD / gutshot retention. Classic draw-heavy continue."
+
+- id: "T_F04_dry_rainbow_bet_call"
+  category: "F. Board-texture variety"
+  description: "Dry rainbow K72 → villain check-calls. Baseline texture."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Kh", "7d", "2c", "4s"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "BET"}
+    - {street: "flop",    position: "BB",  action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+  decision_street: "turn"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.42
+    villain_medium_made_pct: 0.30
+    villain_draw_pct: 0.08
+    villain_air_pct: 0.20
+  notes: "[approx] Dry board, standard check-call range. Tests: few draws, mediums retained."
+
+- id: "T_F05_triple_threat_paired_flush_connected"
+  category: "F. Board-texture variety"
+  description: "Nasty flop 9h8h8d → paired, 2-flush, connected. All texture conditions active."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["9h", "8h", "8d", "2c"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "BET"}
+    - {street: "flop",    position: "BB",  action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+  decision_street: "turn"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.32
+    villain_medium_made_pct: 0.28
+    villain_draw_pct: 0.25
+    villain_air_pct: 0.15
+  notes: "[approx] Paired + flush-draw + connected. Range keeps all of: trip-Xs, flush draws, straight draws, pairs. Air drops."
+
+- id: "T_F06_monotone_river_bet_triple_barrel"
+  category: "F. Board-texture variety"
+  description: "Monotone through river Jh8h3h2h5h → triple-barrel. Tests river-texture-dependent narrowing."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Jh", "8h", "3h", "2h", "5h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "BET"}
+    - {street: "flop",    position: "BB",  action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+    - {street: "turn",    position: "BTN", action: "BET"}
+    - {street: "turn",    position: "BB",  action: "CALL"}
+    - {street: "river",   position: "BB",  action: "BET"}
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.75
+    villain_medium_made_pct: 0.04
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.21
+  expected_composition_post_fix:
+    villain_tp_pct: 0.80
+    villain_medium_made_pct: 0.03
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.17
+  notes: "[approx] Villain donks 5-flush river after check-call line. Very flush-heavy range; air drops further."
+
+- id: "T_F07_4flush_turn_villain_check"
+  category: "F. Board-texture variety"
+  description: "4-flush turn. Villain checks after flop bet-call, signalling capped / non-flush."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Jh", "8h", "3c", "2h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "BET"}
+    - {street: "flop",    position: "BB",  action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+  decision_street: "turn"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.30
+    villain_draw_pct: 0.25
+    villain_air_pct: 0.15
+  notes: "[approx] Draw-rich board → high draw retention + mediums. Flush blocker tests downstream."
+
+- id: "T_F08_low_dry_flop_bet_call"
+  category: "F. Board-texture variety"
+  description: "Low dry flop 234r → mostly pair-and-better baseline for villain calls."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["2h", "3c", "4s", "8d"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "BET"}
+    - {street: "flop",    position: "BB",  action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+  decision_street: "turn"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.25
+    villain_medium_made_pct: 0.20
+    villain_draw_pct: 0.30
+    villain_air_pct: 0.25
+  notes: "[approx] Low connected → defender has many overcard-with-gutshot hands. Draw-heavy range."
+
+- id: "T_F09_ace_high_flop_pair_or_fold"
+  category: "F. Board-texture variety"
+  description: "Ace-high dry A72r → standard cbet + call."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Ah", "7d", "2c", "5s"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "BET"}
+    - {street: "flop",    position: "BB",  action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+  decision_street: "turn"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.50
+    villain_medium_made_pct: 0.20
+    villain_draw_pct: 0.10
+    villain_air_pct: 0.20
+  notes: "[approx] Ace-high continue → weighted to Ax + pairs. Pre-fix undersells TP+."
+
+- id: "T_F10_two_broadway_flop_high_equity"
+  category: "F. Board-texture variety"
+  description: "Two-broadway rainbow KQ4r → high-equity texture for opener's range."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Kh", "Qd", "4s", "Jc"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "BET"}
+    - {street: "flop",    position: "BB",  action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+  decision_street: "turn"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.45
+    villain_medium_made_pct: 0.20
+    villain_draw_pct: 0.25
+    villain_air_pct: 0.10
+  notes: "[approx] High texture + turn J → many straight draws + second pairs. Tests texture sensitivity when decision-street board changes."
+
+# ------------------------------------------------------------------------------
+# G. Position variety (5 cases) — IP vs OOP baseline shifts.
+# ------------------------------------------------------------------------------
+
+- id: "T_G01_btn_ip_vs_utg_open_flop_cbet"
+  category: "G. Position variety"
+  description: "Hero BTN IP floats UTG open. Faces UTG cbet on flop."
+  hero_position: "BTN"
+  villain_position: "UTG"
+  opener: "UTG"
+  board: ["Qh", "7s", "5d"]
+  action_history:
+    - {street: "preflop", position: "UTG", action: "RAISE"}
+    - {street: "preflop", position: "BTN", action: "CALL"}
+    - {street: "flop",    position: "UTG", action: "BET"}
+  decision_street: "flop"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.62
+    villain_medium_made_pct: 0.10
+    villain_draw_pct: 0.12
+    villain_air_pct: 0.16
+  expected_composition_post_fix:
+    villain_tp_pct: 0.62
+    villain_medium_made_pct: 0.10
+    villain_draw_pct: 0.12
+    villain_air_pct: 0.16
+  notes: "[approx] UTG baseline tighter → more TP+. Pre==post (flop decision). Tests: baseline range picker for UTG-open."
+
+- id: "T_G02_bb_oop_vs_btn_open_turn_checked"
+  category: "G. Position variety"
+  description: "Hero BB OOP defends BTN open. Flop bet-call, turn checked by villain."
+  hero_position: "BB"
+  villain_position: "BTN"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "BET"}
+    - {street: "flop",    position: "BB",  action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+    - {street: "turn",    position: "BTN", action: "CHECK"}
+  decision_street: "river"
+  # Hero is BB; villain is BTN; river card not yet dealt? We assume facing villain check on turn; decision context is river after turn check-through.
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.48
+    villain_medium_made_pct: 0.35
+    villain_draw_pct: 0.05
+    villain_air_pct: 0.12
+  notes: "[approx] BTN cbet + give-up-turn shape. Chain: flop-BET + turn-CHECK. Mediums elevated."
+
+- id: "T_G03_blinds_vs_co_open"
+  category: "G. Position variety"
+  description: "Hero BB defends CO open. Flop bet-call, turn bet-call, river decision."
+  hero_position: "BB"
+  villain_position: "CO"
+  opener: "CO"
+  board: ["Qh", "7s", "5d", "Kc", "2h"]
+  action_history:
+    - {street: "preflop", position: "CO",  action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "CO",  action: "BET"}
+    - {street: "flop",    position: "BB",  action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+    - {street: "turn",    position: "CO",  action: "BET"}
+    - {street: "turn",    position: "BB",  action: "CALL"}
+    - {street: "river",   position: "BB",  action: "CHECK"}
+    - {street: "river",   position: "CO",  action: "BET"}
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.72
+    villain_medium_made_pct: 0.06
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.22
+  expected_composition_post_fix:
+    villain_tp_pct: 0.85
+    villain_medium_made_pct: 0.03
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.12
+  notes: "[approx] Classic CO triple-barrel line. BB hero facing river bet."
+
+- id: "T_G04_hero_mp_vs_hj_open"
+  category: "G. Position variety"
+  description: "Hero MP 3bet HJ open. HJ calls. Flop, HJ checks, hero bets, HJ calls."
+  hero_position: "MP"
+  villain_position: "HJ"
+  opener: "MP"  # hero is the 3bettor → opener = MP
+  board: ["Qh", "7s", "5d", "Kc"]
+  action_history:
+    - {street: "preflop", position: "HJ", action: "RAISE"}
+    - {street: "preflop", position: "MP", action: "3BET"}
+    - {street: "preflop", position: "HJ", action: "CALL"}
+    - {street: "flop",    position: "HJ", action: "CHECK"}
+    - {street: "flop",    position: "MP", action: "BET"}
+    - {street: "flop",    position: "HJ", action: "CALL"}
+    - {street: "turn",    position: "HJ", action: "CHECK"}
+  decision_street: "turn"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.45
+    villain_medium_made_pct: 0.30
+    villain_draw_pct: 0.10
+    villain_air_pct: 0.15
+  notes: "[approx] HJ-defend-vs-3bet baseline = much tighter than open range. Chain: flop-CHECK + flop-CALL + turn-CHECK."
+
+- id: "T_G05_ip_vs_sb_open"
+  category: "G. Position variety"
+  description: "Hero BTN IP calls SB open (unusual). SB checks flop, hero bets, SB calls."
+  hero_position: "BTN"
+  villain_position: "SB"
+  opener: "SB"
+  board: ["Qh", "7s", "5d", "Kc"]
+  action_history:
+    - {street: "preflop", position: "SB",  action: "RAISE"}
+    - {street: "preflop", position: "BTN", action: "CALL"}
+    - {street: "flop",    position: "SB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "BET"}
+    - {street: "flop",    position: "SB",  action: "CALL"}
+    - {street: "turn",    position: "SB",  action: "CHECK"}
+  decision_street: "turn"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.42
+    villain_medium_made_pct: 0.28
+    villain_draw_pct: 0.10
+    villain_air_pct: 0.20
+  notes: "[approx] SB-open range is wide-but-capped. OOP check-call line retains mediums."
+
+# ------------------------------------------------------------------------------
+# H. Anchor regression cases (5) — reproduce v2.4 calibration anchors exactly.
+# ------------------------------------------------------------------------------
+
+- id: "T_H01_anchor_d2410_CO_turn"
+  category: "H. Anchor regression"
+  description: "d2410: CO opens, BB defends, flop checked through, turn villain bets. Hero holds JcKs."
+  hero_position: "CO"
+  villain_position: "BB"
+  opener: "CO"
+  hero_cards: ["Jc", "Ks"]
+  board: ["Jd", "9d", "3h", "6d"]
+  action_history:
+    - {street: "preflop", position: "CO", action: "RAISE"}
+    - {street: "preflop", position: "BB", action: "CALL"}
+    - {street: "flop",    position: "BB", action: "CHECK"}
+    - {street: "flop",    position: "CO", action: "CHECK"}
+    - {street: "turn",    position: "BB", action: "BET"}
+  decision_street: "turn"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.58
+    villain_medium_made_pct: 0.08
+    villain_draw_pct: 0.14
+    villain_air_pct: 0.20
+  expected_composition_post_fix:
+    villain_tp_pct: 0.62
+    villain_medium_made_pct: 0.05
+    villain_draw_pct: 0.22
+    villain_air_pct: 0.11
+  expected_action: "BET"  # preserved
+  tolerance: "strict"
+  notes: "[approx] THE anchor most affected by Stage 3.5. Chain: flop-CHECK + turn-BET. Risk: anchor flips to CHECK. Action must stay BET for pass."
+
+- id: "T_H02_anchor_LITMUS_A4d_Qs5s7s_flop"
+  category: "H. Anchor regression"
+  description: "LITMUS A4d/Qs5s7s: BTN hero opened, BB defends, flop checked to hero. Flop decision."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  hero_cards: ["Ad", "4d"]
+  board: ["Qs", "5s", "7s"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+  decision_street: "flop"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_action: "CHECK"  # preserved
+  tolerance: "strict"
+  notes: "[approx] CONTROL anchor. Flop decision with no prior-street actions → pre==post EXACTLY. Zero-impact per spec."
+
+- id: "T_H03_anchor_LITMUS_T5h_JJ2_flop"
+  category: "H. Anchor regression"
+  description: "LITMUS T5h/JJ2: BTN hero opened, BB defends, flop checked to hero. Flop decision."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  hero_cards: ["Th", "5h"]
+  board: ["Jc", "Jd", "2h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+  decision_street: "flop"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_action: "CHECK"  # preserved
+  tolerance: "strict"
+  notes: "[approx] CONTROL anchor. Zero-impact (flop decision)."
+
+- id: "T_H04_anchor_LITMUS_AA_7h5d2c_flop"
+  category: "H. Anchor regression"
+  description: "LITMUS AA/7h5d2c: BTN hero opened, BB defends, flop checked to hero. Flop decision."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  hero_cards: ["As", "Ah"]
+  board: ["7h", "5d", "2c"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+  decision_street: "flop"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_action: "BET"  # preserved
+  tolerance: "strict"
+  notes: "[approx] CONTROL anchor. Zero-impact (flop decision). Hero holds overpair on dry board."
+
+- id: "T_H05_anchor_LITMUS_KQ_KsTs3h_flop"
+  category: "H. Anchor regression"
+  description: "LITMUS KQ/KsTs3h: BTN hero opened, BB defends, flop checked to hero. Flop decision."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  hero_cards: ["Kd", "Qd"]
+  board: ["Ks", "Ts", "3h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+  decision_street: "flop"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_action: "BET"  # preserved
+  tolerance: "strict"
+  notes: "[approx] CONTROL anchor. Zero-impact (flop decision). TPGK on two-tone board."
+
+# ------------------------------------------------------------------------------
+# I. Empty/degenerate cases (3) — boundary/graceful-handling cases.
+# ------------------------------------------------------------------------------
+
+- id: "T_I01_missing_action_history"
+  category: "I. Empty/degenerate"
+  description: "action_history is an empty list. Chain must not crash."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc", "2h"]
+  action_history: []
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.72  # pre-fix would still apply facing_bet narrowing if flagged
+    villain_medium_made_pct: 0.06
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.22
+  expected_composition_post_fix:
+    villain_tp_pct: 0.72
+    villain_medium_made_pct: 0.06
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.22
+  notes: "[approx] Fallback path per spec §3.2. No history → chain is no-op → falls back to single-street facing_bet narrowing."
+
+- id: "T_I02_no_villain_actions_all_hero"
+  category: "I. Empty/degenerate"
+  description: "Action history has only hero actions (weird test fixture). Chain should skip all streets."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc", "2h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    # no other entries
+    - {street: "flop",    position: "BTN", action: "CHECK"}
+    - {street: "turn",    position: "BTN", action: "CHECK"}
+    - {street: "river",   position: "BTN", action: "CHECK"}
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  notes: "[approx] All-hero history → no villain actions to chain → preflop baseline preserved. Pre==post."
+
+- id: "T_I03_villain_folded_midchain_turn"
+  category: "I. Empty/degenerate"
+  description: "Villain folded on turn. Chain should return empty range + flag 'villain_out_of_hand'."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "BET"}
+    - {street: "flop",    position: "BB",  action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+    - {street: "turn",    position: "BTN", action: "BET"}
+    - {street: "turn",    position: "BB",  action: "FOLD"}
+  decision_street: "river"  # this case is synthetic — normally no river decision after villain folds turn
+  expected_composition_pre_fix:
+    villain_tp_pct: null
+    villain_medium_made_pct: null
+    villain_draw_pct: null
+    villain_air_pct: null
+  expected_composition_post_fix:
+    villain_tp_pct: null
+    villain_medium_made_pct: null
+    villain_draw_pct: null
+    villain_air_pct: null
+  notes: "Chain encounters FOLD → returns empty dict + meta.surviving_weight=0. Feature extractor should fall back / skip computation."
+
+# ------------------------------------------------------------------------------
+# J. Owner's scenarios (3) — reproduce specific playtest observations.
+# ------------------------------------------------------------------------------
+
+- id: "T_J01_owner_H_d9edab5d_turn_check_through_river_bet"
+  category: "J. Owner's scenarios"
+  description: "H_d9edab5d: documented owner example. Turn check-through + river bet. Features dict was empty in log."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc", "2h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "BET"}
+    - {street: "flop",    position: "BTN", action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+    - {street: "turn",    position: "BTN", action: "CHECK"}
+    - {street: "river",   position: "BB",  action: "BET"}
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.72
+    villain_medium_made_pct: 0.06
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.22
+  expected_composition_post_fix:
+    villain_tp_pct: 0.70
+    villain_medium_made_pct: 0.04
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.26
+  notes: "[approx] Owner playtest hand. Board reconstructed generically — actual board unknown (empty features log)."
+
+- id: "T_J02_owner_H_8dfb6ef8_bet_check_call_bet_line"
+  category: "J. Owner's scenarios"
+  description: "H_8dfb6ef8: villain BET-CHECK-CALL-BET — exercises all 4 action narrow classes."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc", "2h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "BET"}
+    - {street: "flop",    position: "BTN", action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+    - {street: "turn",    position: "BTN", action: "BET"}
+    - {street: "turn",    position: "BB",  action: "CALL"}
+    - {street: "river",   position: "BB",  action: "BET"}
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.72
+    villain_medium_made_pct: 0.06
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.22
+  expected_composition_post_fix:
+    villain_tp_pct: 0.65
+    villain_medium_made_pct: 0.10
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.25
+  notes: "[approx] Owner's 4-narrow test. Chain: flop-BET + turn-CHECK + turn-CALL + (decision river-BET via facing gate). All four narrow classes exercised. Post-fix preserves some mediums (turn-check) vs pre-fix stripping all."
+
+- id: "T_J03_owner_conceptual_blocker_mid_pair_flush_blocker"
+  category: "J. Owner's scenarios"
+  description: "Owner conceptual: middle-pair + flush blocker facing river bet. Tests downstream flush_block_pct feature."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  hero_cards: ["9h", "7h"]  # middle pair (9) with a heart blocker
+  board: ["Jh", "9s", "5d", "2c", "3h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "BET"}
+    - {street: "flop",    position: "BB",  action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+    - {street: "turn",    position: "BTN", action: "CHECK"}
+    - {street: "river",   position: "BB",  action: "BET"}
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.72
+    villain_medium_made_pct: 0.06
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.22
+  expected_composition_post_fix:
+    villain_tp_pct: 0.55
+    villain_medium_made_pct: 0.05
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.40
+  notes: "[approx] Hero middle pair + flush blocker (two hearts). Downstream flush_block_pct should RISE post-fix (fewer flushes in narrower range). Range shifts to more-bluff-heavy on river donk after turn-check-through."
+
+# ------------------------------------------------------------------------------
+# K. Extra shape-coverage cases (to hit 70+ total) — round-robin action types.
+# ------------------------------------------------------------------------------
+
+- id: "T_K01_check_call_bet_line_turn_decision"
+  category: "K. Extra shape coverage"
+  description: "Flop villain check-calls; turn villain donks into hero. Decision on turn facing bet."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "BET"}
+    - {street: "flop",    position: "BB",  action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "BET"}  # donk
+  decision_street: "turn"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.58
+    villain_medium_made_pct: 0.08
+    villain_draw_pct: 0.14
+    villain_air_pct: 0.20
+  expected_composition_post_fix:
+    villain_tp_pct: 0.65
+    villain_medium_made_pct: 0.07
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.13
+  notes: "[approx] Donk-turn shape. Chain: flop-CHECK + flop-CALL (two actions). Facing-bet gate applies turn-BET narrowing."
+
+- id: "T_K02_cold_call_3bet_preflop_flop_decision"
+  category: "K. Extra shape coverage"
+  description: "Hero 3bets, villain cold-calls. Flop decision — range is very tight."
+  hero_position: "BTN"
+  villain_position: "CO"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d"]
+  action_history:
+    - {street: "preflop", position: "CO",  action: "RAISE"}
+    - {street: "preflop", position: "BTN", action: "3BET"}
+    - {street: "preflop", position: "CO",  action: "CALL"}
+    - {street: "flop",    position: "CO",  action: "CHECK"}
+  decision_street: "flop"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.62
+    villain_medium_made_pct: 0.08
+    villain_draw_pct: 0.10
+    villain_air_pct: 0.20
+  expected_composition_post_fix:
+    villain_tp_pct: 0.62
+    villain_medium_made_pct: 0.08
+    villain_draw_pct: 0.10
+    villain_air_pct: 0.20
+  notes: "[approx] Tight baseline (CO-call-vs-3bet). Pre==post (flop decision). Tests: baseline selection for 3bet-pot."
+
+- id: "T_K03_river_donk_into_bet_bet_line"
+  category: "K. Extra shape coverage"
+  description: "Villain bet flop, bet turn, donks river (lead)."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc", "2h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "BET"}
+    - {street: "flop",    position: "BTN", action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "BET"}
+    - {street: "turn",    position: "BTN", action: "CALL"}
+    - {street: "river",   position: "BB",  action: "BET"}
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.72
+    villain_medium_made_pct: 0.06
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.22
+  expected_composition_post_fix:
+    villain_tp_pct: 0.89
+    villain_medium_made_pct: 0.02
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.09
+  notes: "[approx] Triple-bet donk line. Very strong."
+
+- id: "T_K04_checkraise_then_call_turn_bet"
+  category: "K. Extra shape coverage"
+  description: "Flop check-raise + call. Villain bets turn."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "BET"}
+    - {street: "flop",    position: "BB",  action: "RAISE"}
+    - {street: "flop",    position: "BTN", action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "BET"}
+  decision_street: "turn"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.58
+    villain_medium_made_pct: 0.08
+    villain_draw_pct: 0.14
+    villain_air_pct: 0.20
+  expected_composition_post_fix:
+    villain_tp_pct: 0.90
+    villain_medium_made_pct: 0.03
+    villain_draw_pct: 0.05
+    villain_air_pct: 0.02
+  notes: "[approx] X/R-call-barrel — strongest conceivable. Chain: flop-CHECK + flop-RAISE + turn-BET (facing-bet gate)."
+
+- id: "T_K05_three_streets_check_then_bet_river"
+  category: "K. Extra shape coverage"
+  description: "Flop + turn checked by villain, river villain bets. All-check-then-stab line."
+  hero_position: "BB"
+  villain_position: "BTN"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc", "2h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "CHECK"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+    - {street: "turn",    position: "BTN", action: "CHECK"}
+    - {street: "river",   position: "BB",  action: "CHECK"}
+    - {street: "river",   position: "BTN", action: "BET"}
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.72
+    villain_medium_made_pct: 0.06
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.22
+  expected_composition_post_fix:
+    villain_tp_pct: 0.55
+    villain_medium_made_pct: 0.04
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.41
+  notes: "[approx] Owner-scenario variant — BTN checks flop+turn, bets river. Polarised; more air than pre-fix."
+
+- id: "T_K06_cbet_checked_called_call_turn_bet_facing"
+  category: "K. Extra shape coverage"
+  description: "Villain cbets flop, hero calls; turn villain checks, hero checks; river villain bets."
+  hero_position: "BB"
+  villain_position: "BTN"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc", "2h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "BET"}
+    - {street: "flop",    position: "BB",  action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+    - {street: "turn",    position: "BTN", action: "CHECK"}
+    - {street: "river",   position: "BB",  action: "CHECK"}
+    - {street: "river",   position: "BTN", action: "BET"}
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.72
+    villain_medium_made_pct: 0.06
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.22
+  expected_composition_post_fix:
+    villain_tp_pct: 0.62
+    villain_medium_made_pct: 0.05
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.33
+  notes: "[approx] Bet-check-bet shape, BB hero. Chain: flop-BET + turn-CHECK + river bet (facing gate). Capped then polarised."
+
+- id: "T_K07_large_turn_bet_after_flop_check_through"
+  category: "K. Extra shape coverage"
+  description: "Flop check-through (both check). Turn villain bets large (pot-sized)."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "CHECK"}
+    - {street: "turn",    position: "BB",  action: "BET", size_pct_pot: 1.00}
+  decision_street: "turn"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.58
+    villain_medium_made_pct: 0.08
+    villain_draw_pct: 0.14
+    villain_air_pct: 0.20
+  expected_composition_post_fix:
+    villain_tp_pct: 0.65
+    villain_medium_made_pct: 0.04
+    villain_draw_pct: 0.18
+    villain_air_pct: 0.13
+  notes: "[approx] Delayed probe. Chain: flop-CHECK + turn-BET. Tests: sizing is not consumed by chain — only action class."
+
+- id: "T_K08_all_in_flop_turn_decision"
+  category: "K. Extra shape coverage"
+  description: "Short-stack all-in flop after cbet-call (chip-action). Chain must not misread RAISE=all-in."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "BET"}
+    - {street: "flop",    position: "BB",  action: "RAISE", all_in: true}
+    - {street: "flop",    position: "BTN", action: "CALL"}
+    # no more betting (villain all-in) — turn runs out
+  decision_street: "turn"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.85
+    villain_medium_made_pct: 0.03
+    villain_draw_pct: 0.10
+    villain_air_pct: 0.02
+  notes: "[approx] All-in check-raise = nuts-heavy. Tests: RAISE narrow_class handled correctly regardless of all_in flag."
+
+- id: "T_K09_empty_board_preflop_decision"
+  category: "K. Extra shape coverage"
+  description: "Preflop decision. Empty postflop board. Chain has no streets to process."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "UTG"
+  board: []
+  action_history:
+    - {street: "preflop", position: "UTG", action: "RAISE"}
+    - {street: "preflop", position: "BTN", action: "3BET"}
+  decision_street: "preflop"
+  expected_composition_pre_fix:
+    villain_tp_pct: null
+    villain_medium_made_pct: null
+    villain_draw_pct: null
+    villain_air_pct: null
+  expected_composition_post_fix:
+    villain_tp_pct: null
+    villain_medium_made_pct: null
+    villain_draw_pct: null
+    villain_air_pct: null
+  notes: "Preflop-only. Chain returns baseline (no postflop streets). Composition is not meaningful here — classify_villain_range itself is a postflop-only gate."
+
+- id: "T_K10_board_textures_river_runout_dynamic"
+  category: "K. Extra shape coverage"
+  description: "Flop dry (QT3r), turn brings flush completer (Td → Js then Ts), river draws complete."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qs", "Tc", "3h", "Jh", "Th"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "BET"}
+    - {street: "flop",    position: "BB",  action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+    - {street: "turn",    position: "BTN", action: "BET"}
+    - {street: "turn",    position: "BB",  action: "CALL"}
+    - {street: "river",   position: "BB",  action: "BET"}
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.68
+    villain_medium_made_pct: 0.05
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.27
+  expected_composition_post_fix:
+    villain_tp_pct: 0.58
+    villain_medium_made_pct: 0.04
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.38
+  notes: "[approx] Dynamic runout. Chain uses flop-board for flop-BET, turn-board for turn-BET — hands that were draws on flop become straights/trips post-turn, reclassified per-street."
+
+- id: "T_K11_checkraise_fold_flop_river_na"
+  category: "K. Extra shape coverage"
+  description: "Villain check-raise-folds flop. Terminal chain (villain out before river)."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "BTN", action: "BET"}
+    - {street: "flop",    position: "BB",  action: "RAISE"}
+    - {street: "flop",    position: "BTN", action: "RAISE"}
+    - {street: "flop",    position: "BB",  action: "FOLD"}
+  decision_street: "flop"    # decision was already made — this is post-hand reconstruction
+  expected_composition_pre_fix:
+    villain_tp_pct: null
+    villain_medium_made_pct: null
+    villain_draw_pct: null
+    villain_air_pct: null
+  expected_composition_post_fix:
+    villain_tp_pct: null
+    villain_medium_made_pct: null
+    villain_draw_pct: null
+    villain_air_pct: null
+  notes: "Villain folded after check-raise. Chain → empty. No downstream composition to compute."
+
+- id: "T_K12_tight_nit_villain_cbet_call_turn_check"
+  category: "K. Extra shape coverage"
+  description: "Tight UTG opener → narrower baseline. Exercises baseline-range picker + chain composition."
+  hero_position: "BB"
+  villain_position: "UTG"
+  opener: "UTG"
+  board: ["Qh", "7s", "5d", "Kc"]
+  action_history:
+    - {street: "preflop", position: "UTG", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "UTG", action: "BET"}
+    - {street: "flop",    position: "BB",  action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+    - {street: "turn",    position: "UTG", action: "CHECK"}
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.55
+    villain_medium_made_pct: 0.35
+    villain_draw_pct: 0.03
+    villain_air_pct: 0.07
+  notes: "[approx] UTG-tight baseline + cbet-give-up turn. TP+ and mediums concentrated; very little air."
+
+- id: "T_K13_multiple_raises_preflop_then_postflop"
+  category: "K. Extra shape coverage"
+  description: "4bet-called preflop, flop cbet-call."
+  hero_position: "BTN"
+  villain_position: "CO"
+  opener: "CO"
+  board: ["Qh", "7s", "5d", "Kc"]
+  action_history:
+    - {street: "preflop", position: "CO",  action: "RAISE"}
+    - {street: "preflop", position: "BTN", action: "3BET"}
+    - {street: "preflop", position: "CO",  action: "4BET"}
+    - {street: "preflop", position: "BTN", action: "CALL"}
+    - {street: "flop",    position: "CO",  action: "BET"}
+    - {street: "flop",    position: "BTN", action: "CALL"}
+    - {street: "turn",    position: "CO",  action: "CHECK"}
+  decision_street: "turn"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.78
+    villain_medium_made_pct: 0.10
+    villain_draw_pct: 0.08
+    villain_air_pct: 0.04
+  notes: "[approx] 4bet-pot + cbet-checkup. Very tight preflop baseline (CO-4bet range = ~JJ+/AK); chain keeps TP+ dominant."
+
+- id: "T_K14_delayed_cbet_turn_after_flop_x"
+  category: "K. Extra shape coverage"
+  description: "Flop checked-through, turn villain bets. Hero decision on turn."
+  hero_position: "BB"
+  villain_position: "CO"
+  opener: "CO"
+  board: ["Qh", "7s", "5d", "Kc"]
+  action_history:
+    - {street: "preflop", position: "CO",  action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "CHECK"}
+    - {street: "flop",    position: "CO",  action: "CHECK"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+    - {street: "turn",    position: "CO",  action: "BET"}
+  decision_street: "turn"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.58
+    villain_medium_made_pct: 0.08
+    villain_draw_pct: 0.14
+    villain_air_pct: 0.20
+  expected_composition_post_fix:
+    villain_tp_pct: 0.68
+    villain_medium_made_pct: 0.05
+    villain_draw_pct: 0.20
+    villain_air_pct: 0.07
+  notes: "[approx] Delayed cbet. Chain: flop-CHECK (villain only) + turn-BET (via facing gate). Strong value + draws."
+
+- id: "T_K15_float_call_checkbehind_river_decision"
+  category: "K. Extra shape coverage"
+  description: "Villain IP floats flop, checks back turn, hero donks river, villain raises."
+  hero_position: "BB"
+  villain_position: "BTN"
+  opener: "BB"
+  board: ["Qh", "7s", "5d", "Kc", "2h"]
+  action_history:
+    - {street: "preflop", position: "BB",  action: "RAISE"}
+    - {street: "preflop", position: "BTN", action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "BET"}
+    - {street: "flop",    position: "BTN", action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+    - {street: "turn",    position: "BTN", action: "CHECK"}
+    - {street: "river",   position: "BB",  action: "BET"}
+    - {street: "river",   position: "BTN", action: "RAISE"}
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.72
+    villain_medium_made_pct: 0.06
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.22
+  expected_composition_post_fix:
+    villain_tp_pct: 0.82
+    villain_medium_made_pct: 0.04
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.14
+  notes: "[approx] Float + check-back + river raise. Chain: flop-CALL + turn-CHECK + river-BET (wait — villain's first river action is RAISE, but facing hero's bet). Applied as facing_raise on current street which narrows heavily."
+
+- id: "T_K16_zero_baseline_weight_safety_rail"
+  category: "K. Extra shape coverage"
+  description: "Zero-weight preflop range input. Tests empty-chain fallback per Flag B."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "BET"}
+  decision_street: "flop"
+  expected_composition_pre_fix:
+    villain_tp_pct: null
+    villain_medium_made_pct: null
+    villain_draw_pct: null
+    villain_air_pct: null
+  expected_composition_post_fix:
+    villain_tp_pct: null
+    villain_medium_made_pct: null
+    villain_draw_pct: null
+    villain_air_pct: null
+  notes: "SAFETY RAIL. Empty preflop range → meta.surviving_weight==0. Chain returns (input, meta) unchanged per narrow_by_action_history contract."
+
+- id: "T_K17_tuple_form_action_history"
+  category: "K. Extra shape coverage"
+  description: "Action history entries passed as tuples rather than dicts. Tests _normalize_action_entry."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc"]
+  action_history:
+    - ["preflop", "BTN", "RAISE"]
+    - ["preflop", "BB",  "CALL"]
+    - ["flop",    "BB",  "CHECK"]
+    - ["flop",    "BTN", "BET"]
+    - ["flop",    "BB",  "CALL"]
+    - ["turn",    "BB",  "CHECK"]
+  decision_street: "turn"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.30
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  expected_composition_post_fix:
+    villain_tp_pct: 0.42
+    villain_medium_made_pct: 0.30
+    villain_draw_pct: 0.08
+    villain_air_pct: 0.20
+  notes: "[approx] Schema flexibility: tuple-form entries should normalize to same result as dict-form T_K06 shape."
+
+- id: "T_K18_malformed_action_entry_fallback"
+  category: "K. Extra shape coverage"
+  description: "Malformed action_history[0] (not dict or tuple). Tests schema_warning fallback path."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d"]
+  action_history:
+    - "preflop:BTN:RAISE"    # string form — should trigger schema_warning
+    - {street: "flop", position: "BB", action: "BET"}
+  decision_street: "flop"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.48
+    villain_medium_made_pct: 0.13
+    villain_draw_pct: 0.14
+    villain_air_pct: 0.25
+  expected_composition_post_fix:
+    villain_tp_pct: 0.30          # schema_warning path: chain is no-op; baseline preserved
+    villain_medium_made_pct: 0.15
+    villain_draw_pct: 0.15
+    villain_air_pct: 0.40
+  notes: "SAFETY RAIL. Malformed first entry → chain returns (full_range, meta with schema_warning). Feature extractor may fall back to facing_bet single-street narrow. Pre fix-path shows facing_bet narrow applied; post shows chain-bypass baseline."
+
+- id: "T_K19_flop_bet_then_river_cold"
+  category: "K. Extra shape coverage"
+  description: "Flop bet-call, turn all-check, river villain leads. Three-street chain with mixed actions."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc", "2h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "BET"}
+    - {street: "flop",    position: "BTN", action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "CHECK"}
+    - {street: "turn",    position: "BTN", action: "CHECK"}
+    - {street: "river",   position: "BB",  action: "BET"}
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.72
+    villain_medium_made_pct: 0.06
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.22
+  expected_composition_post_fix:
+    villain_tp_pct: 0.72
+    villain_medium_made_pct: 0.04
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.24
+  notes: "[approx] Flop-BET + turn-CHECK + river-BET. Duplicate shape of T_D03 but different phrasing — useful for variance."
+
+- id: "T_K20_deep_chain_flop_bet_turn_raise_river_bet"
+  category: "K. Extra shape coverage"
+  description: "Villain bets flop, gets raised, calls; bets turn, gets raised, calls; bets river. Pure value tell."
+  hero_position: "BTN"
+  villain_position: "BB"
+  opener: "BTN"
+  board: ["Qh", "7s", "5d", "Kc", "2h"]
+  action_history:
+    - {street: "preflop", position: "BTN", action: "RAISE"}
+    - {street: "preflop", position: "BB",  action: "CALL"}
+    - {street: "flop",    position: "BB",  action: "BET"}
+    - {street: "flop",    position: "BTN", action: "RAISE"}
+    - {street: "flop",    position: "BB",  action: "CALL"}
+    - {street: "turn",    position: "BB",  action: "BET"}
+    - {street: "turn",    position: "BTN", action: "RAISE"}
+    - {street: "turn",    position: "BB",  action: "CALL"}
+    - {street: "river",   position: "BB",  action: "BET"}
+  decision_street: "river"
+  expected_composition_pre_fix:
+    villain_tp_pct: 0.72
+    villain_medium_made_pct: 0.06
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.22
+  expected_composition_post_fix:
+    villain_tp_pct: 0.94
+    villain_medium_made_pct: 0.01
+    villain_draw_pct: 0.00
+    villain_air_pct: 0.05
+  notes: "[approx] Extreme value chain: two called-raises + river lead. Chain hits weight-floor = 5% — check safety rail triggers if range collapses further."
+
+# ==============================================================================
+# END OF CORPUS
+# Total cases: 81 (A=11 [includes schema sentinel], B=5, C=8, D=6, E=5, F=10,
+#                  G=5, H=5, I=3, J=3, K=20)
+# Categories: 11
+# ==============================================================================
