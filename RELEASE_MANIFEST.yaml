@@ -16,8 +16,8 @@
 #      the approval directive in review/comms/
 #   4. Cross-stream consumers can rely on the manifest for coordination
 
-manifest_version: 1.7
-last_updated: 2026-04-21
+manifest_version: 1.8
+last_updated: 2026-04-22
 updated_by: main_terminal
 changelog:
   - 1.0 (2026-04-19): initial manifest
@@ -39,6 +39,12 @@ changelog:
   - 1.7 (2026-04-21): owner audit — hero postflop range tracking
     queued as v2.6+ architectural item (symmetric sibling to villain
     chain); ticket at TICKET_V26_HERO_RANGE_TRACKING_2026-04-21.md
+  - 1.8 (2026-04-22): Stage 3.5 scope formalised after multi-agent
+    reconciliation + builder research findings (ae6160b). Stage 4
+    gate hardened: now requires Stage 2 + Stage 3 + Stage 3.5 (all
+    23 MUSTs) + labelling-pipeline consumers chain-clean before
+    re-label opens. coaching/ collapse partial-scope
+    (only stale duplicates deletable now; full collapse → v2.5+).
 
 # ────────────────────────────────────────────────────────────────────
 # DEPLOYED — what owner is playing against right now
@@ -137,10 +143,21 @@ in_progress:
       - nut_made_block_pct             # continuous 0-1
     feature_columns_exposed: 55         # gto_model.FEATURE_COLUMNS held back for backward compat; exposes 59 in Stage 5 training
     ship_sequence:
-      - stage_1_feature_implementation              # COMPLETE (2aa5d7f)
-      - stage_2_update_kb_section_1_9                # IN PROGRESS
-      - stage_3_derive_v3_2_prompt_from_kb_update    # parallel with 3.5
-      - stage_3_5_range_narrowing_action_history_fix # NEW (2026-04-20)
+      - stage_1_feature_implementation                # COMPLETE (2aa5d7f)
+      - stage_2_update_kb_section_1_9                  # IN PROGRESS — gates Stage 3
+      - stage_3_derive_v3_2_prompt_from_kb_update      # gates Stage 4 (per MUST #21)
+      - stage_3_5_range_narrowing_action_history_fix   # 23 MUSTs (per RECONCILIATION_BLUEPRINT_2026-04-21 + RESEARCH_FINDINGS_2026-04-21)
+      # ──── Stage 4 gate hardened 2026-04-22 ────
+      # Stage 4 cannot open until ALL of:
+      #   1. Stage 2 KB §1.9 complete + GTO-reviewed
+      #   2. Stage 3 v3.2 prompt complete + derives from updated KB
+      #   3. Stage 3.5 all 23 MUSTs landed + audits clean
+      #   4. Labelling-pipeline consumers chain-clean (MUST #20 + #22):
+      #      - calibration_exam.py hand_dict carries _action_history
+      #      - reference_evaluator.py hand_dict carries _action_history
+      #      - any other surface that displays feature values to labellers
+      # Without all 4: labellers tag PRIMARY/CONFIRMED on inconsistent values,
+      # corrupting training data + KB-derived prompt + model loop.
       - stage_4_expand_training_data_with_distribution_audit
       - stage_5_retrain_and_full_eval_with_calibration_anchor_preflight
       - stage_6_ship_gate
@@ -250,6 +267,16 @@ queued:
     - hero_postflop_range_tracking  # owner-flagged 2026-04-21; symmetric sibling to villain chain
     # Architectural; coordinated cross-stream ship (features + teaching + game)
     # Reference: review/comms/TICKET_V26_HERO_RANGE_TRACKING_2026-04-21.md
+
+  v2_5_candidates_added_2026_04_22:
+    - coaching_module_full_collapse  # surfaced by builder research 2026-04-22
+    # coaching/ holds load-bearing implementations for explain_hand /
+    # shap_explainer / multiway_adjuster / play (root modules are
+    # facade wrappers). Full collapse requires re-homing those
+    # implementations into root + repointing facade callers. Stage 3.5
+    # only deletes the two confirmed-zero-importer stale duplicates
+    # (coaching/feature_extractor.py + coaching/range_narrowing.py).
+    # Reference: review/comms/BUILDER_V24_STAGE35_RESEARCH_FINDINGS_2026-04-21.md §2
 
   pro_level_narrowing_gaps:
     # Owner audit 2026-04-20: does current plan match pro-level range
