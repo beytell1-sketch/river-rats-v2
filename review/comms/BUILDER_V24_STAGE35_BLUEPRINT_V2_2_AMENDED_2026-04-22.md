@@ -678,6 +678,9 @@ Equity + partition call sites then pass `cached_range=_cached_vr, cached_meta=_c
 - Cost: N × per-villain chain execution; narrowed ranges are smaller → MC per-trial is cheaper → net cost approximately flat or lower
 
 **Implementation sketch:**
+
+⚠️ **SUPERSEDED BY v2.3 §2.2 (e940e8d) + v2.3.1 PATCH §M60 + §M64 (this commit).** The sketch below contains (a) an un-populated/un-returned `merged = {}` local, (b) opp_range meta drop at `narrow_by_action_history` call, (c) placeholder "returns both via meta" comment without spec. Do not implement from this sketch — read v2.3 §2.2 AFTER block (with v2.3.1 bug fixes: chain_steps aggregation via per_villain_chain_steps dict; surviving_weight via min across per-opponent metas; MUST #64 deprecation of `merged` in favour of per_villain_ranges-direct consumption).
+
 ```python
 def _get_chain_narrowed_villain_range(...):
     if num_opponents >= 2 and opponent_positions:

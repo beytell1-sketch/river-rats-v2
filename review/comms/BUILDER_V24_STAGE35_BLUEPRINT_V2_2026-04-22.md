@@ -940,6 +940,9 @@ def _get_chain_narrowed_villain_range(
         # range reduces its hand count; MC loop runs on narrower range.)
         # ...details deferred to the implementation commit; see §11.
         raise NotImplementedError  # placeholder for blueprint
+        # ⚠️ SUPERSEDED BY v2.2 AMENDMENT §3.7 (d7db3f1) + v2.3 AMENDMENT §2.2 (e940e8d) + v2.3.1 PATCH §M60 (this commit)
+        # Multiway branch fully spec'd in the later amendments with per_villain_ranges dict + per-villain sentinels.
+        # Do not implement from this blueprint-v2 section — read the v2.3/v2.3.1 helper spec.
     # HU branch
     v_range = get_villain_range(hero_pos, villain_pos, opener_pos=opener_pos)
     meta = {
@@ -1725,7 +1728,7 @@ one-MUST-per-commit discipline, with reviewer pass between commits.
 
 | # | Commit | Lands |
 |---|--------|-------|
-| 1 | `Stage 3.5 HIGH #5 + #13: narrow_* return mass; surviving_weight thread; floor 10%/WARN 20%` | Tuple-return API, mass threading, updated thresholds, deleted old count-safety-rail. 13 call-site tuple-unpacks across feature_extractor.py + range_narrowing.py internals + explain_hand.py + range_narrowing test function + 5 test-file edits. |
+| 1 | `Stage 3.5 HIGH #5 + #13: narrow_* return mass; surviving_weight thread; floor 10%/WARN 20%` | Tuple-return API, mass threading, updated thresholds, deleted old count-safety-rail. ⚠️ SUPERSEDED: canonical tuple-unpack count is **14 root+coaching + 5 test = 19 sites** per v2.2 amendment §1.1 (d7db3f1) + v2.3 §2.3 canonical table + v2.3.1 §M61 (this commit). The "13" figure here is stale; do not use. |
 | 2 | `Stage 3.5 CRIT #2 + MUST #9: strict action_history gate + pipeline unswallow` | Env-gated RuntimeError in extract_range_composition; `except RuntimeError: raise` in 3 training pipelines; MODEL_COLUMNS bump for `_action_history_present`. |
 | 3 | `Stage 3.5 HIGH #3 + MUST #11 + #12: same-street sequence collapse pre-filter` | `_collapse_same_street_sequence` helper; call-site insertion in `narrow_by_action_history`. |
 | 4 | `Stage 3.5 CRIT #1: blocker features consume chain-narrowed range` | Publish `_villain_range_narrowed` from `extract_range_composition`; rewrite Step 12 + Step 17 to consume; delete `_s12_*` locals. |
