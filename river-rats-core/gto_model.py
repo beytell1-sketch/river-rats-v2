@@ -213,6 +213,37 @@ class GtoOracle:
                 f"Re-extract via extract_all_features() — do not pass raw "
                 f"serialisation dicts with string codes like street='flop'."
             )
+
+        # MUST #10 sub-4 — NaN allowlist. Villain-range-derived features
+        # may be NaN when villain folded OR chain over-narrowed/truncated
+        # (HIGH #4 + MUST #15 + MUST #28 sentinels). These feed XGBoost's
+        # default-direction branch at inference. All OTHER columns must
+        # be finite — unexpected NaN in raw_equity / pot_odds / etc.
+        # indicates upstream pipeline breakage; raise.
+        import math
+        _NAN_ALLOWLIST = {
+            # Composition features (villain-range-derived)
+            'villain_top_pair_plus_pct', 'villain_draw_pct',
+            'villain_air_pct', 'villain_medium_made_pct',
+            # Blocker features (villain-range-derived; continuous only)
+            'flush_block_pct', 'flush_draw_block_pct',
+            'straight_draw_block_pct', 'nut_made_block_pct',
+        }
+        unexpected_nan = [
+            f for f in FEATURE_COLUMNS
+            if f not in _NAN_ALLOWLIST
+            and isinstance(feat_dict[f], float)
+            and math.isnan(feat_dict[f])
+        ]
+        if unexpected_nan:
+            raise ValueError(
+                f"MUST #10: unexpected NaN in non-allowlist feature(s): "
+                f"{unexpected_nan}. NaN is only permitted on villain-range-"
+                f"derived composition + blocker features (when villain "
+                f"folded or chain over-narrowed). NaN elsewhere indicates "
+                f"upstream pipeline breakage — investigate."
+            )
+
         return np.array(
             [feat_dict[f] for f in FEATURE_COLUMNS],
             dtype=np.float32,

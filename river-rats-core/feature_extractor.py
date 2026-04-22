@@ -471,26 +471,51 @@ def extract_partition_features(hero_cards: List[str],
                                num_opponents: int = 1,
                                opponent_positions=None,
                                opener_pos: str = None,
-                               bettor_pos: str = None) -> Dict:
+                               bettor_pos: str = None,
+                               action_history: Optional[List] = None,
+                               cached_range: Optional[Dict[str, float]] = None,
+                               cached_meta: Optional[Dict] = None) -> Dict:
     """
     Extract range partitioning features using the correct villain range.
-    Applies range narrowing when facing a bet (same as equity in Step 4).
 
-    Args:
-        hero_cards: ['Jd', '9s']
-        board_cards: ['4s', '4h', '3h', 'Jh', '8c']
-        hero_pos: 'BB'
-        villain_pos: 'SB'
-        facing_bet: True/False
-        street_raw: 'f'/'t'/'r'
-        num_opponents: Number of opponents (1=heads-up, 2+=multiway)
-        opponent_positions: List of opponent position strings for multiway
-        opener_pos: The preflop opener's position (None = legacy fallback)
-        bettor_pos: The position of the opponent who bet (None = narrow nobody)
+    MUST #6 + #19 + #34: when `action_history` is supplied (non-None),
+    delegates to `_get_chain_narrowed_villain_range` helper so partition
+    features see the SAME chain-narrowed range as composition features.
 
-    Returns:
-        Dict with partition features
+    Backward-compat when action_history is None: pre-Stage-3.5 behavior
+    (single-street narrow_to_betting_range when facing_bet).
+
+    Cache contract (MUST #63): cached_range + cached_meta populated by
+    extract_all_features enables re-use of the chain computation that
+    extract_range_composition already ran; avoids 3x chain compute per
+    hand. LOCAL to single extract_all_features call.
     """
+    if action_history is not None:
+        # MUST #6: chain-inheritance path via helper.
+        v_range, meta = _get_chain_narrowed_villain_range(
+            hero_pos=hero_pos,
+            villain_pos=villain_pos,
+            opener_pos=opener_pos,
+            board_cards=board_cards,
+            facing_bet=facing_bet,
+            street_raw=street_raw,
+            action_history=action_history,
+            num_opponents=num_opponents,
+            opponent_positions=opponent_positions,
+            bettor_pos=bettor_pos,
+            cached_range=cached_range,
+            cached_meta=cached_meta,
+        )
+        # MUST #64: multiway returns v_range=None (merged deprecated).
+        # Partition reads primary-villain's range from per_villain_ranges.
+        # v2.5+ ticket: per-villain partition features + aggregation.
+        if v_range is None and num_opponents >= 2:
+            pv = meta.get('per_villain_ranges', {})
+            primary = opponent_positions[0] if opponent_positions else None
+            v_range = pv.get(primary, {}) if primary else {}
+        return partition_range(hero_cards, board_cards, v_range or {})
+
+    # Backward-compat: pre-Stage-3.5 path
     if num_opponents >= 2 and opponent_positions:
         v_range = get_multiway_villain_range(
             hero_pos, opponent_positions, facing_bet, board_cards, street_raw,
@@ -573,6 +598,208 @@ def get_villain_range(hero_pos: str, villain_pos: str,
     else:
         # Villain is in later position -- villain defended vs hero’s open
         return _range_manager.get_defend_range(villain_pos, hero_pos)
+
+
+def _get_chain_narrowed_villain_range(
+    hero_pos: str,
+    villain_pos: str,
+    opener_pos: Optional[str],
+    board_cards: List[str],
+    facing_bet: bool,
+    street_raw: str,
+    action_history: Optional[List] = None,
+    num_opponents: int = 1,
+    opponent_positions: Optional[List[str]] = None,
+    bettor_pos: Optional[str] = None,
+    cached_range: Optional[Dict[str, float]] = None,
+    cached_meta: Optional[Dict] = None,
+) -> Tuple[Optional[Dict[str, float]], Dict]:
+    """MUST #6 + #19 + #30 + #34 + #46 + #52 + #63 — chain-narrowed villain
+    range, single source of truth across composition + equity + partition
+    + explain_hand.
+
+    HU path (num_opponents == 1 OR no opponent_positions):
+      Returns (v_range, meta). `meta` carries chain_steps, truncated,
+      surviving_weight, villain_folded, chain_overflowed. per_villain_*
+      fields absent for HU.
+
+    Multiway path (num_opponents >= 2):
+      Env MULTIWAY_CHAIN_MODE (MUST #52):
+        'per_villain' (default) — chain each opponent's range by their
+           own action history (MUST #34)
+        'primary_only' — chain primary villain only; other villains
+           use unchained preflop range. Used when benchmark exceeds
+           perf budget (fallback per Q36 asymmetric gate).
+      Returns (None, meta) per MUST #64 (merged deprecated). Callers
+      read per_villain_ranges directly from meta.
+
+    Cache contract (MUST #63):
+      - LOCAL to a single extract_all_features(hand) call
+      - cached_range + cached_meta MUST be paired (both None or both set)
+      - NO module-level cache; garbage-collected at function exit
+    """
+    # MUST #63: defensive assertion on paired cache params
+    if (cached_range is None) != (cached_meta is None):
+        raise RuntimeError(
+            'MUST #63: cache contract violation — cached_range and '
+            'cached_meta must be provided together or not at all. '
+            'Likely a caller bug; investigate before continuing.'
+        )
+
+    if cached_range is not None:
+        return cached_range, cached_meta
+
+    street_name = STREET_NAME_MAP.get(street_raw, 'flop')
+
+    # HU path
+    if num_opponents < 2 or not opponent_positions:
+        v_range = get_villain_range(hero_pos, villain_pos, opener_pos=opener_pos)
+        meta = {
+            'chain_steps': [], 'truncated': False,
+            'surviving_weight': 1.0,
+            'villain_folded': False, 'chain_overflowed': False,
+        }
+        if action_history and v_range:
+            from range_narrowing import narrow_by_action_history
+            v_range, chain_meta = narrow_by_action_history(
+                full_range=v_range,
+                board=board_cards,
+                action_history=action_history,
+                villain_pos=villain_pos,
+                decision_street=street_name,
+            )
+            meta['chain_steps'] = chain_meta.get('chain_steps', [])
+            meta['truncated'] = chain_meta.get('truncated', False)
+            meta['surviving_weight'] = chain_meta.get('surviving_weight', 1.0)
+            if not v_range:
+                _last = meta['chain_steps'][-1] if meta['chain_steps'] else ''
+                if _last.endswith(':FOLD'):
+                    meta['villain_folded'] = True
+                else:
+                    meta['chain_overflowed'] = True
+            elif meta['truncated']:
+                meta['chain_overflowed'] = True
+        if (facing_bet and v_range
+                and not meta['villain_folded']
+                and not meta['chain_overflowed']):
+            v_range, _ = narrow_to_betting_range(v_range, board_cards, street_name)
+        return v_range, meta
+
+    # Multiway path — MUST #34 + #46 + #52
+    mw_mode = os.environ.get('MULTIWAY_CHAIN_MODE', 'per_villain').lower()
+    primary_pos = opponent_positions[0] if opponent_positions else None
+
+    per_villain_ranges: Dict[str, Dict[str, float]] = {}
+    per_villain_truncated: Dict[str, bool] = {}
+    per_villain_folded: Dict[str, bool] = {}
+    per_villain_overflowed: Dict[str, bool] = {}
+    per_villain_chain_steps: Dict[str, List[str]] = {}
+    per_villain_metas: Dict[str, Dict] = {}
+
+    for opp_pos in opponent_positions:
+        opp_range = get_villain_range(hero_pos, opp_pos, opener_pos=opener_pos)
+
+        is_primary = (opp_pos == primary_pos)
+        should_chain = bool(action_history) and (
+            mw_mode == 'per_villain' or is_primary
+        )
+
+        opp_meta = {
+            'chain_steps': [], 'truncated': False,
+            'surviving_weight': 1.0,
+            'villain_folded': False, 'chain_overflowed': False,
+        }
+
+        if should_chain and opp_range:
+            from range_narrowing import (
+                narrow_by_action_history, _normalize_action_entry,
+            )
+            # Filter to this opponent's own actions
+            opp_history = [
+                e for e in action_history
+                if _normalize_action_entry(e).get('position', '').upper()
+                    == opp_pos.upper()
+            ]
+            has_postflop = any(
+                _normalize_action_entry(e).get('street', '').lower()
+                    in ('flop', 'turn', 'river')
+                for e in opp_history
+            )
+            if has_postflop:
+                opp_range, chain_meta = narrow_by_action_history(
+                    full_range=opp_range,
+                    board=board_cards,
+                    action_history=opp_history,
+                    villain_pos=opp_pos,
+                    decision_street=street_name,
+                )
+                opp_meta['chain_steps'] = chain_meta.get('chain_steps', [])
+                opp_meta['truncated'] = chain_meta.get('truncated', False)
+                opp_meta['surviving_weight'] = chain_meta.get('surviving_weight', 1.0)
+                if not opp_range:
+                    _last = opp_meta['chain_steps'][-1] if opp_meta['chain_steps'] else ''
+                    if _last.endswith(':FOLD'):
+                        opp_meta['villain_folded'] = True
+                    else:
+                        opp_meta['chain_overflowed'] = True
+                elif opp_meta['truncated']:
+                    opp_meta['chain_overflowed'] = True
+
+        # Apply facing_bet filter only to the bettor
+        is_bettor = (
+            bettor_pos is not None
+            and opp_pos.upper() == bettor_pos.upper()
+        )
+        if (facing_bet and is_bettor and opp_range
+                and not opp_meta['villain_folded']
+                and not opp_meta['chain_overflowed']):
+            opp_range, _ = narrow_to_betting_range(
+                opp_range, board_cards, street_name
+            )
+
+        per_villain_ranges[opp_pos] = opp_range
+        per_villain_truncated[opp_pos] = opp_meta['truncated']
+        per_villain_folded[opp_pos] = opp_meta['villain_folded']
+        per_villain_overflowed[opp_pos] = opp_meta['chain_overflowed']
+        per_villain_chain_steps[opp_pos] = opp_meta['chain_steps']
+        per_villain_metas[opp_pos] = opp_meta
+
+    # MUST #60(a): chain_steps as flat list with position-prefix
+    agg_chain_steps: List[str] = [
+        f'{opp}:{step}'
+        for opp, steps in per_villain_chain_steps.items()
+        for step in steps
+    ]
+    # MUST #60(b): surviving_weight = min across per-opponent metas
+    agg_surviving_weight = (
+        min(m.get('surviving_weight', 1.0) for m in per_villain_metas.values())
+        if per_villain_metas else 1.0
+    )
+    agg_truncated = any(per_villain_truncated.values())
+    agg_overflowed = any(per_villain_overflowed.values())
+    # All-folded = hero runs out of villains (edge case; rare in practice)
+    agg_folded = (
+        all(per_villain_folded.values())
+        if per_villain_folded else False
+    )
+
+    meta = {
+        'chain_steps': agg_chain_steps,
+        'truncated': agg_truncated,
+        'surviving_weight': agg_surviving_weight,
+        'villain_folded': agg_folded,
+        'chain_overflowed': agg_overflowed,
+        # MUST #46: per-villain data exposed; MUST #64 callers read directly.
+        'per_villain_ranges': per_villain_ranges,
+        'per_villain_chain_steps': per_villain_chain_steps,
+        'per_villain_metas': per_villain_metas,
+        'per_villain_truncated': per_villain_truncated,
+        'per_villain_folded': per_villain_folded,
+        'per_villain_overflowed': per_villain_overflowed,
+    }
+    # MUST #64: merged deprecated for multiway; callers use per_villain_ranges.
+    # Return None so any caller that tries to use "the range" raises immediately.
+    return None, meta
 
 
 def get_multiway_villain_range(
@@ -763,7 +990,10 @@ def extract_equity_features(hero_cards: List[str],
                             num_opponents: int = 1,
                             opponent_positions=None,
                             opener_pos: str = None,
-                            bettor_pos: str = None) -> Dict:
+                            bettor_pos: str = None,
+                            action_history: Optional[List] = None,
+                            cached_range: Optional[Dict[str, float]] = None,
+                            cached_meta: Optional[Dict] = None) -> Dict:
     """
     Extract equity features: raw equity vs villain's (possibly narrowed) range.
 
@@ -784,6 +1014,66 @@ def extract_equity_features(hero_cards: List[str],
     Returns:
         Dict with equity features
     """
+    # MUST #6: chain-inheritance path. When action_history supplied,
+    # equity MC samples from chain-narrowed ranges (same source of truth
+    # as composition + blocker features). Cache fast-path avoids
+    # recomputing the chain 3x per hand (MUST #46/#63).
+    if action_history is not None:
+        _, chain_meta = _get_chain_narrowed_villain_range(
+            hero_pos=hero_pos,
+            villain_pos=villain_pos,
+            opener_pos=opener_pos,
+            board_cards=board_cards,
+            facing_bet=facing_bet,
+            street_raw=street_raw,
+            action_history=action_history,
+            num_opponents=num_opponents,
+            opponent_positions=opponent_positions,
+            bettor_pos=bettor_pos,
+            cached_range=cached_range,
+            cached_meta=cached_meta,
+        )
+
+        if num_opponents >= 2 and opponent_positions:
+            # Multiway MC samples per-opponent. MUST #34/#46: read
+            # per_villain_ranges directly from helper meta.
+            pv_ranges = chain_meta.get('per_villain_ranges', {})
+            opponent_ranges = [pv_ranges.get(p, {}) for p in opponent_positions]
+            mc_equity = _true_multiway_equity_mc(
+                hero_cards, board_cards, opponent_ranges, trials=2000
+            )
+            return {
+                'raw_equity': round(mc_equity, 6),
+                'equity_vs_range': round(mc_equity, 6),
+                '_equity_method': 'true_multiway_mc_chained',
+                '_equity_villain_combos': num_opponents,
+            }
+        else:
+            # HU — helper returned v_range directly; need to re-fetch from
+            # cached_range or call helper HU branch. Helper returned None
+            # only for MW path; HU path returns range.
+            hu_range, _ = _get_chain_narrowed_villain_range(
+                hero_pos=hero_pos, villain_pos=villain_pos,
+                opener_pos=opener_pos, board_cards=board_cards,
+                facing_bet=facing_bet, street_raw=street_raw,
+                action_history=action_history,
+                num_opponents=1, opponent_positions=None,
+                bettor_pos=bettor_pos,
+                cached_range=cached_range, cached_meta=cached_meta,
+            )
+            v_range = hu_range or {}
+            # HU chain-narrowed path: compute equity against the narrowed range.
+            equity_result = _equity_calculator.calculate(
+                hero_cards, v_range, board_cards, trials=trials
+            )
+            return {
+                'raw_equity': round(equity_result.equity, 6),
+                'equity_vs_range': round(equity_result.equity, 6),
+                '_equity_method': equity_result.method + '_chained',
+                '_equity_villain_combos': equity_result.villain_combos,
+            }
+
+    # Backward-compat: pre-Stage-3.5 path (action_history is None)
     if num_opponents >= 2 and opponent_positions:
         # Multiway: true N-opponent Monte Carlo (fix for +23.6pp inflation from
         # merged-range approach). Each opponent draws from their individual range;
@@ -971,6 +1261,12 @@ def extract_features_step1_through_5(hand: Dict) -> Dict:
     if num_opp >= 2:
         opp_positions = assign_opponent_positions(features['_hero_pos_raw'], num_opp)
 
+    # MUST #6 + #19 + #30 + #34 + #46: equity + partition inherit chain
+    # narrowing from hand's _action_history. Backward-compat: when
+    # _action_history absent, both functions default to pre-Stage-3.5
+    # single-street behavior.
+    _action_history = hand.get('_action_history')
+
     equity_feat = extract_equity_features(
         hero_cards=features['_hero_cards'],
         board_cards=features['_board_cards'],
@@ -982,6 +1278,7 @@ def extract_features_step1_through_5(hand: Dict) -> Dict:
         opponent_positions=opp_positions,
         opener_pos=opener_pos,
         bettor_pos=bettor_pos,
+        action_history=_action_history,
     )
     partition_feat = extract_partition_features(
         hero_cards=features['_hero_cards'],
@@ -994,6 +1291,7 @@ def extract_features_step1_through_5(hand: Dict) -> Dict:
         opponent_positions=opp_positions,
         opener_pos=opener_pos,
         bettor_pos=bettor_pos,
+        action_history=_action_history,
     )
     features.update(hand_eval)
     features.update(board_feat)
@@ -1200,6 +1498,12 @@ def extract_range_composition(
     # v2.4 Stage 3.5: action-aware chaining (prior streets only).
     chain_steps: List[str] = []
     chain_truncated = False
+    chain_surviving_weight = 1.0
+    # HIGH #4 + MUST #15 + MUST #28 sentinels — consumed downstream by Step
+    # 12 + Step 17 (blocker features) and by composition loop (NaN-flag).
+    villain_folded = False
+    chain_overflowed = False
+
     if action_history:
         from range_narrowing import narrow_by_action_history
         v_range, chain_meta = narrow_by_action_history(
@@ -1211,16 +1515,47 @@ def extract_range_composition(
         )
         chain_steps = chain_meta.get('chain_steps', [])
         chain_truncated = chain_meta.get('truncated', False)
-        # If chain produced empty range (villain folded on a prior street,
-        # which should never happen if we got here, but guard anyway), fall
-        # back to unnarrowed preflop range to avoid zeroing composition.
-        if not v_range:
-            v_range = get_villain_range(hero_pos, villain_pos, opener_pos=opener_pos)
+        chain_surviving_weight = chain_meta.get('surviving_weight', 1.0)
 
-    # Current-street facing-bet filter — same gate as pre-Stage-3.5 for
-    # decisions where hero faces a live bet. Applied AFTER the prior-street
-    # chain so the bet filter runs on the post-chain range.
-    if facing_bet:
+        # HIGH #4: distinguish FOLD from over-narrow. narrow_by_action_history
+        # returns empty range + chain_steps ending in ':FOLD' when villain
+        # folded on a prior street. Set sentinel; do NOT re-fetch preflop.
+        if not v_range:
+            _last_step = chain_steps[-1] if chain_steps else ''
+            if _last_step.endswith(':FOLD'):
+                villain_folded = True
+                # Leave v_range empty; composition loop short-circuits,
+                # Step 12 + 17 NaN-flag via _villain_folded sentinel.
+            else:
+                # MUST #15: over-narrow without FOLD IS the silent-fallback
+                # anti-pattern. Do NOT re-fetch un-narrowed preflop range;
+                # NaN-flag so Stage 4 training can row-drop cleanly.
+                chain_overflowed = True
+                import logging
+                logging.getLogger(__name__).warning(
+                    'extract_range_composition: chain over-narrowed to empty '
+                    'without FOLD on hero=%s villain=%s board=%r chain_steps=%r; '
+                    'NaN-flagging composition features per MUST #15.',
+                    hero_pos, villain_pos, board_cards, chain_steps,
+                )
+        elif chain_truncated:
+            # MUST #28: MUST #13 mass-floor truncation reverted to
+            # last_valid_range. Partial-chain range is NOT the full-chain
+            # range; downstream must NaN-flag rather than consume partial
+            # as if it were a valid narrowed range. Same silent-fallback
+            # failure class the empty-range path handles.
+            chain_overflowed = True
+            import logging
+            logging.getLogger(__name__).warning(
+                'extract_range_composition: chain truncated at mass floor; '
+                'reverted to last valid. NaN-flagging composition features '
+                'per MUST #28. hero=%s villain=%s chain_steps=%r',
+                hero_pos, villain_pos, chain_steps,
+            )
+
+    # Current-street facing-bet filter — only when villain is still in hand
+    # and chain hasn't over-narrowed/truncated.
+    if facing_bet and not villain_folded and not chain_overflowed:
         v_range, _ = narrow_to_betting_range(v_range, board_cards, street_name)
 
     # Classify each hand in villain's range
@@ -1268,6 +1603,19 @@ def extract_range_composition(
         air_pct = 0.0
         medium_made_pct = 0.0
 
+    # MUST #10 — composition features are not applicable when villain isn't
+    # in the hand with a meaningful chained range. NaN-flag so:
+    #   - training (Stage 4) can row-drop these from blocker-feature columns
+    #   - teaching layer renders MUST #42 player-English ("villain folded...")
+    #   - SHAP skips NaN blocker contributions from PRIMARY tagging
+    #   - gto_model.features_from_dict raises on unexpected non-allowlist NaN
+    if villain_folded or chain_overflowed:
+        tp_pct = float('nan')
+        draw_pct = float('nan')
+        air_pct = float('nan')
+        medium_made_pct = float('nan')
+        # Keep board_favour as 0.0 (hero-range-derived; NOT villain-derived)
+
     # Feature 4: Range capped
     # In a single-raised pot where villain is the defender (not PFR),
     # they would have 3-bet with AA/KK/AKs — their range is capped.
@@ -1300,9 +1648,17 @@ def extract_range_composition(
         # v2.4 Stage 3.5 metadata
         '_villain_range_chain_steps': chain_steps,
         '_villain_range_chain_truncated': chain_truncated,
+        '_surviving_weight': chain_surviving_weight,   # MUST #5 true mass
+        # CRIT #1 — publish narrowed range for Step 12 + Step 17 + MUST #6
+        # equity consumers. Single source of truth across composition /
+        # blocker / equity / explain_hand.
+        '_villain_range_narrowed': v_range,
+        # HIGH #4 + MUST #15 + MUST #28 sentinels — downstream NaN-flag
+        # triggers (Step 12/17 blocker features; composition loop; SHAP;
+        # gto_model NaN allowlist).
+        '_villain_folded': villain_folded,
+        '_villain_chain_overflowed': chain_overflowed,
         # CRIT #2 provenance — audit column for Stage 4 mixture detection.
-        # Training CSV writer copies this to a CSV column so post-hoc audits
-        # can filter by chain-aware vs pre-Stage-3.5 rows.
         '_action_history_present': _action_history_present,
     }
 
@@ -1683,38 +2039,37 @@ def extract_all_features(hand: Dict) -> Dict:
     features[F.NUM_CALLERS_TO_BET] = hand.get('_num_callers_to_bet', 0)
     features[F.FACING_RAISE] = hand.get('_facing_raise', 0)
 
-    # Step 12: New features 46-48 (flush_block_pct, overcard_outs,
-    #          improvement_probability)
-    # These are ADDITIVE — they do not touch any existing feature computation.
+    # Step 12 + Step 17: CRIT #1 — blocker features consume the SAME
+    # chain-narrowed range as composition features (published by
+    # extract_range_composition as _villain_range_narrowed). No
+    # independent range reconstruction; all villain-range-derived
+    # features share one source of truth.
     hero_cards = features.get('_hero_cards', [])
     board_cards = features.get('_board_cards', [])
 
-    # Reconstruct villain range the same way extract_range_composition does,
-    # so flush_block_pct uses the narrowed (betting) range.
-    _s12_hero_pos = features.get('_hero_pos_raw', 'BTN')
-    _s12_villain_pos = features.get('_villain_pos_raw', 'BB')
-    _s12_facing_bet = bool(features.get('facing_bet', 0))
-    _s12_street_raw = features.get('_street_raw', 'f')
-    _s12_opener_pos = hand.get('_opener_position', None)
-    _s12_v_range = get_villain_range(
-        _s12_hero_pos, _s12_villain_pos, opener_pos=_s12_opener_pos
-    )
-    if _s12_facing_bet and _s12_v_range:
-        _s12_street_name = STREET_NAME_MAP.get(_s12_street_raw, 'flop')
-        _s12_v_range, _ = narrow_to_betting_range(
-            _s12_v_range, board_cards, _s12_street_name
-        )
+    # MUST #10: NaN-flag when villain folded or chain overflowed (MUST #28
+    # includes mass-floor truncation). _s12_* locals DELETED per CRIT #1
+    # (previously re-fetched get_villain_range + narrow_to_betting_range
+    # bypassing the chain).
+    _villain_folded = bool(features.get('_villain_folded', False))
+    _villain_chain_overflowed = bool(features.get('_villain_chain_overflowed', False))
+    _v_range_narrowed = features.get('_villain_range_narrowed', None) or {}
 
-    # Get board suit counts from analyzer (already cached from Step 3)
+    # Board suit counts (shared between flush_block_pct and Step 17)
     if board_cards:
         _s12_analysis = analyze_board_cached(tuple(board_cards))
         _s12_suit_counts = _s12_analysis.suit_counts
     else:
         _s12_suit_counts = {}
 
-    features[F.FLUSH_BLOCK_PCT] = compute_flush_block_pct(
-        hero_cards, board_cards, _s12_v_range, _s12_suit_counts
-    )
+    if _villain_folded or _villain_chain_overflowed:
+        # MUST #10 sub-2 — blocker features not applicable; Stage 4
+        # training drops these rows from blocker-feature columns.
+        features[F.FLUSH_BLOCK_PCT] = float('nan')
+    else:
+        features[F.FLUSH_BLOCK_PCT] = compute_flush_block_pct(
+            hero_cards, board_cards, _v_range_narrowed, _s12_suit_counts
+        )
     features[F.OVERCARD_OUTS] = compute_overcard_outs(
         hero_cards, features.get('high_card_rank', 14)
     )
@@ -1763,30 +2118,40 @@ def extract_all_features(hand: Dict) -> Dict:
 
     # Step 17: v2.4 P1 blocker-direction features (56-59)
     # Spec: review/comms/BUILDER_V24_P1_SPEC_LOCKED_2026-04-19.md
-    # Re-uses Step 12's narrowed villain range (_s12_v_range) so flush/
-    # straight/nut-made blocking is measured against the same range as
-    # flush_block_pct — consistent defender-context semantics.
-    try:
-        from blocker_features import (
-            compute_nut_flush_block,
-            compute_block_percentages,
-        )
-        features[F.NUT_FLUSH_BLOCK] = compute_nut_flush_block(
-            hero_cards, board_cards
-        )
-        _s17_block = compute_block_percentages(
-            hero_cards, board_cards, _s12_v_range,
-        )
-        features[F.FLUSH_DRAW_BLOCK_PCT] = _s17_block['flush_draw_block_pct']
-        features[F.STRAIGHT_DRAW_BLOCK_PCT] = _s17_block['straight_draw_block_pct']
-        features[F.NUT_MADE_BLOCK_PCT] = _s17_block['nut_made_block_pct']
-    except Exception:
-        # Defensive: never fail feature extraction on blocker-feature computation.
-        # Default to 0 to keep schema width consistent.
+    # CRIT #1: consumes `_v_range_narrowed` from extract_range_composition
+    # (same chain-narrowed range as composition features — consistent
+    # defender-context semantics). MUST #10 + HIGH #4 + MUST #15/#28:
+    # NaN-flag when villain folded or chain overflowed / truncated.
+    if _villain_folded or _villain_chain_overflowed:
+        # MUST #10: boolean nut_flush_block stays 0 ("hero cannot block
+        # nothing"); continuous block_pcts NaN (not-applicable semantic).
         features[F.NUT_FLUSH_BLOCK] = 0
-        features[F.FLUSH_DRAW_BLOCK_PCT] = 0.0
-        features[F.STRAIGHT_DRAW_BLOCK_PCT] = 0.0
-        features[F.NUT_MADE_BLOCK_PCT] = 0.0
+        features[F.FLUSH_DRAW_BLOCK_PCT] = float('nan')
+        features[F.STRAIGHT_DRAW_BLOCK_PCT] = float('nan')
+        features[F.NUT_MADE_BLOCK_PCT] = float('nan')
+    else:
+        try:
+            from blocker_features import (
+                compute_nut_flush_block,
+                compute_block_percentages,
+            )
+            features[F.NUT_FLUSH_BLOCK] = compute_nut_flush_block(
+                hero_cards, board_cards
+            )
+            _s17_block = compute_block_percentages(
+                hero_cards, board_cards, _v_range_narrowed,
+            )
+            features[F.FLUSH_DRAW_BLOCK_PCT] = _s17_block['flush_draw_block_pct']
+            features[F.STRAIGHT_DRAW_BLOCK_PCT] = _s17_block['straight_draw_block_pct']
+            features[F.NUT_MADE_BLOCK_PCT] = _s17_block['nut_made_block_pct']
+        except Exception:
+            # Defensive: never fail feature extraction on blocker-feature computation.
+            # Default to 0 to keep schema width consistent. (Computation
+            # failure is distinct from NaN "not-applicable" — use 0.)
+            features[F.NUT_FLUSH_BLOCK] = 0
+            features[F.FLUSH_DRAW_BLOCK_PCT] = 0.0
+            features[F.STRAIGHT_DRAW_BLOCK_PCT] = 0.0
+            features[F.NUT_MADE_BLOCK_PCT] = 0.0
 
     return features
 
