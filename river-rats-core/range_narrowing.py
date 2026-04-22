@@ -704,6 +704,74 @@ def _street_board(full_board: List[str], street: str) -> List[str]:
     return full_board
 
 
+def _collapse_same_street_sequence(actions: List[Dict]) -> List[Dict]:
+    """MUST #3 + MUST #11 + MUST #12 — collapse same-street villain
+    action sequences to the last decision-bearing action.
+
+    Reasoning (convergent from GTO / practical / research reviews during
+    reconciliation #1 + #2):
+
+      - check-bet / check-raise: CHECK is a sandbag in front of an
+        aggressive action. Treating the pair as two sequential narrowings
+        (CHECK then BET/RAISE) produces inverted composition — mediums up
+        from the CHECK step, under-weighted by the subsequent BET
+        normalisation. Check-raise range IRL is 60-80% nuts; chain produces
+        medium-heavy without the collapse. MUST #3.
+
+      - check-call: CHECK is passive, CALL is the continuing action.
+        Chaining both narrowings double-weights mediums. MUST #11.
+
+      - check-check-bet or deeper triples: all prior CHECKs are sandbagged;
+        only the final decision-bearing move matters. MUST #12.
+
+      - FOLD is terminal — villain's out of the hand; nothing after matters.
+
+    Collapse rule (generic, per MUST #12): for each same-street sequence,
+    find the LAST decision-bearing action (BET / CALL / FOLD). Drop any
+    earlier CHECKs (which are sandbags in that case). Keep the decisive
+    action + anything after it (defensive — should be empty).
+
+    If the sequence is all CHECKs (check-through), keep only the last
+    CHECK — that IS the decision on this street.
+
+    ALTERNATIVE (a) DOCUMENTED INLINE — check-raise-specific frequency
+    table (CHECK_RAISE_BETTING_FREQUENCIES with nuts:0.85, strong_value:0.75,
+    bluff:0.10, medium_made:0.05). Richer but requires solver-grounded
+    calibration + new category of narrowing. Deferred to v2.5 per GTO
+    review verdict in blueprint v1 reconciliation + ticket
+    TICKET_V25_PRO_LEVEL_NARROWING_GAPS_2026-04-20.md.
+
+    Args:
+        actions: list of normalised same-street villain actions (dicts with
+                 'street', 'position', 'action' keys), in order.
+
+    Returns:
+        Filtered list preserving original action dicts so the downstream
+        narrow-class branch sees street/position/action metadata.
+    """
+    if len(actions) <= 1:
+        return list(actions)
+
+    # Classify each action for inspection; keep original dicts for return.
+    classes = [_action_to_narrow(a.get('action', '')) for a in actions]
+
+    # Find the LAST decision-bearing action (BET / CALL / FOLD).
+    # Everything before it that's a CHECK gets dropped.
+    last_decisive_idx = -1
+    for i, cls in enumerate(classes):
+        if cls in ('bet', 'call', 'fold'):
+            last_decisive_idx = i
+
+    if last_decisive_idx < 0:
+        # All CHECKs (e.g., check-through sequence). Keep the last CHECK —
+        # that IS the decision on this street.
+        return [actions[-1]]
+
+    # Keep the decisive action + anything AFTER it (defensive — usually
+    # nothing follows). Drop preceding CHECKs (sandbags).
+    return [actions[last_decisive_idx]] + actions[last_decisive_idx + 1:]
+
+
 def _normalize_action_entry(entry) -> Dict[str, str]:
     """Normalize a single action_history entry to {street, position, action}.
 
@@ -815,6 +883,11 @@ def narrow_by_action_history(
 
         if not villain_street_actions:
             continue  # villain didn't act on this street (or we don't have the data)
+
+        # MUST #3 + #11 + #12: collapse same-street multi-action sequences
+        # to the decision-bearing action before narrowing. Handles
+        # check-raise / check-call / triple sequences generically.
+        villain_street_actions = _collapse_same_street_sequence(villain_street_actions)
 
         street_board = _street_board(board, street)
 

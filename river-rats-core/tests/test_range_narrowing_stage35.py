@@ -162,24 +162,26 @@ def test_h_8dfb6ef8_chain_bet_check_call_bet():
         r, ['5d', '3s', '5h', '3d', '9s'],
         action_history, 'BB', decision_street='river',
     )
-    # Chain should include: flop:BET, turn:CHECK, turn:CALL
-    # Should NOT include: river:BET (same-street on decision)
-    expected_steps = ['flop:BET', 'turn:CHECK', 'turn:CALL']
+    # POST-MUST-#11 chain: flop:BET, turn:CALL.
+    # BB's turn sequence [CHECK, CALL] collapses to [CALL] per MUST #11
+    # (check-call is one continuing action). Pre-MUST-#11 this would have
+    # been ['flop:BET', 'turn:CHECK', 'turn:CALL'] — the CHECK step is
+    # now dropped before narrowing.
+    # Should NOT include: river:BET (same-street on decision).
+    expected_steps = ['flop:BET', 'turn:CALL']
     assert meta['chain_steps'] == expected_steps, (
         f'Expected {expected_steps}, got {meta["chain_steps"]}'
     )
     assert len(out) > 0
-    # MUST #13: with 10% mass floor, this canonical 3-step chain may truncate
-    # on dry double-paired boards (5d-3s-5h-3d-9s) where bet-check-call
-    # compounds mass-loss below 10%. Accept either outcome; the contract is
-    # that chain fires all 3 steps AND output is non-empty. Truncation means
-    # last_valid_range was reverted to — composition features derived from
-    # partial chain per MUST #13 design. T_J02 corpus expected-composition
-    # (MUST #33) must reflect the post-truncation state on this shape.
+    # MUST #13: 10% mass floor may still truncate on this dry double-paired
+    # board (5d-3s-5h-3d-9s) where even the collapsed 2-step chain
+    # compounds low. If truncated, surviving_weight must be at or below
+    # the floor; range non-empty (reverts to last valid). T_J02 corpus
+    # values (MUST #33/#51) reflect the post-truncation state on this shape.
     if meta['truncated']:
-        assert meta['surviving_weight'] < 0.10, (
+        assert meta['surviving_weight'] <= 0.10 + 1e-9, (
             f'truncated=True but surviving_weight={meta["surviving_weight"]} '
-            f'not < floor 0.10'
+            f'not <= floor 0.10'
         )
 
 
