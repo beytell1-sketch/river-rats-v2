@@ -327,6 +327,15 @@ queued:
     # structured range-composition rendering. Symmetric to existing
     # villain composition features.
     # Reference: review/comms/TICKET_V25_HERO_RANGE_BOARD_COMPOSITION_2026-04-22.md
+    - must64_opp_positions_ordering  # teaching review surfaced 2026-04-23
+    # MUST #64 "first in opponent_positions" determines primary-villain
+    # when scalar composition is rendered, but no poker-meaningful
+    # ordering contract exists. Hash randomisation = non-deterministic
+    # primary across runs. Recommended: primary-bettor (decision-street
+    # most-recent aggressor) with position-strength fallback.
+    # Non-blocker for Stage 3.5; pick up at v2.5 OR Stage 4 re-label
+    # start if non-determinism surfaces.
+    # Reference: review/comms/TICKET_MUST64_OPP_POSITIONS_ORDERING_2026-04-23.md
 
   pro_level_narrowing_gaps:
     # Owner audit 2026-04-20: does current plan match pro-level range
