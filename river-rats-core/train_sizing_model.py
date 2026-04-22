@@ -101,7 +101,12 @@ def assign_raise_bucket(pot_ratio: float) -> str:
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 def load_from_csv(filepath: str):
-    """Load pre-extracted features from CSV."""
+    """Load pre-extracted features from CSV.
+
+    Tolerates CSVs with or without the MUST #23 _sizing_chain_bypass
+    audit column (column not read; only FEATURE_COLUMNS + size_bucket
+    used for training).
+    """
     X_rows, y_rows = [], []
     with open(filepath) as f:
         reader = csv.DictReader(f)
@@ -135,6 +140,21 @@ def extract_from_pokerbench(chunk_files, max_hands=None):
     errors = 0
     t_start = time.time()
 
+    # MUST #23 (Stage 3.5 commit 7) — bypass-with-audit per Q20 resolution.
+    # Sizing model trains on PokerBench hands; those are single-decision
+    # records that lack multi-street action_history. Reconstructing
+    # action_history from PokerBench source is not practically available
+    # (the dataset doesn't preserve per-street sequences post-parse).
+    #
+    # Accepted trade-off: sizing is less chain-sensitive than
+    # composition/equity (sizing is texture-driven, not history-driven
+    # per Q20). Bypass is permanent for v2.4; v2.5+ may revisit if a
+    # chain-aware sizing dataset becomes available.
+    #
+    # Audit: _sizing_chain_bypass=True written to CSV schema (see
+    # save_features_csv) so downstream readers can filter by vintage.
+    # Matches MUST #26 audit column pattern (_action_history_present)
+    # + MUST #27 vocabulary-version cross-check discipline.
     for i, hand in enumerate(hands):
         try:
             feat = extract_all_features(hand)
@@ -142,6 +162,13 @@ def extract_from_pokerbench(chunk_files, max_hands=None):
             bucket = assign_raise_bucket(hand['_pot_ratio'])
             X_rows.append(row)
             y_rows.append(RAISE_BUCKET_TO_INT[bucket])
+        except RuntimeError:
+            # MUST #9 — let CRIT #2 STAGE4_STRICT_ACTION_HISTORY=raise
+            # propagate. Sizing pipeline is read-only of composition
+            # features; won't fire unless STAGE4_STRICT_ACTION_HISTORY=raise
+            # is set externally (in which case the caller explicitly
+            # opted into loud-fail).
+            raise
         except Exception:
             errors += 1
 
@@ -161,13 +188,23 @@ def extract_from_pokerbench(chunk_files, max_hands=None):
 
 
 def save_features_csv(X, y, filepath):
-    """Save extracted features to CSV for reproducibility."""
+    """Save extracted features to CSV for reproducibility.
+
+    MUST #23 audit column: _sizing_chain_bypass = True on every row.
+    Sizing model is bypass-permanent per Q20 resolution (PokerBench
+    source lacks per-street action_history for chain reconstruction).
+    Downstream CSV readers can filter by this column to distinguish
+    sizing rows from chain-aware training rows.
+    """
     with open(filepath, 'w', newline='') as f:
         writer = csv.writer(f)
-        header = FEATURE_COLUMNS + ['size_bucket']
+        # MUST #23 audit: append _sizing_chain_bypass column at end.
+        # Schema: raw features + size_bucket + audit column.
+        header = FEATURE_COLUMNS + ['size_bucket', '_sizing_chain_bypass']
         writer.writerow(header)
         for i in range(len(y)):
-            row = list(X[i]) + [INT_TO_RAISE_BUCKET[y[i]]]
+            # MUST #23: True marker per row (sizing CSV is uniformly bypass).
+            row = list(X[i]) + [INT_TO_RAISE_BUCKET[y[i]], True]
             writer.writerow(row)
     print(f"  Saved {len(y)} rows to {filepath}")
 

@@ -4,12 +4,18 @@ v2.2 Evaluator — Ported from Recovered Heredocs
 
 Provenance
 ----------
-Ported from the recovered scripts committed at ``4b08805``:
+Ported from the recovered scripts that were committed at ``4b08805``:
 
 - ``review/recovered/eval_MW_test_set_50.py``
 - ``review/recovered/eval_MW_with_legal_action_masking.py``
 - ``review/recovered/eval_FB40_attn_per_feature.py``
 - ``review/recovered/eval_FB40_plus_ablation.py``
+
+Those recovered scripts were DELETED in Stage 3.5 commit 7 per MUST #55
+(red-team pass-3 identified silent-fallback patterns in them). Their
+port-forward logic lives here in ``evaluate_v2_2.py``; the originals
+no longer exist on origin/master. This docstring retains the names for
+git-history archaeology only.
 
 Inference contract
 ------------------
