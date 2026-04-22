@@ -261,7 +261,7 @@ class ExplainEngine:
                     from range_narrowing import narrow_to_betting_range
                     street_map = {0: 'flop', 1: 'turn', 2: 'river'}
                     street_name = street_map.get(int(feat_dict.get('street', 0)), 'flop')
-                    v_range = narrow_to_betting_range(v_range, board_cards_list, street_name)
+                    v_range, _ = narrow_to_betting_range(v_range, board_cards_list, street_name)
 
                 breakdown = decompose_range(
                     hero_cards_list, board_cards_list, v_range,
@@ -326,7 +326,7 @@ class ExplainEngine:
                     from range_narrowing import narrow_to_betting_range
                     street_map = {0: 'flop', 1: 'turn', 2: 'river'}
                     street_name = street_map.get(int(feat_dict.get('street', 0)), 'flop')
-                    v_range = narrow_to_betting_range(v_range, board_cards_list, street_name)
+                    v_range, _ = narrow_to_betting_range(v_range, board_cards_list, street_name)
 
                 breakdown = decompose_range(
                     hero_cards_list, board_cards_list, v_range,

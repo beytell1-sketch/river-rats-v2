@@ -500,7 +500,7 @@ def extract_partition_features(hero_cards: List[str],
         v_range = get_villain_range(hero_pos, villain_pos)
         if facing_bet:
             street_name = STREET_NAME_MAP.get(street_raw, 'flop')
-            v_range = narrow_to_betting_range(v_range, board_cards, street_name)
+            v_range, _ = narrow_to_betting_range(v_range, board_cards, street_name)
 
     return partition_range(hero_cards, board_cards, v_range)
 
@@ -614,7 +614,7 @@ def get_multiway_villain_range(
         )
         if facing_bet and is_bettor:
             street_name = STREET_NAME_MAP.get(street_raw, 'flop')
-            v_range = narrow_to_betting_range(v_range, board_cards, street_name)
+            v_range, _ = narrow_to_betting_range(v_range, board_cards, street_name)
         for hand, freq in v_range.items():
             merged[hand] = max(merged.get(hand, 0.0), freq)
     return merged
@@ -802,7 +802,7 @@ def extract_equity_features(hero_cards: List[str],
             )
             if facing_bet and is_bettor:
                 street_name = STREET_NAME_MAP.get(street_raw, 'flop')
-                v_range = narrow_to_betting_range(v_range, board_cards, street_name)
+                v_range, _ = narrow_to_betting_range(v_range, board_cards, street_name)
             opponent_ranges.append(v_range)
 
         # Run true N-opponent Monte Carlo at 2000 trials (training speed vs accuracy tradeoff).
@@ -825,7 +825,7 @@ def extract_equity_features(hero_cards: List[str],
         v_range = get_villain_range(hero_pos, villain_pos)
         if facing_bet:
             street_name = STREET_NAME_MAP.get(street_raw, 'flop')
-            v_range = narrow_to_betting_range(v_range, board_cards, street_name)
+            v_range, _ = narrow_to_betting_range(v_range, board_cards, street_name)
 
     # 3. Calculate equity against the correct range (HU path only reaches here)
     equity_result = _equity_calculator.calculate(
@@ -1190,7 +1190,7 @@ def extract_range_composition(
     # decisions where hero faces a live bet. Applied AFTER the prior-street
     # chain so the bet filter runs on the post-chain range.
     if facing_bet:
-        v_range = narrow_to_betting_range(v_range, board_cards, street_name)
+        v_range, _ = narrow_to_betting_range(v_range, board_cards, street_name)
 
     # Classify each hand in villain's range
     total_weight = 0.0
@@ -1666,7 +1666,7 @@ def extract_all_features(hand: Dict) -> Dict:
     )
     if _s12_facing_bet and _s12_v_range:
         _s12_street_name = STREET_NAME_MAP.get(_s12_street_raw, 'flop')
-        _s12_v_range = narrow_to_betting_range(
+        _s12_v_range, _ = narrow_to_betting_range(
             _s12_v_range, board_cards, _s12_street_name
         )
 

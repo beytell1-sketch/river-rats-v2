@@ -435,26 +435,31 @@ def narrow_to_betting_range(
     full_range: Dict[str, float],
     board: List[str],
     street: str = 'flop',
-) -> Dict[str, float]:
+) -> Tuple[Dict[str, float], float]:
     """
     Narrow range to hands villain would BET with.
-    
+
     Street-aware polarization:
         - FLOP: Merged betting (many medium hands bet for protection)
         - TURN: Starting to polarize (medium hands pot control more)
         - RIVER: Fully polarized (VALUE + BLUFFS only)
-    
+
     Args:
         full_range: Complete villain range {hand: frequency}
         board: Board cards
         street: Current street ('flop', 'turn', 'river')
-    
+
     Returns:
-        Narrowed range with betting frequencies applied
+        (betting_range, surviving_fraction)
+        surviving_fraction: per MUST #5 — fraction of input PROBABILITY MASS
+            retained after category × frequency, pre-normalization. Not count;
+            mass. Threaded through narrow_by_action_history for true cumulative
+            surviving-mass computation (count-based floor was false-OK on
+            degenerate distributions).
     """
     if not full_range or not board:
-        return full_range
-    
+        return full_range, 1.0
+
     # Select street-specific betting frequencies
     if street == 'river':
         betting_freqs = RIVER_BETTING_FREQUENCIES
@@ -462,63 +467,71 @@ def narrow_to_betting_range(
         betting_freqs = TURN_BETTING_FREQUENCIES
     else:  # flop or unknown
         betting_freqs = FLOP_BETTING_FREQUENCIES
-    
+
+    original_weight = sum(f for f in full_range.values() if f > 0)
+    if original_weight <= 0:
+        return full_range, 0.0
+
     betting_range = {}
     total_weight = 0.0
-    
+
     for hand, freq in full_range.items():
         if freq <= 0:
             continue
-        
+
         # Classify the hand
         classification = classify_hand(hand, board)
-        
+
         # Handle river: missed draws become air
         category = classification.category
         if street == 'river' and category == 'draw':
             category = 'air'  # Draws missed on river
-        
+
         # Get betting frequency for this category and street
         bet_freq = betting_freqs.get(category, 0.20)
-        
+
         # Apply betting frequency
         new_freq = freq * bet_freq
         if new_freq > 0.001:
             betting_range[hand] = new_freq
             total_weight += new_freq
-    
+
+    # Capture un-normalized mass BEFORE normalization (MUST #5)
+    surviving_fraction = total_weight / original_weight
+
     # Normalize to maintain probability distribution
     if total_weight > 0:
         for hand in betting_range:
             betting_range[hand] /= total_weight
-    
-    return betting_range
+
+    return betting_range, surviving_fraction
 
 
 def narrow_to_checking_range(
     full_range: Dict[str, float],
     board: List[str],
     street: str = 'flop',
-) -> Dict[str, float]:
+) -> Tuple[Dict[str, float], float]:
     """
     Narrow range to hands villain would CHECK with (condensed/capped).
-    
+
     Street-aware condensation:
         - FLOP: Some traps, many pot control checks
         - TURN: More checking with medium hands
         - RIVER: Mostly bluff-catchers (medium hands NEVER bet)
-    
+
     Args:
         full_range: Complete villain range {hand: frequency}
-        board: Board cards  
+        board: Board cards
         street: Current street ('flop', 'turn', 'river')
-    
+
     Returns:
-        Narrowed range with checking frequencies applied
+        (checking_range, surviving_fraction). See narrow_to_betting_range
+        docstring for surviving_fraction semantics (MUST #5).
     """
     if not full_range or not board:
-        return full_range
-    
+        return full_range, 1.0
+
     # Select street-specific checking frequencies
     if street == 'river':
         checking_freqs = RIVER_CHECKING_FREQUENCIES
@@ -526,37 +539,43 @@ def narrow_to_checking_range(
         checking_freqs = TURN_CHECKING_FREQUENCIES
     else:  # flop or unknown
         checking_freqs = FLOP_CHECKING_FREQUENCIES
-    
+
+    original_weight = sum(f for f in full_range.values() if f > 0)
+    if original_weight <= 0:
+        return full_range, 0.0
+
     checking_range = {}
     total_weight = 0.0
-    
+
     for hand, freq in full_range.items():
         if freq <= 0:
             continue
-        
+
         # Classify the hand
         classification = classify_hand(hand, board)
-        
+
         # Handle river: missed draws become air
         category = classification.category
         if street == 'river' and category == 'draw':
             category = 'air'  # Draws missed on river = give up
-        
+
         # Get checking frequency for this category and street
         check_freq = checking_freqs.get(category, 0.50)
-        
+
         # Apply checking frequency
         new_freq = freq * check_freq
         if new_freq > 0.001:
             checking_range[hand] = new_freq
             total_weight += new_freq
-    
+
+    surviving_fraction = total_weight / original_weight
+
     # Normalize to maintain probability distribution
     if total_weight > 0:
         for hand in checking_range:
             checking_range[hand] /= total_weight
-    
-    return checking_range
+
+    return checking_range, surviving_fraction
 
 
 # =============================================================================
@@ -575,15 +594,24 @@ def narrow_to_checking_range(
 #   - Surviving-weight metadata returned alongside range
 
 
-# Weight-floor threshold (5% of original range total) — see GTO review Flag B
-_STAGE35_WEIGHT_FLOOR_PCT = 0.05
+# Weight-floor threshold per MUST #13 (reconciliation #1) — chain-compounding
+# literature (Moravcik DeepStack supplementary; Brown Libratus range-decomposition)
+# supports tighter threshold than the original 5%. Below 10% cumulative mass the
+# distribution is dominated by the last-applied filter (effectively single-street
+# behavior in chain's clothes).
+#
+# 10% TRUNCATE: chain reverts to last_valid_range + truncated=True.
+# 20% WARN: log only; chain continues. Flag for audit; operator judgement on
+# whether the post-chain composition can be trusted.
+_STAGE35_WEIGHT_FLOOR_PCT = 0.10   # MUST #13: tighter than pre-fix 0.05
+_STAGE35_WEIGHT_WARN_PCT  = 0.20   # MUST #13: log-WARN below this
 
 
 def narrow_to_continuing_range(
     full_range: Dict[str, float],
     board: List[str],
     street: str = 'flop',
-) -> Dict[str, float]:
+) -> Tuple[Dict[str, float], float]:
     """v2.4 Stage 3.5: narrow a range to hands villain would CALL (continue
     but not raise or fold).
 
@@ -596,10 +624,11 @@ def narrow_to_continuing_range(
         street: Current street ('flop', 'turn', 'river')
 
     Returns:
-        Narrowed range with call frequencies applied, normalized.
+        (continuing_range, surviving_fraction). See narrow_to_betting_range
+        docstring for surviving_fraction semantics (MUST #5).
     """
     if not full_range or not board:
-        return full_range
+        return full_range, 1.0
 
     if street == 'river':
         call_freqs = RIVER_CALL_FREQUENCIES
@@ -607,6 +636,10 @@ def narrow_to_continuing_range(
         call_freqs = TURN_CALL_FREQUENCIES
     else:
         call_freqs = FLOP_CALL_FREQUENCIES
+
+    original_weight = sum(f for f in full_range.values() if f > 0)
+    if original_weight <= 0:
+        return full_range, 0.0
 
     out_range = {}
     total_weight = 0.0
@@ -629,11 +662,13 @@ def narrow_to_continuing_range(
             out_range[hand] = new_freq
             total_weight += new_freq
 
+    surviving_fraction = total_weight / original_weight
+
     if total_weight > 0:
         for hand in out_range:
             out_range[hand] /= total_weight
 
-    return out_range
+    return out_range, surviving_fraction
 
 
 def _action_to_narrow(action: str) -> str:
@@ -757,6 +792,11 @@ def narrow_by_action_history(
     last_valid_range = dict(full_range)
     steps: List[str] = []
     truncated = False
+    # MUST #5: cumulative surviving mass threaded across narrow steps.
+    # Product of per-step surviving fractions from the tuple-return
+    # narrow_* functions.
+    cumulative_surviving = 1.0
+    warned_at_20 = False
 
     decision_street = decision_street.lower()
 
@@ -788,16 +828,25 @@ def narrow_by_action_history(
                     'truncated': False,
                 }
             if narrow_class == 'bet':
-                current_range = narrow_to_betting_range(current_range, street_board, street)
+                current_range, step_surv = narrow_to_betting_range(
+                    current_range, street_board, street
+                )
                 steps.append(f'{street}:BET')
             elif narrow_class == 'check':
-                current_range = narrow_to_checking_range(current_range, street_board, street)
+                current_range, step_surv = narrow_to_checking_range(
+                    current_range, street_board, street
+                )
                 steps.append(f'{street}:CHECK')
             elif narrow_class == 'call':
-                current_range = narrow_to_continuing_range(current_range, street_board, street)
+                current_range, step_surv = narrow_to_continuing_range(
+                    current_range, street_board, street
+                )
                 steps.append(f'{street}:CALL')
             else:
                 continue  # skip unknown action types
+
+            # MUST #5: thread cumulative surviving mass through chain.
+            cumulative_surviving *= step_surv
 
             # Safety rail: empty-chain fallback. If narrowing produced an
             # empty range, revert to last valid and log.
@@ -811,22 +860,32 @@ def narrow_by_action_history(
                 truncated = True
                 break
 
-            # Safety rail: weight-floor threshold. Since each narrow_* call
-            # re-normalizes, surviving weight is measured by the PRODUCT of
-            # un-normalized weights across steps. Approximation:
-            # sum of current_range values (post-normalize) is always 1.0, so
-            # the better check is "did the narrowing produce a degenerate
-            # distribution" — detect via count of surviving hands.
-            if len(current_range) < 3:
+            # MUST #13: mass-based floor (10% truncate, 20% WARN) replaces
+            # pre-fix count-based `if len(current_range) < 3` rail. Count
+            # was false-OK on degenerate distributions (3 hands at freq 0.33
+            # passes count but is semantically collapsed).
+            if cumulative_surviving < _STAGE35_WEIGHT_FLOOR_PCT:
                 import logging
                 logging.getLogger(__name__).warning(
-                    'narrow_by_action_history: chain collapsed to %d hands '
-                    'after %s; reverting to last valid',
-                    len(current_range), steps[-1] if steps else '?',
+                    'narrow_by_action_history: cumulative surviving mass '
+                    '%.3f below floor %.2f after %s; reverting to last valid',
+                    cumulative_surviving, _STAGE35_WEIGHT_FLOOR_PCT,
+                    steps[-1] if steps else '?',
                 )
                 current_range = last_valid_range
                 truncated = True
                 break
+
+            if (not warned_at_20
+                and cumulative_surviving < _STAGE35_WEIGHT_WARN_PCT):
+                import logging
+                logging.getLogger(__name__).info(
+                    'narrow_by_action_history: cumulative surviving mass '
+                    '%.3f below WARN %.2f after %s (still continuing)',
+                    cumulative_surviving, _STAGE35_WEIGHT_WARN_PCT,
+                    steps[-1] if steps else '?',
+                )
+                warned_at_20 = True
 
             last_valid_range = dict(current_range)
 
@@ -834,9 +893,8 @@ def narrow_by_action_history(
             break
 
     meta = {
-        # Surviving weight is not directly recoverable after normalization.
-        # Report chain_steps as the primary fidelity signal.
-        'surviving_weight': float(len(current_range)) / max(1, len(full_range)),
+        # MUST #5: true cumulative mass (was: count-ratio approximation).
+        'surviving_weight': cumulative_surviving,
         'chain_steps': steps,
         'truncated': truncated,
     }
@@ -872,7 +930,7 @@ def test_narrowing():
     print(f"Full range: {len(sample_range)} hands")
     
     # Test betting range
-    betting = narrow_to_betting_range(sample_range, board, 'flop')
+    betting, _ = narrow_to_betting_range(sample_range, board, 'flop')
     print(f"\nBETTING RANGE ({len(betting)} hands):")
     
     # Show top hands in betting range
@@ -882,7 +940,7 @@ def test_narrowing():
         print(f"  {hand}: {freq:.3f} ({classification.category})")
     
     # Test checking range
-    checking = narrow_to_checking_range(sample_range, board, 'flop')
+    checking, _ = narrow_to_checking_range(sample_range, board, 'flop')
     print(f"\nCHECKING RANGE ({len(checking)} hands):")
     
     sorted_checking = sorted(checking.items(), key=lambda x: -x[1])[:10]
