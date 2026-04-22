@@ -474,7 +474,8 @@ def extract_partition_features(hero_cards: List[str],
                                bettor_pos: str = None,
                                action_history: Optional[List] = None,
                                cached_range: Optional[Dict[str, float]] = None,
-                               cached_meta: Optional[Dict] = None) -> Dict:
+                               cached_meta: Optional[Dict] = None,
+                               hand: Optional[Dict] = None) -> Dict:
     """
     Extract range partitioning features using the correct villain range.
 
@@ -505,6 +506,7 @@ def extract_partition_features(hero_cards: List[str],
             bettor_pos=bettor_pos,
             cached_range=cached_range,
             cached_meta=cached_meta,
+            hand=hand,   # C3 fix: hand-level cache
         )
         # MUST #64: multiway returns v_range=None (merged deprecated).
         # Partition reads primary-villain's range from per_villain_ranges.
@@ -512,7 +514,17 @@ def extract_partition_features(hero_cards: List[str],
         if v_range is None and num_opponents >= 2:
             pv = meta.get('per_villain_ranges', {})
             primary = opponent_positions[0] if opponent_positions else None
-            v_range = pv.get(primary, {}) if primary else {}
+            if primary is None:
+                raise RuntimeError(
+                    'H2: missing primary opponent_position in multiway '
+                    'partition path; opponent_positions empty.'
+                )
+            if primary not in pv:
+                raise RuntimeError(
+                    f'H2: per_villain_ranges missing primary {primary!r}; '
+                    f'helper dropped the position. pv_keys={list(pv.keys())!r}'
+                )
+            v_range = pv[primary]
         return partition_range(hero_cards, board_cards, v_range or {})
 
     # Backward-compat: pre-Stage-3.5 path
@@ -613,6 +625,7 @@ def _get_chain_narrowed_villain_range(
     bettor_pos: Optional[str] = None,
     cached_range: Optional[Dict[str, float]] = None,
     cached_meta: Optional[Dict] = None,
+    hand: Optional[Dict] = None,
 ) -> Tuple[Optional[Dict[str, float]], Dict]:
     """MUST #6 + #19 + #30 + #34 + #46 + #52 + #63 — chain-narrowed villain
     range, single source of truth across composition + equity + partition
@@ -649,6 +662,21 @@ def _get_chain_narrowed_villain_range(
     if cached_range is not None:
         return cached_range, cached_meta
 
+    # C3 fix (commit 4.1): hand-level cache (MUST #46). When `hand` dict
+    # passed and action_history present, cache the chain result on
+    # hand['_chain_cache'] so composition + equity + partition share one
+    # chain computation per hand. Key includes (num_opponents, tuple of
+    # opponent_positions or villain_pos) so HU and MW caches don't collide.
+    _cache_key = None
+    if hand is not None and action_history:
+        if num_opponents >= 2 and opponent_positions:
+            _cache_key = ('mw', num_opponents, tuple(opponent_positions))
+        else:
+            _cache_key = ('hu', villain_pos)
+        _cache = hand.get('_chain_cache', None)
+        if _cache is not None and _cache_key in _cache:
+            return _cache[_cache_key]
+
     street_name = STREET_NAME_MAP.get(street_raw, 'flop')
 
     # HU path
@@ -683,10 +711,28 @@ def _get_chain_narrowed_villain_range(
                 and not meta['villain_folded']
                 and not meta['chain_overflowed']):
             v_range, _ = narrow_to_betting_range(v_range, board_cards, street_name)
+        # H5 fix (commit 4.1): telemetry — HU path doesn't use
+        # MULTIWAY_CHAIN_MODE; mark method explicitly for audit logs.
+        meta['_chain_method'] = 'hu'
+        # C3 fix: populate hand-level cache if hand was provided
+        if _cache_key is not None:
+            hand.setdefault('_chain_cache', {})[_cache_key] = (v_range, meta)
         return v_range, meta
 
     # Multiway path — MUST #34 + #46 + #52
-    mw_mode = os.environ.get('MULTIWAY_CHAIN_MODE', 'per_villain').lower()
+    # H1 fix (commit 4.1): whitelist-match; unknown env value → WARN +
+    # default to per_villain (safer than silent fall-through to primary_only).
+    _mw_raw = os.environ.get('MULTIWAY_CHAIN_MODE', 'per_villain').lower()
+    if _mw_raw not in ('per_villain', 'primary_only'):
+        import logging
+        logging.getLogger(__name__).warning(
+            'H1: MULTIWAY_CHAIN_MODE=%r not in whitelist '
+            "{'per_villain','primary_only'}; defaulting to per_villain.",
+            _mw_raw,
+        )
+        mw_mode = 'per_villain'
+    else:
+        mw_mode = _mw_raw
     primary_pos = opponent_positions[0] if opponent_positions else None
 
     per_villain_ranges: Dict[str, Dict[str, float]] = {}
@@ -697,6 +743,13 @@ def _get_chain_narrowed_villain_range(
     per_villain_metas: Dict[str, Dict] = {}
 
     for opp_pos in opponent_positions:
+        # H4 fix (commit 4.1): defensive uniqueness guard — duplicate
+        # opponent_positions entry would silently overwrite per_villain_ranges
+        # and drop a villain from the MC path.
+        assert opp_pos not in per_villain_ranges, (
+            f'H4: duplicate opponent_position {opp_pos!r} in '
+            f'{opponent_positions!r}; would silently overwrite.'
+        )
         opp_range = get_villain_range(hero_pos, opp_pos, opener_pos=opener_pos)
 
         is_primary = (opp_pos == primary_pos)
@@ -789,6 +842,10 @@ def _get_chain_narrowed_villain_range(
         'surviving_weight': agg_surviving_weight,
         'villain_folded': agg_folded,
         'chain_overflowed': agg_overflowed,
+        # H5 fix (commit 4.1): MULTIWAY_CHAIN_MODE telemetry — playtest logs
+        # + training CSVs filter by this to distinguish per_villain rows
+        # from primary_only fallback rows.
+        '_chain_method': mw_mode,
         # MUST #46: per-villain data exposed; MUST #64 callers read directly.
         'per_villain_ranges': per_villain_ranges,
         'per_villain_chain_steps': per_villain_chain_steps,
@@ -797,6 +854,12 @@ def _get_chain_narrowed_villain_range(
         'per_villain_folded': per_villain_folded,
         'per_villain_overflowed': per_villain_overflowed,
     }
+    # C3 fix (commit 4.1): populate hand-level cache before return so
+    # subsequent equity/partition/composition calls on the same hand
+    # hit the cache fast-path (single chain compute per hand).
+    if _cache_key is not None:
+        hand.setdefault('_chain_cache', {})[_cache_key] = (None, meta)
+
     # MUST #64: merged deprecated for multiway; callers use per_villain_ranges.
     # Return None so any caller that tries to use "the range" raises immediately.
     return None, meta
@@ -993,7 +1056,8 @@ def extract_equity_features(hero_cards: List[str],
                             bettor_pos: str = None,
                             action_history: Optional[List] = None,
                             cached_range: Optional[Dict[str, float]] = None,
-                            cached_meta: Optional[Dict] = None) -> Dict:
+                            cached_meta: Optional[Dict] = None,
+                            hand: Optional[Dict] = None) -> Dict:
     """
     Extract equity features: raw equity vs villain's (possibly narrowed) range.
 
@@ -1019,7 +1083,7 @@ def extract_equity_features(hero_cards: List[str],
     # as composition + blocker features). Cache fast-path avoids
     # recomputing the chain 3x per hand (MUST #46/#63).
     if action_history is not None:
-        _, chain_meta = _get_chain_narrowed_villain_range(
+        v_range_from_helper, chain_meta = _get_chain_narrowed_villain_range(
             hero_pos=hero_pos,
             villain_pos=villain_pos,
             opener_pos=opener_pos,
@@ -1032,36 +1096,37 @@ def extract_equity_features(hero_cards: List[str],
             bettor_pos=bettor_pos,
             cached_range=cached_range,
             cached_meta=cached_meta,
+            hand=hand,   # C3 fix: hand-level cache
         )
 
         if num_opponents >= 2 and opponent_positions:
             # Multiway MC samples per-opponent. MUST #34/#46: read
             # per_villain_ranges directly from helper meta.
             pv_ranges = chain_meta.get('per_villain_ranges', {})
-            opponent_ranges = [pv_ranges.get(p, {}) for p in opponent_positions]
+            # H2 fix (commit 4.1): raise on missing-position; empty dict
+            # fallback silently inflates equity by giving MC a no-villain.
+            opponent_ranges = []
+            for p in opponent_positions:
+                if p not in pv_ranges:
+                    raise RuntimeError(
+                        f'H2: per_villain_ranges missing opponent_position '
+                        f'{p!r} in equity MC path. pv_keys='
+                        f'{list(pv_ranges.keys())!r}'
+                    )
+                opponent_ranges.append(pv_ranges[p])
             mc_equity = _true_multiway_equity_mc(
                 hero_cards, board_cards, opponent_ranges, trials=2000
             )
             return {
                 'raw_equity': round(mc_equity, 6),
                 'equity_vs_range': round(mc_equity, 6),
-                '_equity_method': 'true_multiway_mc_chained',
+                # H5 fix: include chain method in equity method telemetry
+                '_equity_method': f'true_multiway_mc_chained_{chain_meta.get("_chain_method", "per_villain")}',
                 '_equity_villain_combos': num_opponents,
             }
         else:
-            # HU — helper returned v_range directly; need to re-fetch from
-            # cached_range or call helper HU branch. Helper returned None
-            # only for MW path; HU path returns range.
-            hu_range, _ = _get_chain_narrowed_villain_range(
-                hero_pos=hero_pos, villain_pos=villain_pos,
-                opener_pos=opener_pos, board_cards=board_cards,
-                facing_bet=facing_bet, street_raw=street_raw,
-                action_history=action_history,
-                num_opponents=1, opponent_positions=None,
-                bettor_pos=bettor_pos,
-                cached_range=cached_range, cached_meta=cached_meta,
-            )
-            v_range = hu_range or {}
+            # HU — helper returned v_range directly in v_range_from_helper.
+            v_range = v_range_from_helper or {}
             # HU chain-narrowed path: compute equity against the narrowed range.
             equity_result = _equity_calculator.calculate(
                 hero_cards, v_range, board_cards, trials=trials
@@ -1279,6 +1344,7 @@ def extract_features_step1_through_5(hand: Dict) -> Dict:
         opener_pos=opener_pos,
         bettor_pos=bettor_pos,
         action_history=_action_history,
+        hand=hand,   # C3 fix: hand-level cache for MUST #46/#63
     )
     partition_feat = extract_partition_features(
         hero_cards=features['_hero_cards'],
@@ -1292,6 +1358,7 @@ def extract_features_step1_through_5(hand: Dict) -> Dict:
         opener_pos=opener_pos,
         bettor_pos=bettor_pos,
         action_history=_action_history,
+        hand=hand,   # C3 fix: hand-level cache
     )
     features.update(hand_eval)
     features.update(board_feat)
@@ -1421,6 +1488,7 @@ def extract_range_composition(
     is_3bet_pot: int,
     opener_pos: str = None,
     action_history: List[Dict] = None,
+    hand: Optional[Dict] = None,
 ) -> Dict:
     """
     Classify villain's range on this board and return composition percentages.
@@ -1505,17 +1573,41 @@ def extract_range_composition(
     chain_overflowed = False
 
     if action_history:
-        from range_narrowing import narrow_by_action_history
-        v_range, chain_meta = narrow_by_action_history(
-            full_range=v_range,
-            board=board_cards,
-            action_history=action_history,
-            villain_pos=villain_pos,
-            decision_street=street_name,
-        )
-        chain_steps = chain_meta.get('chain_steps', [])
-        chain_truncated = chain_meta.get('truncated', False)
-        chain_surviving_weight = chain_meta.get('surviving_weight', 1.0)
+        # C3 fix (commit 4.1): check hand-level cache first. Equity +
+        # partition typically run before composition in extract_features_
+        # step1_through_5; if they populated the HU cache for this
+        # (villain_pos, action_history) tuple, reuse it here.
+        _hu_cache_key = ('hu', villain_pos)
+        _hand_cache = hand.get('_chain_cache', {}) if hand is not None else {}
+        if _hu_cache_key in _hand_cache:
+            # Cache hit — consume result (narrow_by_action_history already ran)
+            v_range, chain_meta = _hand_cache[_hu_cache_key]
+            # Helper's returned range is pre-facing-bet-filter (HU branch
+            # applies facing_bet AFTER chain). Extract the pre-filter
+            # range by re-running the chain? No — helper already applied
+            # facing_bet too. Here we want the post-chain + post-facing-bet
+            # range; the helper's returned value IS that.
+            chain_steps = chain_meta.get('chain_steps', [])
+            chain_truncated = chain_meta.get('truncated', False)
+            chain_surviving_weight = chain_meta.get('surviving_weight', 1.0)
+            villain_folded = chain_meta.get('villain_folded', False)
+            chain_overflowed = chain_meta.get('chain_overflowed', False)
+            # Cached v_range has facing_bet filter already applied; skip
+            # the duplicate application below.
+            _cache_supplied_v_range_post_bet_filter = True
+        else:
+            from range_narrowing import narrow_by_action_history
+            v_range, chain_meta = narrow_by_action_history(
+                full_range=v_range,
+                board=board_cards,
+                action_history=action_history,
+                villain_pos=villain_pos,
+                decision_street=street_name,
+            )
+            chain_steps = chain_meta.get('chain_steps', [])
+            chain_truncated = chain_meta.get('truncated', False)
+            chain_surviving_weight = chain_meta.get('surviving_weight', 1.0)
+            _cache_supplied_v_range_post_bet_filter = False
 
         # HIGH #4: distinguish FOLD from over-narrow. narrow_by_action_history
         # returns empty range + chain_steps ending in ':FOLD' when villain
@@ -1554,9 +1646,33 @@ def extract_range_composition(
             )
 
     # Current-street facing-bet filter — only when villain is still in hand
-    # and chain hasn't over-narrowed/truncated.
-    if facing_bet and not villain_folded and not chain_overflowed:
+    # and chain hasn't over-narrowed/truncated. Skip when cache already
+    # supplied post-filter range (C3 fix avoids double-filter).
+    _skip_bet_filter = (
+        action_history
+        and locals().get('_cache_supplied_v_range_post_bet_filter', False)
+    )
+    if (facing_bet and not villain_folded and not chain_overflowed
+            and not _skip_bet_filter):
         v_range, _ = narrow_to_betting_range(v_range, board_cards, street_name)
+
+    # C3 fix (commit 4.1): populate hand-level cache with the final
+    # post-chain + post-facing-bet range so subsequent callers on this
+    # same hand hit the fast-path. Gate on action_history presence +
+    # cache not already hit + hand provided.
+    if (action_history and hand is not None
+            and not locals().get('_cache_supplied_v_range_post_bet_filter', False)):
+        _composed_meta = {
+            'chain_steps': chain_steps,
+            'truncated': chain_truncated,
+            'surviving_weight': chain_surviving_weight,
+            'villain_folded': villain_folded,
+            'chain_overflowed': chain_overflowed,
+            '_chain_method': 'hu',
+        }
+        hand.setdefault('_chain_cache', {})[('hu', villain_pos)] = (
+            v_range, _composed_meta,
+        )
 
     # Classify each hand in villain's range
     total_weight = 0.0
@@ -1636,7 +1752,15 @@ def extract_range_composition(
     # than typical (~30%), the board favours villain.
     # A more precise version would compare hero's range too, but that
     # doubles the computation cost.
-    board_favour = round(0.30 - tp_pct, 4)  # Positive when villain has LESS TP+
+    # C1 fix (commit 4.1): board_favour derivation from tp_pct propagates
+    # NaN when tp_pct is NaN (folded/overflowed sentinel paths). But
+    # board_favour is not in gto_model._NAN_ALLOWLIST — downstream inference
+    # would ValueError on every folded-villain hand. Force 0.0 when
+    # sentinels fire (matches commit-4 msg claim "hero-range-derived").
+    if villain_folded or chain_overflowed:
+        board_favour = 0.0
+    else:
+        board_favour = round(0.30 - tp_pct, 4)  # Positive when villain has LESS TP+
 
     return {
         '_villain_top_pair_plus_pct': tp_pct,
@@ -2023,6 +2147,7 @@ def extract_all_features(hand: Dict) -> Dict:
         # street behavior (backward compat for callers that haven't
         # updated).
         action_history=hand.get('_action_history'),
+        hand=hand,   # C3 fix: hand-level cache per MUST #46/#63
     )
     features.update(range_feats)
 
@@ -2130,28 +2255,24 @@ def extract_all_features(hand: Dict) -> Dict:
         features[F.STRAIGHT_DRAW_BLOCK_PCT] = float('nan')
         features[F.NUT_MADE_BLOCK_PCT] = float('nan')
     else:
-        try:
-            from blocker_features import (
-                compute_nut_flush_block,
-                compute_block_percentages,
-            )
-            features[F.NUT_FLUSH_BLOCK] = compute_nut_flush_block(
-                hero_cards, board_cards
-            )
-            _s17_block = compute_block_percentages(
-                hero_cards, board_cards, _v_range_narrowed,
-            )
-            features[F.FLUSH_DRAW_BLOCK_PCT] = _s17_block['flush_draw_block_pct']
-            features[F.STRAIGHT_DRAW_BLOCK_PCT] = _s17_block['straight_draw_block_pct']
-            features[F.NUT_MADE_BLOCK_PCT] = _s17_block['nut_made_block_pct']
-        except Exception:
-            # Defensive: never fail feature extraction on blocker-feature computation.
-            # Default to 0 to keep schema width consistent. (Computation
-            # failure is distinct from NaN "not-applicable" — use 0.)
-            features[F.NUT_FLUSH_BLOCK] = 0
-            features[F.FLUSH_DRAW_BLOCK_PCT] = 0.0
-            features[F.STRAIGHT_DRAW_BLOCK_PCT] = 0.0
-            features[F.NUT_MADE_BLOCK_PCT] = 0.0
+        # C2 fix (commit 4.1): removed bare `except Exception` silent-zero
+        # anti-pattern. 0.0 on failure is indistinguishable from real-signal
+        # 0.0 ("hero blocks nothing"). blocker_features is an internal
+        # helper we control; failures indicate real bugs that must surface,
+        # not be swallowed. Matches MUST #15 + CRIT #2 discipline.
+        from blocker_features import (
+            compute_nut_flush_block,
+            compute_block_percentages,
+        )
+        features[F.NUT_FLUSH_BLOCK] = compute_nut_flush_block(
+            hero_cards, board_cards
+        )
+        _s17_block = compute_block_percentages(
+            hero_cards, board_cards, _v_range_narrowed,
+        )
+        features[F.FLUSH_DRAW_BLOCK_PCT] = _s17_block['flush_draw_block_pct']
+        features[F.STRAIGHT_DRAW_BLOCK_PCT] = _s17_block['straight_draw_block_pct']
+        features[F.NUT_MADE_BLOCK_PCT] = _s17_block['nut_made_block_pct']
 
     return features
 
