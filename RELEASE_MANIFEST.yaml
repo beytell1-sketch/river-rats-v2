@@ -16,7 +16,7 @@
 #      the approval directive in review/comms/
 #   4. Cross-stream consumers can rely on the manifest for coordination
 
-manifest_version: 1.10
+manifest_version: 1.11
 last_updated: 2026-04-22
 updated_by: main_terminal
 changelog:
@@ -63,6 +63,15 @@ changelog:
     vocabulary-version audit column REMAIN as real gaps. Manifest
     references corrected throughout.
     Reference: review/comms/MAIN_TERMINAL_ATTENTION_FLAG_GAP_CORRECTION_2026-04-22.md
+  - 1.11 (2026-04-22): owner playtest finding — "where our hand
+    sits among all hands we'd play this way" wording is not
+    accurate or useful. Logic gap: hero has only 1D hero_range_
+    percentile scalar; lacks symmetric range-board composition
+    features that villain side has. Filed as v2.5 candidate
+    hero_range_board_composition (subset of v2.6+ hero_postflop_
+    range_tracking ticket). Teaching flagged to cleanup the
+    current scalar wording in v4.1 plan.
+    Reference: review/comms/TICKET_V25_HERO_RANGE_BOARD_COMPOSITION_2026-04-22.md
 
 # ────────────────────────────────────────────────────────────────────
 # DEPLOYED — what owner is playing against right now
@@ -310,6 +319,14 @@ queued:
     # only deletes the two confirmed-zero-importer stale duplicates
     # (coaching/feature_extractor.py + coaching/range_narrowing.py).
     # Reference: review/comms/BUILDER_V24_STAGE35_RESEARCH_FINDINGS_2026-04-21.md §2
+    - hero_range_board_composition  # owner-flagged via playtest 2026-04-22
+    # Subset of v2.6+ hero_postflop_range_tracking. Decomposes hero's
+    # preflop-conditional range by category on the current board
+    # (hero_tp_pct / medium_made_pct / draw_pct / air_pct). NO action-
+    # history chain narrowing (that's v2.6+). Unblocks teaching's
+    # structured range-composition rendering. Symmetric to existing
+    # villain composition features.
+    # Reference: review/comms/TICKET_V25_HERO_RANGE_BOARD_COMPOSITION_2026-04-22.md
 
   pro_level_narrowing_gaps:
     # Owner audit 2026-04-20: does current plan match pro-level range
