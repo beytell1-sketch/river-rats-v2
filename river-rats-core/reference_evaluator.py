@@ -470,11 +470,116 @@ def _evaluate_one_variant(variant: Variant, hands: List[ReferenceHand],
     )
 
 
+# ── MUST #22 + MUST #35 — action_history resolution helpers ─────────
+
+def _normalize_ah_entry(entry):
+    """Normalize one action_history entry to (street, position, action)
+    tuple. Accepts tuples, lists, or dicts (matches game_state_bridge
+    format variants + Path (c) Phase 4 JSONL schema).
+    """
+    if isinstance(entry, (list, tuple)) and len(entry) >= 3:
+        return (str(entry[0]), str(entry[1]), str(entry[2]))
+    if isinstance(entry, dict):
+        return (
+            str(entry.get('street', '')),
+            str(entry.get('position', '')),
+            str(entry.get('action', '')),
+        )
+    return None
+
+
+def _resolve_action_history_for_ref_hand(hand: 'ReferenceHand') -> list:
+    """MUST #22 + MUST #35 — resolve _action_history for a ReferenceHand
+    (MW-50 path). Resolution order:
+      1. hand.action_history (canonical JSONL schema field — Phase 4)
+      2. _REFERENCE_ACTION_HISTORY sidecar lookup via ref_id
+      3. Empty list fallback (CRIT #2 downstream gate decides)
+
+    Under STAGE4_STRICT_ACTION_HISTORY=raise, sidecar miss raises
+    RuntimeError citing the fixture ref_id so Stage 4 re-label loud-
+    fails rather than silently proceeding with un-chained composition.
+    """
+    import os
+    from _reference_action_history_sidecar import (
+        lookup as _sidecar_lookup,
+        _SIDECAR_MISSING,
+    )
+
+    if hand.action_history:
+        return list(hand.action_history)
+
+    entry = _sidecar_lookup(hand.ref_id)
+    if entry is _SIDECAR_MISSING:
+        _strict = os.environ.get('STAGE4_STRICT_ACTION_HISTORY', '0').lower()
+        if _strict == 'raise':
+            raise RuntimeError(
+                f'MUST #35: sidecar entry missing for reference fixture '
+                f'{hand.ref_id!r}. STAGE4_STRICT_ACTION_HISTORY=raise is '
+                f'set. Fixture needs authored action_history in '
+                f'_reference_action_history_sidecar before Stage 4 '
+                f're-label or baseline eval can proceed.'
+            )
+        return []
+    return list(entry)
+
+
+def _resolve_action_history_for_record(sid: str, record: dict) -> list:
+    """MUST #22 + MUST #35 — resolve _action_history for a FB-40 JSONL
+    record (FB path). Resolution order matches MW path:
+      1. record.get('action_history') — canonical JSONL schema field
+      2. _REFERENCE_ACTION_HISTORY sidecar lookup via situation_id
+      3. Empty list fallback
+
+    Under STAGE4_STRICT_ACTION_HISTORY=raise, sidecar miss on a
+    situation_id that also lacks the record field raises RuntimeError.
+    """
+    import os
+    from _reference_action_history_sidecar import (
+        lookup as _sidecar_lookup,
+        _SIDECAR_MISSING,
+    )
+
+    _raw = record.get('action_history', None)
+    if _raw:
+        normalised = []
+        for entry in _raw:
+            t = _normalize_ah_entry(entry)
+            if t is not None:
+                normalised.append(t)
+        if normalised:
+            return normalised
+
+    entry = _sidecar_lookup(sid)
+    if entry is _SIDECAR_MISSING:
+        _strict = os.environ.get('STAGE4_STRICT_ACTION_HISTORY', '0').lower()
+        if _strict == 'raise':
+            raise RuntimeError(
+                f'MUST #35: sidecar entry missing for reference fixture '
+                f'sid={sid!r}. STAGE4_STRICT_ACTION_HISTORY=raise is '
+                f'set. Fixture needs authored action_history in '
+                f'_reference_action_history_sidecar before Stage 4 '
+                f're-label or baseline eval can proceed.'
+            )
+        return []
+    return list(entry)
+
+
 def _evaluate_one_hand(variant: Variant, hand: ReferenceHand,
                        oracle: GtoOracle) -> HandResult:
-    """Evaluate a single hand with a single variant."""
+    """Evaluate a single hand with a single variant.
+
+    MUST #22 (Stage 3.5 commit 6) + MUST #35 — plumbs _action_history
+    into hand_dict so MW-50 baseline eval sees chain-narrowed composition
+    (matches Stage 4-labeller-view per MUST #20). Resolution order:
+      1. hand.action_history (canonical JSONL schema field)
+      2. _REFERENCE_ACTION_HISTORY sidecar lookup
+      3. Empty list fallback (CRIT #2 downstream gate decides)
+    """
     # Build the hand dict for the feature pipeline
     street_code = STREET_MAP.get(hand.street.capitalize(), 'f')
+
+    # MUST #22 + MUST #35 — resolve _action_history
+    _resolved_action_history = _resolve_action_history_for_ref_hand(hand)
 
     hand_dict = {
         'h': hand.hero_cards,
@@ -495,6 +600,8 @@ def _evaluate_one_hand(variant: Variant, hand: ReferenceHand,
         '_villain_call_count': hand.villain_call_count,
         '_num_callers_to_bet': hand.num_callers_to_bet,
         '_facing_raise': hand.facing_raise,
+        # MUST #22 — chain narrowing for MW-50 baseline eval path
+        '_action_history': _resolved_action_history,
     }
 
     # Run feature extraction — re-extract every time, never use stored feat_dicts
@@ -686,6 +793,12 @@ def _build_fb_hand_dict(record: dict) -> dict:
 
     Constructs the same dict shape that _evaluate_one_hand() uses for the
     MW reference set, so the feature pipeline sees a consistent interface.
+
+    MUST #22 (Stage 3.5 commit 6) + MUST #35 — resolves _action_history
+    from (in order):
+      1. record.get('action_history') — canonical JSONL schema field
+      2. _REFERENCE_ACTION_HISTORY sidecar lookup keyed by situation_id
+      3. Empty list fallback (CRIT #2 downstream strict gate fires if set)
     """
     sid = record['situation_id']
 
@@ -698,6 +811,13 @@ def _build_fb_hand_dict(record: dict) -> dict:
     # num_callers_to_bet: derived from villain_positions length when pot is
     # already enlarged (bet-and-call pattern has 2+ villains and pot > 90).
     # We use the pre-annotated value from _FB_ACTION_HISTORY (index 3).
+
+    # MUST #22 + MUST #35 — resolve structured action_history for chain
+    # narrowing. FB-40 JSONL records may carry an `action_history` field
+    # natively (Phase 4 state); otherwise fall through to sidecar.
+    _resolved_action_history = _resolve_action_history_for_record(
+        sid, record,
+    )
 
     hand_dict = {
         'h': record['hero_cards'],
@@ -718,6 +838,8 @@ def _build_fb_hand_dict(record: dict) -> dict:
         '_villain_call_count': ah[2],
         '_num_callers_to_bet': ah[3],
         '_facing_raise': ah[4],
+        # MUST #22 — chain narrowing for FB-40 baseline eval path
+        '_action_history': _resolved_action_history,
     }
     return hand_dict
 
