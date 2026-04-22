@@ -167,6 +167,25 @@ def _labelled_record_to_reference_hand(record: dict) -> ReferenceHand:
     villain_positions = record.get('villain_positions') or []
     villain_pos = villain_positions[0] if villain_positions else ''
 
+    # MUST #20 (Stage 3.5 commit 5) — read structured action_history from
+    # the canonical JSONL record when present. Format: list of
+    # [street, position, action] triples (either lists or tuples; the
+    # downstream _normalize_action_entry handles both). Empty default
+    # preserves backward-compat — fixtures that predate the schema
+    # extension fall through to sidecar lookup in
+    # reference_hand_to_situation.
+    _ah_raw = record.get('action_history', []) or []
+    action_history = []
+    for entry in _ah_raw:
+        if isinstance(entry, (list, tuple)) and len(entry) >= 3:
+            action_history.append((str(entry[0]), str(entry[1]), str(entry[2])))
+        elif isinstance(entry, dict):
+            action_history.append((
+                str(entry.get('street', '')),
+                str(entry.get('position', '')),
+                str(entry.get('action', '')),
+            ))
+
     return ReferenceHand(
         ref_id=sid,
         axis='v2.3-hard-anchor',
@@ -190,6 +209,7 @@ def _labelled_record_to_reference_hand(record: dict) -> ReferenceHand:
         num_callers_to_bet=int(feat.get('num_callers_to_bet', 0)),
         facing_raise=int(feat.get('facing_raise', 0)),
         action_string='',
+        action_history=action_history,
     )
 
 
@@ -273,8 +293,56 @@ def _get_action_prose() -> dict:
 
 
 def reference_hand_to_situation(hand: ReferenceHand) -> dict:
-    """Convert a ReferenceHand to the situation format the labelling agent expects."""
+    """Convert a ReferenceHand to the situation format the labelling agent expects.
+
+    MUST #20 (Stage 3.5 commit 5) + MUST #35:
+      Labelling agents display feature values they see as the "ground
+      truth" when tagging PRIMARY/CONFIRMED attention flags. Stage 4
+      re-label MUST see chain-narrowed composition values; without
+      plumbing action_history into hand_dict here, feature_extractor
+      falls through to pre-Stage-3.5 single-street behavior and labels
+      are trained on un-chained composition.
+
+      Resolution order for _action_history:
+        1. hand.action_history (from canonical JSONL schema field —
+           Path (c) Phase 4 post-migration)
+        2. Sidecar lookup via _calibration_action_history_sidecar.lookup
+           (MUST #35 sentinel distinguishes missing-entry from empty-list)
+        3. Empty list (legacy-compat; triggers CRIT #2 strict gate in
+           extract_range_composition when STAGE4_STRICT_ACTION_HISTORY=raise)
+    """
     street_code = STREET_MAP.get(hand.street.capitalize(), 'f')
+
+    # MUST #20 + MUST #35 — resolve _action_history with sentinel semantics
+    import os
+    from _calibration_action_history_sidecar import lookup as _sidecar_lookup
+    from _calibration_action_history_sidecar import _SIDECAR_MISSING
+
+    if hand.action_history:
+        # Canonical JSONL schema populated the field (Phase 4 state)
+        _resolved_action_history = list(hand.action_history)
+    else:
+        _sidecar_entry = _sidecar_lookup(hand.ref_id)
+        if _sidecar_entry is _SIDECAR_MISSING:
+            # MUST #35 — sidecar miss. Under strict mode, raise so
+            # Stage 4 re-label can't silently proceed with un-chained
+            # composition. Under warn/unset, fall through to empty
+            # list (CRIT #2 downstream gate in extract_range_composition
+            # will decide whether to warn/raise again).
+            _strict = os.environ.get(
+                'STAGE4_STRICT_ACTION_HISTORY', '0',
+            ).lower()
+            if _strict == 'raise':
+                raise RuntimeError(
+                    f'MUST #35: sidecar entry missing for fixture '
+                    f'{hand.ref_id!r}. STAGE4_STRICT_ACTION_HISTORY=raise '
+                    f'is set. Fixture needs authored action_history in '
+                    f'_calibration_action_history_sidecar before Stage 4 '
+                    f're-label can proceed.'
+                )
+            _resolved_action_history = []
+        else:
+            _resolved_action_history = list(_sidecar_entry)
 
     hand_dict = {
         'h': hand.hero_cards,
@@ -295,6 +363,9 @@ def reference_hand_to_situation(hand: ReferenceHand) -> dict:
         '_villain_call_count': hand.villain_call_count,
         '_num_callers_to_bet': hand.num_callers_to_bet,
         '_facing_raise': hand.facing_raise,
+        # MUST #20 — plumbs chain narrowing into extract_all_features path.
+        # Empty list triggers CRIT #2 strict-gate warn/raise downstream.
+        '_action_history': _resolved_action_history,
     }
 
     feat_dict = extract_all_features(hand_dict)

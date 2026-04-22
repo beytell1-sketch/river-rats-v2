@@ -1,0 +1,76 @@
+"""MUST #20 + MUST #35 — authored per-fixture action_history sidecar.
+
+Stage 3.5 Path (c) Phase 1 (commit 5) lands this stub. Phase 2
+(commit 13) populates ~140 authored entries after 5-entry dry-run
+owner-approval gate.
+
+Schema:
+  _CALIBRATION_ACTION_HISTORY: Dict[ref_id, List[Tuple[street, position, action]]]
+  where:
+    - street ∈ {'preflop', 'flop', 'turn', 'river'}
+    - position ∈ {'UTG', 'EP', 'HJ', 'MP', 'CO', 'BTN', 'SB', 'BB'}
+    - action ∈ {'RAISE', 'CALL', 'FOLD', 'CHECK', 'BET'}
+  Entries are prior-street sequences only (decision-street actions
+  enter via the facing_bet gate, not the chain — see
+  range_narrowing.narrow_by_action_history decision_street arg).
+
+MUST #35 sentinel:
+  _SIDECAR_MISSING = object()  # unique identity; never a dict value
+  Callers check `entry is _SIDECAR_MISSING` (not `entry == ...`) so
+  falsy values (empty list) are distinguished from missing-key state.
+
+Backward compat path during migration:
+  Canonical JSONL records may populate `action_history` field natively
+  (Phase 4 cleanup); when that happens, sidecar becomes empty + can be
+  deleted. Until Phase 4: ReferenceHand.action_history takes precedence
+  over sidecar lookup; sidecar covers fixtures that predate the schema
+  extension.
+
+Phase 2 authoring (commit 13):
+  Reconstruct per-fixture action_history from prose annotations in
+  reference_evaluator._ACTION_HISTORY + BATCH*_HAND_DESIGNS.md source
+  docs. 5-entry dry-run batch → owner approval gate → ~140-entry full
+  authoring with stratified 10% solver-verify per MUST #54 + #66.
+"""
+from typing import Dict, List, Tuple
+
+
+# MUST #35 — unique sentinel; identity comparison only.
+_SIDECAR_MISSING = object()
+
+
+# MUST #20 Phase 2 authored table. Empty until commit 13's authoring
+# phase (owner-approval-gated).
+#
+# 5-entry dry-run batch lands first. After owner go/no-go, remaining
+# ~135 entries follow. See BUILDER_V24_STAGE35_BLUEPRINT_V2_2_AMENDED_
+# 2026-04-22.md §3.2 + §5 for sidecar-authoring pattern.
+_CALIBRATION_ACTION_HISTORY: Dict[str, List[Tuple[str, str, str]]] = {
+    # Populated in commit 13 Phase 2 authoring.
+    # Example entry (commented — DO NOT uncomment until owner-approved):
+    # 'MW-11': [
+    #     ('preflop', 'CO', 'RAISE'),
+    #     ('preflop', 'BTN', 'CALL'),
+    #     ('preflop', 'BB', 'CALL'),
+    #     ('flop', 'CO', 'CHECK'),
+    #     ('flop', 'BTN', 'CHECK'),
+    # ],
+}
+
+
+def lookup(ref_id: str):
+    """MUST #20 sidecar lookup with MUST #35 sentinel semantics.
+
+    Returns:
+      - List[Tuple[str, str, str]]: authored action_history for this
+        fixture (non-empty list)
+      - _SIDECAR_MISSING sentinel: no entry for ref_id (caller applies
+        STAGE4_STRICT_ACTION_HISTORY gate)
+
+    Does NOT return an empty list for missing — that would be ambiguous
+    with legitimate "no prior-street actions" (e.g., flop-decision
+    fixtures where hero is first to act postflop). The sentinel is the
+    only way to distinguish "no sidecar entry" from "entry exists with
+    empty list."
+    """
+    return _CALIBRATION_ACTION_HISTORY.get(ref_id, _SIDECAR_MISSING)

@@ -114,6 +114,15 @@ class ReferenceHand:
     num_callers_to_bet: int = 0         # opponents who cold-called current-street bet
     facing_raise: int = 0              # 1 if hero faces a raise (not just initial bet)
     action_string: str = ''            # validated current-street action sequence
+    # MUST #20 (Stage 3.5 commit 5) — structured per-street action history
+    # for chain narrowing. When populated from canonical JSONL schema's
+    # `action_history` field, entries are [street, position, action] tuples
+    # matching game_state_bridge's flat format. Empty default preserves
+    # backward-compat with fixtures that predate the schema extension;
+    # sidecar-lookup in reference_hand_to_situation fills those from
+    # the authored table (Phase 2 — commit 13). Each entry is a 3-tuple
+    # normalisable by range_narrowing._normalize_action_entry.
+    action_history: list = field(default_factory=list)
 
 
 # Action-history annotations for each reference hand.
