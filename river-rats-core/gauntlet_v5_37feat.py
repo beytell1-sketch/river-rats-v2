@@ -185,6 +185,9 @@ def run_action_gauntlet(oracle, hands):
             pred = oracle.predict(features)
             y_true.append(entry['action_label'])
             y_pred.append(pred.action)
+        except RuntimeError:
+            # MUST #9 — let CRIT #2 strict-raise propagate.
+            raise
         except Exception as e:
             errors += 1
 
@@ -223,6 +226,9 @@ def run_sizing_gauntlet(oracle, hands, action_type, bucket_fn):
                 true_bucket,
                 prediction.confidence,
             ))
+        except RuntimeError:
+            # MUST #9 — let CRIT #2 strict-raise propagate.
+            raise
         except Exception as e:
             errors += 1
 

@@ -25,7 +25,11 @@ LOG_FILE      = "/home/claude/extraction_progress.log"
 CHUNK_SIZE    = 1000
 NUM_WORKERS   = 4  # match CPU cores
 
-# The 38 features + label the model expects
+# The 38 features + label the model expects.
+# CRIT #2 audit column appended at END so MODEL_COLUMNS[:-2] gives features,
+# MODEL_COLUMNS[-2] = action label, MODEL_COLUMNS[-1] = audit column.
+# Model inference reads FEATURE_COLUMNS from gto_model (unaffected); this
+# CSV-only audit column lets Stage 4 detect v2.3.2-class silent-fallback.
 MODEL_COLUMNS = [
     'street','facing_bet','pot_size','to_call','pot_odds','bet_to_pot',
     'hero_position','villain_position','is_ip',
@@ -37,7 +41,8 @@ MODEL_COLUMNS = [
     'equity_margin','spr',
     'is_3bet_pot','villain_aggression_count','villain_checked_back','villain_call_count',
     'num_opponents',
-    'action'
+    'action',
+    '_action_history_present',   # CRIT #2 audit column (not a model feature)
 ]
 
 ACTION_MAP = {'FOLD': 0, 'CHECK': 1, 'CALL': 2, 'BET': 3, 'RAISE': 4}
@@ -74,10 +79,20 @@ def process_chunk(args):
                 errors += 1
                 continue
             row = []
-            for col in MODEL_COLUMNS[:-1]:  # all except 'action'
+            # CRIT #2 audit column at end; features are MODEL_COLUMNS[:-2]
+            for col in MODEL_COLUMNS[:-2]:  # features only
                 row.append(float(feat[col]))
             row.append(action_val)
+            row.append(int(feat.get('_action_history_present', 0)))   # CRIT #2
             rows.append(row)
+        except RuntimeError:
+            # MUST #9 — let CRIT #2 strict-raise propagate out of this
+            # worker. extract_all_features may raise RuntimeError from
+            # extract_range_composition when STAGE4_STRICT_ACTION_HISTORY=raise
+            # is set. Swallowing would make CRIT #2 fiction (the loud-fail
+            # becomes a silent errors++). Re-raise specifically; normal
+            # extraction errors still counted silently below.
+            raise
         except Exception:
             errors += 1
 

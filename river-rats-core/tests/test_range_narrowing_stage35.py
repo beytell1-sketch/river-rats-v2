@@ -456,6 +456,95 @@ def test_mass_warn_at_20pct_does_not_truncate():
         assert not meta['truncated']
 
 
+# =============================================================================
+# CRIT #2 + MUST #9 — strict action_history gate + pipeline unswallow
+# =============================================================================
+
+def test_strict_action_history_raise_fires_on_missing():
+    """CRIT #2: STAGE4_STRICT_ACTION_HISTORY=raise + no action_history on
+    extract_range_composition → RuntimeError. This is how Stage 4 re-label
+    loud-fails instead of silently falling back to pre-Stage-3.5 behavior."""
+    import os
+    from feature_extractor import extract_range_composition
+    prior = os.environ.get('STAGE4_STRICT_ACTION_HISTORY')
+    os.environ['STAGE4_STRICT_ACTION_HISTORY'] = 'raise'
+    try:
+        import pytest
+        with pytest.raises(RuntimeError, match='action_history missing'):
+            extract_range_composition(
+                board_cards=['Kh', '7d', '2c'],
+                hero_pos='BTN', villain_pos='BB',
+                facing_bet=False, street_raw='f', is_3bet_pot=0,
+                action_history=None,
+            )
+    finally:
+        if prior is None:
+            os.environ.pop('STAGE4_STRICT_ACTION_HISTORY', None)
+        else:
+            os.environ['STAGE4_STRICT_ACTION_HISTORY'] = prior
+
+
+def test_strict_action_history_warn_logs_but_continues():
+    """CRIT #2: env=warn → log WARN + continue (no raise). Legacy-compat
+    for read-only display paths."""
+    import os, logging
+    from feature_extractor import extract_range_composition
+    prior = os.environ.get('STAGE4_STRICT_ACTION_HISTORY')
+    os.environ['STAGE4_STRICT_ACTION_HISTORY'] = 'warn'
+    try:
+        # Should complete without raising
+        out = extract_range_composition(
+            board_cards=['Kh', '7d', '2c'],
+            hero_pos='BTN', villain_pos='BB',
+            facing_bet=False, street_raw='f', is_3bet_pot=0,
+            action_history=None,
+        )
+        assert '_villain_top_pair_plus_pct' in out
+        # CRIT #2 audit field on return dict
+        assert out.get('_action_history_present') is False
+    finally:
+        if prior is None:
+            os.environ.pop('STAGE4_STRICT_ACTION_HISTORY', None)
+        else:
+            os.environ['STAGE4_STRICT_ACTION_HISTORY'] = prior
+
+
+def test_strict_action_history_unset_silent_fallback():
+    """CRIT #2: unset env → silent fallback (no log, no raise). Default
+    legacy-compat behavior."""
+    import os
+    from feature_extractor import extract_range_composition
+    prior = os.environ.get('STAGE4_STRICT_ACTION_HISTORY')
+    os.environ.pop('STAGE4_STRICT_ACTION_HISTORY', None)
+    try:
+        out = extract_range_composition(
+            board_cards=['Kh', '7d', '2c'],
+            hero_pos='BTN', villain_pos='BB',
+            facing_bet=False, street_raw='f', is_3bet_pot=0,
+            action_history=None,
+        )
+        assert out.get('_action_history_present') is False
+    finally:
+        if prior is not None:
+            os.environ['STAGE4_STRICT_ACTION_HISTORY'] = prior
+
+
+def test_action_history_present_true_with_history():
+    """CRIT #2: _action_history_present=True when action_history non-empty."""
+    from feature_extractor import extract_range_composition
+    out = extract_range_composition(
+        board_cards=['Kh', '7d', '2c', '9s'],
+        hero_pos='BTN', villain_pos='BB',
+        facing_bet=False, street_raw='t', is_3bet_pot=0,
+        action_history=[
+            {'street': 'preflop', 'position': 'BTN', 'action': 'RAISE'},
+            {'street': 'preflop', 'position': 'BB', 'action': 'CALL'},
+            {'street': 'flop', 'position': 'BB', 'action': 'CHECK'},
+        ],
+    )
+    assert out.get('_action_history_present') is True
+
+
 if __name__ == '__main__':
     import subprocess
     rc = subprocess.call([sys.executable, '-m', 'pytest', '-xvs', __file__])

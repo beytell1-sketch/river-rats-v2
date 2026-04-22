@@ -13,6 +13,7 @@ Step 5: Range partitioning â€” better/worse hand pct (FIXED)
 Step 6: Derived features + CSV export
 """
 
+import os
 import sys
 sys.path.insert(0, '/mnt/project')
 
@@ -1166,6 +1167,36 @@ def extract_range_composition(
 
     street_name = STREET_NAME_MAP.get(street_raw, 'flop')
 
+    # CRIT #2 — loud surfacing when _action_history is missing on hand payload.
+    # Env-gated so read-only display paths (live oracle display, calibration
+    # view) stay silent while Stage 4 re-label + training paths force a raise.
+    # Same pattern as MUST #9 pipeline unswallow (re-raise RuntimeError
+    # specifically; normal extraction errors still counted silently).
+    #
+    # STAGE4_STRICT_ACTION_HISTORY semantics:
+    #   unset / "0" — silent fallback (legacy-compat; read-only display)
+    #   "warn"     — logging.WARNING per call (default for MUST #32(a))
+    #   "raise"    — RuntimeError (training / Stage 4 re-label)
+    _action_history_present = bool(action_history)
+    if not _action_history_present:
+        _strict = os.environ.get('STAGE4_STRICT_ACTION_HISTORY', '0').lower()
+        if _strict == 'raise':
+            raise RuntimeError(
+                f'extract_range_composition: action_history missing at '
+                f'board={board_cards!r} hero={hero_pos} villain={villain_pos}. '
+                f'STAGE4_STRICT_ACTION_HISTORY=raise is set. This is the '
+                f'v2.3.2-class silent-fallback failure mode; fix the caller '
+                f'to populate _action_history before re-running.'
+            )
+        elif _strict in ('warn', '1'):
+            import logging
+            logging.getLogger(__name__).warning(
+                'extract_range_composition: action_history MISSING — falling '
+                'back to pre-Stage-3.5 single-street behavior. '
+                'board=%r hero=%s villain=%s',
+                board_cards, hero_pos, villain_pos,
+            )
+
     # v2.4 Stage 3.5: action-aware chaining (prior streets only).
     chain_steps: List[str] = []
     chain_truncated = False
@@ -1269,6 +1300,10 @@ def extract_range_composition(
         # v2.4 Stage 3.5 metadata
         '_villain_range_chain_steps': chain_steps,
         '_villain_range_chain_truncated': chain_truncated,
+        # CRIT #2 provenance — audit column for Stage 4 mixture detection.
+        # Training CSV writer copies this to a CSV column so post-hoc audits
+        # can filter by chain-aware vs pre-Stage-3.5 rows.
+        '_action_history_present': _action_history_present,
     }
 
 

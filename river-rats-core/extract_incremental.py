@@ -55,8 +55,10 @@ def main():
         print(f"Chunk {chunk_id:02d}: COMPLETE (offset={offset})")
         return
     
-    # Write header if new file
-    header = list(FEATURE_COLUMNS) + ['action_label', 'size_bucket']
+    # Write header if new file.
+    # CRIT #2 audit column appended at end for post-hoc filtering.
+    header = list(FEATURE_COLUMNS) + ['action_label', 'size_bucket',
+                                       '_action_history_present']
     if not os.path.exists(out_file):
         with open(out_file, 'w', newline='') as f:
             csv.writer(f).writerow(header)
@@ -84,24 +86,30 @@ def main():
                 if not parsed:
                     errors += 1
                     continue
-                
+
                 feat = extract_all_features(parsed)
                 vec = [float(feat.get(c, 0.0)) for c in FEATURE_COLUMNS]
-                
+
                 correct = parsed.get('_correct_action_raw', '')
                 action = classify_action(correct)
                 if not action:
                     errors += 1
                     continue
-                
+
                 size_bucket = ''
                 pot_ratio = parsed.get('_pot_ratio', 0.0)
                 if action == 'RAISE' and pot_ratio > 0:
                     size_bucket = assign_raise_bucket(pot_ratio)
                 elif action == 'BET' and pot_ratio > 0:
                     size_bucket = assign_bet_bucket(pot_ratio)
-                
-                rows.append(vec + [action, size_bucket])
+
+                ah_present = int(feat.get('_action_history_present', 0))  # CRIT #2
+                rows.append(vec + [action, size_bucket, ah_present])
+            except RuntimeError:
+                # MUST #9 — let CRIT #2 strict-raise propagate; swallowing
+                # would reduce loud-fail to silent errors++ and make
+                # STAGE4_STRICT_ACTION_HISTORY=raise a no-op.
+                raise
             except Exception as e:
                 errors += 1
     
