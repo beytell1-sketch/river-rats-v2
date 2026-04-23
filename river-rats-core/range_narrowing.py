@@ -97,12 +97,22 @@ TURN_BETTING_FREQUENCIES = {
 
 # RIVER: Fully polarized - VALUE + BLUFFS only
 # Medium hands become pure bluff-catchers (almost NEVER bet)
+#
+# MUST #50 (commit 9): medium_made bumped 0.08 → 0.15 for atomic
+# coherence with RIVER_CHECKING_FREQUENCIES['medium_made'] = 0.85
+# (MUST #17). Sum = 1.00 per category required post-commit-9; see
+# _verify_frequency_coherence assertion at end of this file.
+# Q41 footnote: 0.15 is slightly aggressive vs 0.10-0.12 solver-typical
+# for 3-way river; defensible for teaching-tool calibration. v2.5
+# solver-alignment pass may lower to 0.10; calibration anchor tests
+# will flag if this produces unexpected BET predictions. See
+# knowledge/three_way_gto.md §1.11 Q41 footnote.
 RIVER_BETTING_FREQUENCIES = {
     'nuts': 0.95,           # Almost pure bet
     'strong_value': 0.90,   # Bet for value
     'good_value': 0.55,     # Thin value (board dependent)
     'draw': 0.00,           # Draws missed = air (reclassify)
-    'medium_made': 0.08,    # Almost NEVER bet! Pure bluff-catcher
+    'medium_made': 0.15,    # MUST #50 — was 0.08; atomic coherence with check 0.85
     'weak_made': 0.05,      # Almost never bet
     'bluff': 0.35,          # Specific bluff combos with blockers
     'air': 0.20,            # Some bluffs
@@ -139,10 +149,17 @@ RIVER_CHECKING_FREQUENCIES = {
     'strong_value': 0.10,
     'good_value': 0.45,
     'draw': 1.00,           # "Draw" on river = missed = check/fold
-    'medium_made': 0.92,    # Almost ALWAYS check! Bluff-catcher
+    # MUST #17 (commit 9): was 0.92 — GTO review found 0.92 over-compressed
+    # mediums into check-call band. Thin river value with medium pair
+    # exists vs weak ranges, especially multi-street missed-draw lines.
+    'medium_made': 0.85,
     'weak_made': 0.95,
-    'bluff': 0.65,          # Many give up
-    'air': 0.80,
+    # MUST #38 (commit 9): bluff / air companion adjustments post-MUST-#17
+    # for atomic coherence with existing MUST #1 3-way tightening
+    # (bluff bet 0.20, air bet 0.10 — see overrides at lines ~216-217).
+    # Pairs: bluff 0.80 check + 0.20 bet = 1.00; air 0.90 check + 0.10 bet = 1.00.
+    'bluff': 0.80,          # was 0.65
+    'air': 0.90,            # was 0.80
 }
 
 # =============================================================================
@@ -203,6 +220,45 @@ RIVER_CALL_FREQUENCIES = {
 # eliminated 3-way. See GTO review Flag A (commit a4cab83).
 RIVER_BETTING_FREQUENCIES['bluff'] = 0.20  # was 0.35 — 3-way-aware
 RIVER_BETTING_FREQUENCIES['air']   = 0.10  # was 0.20 — 3-way-aware
+
+
+# =============================================================================
+# MUST #50 — atomic-coherence assertion
+# =============================================================================
+# When you change ONE frequency, verify ALL pairs still sum to 1.00.
+# This assertion fires at module-import time, failing loud on any
+# future regression (e.g., a MUST #17-style single-table tweak that
+# forgets the companion adjustment).
+#
+# Scope: RIVER (MUSTs #17 + #38 + #50) + FLOP + TURN tables. CALL
+# tables (FLOP/TURN/RIVER_CALL_FREQUENCIES) are NOT paired with
+# bet/check — they're a SEPARATE distribution per §1.4 — and are
+# not included in this coherence check.
+def _verify_frequency_coherence():
+    """MUST #50 — every (street, category) must have bet + check = 1.00."""
+    pairs = (
+        ('flop', FLOP_BETTING_FREQUENCIES, FLOP_CHECKING_FREQUENCIES),
+        ('turn', TURN_BETTING_FREQUENCIES, TURN_CHECKING_FREQUENCIES),
+        ('river', RIVER_BETTING_FREQUENCIES, RIVER_CHECKING_FREQUENCIES),
+    )
+    errors = []
+    for street, bet_tbl, check_tbl in pairs:
+        for cat in bet_tbl:
+            if cat not in check_tbl:
+                continue
+            s = bet_tbl[cat] + check_tbl[cat]
+            if abs(s - 1.00) > 0.001:
+                errors.append(
+                    f'{street}.{cat}: bet={bet_tbl[cat]} + '
+                    f'check={check_tbl[cat]} = {s} (expected 1.00)'
+                )
+    if errors:
+        raise AssertionError(
+            'MUST #50: frequency-table coherence violated:\n  '
+            + '\n  '.join(errors)
+            + '\nWhen you change ONE frequency, update the pair.'
+        )
+_verify_frequency_coherence()
 
 
 # =============================================================================

@@ -447,21 +447,45 @@ blocker features for the **directional** correction.
 **Multi-signal resolution — what to do when signals co-fire.**
 A defender may see BOTH `flush_draw_block_pct > 0.2` (fold-lean)
 AND `nut_made_block_pct > 0.2` (call-lean) on the same decision.
-The features pull in opposite directions. Rule:
+The features pull in opposite directions. Rule (MUST #39 —
+asymmetric FOLD-lean threshold):
 
 - If `nut_made_block_pct − (flush_draw_block_pct + straight_draw_block_pct) / 2 > 0.15`,
   **net CALL lean** — villain's value blocked more than villain's
-  draws. Call-bias wins.
-- If `(flush_draw_block_pct + straight_draw_block_pct) / 2 − nut_made_block_pct > 0.15`,
+  draws. Call-bias wins. Threshold stays at 0.15.
+- If `(flush_draw_block_pct + straight_draw_block_pct) / 2 − nut_made_block_pct > 0.20`,
   **net FOLD lean** — villain's draws blocked more than villain's
-  value. Fold-bias wins.
-- Smaller net differences (|delta| ≤ 0.15): blocker signals approximately
-  cancel; decide on `equity_vs_range` + `villain_top_pair_plus_pct`
-  alone. Do not tag blocker features as PRIMARY in this case.
+  value. Fold-bias wins. **Threshold bumped 0.15 → 0.20 per MUST #39:**
+  densification effect overstates FOLD confidence; a 0.15 draw-block
+  advantage routinely flips at solver to still-CALL when
+  `equity_vs_range > 0.42`. Require a larger delta (0.20) before
+  committing the FOLD lean as decisive.
+- Smaller net differences (below each threshold): blocker signals
+  approximately cancel; decide on `equity_vs_range` +
+  `villain_top_pair_plus_pct` alone. Do not tag blocker features as
+  PRIMARY in this case.
 
 This rule is a labelling heuristic for panel feature-attention
 decisions, not a solver-verified threshold. Revisit when
 Stage 5 training exposes the model's learned interaction.
+
+**MUST #40 — combo-draw use-max addendum.** If hero holds a combo-
+draw blocker (a card that features in both `flush_draw_block_pct`
+and `straight_draw_block_pct` denominators simultaneously — e.g.,
+the 9 of hearts on KsTsQh8h where villain's QhJh is blocked from
+both classes), use
+`max(flush_draw_block_pct, straight_draw_block_pct)` for the
+FOLD-lean delta rather than `mean(flush_draw_block_pct,
+straight_draw_block_pct)`. Mean over-counts combo-draw hands by
+factor 2 in the signal — one combo contributes to both numerator
+and denominator of each percentage, so averaging double-weights
+the combo-draw class in the delta. Max captures the stronger
+single-class block without the double-count.
+
+Apply the use-max rule ONLY when at least one villain combo in
+the range is `combo_draw`-classified AND hero holds a blocker to it.
+On boards without combo-draw coverage (dry rainbow, paired-paired)
+the two percentages are independent and mean is correct.
 
 **Combo-draw double-counting caveat.** A villain combo classified
 as `combo_draw` (flush draw + straight draw simultaneously) is
@@ -471,6 +495,15 @@ counted in BOTH `flush_draw_block_pct` AND
 denominator. But it means the two percentages can sum above 1.0
 on connected-two-tone boards with meaningful combo-draw coverage.
 Use each feature independently; do not add them.
+
+**Q41 footnote — RIVER_BETTING medium_made frequency 0.15.**
+`RIVER_BETTING_FREQUENCIES['medium_made']` is set to 0.15 per
+MUST #50 atomic-coherence fix (check 0.85 + bet 0.15 = 1.00). This
+is slightly aggressive vs 0.10–0.12 solver-typical for 3-way river;
+defensible for teaching-tool calibration (mediums DO thin-value-bet
+vs weak ranges on missed-draw runouts). v2.5 solver-alignment pass
+may lower to 0.10; calibration anchor tests will flag if the 0.15
+setting produces unexpected BET predictions on anchor hands.
 
 `flush_block_pct` (feature 46) remains in the feature vector
 pending the Stage 5 retirement A/B test. It is superseded on
