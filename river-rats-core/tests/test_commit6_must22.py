@@ -39,14 +39,20 @@ def _make_ref_hand(**overrides):
 # Sidecar module Phase 1 stub
 # =============================================================================
 
-def test_reference_sidecar_module_stub_importable():
-    """Phase 1 stub: sidecar module imports; exposes sentinel + lookup."""
+def test_reference_sidecar_module_importable():
+    """Sidecar module imports; exposes sentinel + lookup; contains
+    at least the commit-13 dry-run batch (was `== {}` empty-stub
+    assertion pre-Phase-2; post-Phase-2 we assert ≥5 dry-run entries).
+
+    Sentinel-for-missing behavior still exercised via lookup of
+    known-absent key."""
     from _reference_action_history_sidecar import (
         _SIDECAR_MISSING, lookup, _REFERENCE_ACTION_HISTORY,
     )
     assert _SIDECAR_MISSING is not None
     assert lookup('NONEXISTENT') is _SIDECAR_MISSING
-    assert _REFERENCE_ACTION_HISTORY == {}
+    # Post-Phase-2: at least 5 dry-run entries authored
+    assert len(_REFERENCE_ACTION_HISTORY) >= 5
 
 
 def test_reference_sidecar_shares_sentinel_with_calibration():

@@ -239,11 +239,19 @@ def test_sidecar_module_exports_sentinel():
     assert lookup('NON_EXISTENT_KEY') is _SIDECAR_MISSING
 
 
-def test_sidecar_empty_until_phase2():
-    """Phase 1 stub: _CALIBRATION_ACTION_HISTORY dict is empty until
-    commit 13 Phase 2 authoring."""
+def test_sidecar_populated_post_phase2():
+    """Stub assertion (`_CALIBRATION_ACTION_HISTORY == {}`) removed
+    when commit 13 Phase 2 dry-run authoring landed.
+
+    Current contract (post-commit-13): sidecar has at minimum the
+    5-entry dry-run batch. Full ~140-entry lift is owner-gated at
+    commit 13's mid-lift approval point. The sentinel-for-missing
+    behavior still holds; see test_sidecar_module_exports_sentinel."""
     from _calibration_action_history_sidecar import _CALIBRATION_ACTION_HISTORY
-    assert _CALIBRATION_ACTION_HISTORY == {}
+    # Post-Phase-2 dry-run: at least 3 MW-* entries present
+    assert len(_CALIBRATION_ACTION_HISTORY) >= 3, (
+        'Expected ≥3 calibration sidecar entries post-Phase-2 dry-run'
+    )
 
 
 if __name__ == '__main__':

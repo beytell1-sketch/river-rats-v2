@@ -46,15 +46,50 @@ _SIDECAR_MISSING = object()
 # ~135 entries follow. See BUILDER_V24_STAGE35_BLUEPRINT_V2_2_AMENDED_
 # 2026-04-22.md §3.2 + §5 for sidecar-authoring pattern.
 _CALIBRATION_ACTION_HISTORY: Dict[str, List[Tuple[str, str, str]]] = {
-    # Populated in commit 13 Phase 2 authoring.
-    # Example entry (commented — DO NOT uncomment until owner-approved):
-    # 'MW-11': [
-    #     ('preflop', 'CO', 'RAISE'),
-    #     ('preflop', 'BTN', 'CALL'),
-    #     ('preflop', 'BB', 'CALL'),
-    #     ('flop', 'CO', 'CHECK'),
-    #     ('flop', 'BTN', 'CHECK'),
-    # ],
+    # ─────────────────────────────────────────────────────────────────
+    # COMMIT 13 Phase 2 — 5-ENTRY DRY-RUN BATCH (owner-approval gated)
+    # ─────────────────────────────────────────────────────────────────
+    # Calibration exam draws from MW-* fixtures. 3 of the 5 dry-run
+    # entries are MW-* and belong here; 2 are FB-* and only live in
+    # _reference_action_history_sidecar (reference_evaluator path).
+    #
+    # Mirrors _reference_action_history_sidecar values — single
+    # source of truth would be cleaner but intentionally separate per
+    # MUST #35 (each pipeline owns its sidecar; miss-sentinel fires
+    # at each pipeline's resolver independently).
+
+    # MW-11: "Flop. CO opens, checks to hero (BB). No bet to call."
+    'MW-11': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'SB', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'SB', 'CHECK'),
+    ],
+
+    # MW-15: "River. BB called pf, checked flop+turn. Checks to hero (BTN)."
+    'MW-15': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+        ('flop', 'BTN', 'CHECK'),
+        ('turn', 'BB', 'CHECK'),
+        ('turn', 'CO', 'CHECK'),
+        ('turn', 'BTN', 'CHECK'),
+        ('river', 'BB', 'CHECK'),
+    ],
+
+    # MW-30: "Flop. CO bets, BTN CALLS, hero faces bet+call. Key hand."
+    'MW-30': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+        ('flop', 'BTN', 'CALL'),
+    ],
 }
 
 
