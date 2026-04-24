@@ -23,18 +23,31 @@ if _CORE not in sys.path:
 # Sidecar population sanity
 # =============================================================================
 
-_EXPECTED_REFERENCE_REFIDS = {'MW-11', 'MW-30', 'FB-17', 'FB-23', 'MW-15'}
+_EXPECTED_COMMIT13_REFIDS = {'MW-11', 'MW-30', 'FB-17', 'FB-23', 'MW-15'}
+_EXPECTED_COMMIT13_2_SYN_REFIDS = {
+    'SYN-F3_HU_folded', 'SYN-F5_HU_overflow', 'SYN-F6_MW_all_live',
+    'SYN-T_J02_synthetic', 'SYN-T_B05_synthetic',
+}
+_EXPECTED_REFERENCE_REFIDS = _EXPECTED_COMMIT13_REFIDS | _EXPECTED_COMMIT13_2_SYN_REFIDS
 _EXPECTED_CALIBRATION_REFIDS = {'MW-11', 'MW-30', 'MW-15'}
 
 
-def test_reference_sidecar_has_5_dryrun_entries():
-    """Commit 13 dry-run: _REFERENCE_ACTION_HISTORY populated with
-    exactly the 5 shape-diverse entries per MUST #49 enumeration."""
+def test_reference_sidecar_has_commit13_plus_synthetic_entries():
+    """Post-commit-13.2: _REFERENCE_ACTION_HISTORY has commit-13's 5
+    real fixtures + commit-13.2's 5 synthetic SYN-* entries = 10 total."""
     from _reference_action_history_sidecar import _REFERENCE_ACTION_HISTORY
     assert set(_REFERENCE_ACTION_HISTORY.keys()) == _EXPECTED_REFERENCE_REFIDS, (
         f'Expected {_EXPECTED_REFERENCE_REFIDS}, got '
         f'{set(_REFERENCE_ACTION_HISTORY.keys())}'
     )
+
+
+def test_reference_sidecar_synthetic_entries_use_syn_prefix():
+    """Commit 13.2: synthetic entries distinguishable from real fixtures
+    via SYN- prefix. Reviewer/audit-tooling can filter by vintage."""
+    from _reference_action_history_sidecar import _REFERENCE_ACTION_HISTORY
+    syn_keys = {k for k in _REFERENCE_ACTION_HISTORY if k.startswith('SYN-')}
+    assert syn_keys == _EXPECTED_COMMIT13_2_SYN_REFIDS
 
 
 def test_calibration_sidecar_has_3_mw_entries():
@@ -149,19 +162,38 @@ def test_dryrun_entries_exercise_chain_narrowing():
     # Minimum decision-street metadata per dry-run entry
     fixture_meta = {
         # ref_id: (board, villain_pos, decision_street, expects_chain_fire)
-        # MW-11: flop decision — no prior postflop → chain empty (correct).
+        # Commit 13 real fixtures:
         'MW-11': (['Kh', '7d', '2c'], 'CO', 'flop', False),
-        # MW-30: flop decision — no prior postflop → chain empty.
         'MW-30': (['Qh', '5d', '2c'], 'CO', 'flop', False),
-        # FB-17: turn decision, villain CO checked flop → chain fires.
         'FB-17': (['9c', '6h', '3d', '2s'], 'CO', 'turn', True),
-        # FB-23: river decision, villain CO checked flop+turn → 2x chain.
         'FB-23': (['9c', '6h', '3d', '2s', 'Kh'], 'CO', 'river', True),
-        # MW-15: river decision, villain BB checked flop+turn → 2x chain.
         'MW-15': (['9c', '6h', '3d', '2s', 'Kh'], 'BB', 'river', True),
+        # Commit 13.2 synthetic entries:
+        # SYN-F3: HU folded — chain terminates at flop:FOLD; chain_steps
+        # has flop:FOLD entry → expects_fire=True.
+        'SYN-F3_HU_folded': (['Kh', '7d', '2c', '9s'], 'BB', 'turn', True),
+        # SYN-F5: HU over-narrow — flop BET-CHECK-CALL collapses per
+        # MUST #11 to flop:CALL; turn:CHECK-BET-CALL collapses to
+        # turn:CALL; chain fires on river.
+        'SYN-F5_HU_overflow': (['Kh', '7d', '2c', '9s', '5h'], 'BB', 'river', True),
+        # SYN-F6: MW 3-way all-live — flop check-through (villain CO
+        # checks) → chain fires flop:CHECK.
+        'SYN-F6_MW_all_live': (['Kh', '7d', '2c', '9s'], 'CO', 'turn', True),
+        # SYN-T_J02_synthetic: river decision, villain BB did flop:BET
+        # + turn:CHECK→CALL collapse + (river-BET decision-street).
+        # Chain: flop:BET + turn:CALL — fires.
+        'SYN-T_J02_synthetic': (['Kh', '7d', '2c', '9s', '5h'], 'BB', 'river', True),
+        # SYN-T_B05_synthetic: turn decision, villain BB did flop
+        # BET-CALL (post-RAISE) collapsed via MUST #11/#12 to flop:CALL.
+        # No turn actions before decision → chain fires flop:CALL only.
+        'SYN-T_B05_synthetic': (['Kh', '7d', '2c', '9s'], 'BB', 'turn', True),
     }
 
     for ref_id, ah in _REFERENCE_ACTION_HISTORY.items():
+        assert ref_id in fixture_meta, (
+            f'test fixture_meta missing entry for {ref_id}; '
+            f'update test when adding sidecar entries'
+        )
         board, villain_pos, decision_street, expects_fire = fixture_meta[ref_id]
         _, meta = narrow_by_action_history(
             sample_range, board, ah, villain_pos,

@@ -151,6 +151,106 @@ _REFERENCE_ACTION_HISTORY: Dict[str, List[Tuple[str, str, str]]] = {
         # River decision for BTN; same-street BB check precedes.
         ('river', 'BB', 'CHECK'),
     ],
+
+    # ─────────────────────────────────────────────────────────────────
+    # COMMIT 13.2 — 2ND DRY-RUN BATCH (synthetic deferred shapes)
+    # ─────────────────────────────────────────────────────────────────
+    # 5 synthetic entries covering shapes not reachable via real FB-*/
+    # MW-* ref-IDs in commit-13 batch. Keys prefixed SYN- so sentinel
+    # semantics hold + reviewer can distinguish real vs synthetic.
+    #
+    # Per-batch GTO review requested on these 5. Covers all 8 MUST #49
+    # shape categories once combined with commit-13 batch:
+    #   Category 4 (folded_mw → folded HU) : SYN-F3_HU_folded
+    #   Category 5 (over_narrow)           : SYN-F5_HU_overflow (MUST #15 pathway)
+    #   Category 2 (hu_bet_x_call_bet)     : SYN-T_J02_synthetic (4-class chain)
+    #   Category 3 (hu_bet_raise_call)     : SYN-T_B05_synthetic (same-street BET-RAISE-CALL)
+    #   Category 8 (mw_per_villain all-live): SYN-F6_MW_all_live (3-way no folds)
+
+    # SYN-F3_HU_folded: HU folded-villain sentinel (villain_folded=True).
+    # Chain terminates at ':FOLD' on flop; narrow_by_action_history
+    # returns ({}, {'chain_steps': [..., 'flop:FOLD'], ...}).
+    # extract_range_composition then detects villain_folded=True per
+    # HIGH #4 sentinel path.
+    'SYN-F3_HU_folded': [
+        ('preflop', 'BTN', 'RAISE'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop: BB folds (shouldn't normally happen without a bet, but
+        # synthetic test drives the sentinel path). Decision street is
+        # any subsequent street; chain will short-circuit on first
+        # FOLD encountered.
+        ('flop', 'BB', 'FOLD'),
+    ],
+
+    # SYN-F5_HU_overflow: HU over-narrow via MUST #15 pathway (chain
+    # returns empty WITHOUT :FOLD). Deep chain of narrowing steps that
+    # compound to zero surviving mass when applied to the sample range.
+    # Distinct from SYN-F2 (MUST #28 floor-truncation path) — this
+    # triggers the bare `if not v_range:` without-FOLD branch in
+    # extract_range_composition.
+    #
+    # Board is dry double-paired to force high attrition through narrow
+    # steps. 4-street chain of alternating CHECK/BET compounds mass
+    # loss. Applied to e.g. a draw-heavy preflop range → can produce
+    # empty range without :FOLD step.
+    'SYN-F5_HU_overflow': [
+        ('preflop', 'BTN', 'RAISE'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'BTN', 'BET'),
+        ('flop', 'BB', 'CALL'),   # chain step 1: flop:CALL (post-MUST-#11 collapse of CHECK-CALL → CALL only)
+        ('turn', 'BB', 'CHECK'),
+        ('turn', 'BTN', 'BET'),
+        ('turn', 'BB', 'CALL'),   # chain step 2: turn:CALL
+        ('river', 'BB', 'BET'),    # chain step 3: river:BET narrows to polarized
+    ],
+
+    # SYN-F6_MW_all_live: 3-way with both non-hero villains in hand
+    # post-chain. Exercises per-villain rendering without partial-fold
+    # preamble (MUST #42 wording: standard multiway prose, not "Villain
+    # {FOLDED_POS} folded" preamble).
+    'SYN-F6_MW_all_live': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop: check-through (all 3 check — no folds)
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+        ('flop', 'BTN', 'CHECK'),
+        # Turn: BB bets, both villains continue (CO calls, BTN will
+        # decide — BTN is hero here)
+        ('turn', 'BB', 'BET'),
+        ('turn', 'CO', 'CALL'),
+    ],
+
+    # SYN-T_J02_synthetic: HU BET-CHECK-CALL-BET 4-class chain
+    # (matches T_J02 corpus shape). Chain fires all 4 narrow classes
+    # post-MUST-#11 collapse:
+    #   flop:BET + turn:CALL (CHECK-CALL collapses per MUST #11)
+    #   + river facing-bet gate via facing_bet=True.
+    'SYN-T_J02_synthetic': [
+        ('preflop', 'BTN', 'RAISE'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'BET'),
+        ('flop', 'BTN', 'CALL'),
+        ('turn', 'BB', 'CHECK'),
+        ('turn', 'BTN', 'BET'),
+        ('turn', 'BB', 'CALL'),
+        ('river', 'BB', 'BET'),
+    ],
+
+    # SYN-T_B05_synthetic: HU BET-RAISE-CALL same-street + turn-CHECK
+    # (matches T_B05 corpus shape). Flop triple-action collapses per
+    # MUST #11/#12 to RAISE-only (last-decisive). Turn-CHECK is
+    # decision-street chain.
+    'SYN-T_B05_synthetic': [
+        ('preflop', 'BTN', 'RAISE'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'BET'),
+        ('flop', 'BTN', 'RAISE'),
+        ('flop', 'BB', 'CALL'),
+        ('turn', 'BB', 'CHECK'),
+    ],
 }
 
 

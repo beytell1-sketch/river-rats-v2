@@ -40,9 +40,10 @@ _SHAPE_PATTERNS = (
     ('hu_donk_x_bet',      'HU donk-flop + turn-check-through + river-bet'),
     ('hu_bet_x_call_bet',  'HU bet-check-call-bet four-class'),
     ('hu_bet_raise_call',  'HU BET-RAISE-CALL same-street'),
+    ('folded_hu',          'HU folded-villain sentinel (HIGH #4)'),
     ('folded_mw',          'Folded-villain multiway sentinel'),
-    ('over_narrow',        'Synthetic over-narrow'),
-    ('mass_truncation',    'Mass-floor truncation'),
+    ('over_narrow',        'Synthetic over-narrow (MUST #15)'),
+    ('mass_truncation',    'Mass-floor truncation (MUST #28)'),
     ('delayed_probe',      'HU delayed-probe large turn bet'),
     ('mw_per_villain',     'Multiway per-villain chain 3-way'),
     ('other',              'Unclassified (baseline / catch-all)'),
@@ -51,12 +52,17 @@ _SHAPE_PATTERNS = (
 
 def _classify_shape(action_history: List[Tuple[str, str, str]]) -> str:
     """Classify an action_history by rough shape. Heuristic; refined
-    over time as more entries land."""
+    over time as more entries land.
+
+    Priority order matters: specific shapes checked before catch-alls.
+    Commit 13.2: added folded branches (HU + MW) + MW-all-live bucket
+    per MUST #49 coverage requirement."""
     streets = [e[0] for e in action_history]
     actions = [e[2] for e in action_history]
+    positions = {e[1] for e in action_history}
 
     has_fold = 'FOLD' in actions
-    num_opponents_approx = len({e[1] for e in action_history})
+    num_positions = len(positions)
     river_present = 'river' in streets
     turn_present = 'turn' in streets
     flop_bet_count = sum(
@@ -71,12 +77,28 @@ def _classify_shape(action_history: List[Tuple[str, str, str]]) -> str:
         1 for e in action_history
         if e[0] == 'turn' and e[2] == 'CHECK'
     )
-
-    if has_fold and num_opponents_approx >= 4:
-        return 'folded_mw'
-    if flop_bet_count >= 1 and any(
+    flop_has_raise = any(
         e[0] == 'flop' and e[2] == 'RAISE' for e in action_history
-    ):
+    )
+
+    # HU = 2 positions excluding dead blinds; MW = 3+ positions.
+    # For sidecar entries that start with preflop the blinds posting
+    # themselves aren't in action_history (only voluntary actions).
+    is_mw = num_positions >= 3
+
+    # PRIORITY 1: folded-villain sentinel shapes (MUST #49 cat 4)
+    # HU-folded: any FOLD from the sole non-hero villain on a prior
+    # postflop street (trigger of HIGH #4 sentinel)
+    if has_fold:
+        fold_streets = {
+            e[0] for e in action_history if e[2] == 'FOLD'
+        }
+        fold_on_postflop = bool(fold_streets & {'flop', 'turn', 'river'})
+        if fold_on_postflop:
+            return 'folded_mw' if is_mw else 'folded_hu'
+
+    # PRIORITY 2: structural shapes per MUST #49
+    if flop_bet_count >= 1 and flop_has_raise:
         return 'hu_bet_raise_call'
     if (flop_bet_count >= 1 and turn_check_count >= 1 and river_present
             and any(e[0] == 'river' and e[2] == 'BET' for e in action_history)):
@@ -87,8 +109,11 @@ def _classify_shape(action_history: List[Tuple[str, str, str]]) -> str:
     if (flop_check_count >= 1 and turn_present
             and any(e[0] == 'turn' and e[2] == 'BET' for e in action_history)):
         return 'delayed_probe'
-    if num_opponents_approx >= 3:
+
+    # PRIORITY 3: multiway classifications
+    if is_mw:
         return 'mw_per_villain'
+
     return 'other'
 
 
