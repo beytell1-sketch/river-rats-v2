@@ -3,14 +3,71 @@ Feature Extractor for GTO Oracle V3
 ====================================
 
 Extracts ~30 features per hand for XGBoost model training.
-Built incrementally â€” each step adds a layer of features.
+Built incrementally — each step adds a layer of features.
 
 Step 1: Zero-compute features (parsed directly from gauntlet JSON)
 Step 2: Hand evaluation features (hand_evaluator.py)
 Step 3: Board analysis features (board_analyzer.py)
 Step 4: Range + equity features (range_manager, raw_equity)
-Step 5: Range partitioning â€” better/worse hand pct (FIXED)
+Step 5: Range partitioning — better/worse hand pct (FIXED)
 Step 6: Derived features + CSV export
+
+═══════════════════════════════════════════════════════════════════
+Cross-stream contract (MUSTs #10 + #42 + #43 + #57 — Stage 3.5)
+═══════════════════════════════════════════════════════════════════
+
+NaN semantics on output feature dict:
+
+The composition + blocker features may carry `float('nan')` values
+when villain is out of the hand or the action-history chain
+over-narrows. Non-NaN path semantics unchanged.
+
+NaN-permitted features (allowlisted in gto_model.features_from_dict):
+  Composition (MUST #10 sub-2):
+    villain_top_pair_plus_pct, villain_draw_pct, villain_air_pct,
+    villain_medium_made_pct
+  Blocker (MUST #10 sub-2):
+    flush_block_pct, flush_draw_block_pct, straight_draw_block_pct,
+    nut_made_block_pct
+
+NaN triggers (via `_villain_folded` / `_villain_chain_overflowed`
+sentinel fields on the return dict):
+  - villain_folded=True: chain terminated at ':FOLD' step; villain
+    physically out of hand
+  - villain_chain_overflowed=True: chain over-narrowed to empty
+    without FOLD (MUST #15) OR floor-truncated mass (MUST #28)
+
+Non-NaN for all other feature columns. `board_favour` forced to 0.0
+on sentinel trigger (hero-range-derived; not in NaN allowlist —
+see C1 fix in commit 4.1).
+
+Teaching CONTENT_API contract (MUST #42 + #43 + #57):
+
+Teaching layer (river-rats-teaching repo) renders NaN-valued features
+via player-English prose per MUST #42:
+
+  Folded villain (HU):
+    "Villain folded earlier — no range to read."
+  Folded villain (multiway, ≥1 live villain remaining):
+    "Villain {FOLDED_POS} folded; reading against villain {LIVE_POS} only."
+  Over-narrow / floor-truncated chain:
+    "Villain's line is too rare to read confidently — relying on equity alone."
+
+Teaching CONTENT_API schema expected: `l3_enriched_v4.1` (MUST #57).
+Version-pin enforcement is NOT runtime-checked in logic; Stage 6 ship-
+gate pre-flight audit verifies:
+  (a) river-rats-teaching/interface/CONTENT_API.md version: v4.1
+  (b) Game adapter pins matching version
+  (c) Playtest log schema handles NaN values without crash
+
+MUST #57 gate relocation (per Stage 3.5 commit 4 Path-B directive):
+the protective scope is "teaching renders NaN correctly BEFORE players
+see v2.4 output" — which happens at Stage 6 ship, not earlier commits.
+v2.4 features don't flow to teaching's live renderer until Stage 6.
+
+Reference comms:
+  - review/comms/TICKET_CONTENT_API_V4_NAN_RENDER_2026-04-22.md
+  - review/comms/MAIN_TERMINAL_TEACHING_V4_1_DECISIONS_2026-04-22.md
 """
 
 import os

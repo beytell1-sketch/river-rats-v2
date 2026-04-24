@@ -43,12 +43,16 @@ def _sample_range_diverse():
 # =============================================================================
 
 def test_must41_count_guard_fires_on_mass_concentration(caplog):
-    """MUST #41: small range (4 hands) + single narrow step that
-    retains mass → fires WARN. cumulative_surviving stays high because
-    all 4 hands (AA, KK, QQ, JJ) bet at high freq on a dry flop, so
-    mass survives but count stays < 5."""
+    """MUST #41: 3-hand nuts-only range + flop-BET narrow → mass
+    survives high (nuts bet freq 0.85 flop → ~0.85 cumulative) with
+    3 hands < 5. Deterministic trigger.
+
+    NIT-2 fix (commit 11): asserts EXACTLY 1 WARN fires; prior
+    `<= 1` pattern passed vacuously on 0-fire."""
     from range_narrowing import narrow_by_action_history
-    r = _sample_range_small()
+    # 3 hands, all nuts on a low-coord dry flop. Nuts bet freq (0.85
+    # flop) means ~0.85 mass survives; 3 hands < 5 → GUARD fires.
+    r = {'AA': 1.0, 'KK': 1.0, 'QQ': 1.0}
     action_history = [
         {'street': 'preflop', 'position': 'BTN', 'action': 'RAISE'},
         {'street': 'preflop', 'position': 'BB', 'action': 'CALL'},
@@ -59,18 +63,18 @@ def test_must41_count_guard_fires_on_mass_concentration(caplog):
             r, ['7h', '3d', '2c', '9s'], action_history,
             'BB', decision_street='turn',
         )
-    # MUST #41 WARN should appear
     must41_msgs = [
         rec for rec in caplog.records
         if 'mass-concentrated-without-count-support' in rec.getMessage()
     ]
-    # May or may not fire depending on whether mass survived above 10%.
-    # The ASSERTION: if it fires, len was < 5 AND surviving >= 0.10.
-    for rec in must41_msgs:
-        msg = rec.getMessage()
-        # Verify log contents include surviving_weight + hand_count
-        assert 'surviving_weight=' in msg
-        assert 'hand_count=' in msg
+    # NIT-2 hard assertion: exactly 1 fire on this deterministic trigger.
+    assert len(must41_msgs) == 1, (
+        f'MUST #41: expected exactly 1 WARN on 3-hand nuts range, '
+        f'got {len(must41_msgs)} (surviving={meta["surviving_weight"]:.3f})'
+    )
+    msg = must41_msgs[0].getMessage()
+    assert 'surviving_weight=' in msg
+    assert 'hand_count=' in msg
 
 
 def test_must41_no_truncation(caplog):
@@ -98,10 +102,15 @@ def test_must41_no_truncation(caplog):
 
 def test_must41_fires_at_most_once_per_chain(caplog):
     """MUST #41: warned_count flag prevents per-step spam on deep
-    chains that stay mass-concentrated across multiple narrow steps."""
+    chains that stay mass-concentrated across multiple narrow steps.
+
+    NIT-2 fix (commit 11): deterministic trigger via 3-hand nuts range
+    + deep chain (flop-BET, turn-BET). Both steps would fire the
+    guard independently; warned_count caps total to exactly 1."""
     from range_narrowing import narrow_by_action_history
-    r = _sample_range_small()
-    # Deep chain: flop-BET, turn-BET — both could trigger the guard
+    # 3 hands, deep chain likely to trigger on multiple steps if
+    # warned_count flag absent.
+    r = {'AA': 1.0, 'KK': 1.0, 'QQ': 1.0}
     action_history = [
         {'street': 'preflop', 'position': 'BTN', 'action': 'RAISE'},
         {'street': 'preflop', 'position': 'BB', 'action': 'CALL'},
@@ -118,10 +127,11 @@ def test_must41_fires_at_most_once_per_chain(caplog):
         rec for rec in caplog.records
         if 'mass-concentrated-without-count-support' in rec.getMessage()
     ]
-    # Fire at most once; warned_count flag guarantees ≤1 WARN per chain
-    assert len(must41_msgs) <= 1, (
-        f'MUST #41: WARN fired {len(must41_msgs)} times (expected ≤1 '
-        f'per chain)'
+    # NIT-2 hard assertion: exactly 1 fire on deterministic multi-step
+    # trigger (warned_count enforces fire-at-most-once contract).
+    assert len(must41_msgs) == 1, (
+        f'MUST #41: expected exactly 1 WARN on deep-chain multi-trigger, '
+        f'got {len(must41_msgs)} (warned_count flag broken?)'
     )
 
 

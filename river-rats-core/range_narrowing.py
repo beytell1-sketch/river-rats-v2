@@ -1029,8 +1029,12 @@ def narrow_by_action_history(
             # MUST #41 (commit 10) — belt-and-braces count guard against
             # mass-concentration pathology. Per Moravcik DeepStack
             # supplementary + Brown Libratus range-decomposition:
-            # cumulative_surviving >= 0.20 with <5 hands surviving =
+            # cumulative_surviving >= _STAGE35_WEIGHT_FLOOR_PCT (0.10) with
+            # <_STAGE35_COUNT_GUARD_MIN (5) hands surviving =
             # mass concentrated without count support = brittle inference.
+            # NIT-1 fix (commit 11): comment used to say "0.20" — code uses
+            # FLOOR_PCT (0.10) to cover still-chaining ranges above the
+            # truncation floor but below the WARN threshold.
             # Example: 3 hands at uniform freq 0.33 each sums to 0.99 mass
             # but the distribution is degenerate (no diversity in the
             # remaining range). Mass-floor alone passes this state.
