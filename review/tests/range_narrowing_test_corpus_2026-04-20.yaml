@@ -464,11 +464,17 @@
     villain_draw_pct: 0.15
     villain_air_pct: 0.40
   expected_composition_post_fix:
-    villain_tp_pct: 0.55
-    villain_medium_made_pct: 0.25
+    # REAUTHORED per MUST #33/#51 (commit 12): GTO-corrected values
+    # from reconciliation #2. Flat-call-a-raise IS the medium-pot-
+    # control line — mediums concentrate at 0.28 (prior 0.25 slightly
+    # under-corrected). Villain's BET-CALL sequence on flop collapses
+    # to CALL post-MUST-#11; turn-CHECK preserves the medium-heavy
+    # range. Draws mostly fold to the raise; air mostly folds.
+    villain_tp_pct: 0.60
+    villain_medium_made_pct: 0.28
     villain_draw_pct: 0.05
-    villain_air_pct: 0.15
-  notes: "[approx] Donk-then-call-a-raise. Two actions on flop: BET + CALL. Range condensed but not polarised."
+    villain_air_pct: 0.07
+  notes: "[REAUTHORED MUST #33/#51 commit 12] Flat-call-a-raise IS the medium-pot-control line. Flop BET then CALL post-raise collapses via MUST #11 to CALL only; turn-CHECK preserves medium range. TP+ and mediums dominate; draws/air mostly folded to the raise."
 
 # ------------------------------------------------------------------------------
 # C. CALL edge cases (8 cases) — exercising narrow_to_continuing_range Option A.
@@ -1674,11 +1680,22 @@
     villain_draw_pct: 0.00
     villain_air_pct: 0.22
   expected_composition_post_fix:
-    villain_tp_pct: 0.70
-    villain_medium_made_pct: 0.04
+    # REAUTHORED per MUST #33/#51 (commit 12): GTO-corrected values
+    # from reconciliation #2. Owner canonical hand — turn-CHECK after
+    # donk-flop concentrates mediums into pot-control band; river-BET
+    # polarizes into air-heavy. Pre-fix numbers were too close to
+    # pre-fix baseline (0.70/0.04 ≈ 0.72/0.06); if shipped as-is the
+    # hand that motivated Stage 3.5 would show "nothing changed".
+    villain_tp_pct: 0.50
+    villain_medium_made_pct: 0.18
     villain_draw_pct: 0.00
-    villain_air_pct: 0.26
-  notes: "[approx] Owner playtest hand. Board reconstructed generically — actual board unknown (empty features log)."
+    villain_air_pct: 0.32
+  ship_criterion:
+    verdict_flip_required: true
+    pre_fix_oracle_action: "FOLD"
+    post_fix_oracle_action_must_include: ["CALL", "MIXED_CALL_FOLD"]
+    note: "Per Q37: T_J01 MUST flip verdict (CALL or MIXED with CALL>40%). If numbers move without verdict change, fix failed."
+  notes: "[REAUTHORED MUST #33 commit 12] Owner playtest hand. Turn CHECK-after-donk-flop concentrates mediums; river-BET polarizes into air. Matches K_05/K_06 delayed-probe pattern."
 
 - id: "T_J02_owner_H_8dfb6ef8_bet_check_call_bet_line"
   category: "J. Owner's scenarios"
@@ -1703,11 +1720,22 @@
     villain_draw_pct: 0.00
     villain_air_pct: 0.22
   expected_composition_post_fix:
-    villain_tp_pct: 0.65
-    villain_medium_made_pct: 0.10
+    # REAUTHORED per MUST #33/#51 (commit 12): GTO-corrected values
+    # from reconciliation #2. 4-narrow chain: flop-BET + turn-CHECK +
+    # turn-CALL + river-BET. Turn CHECK-CALL preserves bluff-catch /
+    # showdown band; mediums rise vs pre-fix which stripped them.
+    # POST-MUST-#11 collapse: BB's turn [CHECK, CALL] becomes [CALL];
+    # chain fires flop:BET + turn:CALL + (decision river-BET via gate).
+    villain_tp_pct: 0.60
+    villain_medium_made_pct: 0.18
     villain_draw_pct: 0.00
-    villain_air_pct: 0.25
-  notes: "[approx] Owner's 4-narrow test. Chain: flop-BET + turn-CHECK + turn-CALL + (decision river-BET via facing gate). All four narrow classes exercised. Post-fix preserves some mediums (turn-check) vs pre-fix stripping all."
+    villain_air_pct: 0.22
+  ship_criterion:
+    verdict_flip_required: false
+    pre_fix_oracle_action: "FOLD"
+    post_fix_oracle_action_must_include: ["CALL", "MIXED_CALL_FOLD", "FOLD_WITH_CALL_40PLUS"]
+    note: "Per Q37: T_J02 accepts MIXED with CALL>40% (soft criterion). Pure verdict flip only required for T_J01."
+  notes: "[REAUTHORED MUST #33/#51 commit 12] Owner's 4-narrow test. Chain post-MUST-#11 collapse: flop:BET + turn:CALL (turn CHECK-CALL collapsed). Turn-CALL is classic medium-made pot-control — mediums rise to 0.18 vs pre-fix 0.06."
 
 - id: "T_J03_owner_conceptual_blocker_mid_pair_flush_blocker"
   category: "J. Owner's scenarios"

@@ -108,8 +108,10 @@ def test_must57_gate_relocation_to_stage_6_documented():
 
 def test_must10_nan_allowlist_matches_docstring_and_gto_model():
     """MUST #10: feature_extractor docstring's NaN-permitted feature
-    list must match gto_model._NAN_ALLOWLIST (single source of truth).
-    Catches drift between contract docstring + inference guard."""
+    list must match gto_model inference-side NaN-allowlist (single
+    source of truth). Catches drift between contract docstring +
+    inference guard in BOTH directions (commit 12 strengthens prior
+    one-sided check per commit-11 architect-reviewer polish note)."""
     doc = _feature_extractor_module_docstring()
     expected = {
         'villain_top_pair_plus_pct', 'villain_draw_pct',
@@ -117,10 +119,27 @@ def test_must10_nan_allowlist_matches_docstring_and_gto_model():
         'flush_block_pct', 'flush_draw_block_pct',
         'straight_draw_block_pct', 'nut_made_block_pct',
     }
+    # Direction 1 (original): docstring cites all expected features
     for feat in expected:
         assert feat in doc, (
             f'MUST #10: {feat!r} missing from feature_extractor '
             f'NaN-allowlist docstring'
+        )
+    # Direction 2 (commit 12 strengthening): gto_model source-level
+    # check — the _NAN_ALLOWLIST frozenset inside features_from_dict
+    # must contain exactly these 8 features. Catches allowlist-only
+    # drift (docstring stays current but gto_model guard diverges).
+    # Structural check via source introspection since _NAN_ALLOWLIST
+    # is function-local (defined inside features_from_dict).
+    import inspect
+    import gto_model
+    src = inspect.getsource(gto_model.GtoOracle.features_from_dict)
+    # Confirm every expected feature literal is present in the function
+    # body's _NAN_ALLOWLIST block. Any missing ⇒ allowlist drift.
+    for feat in expected:
+        assert f"'{feat}'" in src or f'"{feat}"' in src, (
+            f'MUST #10: {feat!r} not cited in gto_model '
+            f'features_from_dict source (allowlist drift vs docstring)'
         )
 
 
