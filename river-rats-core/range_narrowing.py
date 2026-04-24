@@ -662,6 +662,15 @@ def narrow_to_checking_range(
 _STAGE35_WEIGHT_FLOOR_PCT = 0.10   # MUST #13: tighter than pre-fix 0.05
 _STAGE35_WEIGHT_WARN_PCT  = 0.20   # MUST #13: log-WARN below this
 
+# MUST #41 (commit 10) — belt-and-braces count guard against mass-
+# concentration pathology. See Moravcik DeepStack supplementary +
+# Brown Libratus range-decomposition: high cumulative mass with a
+# tiny hand count signals degenerate distribution (few hands each
+# with high frequency, no diversity). Fires as audit-only WARN when
+# cumulative_surviving >= _STAGE35_WEIGHT_FLOOR_PCT (0.10) AND
+# len(current_range) < _STAGE35_COUNT_GUARD_MIN (5). No truncation.
+_STAGE35_COUNT_GUARD_MIN = 5       # MUST #41: <5 hands = brittle
+
 
 def narrow_to_continuing_range(
     full_range: Dict[str, float],
@@ -921,6 +930,7 @@ def narrow_by_action_history(
     # narrow_* functions.
     cumulative_surviving = 1.0
     warned_at_20 = False
+    warned_count = False   # MUST #41 — fire-at-most-once per chain
 
     decision_street = decision_street.lower()
 
@@ -1015,6 +1025,33 @@ def narrow_by_action_history(
                     steps[-1] if steps else '?',
                 )
                 warned_at_20 = True
+
+            # MUST #41 (commit 10) — belt-and-braces count guard against
+            # mass-concentration pathology. Per Moravcik DeepStack
+            # supplementary + Brown Libratus range-decomposition:
+            # cumulative_surviving >= 0.20 with <5 hands surviving =
+            # mass concentrated without count support = brittle inference.
+            # Example: 3 hands at uniform freq 0.33 each sums to 0.99 mass
+            # but the distribution is degenerate (no diversity in the
+            # remaining range). Mass-floor alone passes this state.
+            #
+            # AUDIT-ONLY: log WARN, don't truncate. Callers continue with
+            # the narrowed range; the flag is for post-hoc review. Fires
+            # at-most-once per chain (warned_count flag) to avoid
+            # per-step spam on a pathological multi-street sequence.
+            if (not warned_count
+                and cumulative_surviving >= _STAGE35_WEIGHT_FLOOR_PCT
+                and len(current_range) < _STAGE35_COUNT_GUARD_MIN):
+                import logging
+                logging.getLogger(__name__).warning(
+                    'narrow_by_action_history: mass-concentrated-without-'
+                    'count-support — surviving_weight=%.3f, hand_count=%d '
+                    'after %s',
+                    cumulative_surviving, len(current_range),
+                    steps[-1] if steps else '?',
+                )
+                warned_count = True
+                # No truncation; audit signal only.
 
             last_valid_range = dict(current_range)
 
