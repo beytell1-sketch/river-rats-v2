@@ -80,6 +80,9 @@ def _classify_shape(action_history: List[Tuple[str, str, str]]) -> str:
     flop_has_raise = any(
         e[0] == 'flop' and e[2] == 'RAISE' for e in action_history
     )
+    turn_has_call = any(
+        e[0] == 'turn' and e[2] == 'CALL' for e in action_history
+    )
 
     # HU = 2 positions excluding dead blinds; MW = 3+ positions.
     # For sidecar entries that start with preflop the blinds posting
@@ -100,12 +103,24 @@ def _classify_shape(action_history: List[Tuple[str, str, str]]) -> str:
     # PRIORITY 2: structural shapes per MUST #49
     if flop_bet_count >= 1 and flop_has_raise:
         return 'hu_bet_raise_call'
-    if (flop_bet_count >= 1 and turn_check_count >= 1 and river_present
+    # hu_bet_x_call_bet = flop BET + turn CHECK + turn CALL + river BET
+    # (4-class chain signature: the CALL on turn distinguishes from
+    # the donk-x-bet shape below which has NO turn-CALL).
+    if (flop_bet_count >= 1 and turn_check_count >= 1 and turn_has_call
+            and river_present
             and any(e[0] == 'river' and e[2] == 'BET' for e in action_history)):
         return 'hu_bet_x_call_bet'
-    if (flop_check_count >= 1 and turn_check_count >= 1 and river_present
+    # hu_donk_x_bet = flop BET (villain donks) + turn CHECK (no CALL)
+    # + river BET. Distinct from hu_bet_x_call_bet by absence of
+    # turn-CALL.
+    if (flop_bet_count >= 1 and turn_check_count >= 1
+            and not turn_has_call
+            and river_present
             and any(e[0] == 'river' and e[2] == 'BET' for e in action_history)):
         return 'hu_donk_x_bet'
+    if (flop_check_count >= 1 and turn_check_count >= 1 and river_present
+            and any(e[0] == 'river' and e[2] == 'BET' for e in action_history)):
+        return 'hu_donk_x_bet'  # check-through variant
     if (flop_check_count >= 1 and turn_present
             and any(e[0] == 'turn' and e[2] == 'BET' for e in action_history)):
         return 'delayed_probe'

@@ -97,9 +97,84 @@ def validate_reference_sidecar() -> list:
     return all_violations
 
 
+def validate_fixture_meta_boards() -> list:
+    """MUST #35 + commit-13.2.5 FIX #5: board format in test fixture_meta.
+
+    Per commit-13.2.5 authoring spec (sidecar docstring): per-test
+    `fixture_meta` dicts must encode boards as List[str] like
+    `['Kh', '7d', '2c']`, NOT as concatenated strings `'Kh7d2c'`.
+
+    This function introspects test_commit13_sidecar_dryrun.py's
+    fixture_meta dict via AST parse so the validator catches format
+    drift at CI time (prior: relied on per-batch GTO review only).
+    """
+    import ast
+
+    test_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        'test_commit13_sidecar_dryrun.py',
+    )
+    if not os.path.exists(test_path):
+        return [f'fixture_meta check: test file not found at {test_path}']
+
+    with open(test_path) as f:
+        src = f.read()
+
+    # Parse; walk AST for a dict-assign named fixture_meta where each
+    # value is a tuple literal beginning with a list literal.
+    tree = ast.parse(src)
+    violations = []
+    fixture_meta_found = False
+    for node in ast.walk(tree):
+        if not (isinstance(node, ast.Assign)
+                and len(node.targets) == 1
+                and isinstance(node.targets[0], ast.Name)
+                and node.targets[0].id == 'fixture_meta'):
+            continue
+        if not isinstance(node.value, ast.Dict):
+            continue
+        fixture_meta_found = True
+        for k_node, v_node in zip(node.value.keys, node.value.values):
+            if not isinstance(k_node, ast.Constant):
+                continue
+            ref_id = k_node.value
+            if not isinstance(v_node, ast.Tuple) or not v_node.elts:
+                violations.append(
+                    f'fixture_meta[{ref_id!r}]: not a non-empty tuple literal'
+                )
+                continue
+            board_node = v_node.elts[0]
+            if not isinstance(board_node, ast.List):
+                violations.append(
+                    f'fixture_meta[{ref_id!r}]: board must be List[str], '
+                    f'got {type(board_node).__name__}'
+                )
+                continue
+            for i, card in enumerate(board_node.elts):
+                if not (isinstance(card, ast.Constant)
+                        and isinstance(card.value, str)):
+                    violations.append(
+                        f'fixture_meta[{ref_id!r}].board[{i}]: '
+                        f'non-string card'
+                    )
+                elif len(card.value) != 2:
+                    violations.append(
+                        f'fixture_meta[{ref_id!r}].board[{i}]: card '
+                        f'{card.value!r} expected 2-char format '
+                        f"(e.g. 'Kh')"
+                    )
+
+    if not fixture_meta_found:
+        # Not fatal — test file might not use the fixture_meta idiom
+        # in all future iterations; soft-warn only if file exists.
+        return []
+    return violations
+
+
 def main() -> int:
     cal_v = validate_calibration_sidecar()
     ref_v = validate_reference_sidecar()
+    meta_v = validate_fixture_meta_boards()
 
     print('MUST #35 sidecar validator')
     print('=' * 60)
@@ -122,12 +197,17 @@ def main() -> int:
         print(f'REFERENCE violations ({len(ref_v)}):')
         for v in ref_v:
             print(f'  {v}')
+    if meta_v:
+        print(f'FIXTURE_META violations ({len(meta_v)}):')
+        for v in meta_v:
+            print(f'  {v}')
 
-    if not cal_v and not ref_v:
-        print('PASS — all authored entries structurally valid.')
+    if not cal_v and not ref_v and not meta_v:
+        print('PASS — all authored entries + fixture_meta boards '
+              'structurally valid.')
         return 0
 
-    total = len(cal_v) + len(ref_v)
+    total = len(cal_v) + len(ref_v) + len(meta_v)
     print(f'FAIL — {total} violation(s)')
     return 1
 

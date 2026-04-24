@@ -36,6 +36,34 @@ Phase 2 (commit 13) gates:
 
 Phase 4 cleanup: once canonical JSONL records populate `action_history`
 natively (Stage 4 data prep), this sidecar becomes empty + deletable.
+
+═══════════════════════════════════════════════════════════════════
+AUTHORING SPEC — COMMIT 13.2.5 FIX #4 BOARD-FORMAT CLARIFICATION
+═══════════════════════════════════════════════════════════════════
+
+**Sidecar stores action_history ONLY — not boards.**
+
+The board for each fixture lives in:
+  - Real fixture (MW-*/FB-*): the canonical JSONL record's `board`
+    field (reference_evaluator.py reads it into ReferenceHand.board
+    as a concatenated string like 'Kh7d2c')
+  - Synthetic fixture (SYN-*): per-test `fixture_meta` dict in the
+    test harness (e.g., `tests/test_commit13_sidecar_dryrun.py`
+    fixture_meta block), stored as LIST-OF-STRINGS format:
+    `['Kh', '7d', '2c']` — NOT concatenated `'Kh7d2c'`.
+
+**Format enforcement:**
+  - MUST #35 structural validator checks sidecar action_history shape
+  - Separate fixture_meta board-format check added in commit 13.2.5
+    (see validate_fixture_meta_boards in validate_sidecar_completeness.py)
+  - Per-batch GTO reviewer catches format drift as final gate
+
+**Canonical types:**
+  action_history entry : Tuple[str, str, str]
+    e.g. ('flop', 'BB', 'CHECK')
+  fixture_meta entry  : Tuple[board_list, villain_pos, decision_street, expects_chain_fire]
+    board_list : List[str]
+    e.g. (['Kh', '7d', '2c'], 'CO', 'flop', False)
 """
 from typing import Dict, List, Tuple
 
@@ -190,9 +218,15 @@ _REFERENCE_ACTION_HISTORY: Dict[str, List[Tuple[str, str, str]]] = {
     # extract_range_composition.
     #
     # Board is dry double-paired to force high attrition through narrow
-    # steps. 4-street chain of alternating CHECK/BET compounds mass
-    # loss. Applied to e.g. a draw-heavy preflop range → can produce
-    # empty range without :FOLD step.
+    # steps. Deep chain compounds mass loss via CHECK-CALL collapses.
+    # Applied to e.g. a draw-heavy preflop range → can produce empty
+    # range without :FOLD step.
+    #
+    # FIX #2 (commit 13.2.5, GTO review): chain is 2 steps (flop:CALL
+    # + turn:CALL), not 3. River is the DECISION STREET and is
+    # excluded from the chain per narrow_by_action_history's
+    # decision_street gate; river's :BET entry enters via facing_bet
+    # filter, not the postflop-chain loop.
     'SYN-F5_HU_overflow': [
         ('preflop', 'BTN', 'RAISE'),
         ('preflop', 'BB', 'CALL'),
@@ -202,7 +236,7 @@ _REFERENCE_ACTION_HISTORY: Dict[str, List[Tuple[str, str, str]]] = {
         ('turn', 'BB', 'CHECK'),
         ('turn', 'BTN', 'BET'),
         ('turn', 'BB', 'CALL'),   # chain step 2: turn:CALL
-        ('river', 'BB', 'BET'),    # chain step 3: river:BET narrows to polarized
+        ('river', 'BB', 'BET'),    # DECISION-STREET (excluded from chain per gate; enters via facing_bet)
     ],
 
     # SYN-F6_MW_all_live: 3-way with both non-hero villains in hand
@@ -239,16 +273,49 @@ _REFERENCE_ACTION_HISTORY: Dict[str, List[Tuple[str, str, str]]] = {
         ('river', 'BB', 'BET'),
     ],
 
+    # SYN-F7_HU_donk_x_bet: HU villain-as-OOP-aggressor line covering
+    # the hu_donk_x_bet shape bucket per MUST #49 — last uncovered
+    # real-world authoring pattern (over_narrow + mass_truncation
+    # "buckets" are runtime sentinels, not authoring shapes).
+    #
+    # FIX #3 (commit 13.2.5, GTO review): covers donk-line systematic-
+    # error risk in dry-run rather than during 130-entry lift.
+    # DISTINCT from SYN-F5 (BTN-aggression) + delayed-probe shapes.
+    #
+    # Shape: villain BB donks flop → BTN (hero) calls → BB checks turn
+    # → BTN checks → BB bets river (hero decision, facing bet).
+    # Chain: flop:BET + turn:CHECK (2 prior-street BB actions narrow
+    # against the range); river-BET enters via facing_bet gate.
+    'SYN-F7_HU_donk_x_bet': [
+        ('preflop', 'BTN', 'RAISE'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'BET'),          # villain donks as OOP-aggressor
+        ('flop', 'BTN', 'CALL'),
+        ('turn', 'BB', 'CHECK'),        # villain slows down
+        ('turn', 'BTN', 'CHECK'),
+        ('river', 'BB', 'BET'),         # decision-street (facing_bet gate)
+    ],
+
     # SYN-T_B05_synthetic: HU BET-RAISE-CALL same-street + turn-CHECK
-    # (matches T_B05 corpus shape). Flop triple-action collapses per
-    # MUST #11/#12 to RAISE-only (last-decisive). Turn-CHECK is
-    # decision-street chain.
+    # (matches T_B05 corpus shape). MUST #11/#12 pre-filter rule is
+    # "keep LAST DECISION-BEARING action" (not "keep RAISE").
+    #
+    # FIX #1 (commit 13.2.5, GTO review): for villain BB, BB's flop
+    # actions are [BET, CALL]. BTN's RAISE is a HERO-side action and
+    # is filtered out of BB's villain_street_actions by position
+    # filter at narrow_by_action_history:814. BB's [BET, CALL] then
+    # goes through _collapse_same_street_sequence which keeps the
+    # LAST decision-bearing action = CALL (not RAISE).
+    # Chain for villain BB is flop:CALL + (turn-CHECK is decision-
+    # street chain step on turn if decision_street=='turn'). Prior
+    # header comment saying "collapses to RAISE-only" was wrong
+    # direction — corrected.
     'SYN-T_B05_synthetic': [
         ('preflop', 'BTN', 'RAISE'),
         ('preflop', 'BB', 'CALL'),
         ('flop', 'BB', 'BET'),
-        ('flop', 'BTN', 'RAISE'),
-        ('flop', 'BB', 'CALL'),
+        ('flop', 'BTN', 'RAISE'),   # hero-side; filtered out of BB's chain
+        ('flop', 'BB', 'CALL'),     # BB's last decision-bearing → chain:flop:CALL
         ('turn', 'BB', 'CHECK'),
     ],
 }

@@ -27,6 +27,8 @@ _EXPECTED_COMMIT13_REFIDS = {'MW-11', 'MW-30', 'FB-17', 'FB-23', 'MW-15'}
 _EXPECTED_COMMIT13_2_SYN_REFIDS = {
     'SYN-F3_HU_folded', 'SYN-F5_HU_overflow', 'SYN-F6_MW_all_live',
     'SYN-T_J02_synthetic', 'SYN-T_B05_synthetic',
+    # FIX #3 (commit 13.2.5): donk-line bucket
+    'SYN-F7_HU_donk_x_bet',
 }
 _EXPECTED_REFERENCE_REFIDS = _EXPECTED_COMMIT13_REFIDS | _EXPECTED_COMMIT13_2_SYN_REFIDS
 _EXPECTED_CALIBRATION_REFIDS = {'MW-11', 'MW-30', 'MW-15'}
@@ -140,6 +142,33 @@ def test_must66_stratification_covers_multiple_shapes():
     )
 
 
+def test_commit13_2_5_hu_donk_x_bet_bucket_covered():
+    """FIX #3 (commit 13.2.5): SYN-F7_HU_donk_x_bet lands in the
+    hu_donk_x_bet classifier bucket — covers the last real-world
+    shape authoring pattern per GTO review recommendation."""
+    from tests.solver_verify_sidecars import _classify_shape
+    from _reference_action_history_sidecar import _REFERENCE_ACTION_HISTORY
+    ah = _REFERENCE_ACTION_HISTORY['SYN-F7_HU_donk_x_bet']
+    shape = _classify_shape(ah)
+    assert shape == 'hu_donk_x_bet', (
+        f'SYN-F7 expected hu_donk_x_bet bucket; got {shape!r}'
+    )
+
+
+def test_commit13_2_5_fixture_meta_boards_list_of_strings():
+    """FIX #5 (commit 13.2.5): validator extension catches fixture_meta
+    board-format drift. Every fixture_meta board must be List[str]
+    with 2-char card strings, not concatenated."""
+    from tests.validate_sidecar_completeness import (
+        validate_fixture_meta_boards,
+    )
+    violations = validate_fixture_meta_boards()
+    assert not violations, (
+        f'FIX #5: fixture_meta board-format violations:\n  '
+        + '\n  '.join(violations)
+    )
+
+
 # =============================================================================
 # End-to-end chain-firing per authored entry
 # =============================================================================
@@ -187,6 +216,10 @@ def test_dryrun_entries_exercise_chain_narrowing():
         # BET-CALL (post-RAISE) collapsed via MUST #11/#12 to flop:CALL.
         # No turn actions before decision → chain fires flop:CALL only.
         'SYN-T_B05_synthetic': (['Kh', '7d', '2c', '9s'], 'BB', 'turn', True),
+        # SYN-F7_HU_donk_x_bet (commit 13.2.5 FIX #3): river decision,
+        # villain BB donked flop then check-turn. Chain: flop:BET +
+        # turn:CHECK — fires. River-BET enters via facing_bet gate.
+        'SYN-F7_HU_donk_x_bet': (['Kh', '7d', '2c', '9s', '5h'], 'BB', 'river', True),
     }
 
     for ref_id, ah in _REFERENCE_ACTION_HISTORY.items():
