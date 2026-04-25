@@ -893,6 +893,50 @@ def _get_chain_narrowed_villain_range(
         if per_villain_folded else False
     )
 
+    # Commit 14 Finding B fold-in: derive per-opponent composition by
+    # running the same partition-by-shape logic that produces
+    # villain_top_pair_plus_pct etc. (in extract_range_composition),
+    # applied to that opponent's narrowed range. Stored on meta so
+    # extract_all_features can promote `_per_villain_composition` onto
+    # the features dict without re-iterating the per-villain ranges.
+    # Triple keys: 'tp_plus', 'medium', 'draw', 'air' (sums to ≈1.0
+    # per opponent unless range is empty / folded / overflowed).
+    per_villain_composition: Dict[str, Dict[str, float]] = {}
+    for opp_pos, opp_range in per_villain_ranges.items():
+        comp = {'tp_plus': 0.0, 'medium': 0.0, 'draw': 0.0, 'air': 0.0}
+        if opp_range and not per_villain_folded.get(opp_pos, False) \
+                and not per_villain_overflowed.get(opp_pos, False):
+            tp_w = md_w = dr_w = ar_w = total_w = 0.0
+            for hand_notation, freq in opp_range.items():
+                if freq <= 0:
+                    continue
+                try:
+                    classification = classify_hand(hand_notation, board_cards)
+                except Exception:
+                    continue
+                cat = classification.category
+                # River: draws are dead — reclassify as air (parity with
+                # extract_range_composition HU loop at line ~1753).
+                if street_name == 'river' and cat == 'draw':
+                    cat = 'air'
+                total_w += freq
+                if cat in _TOP_PAIR_PLUS:
+                    tp_w += freq
+                elif cat in _DRAW_CATEGORIES:
+                    dr_w += freq
+                elif cat in _AIR_CATEGORIES:
+                    ar_w += freq
+                elif cat in _MEDIUM_MADE_CATEGORIES:
+                    md_w += freq
+            if total_w > 0:
+                comp = {
+                    'tp_plus': round(tp_w / total_w, 4),
+                    'medium': round(md_w / total_w, 4),
+                    'draw': round(dr_w / total_w, 4),
+                    'air': round(ar_w / total_w, 4),
+                }
+        per_villain_composition[opp_pos] = comp
+
     meta = {
         'chain_steps': agg_chain_steps,
         'truncated': agg_truncated,
@@ -910,6 +954,8 @@ def _get_chain_narrowed_villain_range(
         'per_villain_truncated': per_villain_truncated,
         'per_villain_folded': per_villain_folded,
         'per_villain_overflowed': per_villain_overflowed,
+        # Commit 14 Finding B: derived per-opponent composition triples.
+        'per_villain_composition': per_villain_composition,
     }
     # C3 fix (commit 4.1): populate hand-level cache before return so
     # subsequent equity/partition/composition calls on the same hand
@@ -2216,6 +2262,45 @@ def extract_all_features(hand: Dict) -> Dict:
     features[F.VILLAIN_MEDIUM_MADE_PCT] = features.get('_villain_medium_made_pct', 0.0)
     features[F.VILLAIN_RANGE_CAPPED] = features.get('_villain_range_capped', 0)
     features[F.BOARD_FAVOUR] = features.get('_board_favour', 0.0)
+
+    # Step 10b: Commit 14 Finding B fold-in — multiway per-villain field
+    # promotion. Promotes _per_villain_folded, _per_villain_composition,
+    # _per_villain_overflowed from chain_meta onto the features dict so
+    # downstream consumers (teaching renderer per HOLD #5, game per-villain
+    # range bars, M4 re-audit, debug dumps) can read without re-invoking
+    # the chain helper. HU hands get empty dicts (NOT missing keys) to
+    # prevent NoneType errors on consumers expecting dict-shaped values.
+    # Cross-stream unblocks: teaching HOLD #5, game per-villain range bars.
+    features['_per_villain_folded'] = {}
+    features['_per_villain_composition'] = {}
+    features['_per_villain_overflowed'] = {}
+    _num_opp = features[F.NUM_OPPONENTS]
+    # Source `_opponent_positions` from hand if explicitly provided, else
+    # derive via `assign_opponent_positions` for MW hands (matches the
+    # default-derivation path used in the equity/partition extractors at
+    # line ~1430).
+    _opp_positions = hand.get('_opponent_positions', None)
+    if not _opp_positions and _num_opp >= 2:
+        _opp_positions = assign_opponent_positions(
+            features.get('_hero_pos_raw', 'BTN'), _num_opp,
+        )
+    if _num_opp >= 2 and _opp_positions:
+        _, _mw_meta = _get_chain_narrowed_villain_range(
+            hero_pos=features.get('_hero_pos_raw', 'BTN'),
+            villain_pos=features.get('_villain_pos_raw', 'BB'),
+            opener_pos=hand.get('_opener_position', None),
+            board_cards=features.get('_board_cards', []),
+            facing_bet=bool(features.get('facing_bet', 0)),
+            street_raw=features.get('_street_raw', 'f'),
+            action_history=hand.get('_action_history'),
+            num_opponents=_num_opp,
+            opponent_positions=_opp_positions,
+            bettor_pos=hand.get('_bettor_pos'),
+            hand=hand,  # uses cache populated by prior calls
+        )
+        features['_per_villain_folded'] = _mw_meta.get('per_villain_folded', {})
+        features['_per_villain_composition'] = _mw_meta.get('per_villain_composition', {})
+        features['_per_villain_overflowed'] = _mw_meta.get('per_villain_overflowed', {})
 
     # Step 11: Current-street action features (new for v9)
     features[F.NUM_CALLERS_TO_BET] = hand.get('_num_callers_to_bet', 0)
