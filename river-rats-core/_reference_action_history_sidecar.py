@@ -569,6 +569,305 @@ _REFERENCE_ACTION_HISTORY: Dict[str, List[Tuple[str, str, str]]] = {
         ('turn', 'CO', 'CHECK'),
         ('turn', 'BTN', 'BET'),
     ],
+
+    # ─────────────────────────────────────────────────────────────────
+    # COMMIT 13.3.2 — BATCH 2/5: FB-21..40 minus FB-23 reference entries
+    # (FB-23 already shipped in commit 13 dry-run; remaining 19 below
+    # per MAIN_TERMINAL_COMMIT13_3_GREENLIGHT_2026-04-25.md)
+    # ─────────────────────────────────────────────────────────────────
+    # Same conventions as 13.3.1 (see batch 1 header comment above).
+    # Hero is the position with "???" in the JSONL action_string.
+    # Postflop position order: BB → CO → BTN.
+    # FB-13 GTO-review NIT-3 (stale `_FB_ACTION_HISTORY:760` prose) is
+    # tracked for separate prose-fix commit; same authoring discipline
+    # applies here — JSONL action_string is canonical ground truth and
+    # supersedes any conflicting `_FB_ACTION_HISTORY` prose. Notable
+    # cases in this batch where prose conflicts with action_string are
+    # FB-35 (prose "BB folded" on flop, action_string shows BB folds
+    # turn) — encoded per action_string.
+
+    # FB-21: 3-way CO-open. Turn. Flop check-through; CO delayed c-bet
+    # turn, BTN folded, hero BB faces HU on turn. (Same shape as FB-17.)
+    # Prior chain for primary villain CO: flop:CHECK.
+    'FB-21': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop: check-through (primary villain CO checks → chain step flop:CHECK).
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+        ('flop', 'BTN', 'CHECK'),
+        # Turn decision for BB; BB checked, CO bet, BTN folded.
+        ('turn', 'BB', 'CHECK'),
+        ('turn', 'CO', 'BET'),
+        ('turn', 'BTN', 'FOLD'),
+    ],
+
+    # FB-22: 3-way BTN-PFR. Flop. BB+CO check, BTN bet, BB called,
+    # hero CO faces bet+call.
+    'FB-22': [
+        ('preflop', 'BTN', 'RAISE'),
+        ('preflop', 'CO', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop decision for CO; check-check-bet-call sequence to CO.
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+        ('flop', 'BTN', 'BET'),
+        ('flop', 'BB', 'CALL'),
+    ],
+
+    # FB-24: 3-way CO-open. River. All checked flop+turn; BB donk river,
+    # CO folded, hero BTN faces HU on river.
+    # Prior chain for primary villain BB: flop:CHECK + turn:CHECK.
+    'FB-24': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop check-through (primary villain BB checks).
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+        ('flop', 'BTN', 'CHECK'),
+        # Turn check-through (primary villain BB checks).
+        ('turn', 'BB', 'CHECK'),
+        ('turn', 'CO', 'CHECK'),
+        ('turn', 'BTN', 'CHECK'),
+        # River decision for BTN; BB donked, CO folded.
+        ('river', 'BB', 'BET'),
+        ('river', 'CO', 'FOLD'),
+    ],
+
+    # FB-25: 3-way CO-open. River. CO triple-barrel; BTN folded earlier
+    # (encoded as flop fold to first c-bet); hero BB faces HU on river.
+    # Prior chain for primary villain CO: flop:BET + turn:BET.
+    'FB-25': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop: CO c-bet, BTN folds first c-bet, BB calls (hero closes flop HU).
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+        ('flop', 'BTN', 'FOLD'),
+        ('flop', 'BB', 'CALL'),
+        # Turn HU: BB checks, CO 2nd barrel, BB calls (hero closes turn).
+        ('turn', 'BB', 'CHECK'),
+        ('turn', 'CO', 'BET'),
+        ('turn', 'BB', 'CALL'),
+        # River decision for BB; BB checks, CO 3rd barrel.
+        ('river', 'BB', 'CHECK'),
+        ('river', 'CO', 'BET'),
+    ],
+
+    # FB-26: 3-way CO-open. River. All checked through; BB donk river,
+    # CO folded, hero BTN. (Same shape as FB-24, hero/villain swap from
+    # the perspective of who acts on river.)
+    # Prior chain for primary villain BB: flop:CHECK + turn:CHECK.
+    'FB-26': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+        ('flop', 'BTN', 'CHECK'),
+        ('turn', 'BB', 'CHECK'),
+        ('turn', 'CO', 'CHECK'),
+        ('turn', 'BTN', 'CHECK'),
+        ('river', 'BB', 'BET'),
+        ('river', 'CO', 'FOLD'),
+    ],
+
+    # FB-27: 3-way CO-open. Flop. CO c-bet 33%, BTN folded, hero BB.
+    # (Same shape as FB-01.)
+    'FB-27': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+        ('flop', 'BTN', 'FOLD'),
+    ],
+
+    # FB-28: 3-way CO-open. Flop. CO bet, BTN called, hero BB faces bet+call.
+    # (Same shape as FB-03.)
+    'FB-28': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+        ('flop', 'BTN', 'CALL'),
+    ],
+
+    # FB-29: 3-way CO-open. Flop. BB donk, hero CO sandwiched (BTN behind).
+    # (Same shape as FB-07.)
+    'FB-29': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'BET'),
+    ],
+
+    # FB-30: 3-way CO-open. Flop. CO c-bet 66%, hero BTN first responder.
+    # (Same shape as FB-05/09.)
+    'FB-30': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+    ],
+
+    # FB-31: 3-way CO-open. Flop. BB donk, CO folded, hero BTN closes HU.
+    # (Same shape as FB-11/14.)
+    'FB-31': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'BET'),
+        ('flop', 'CO', 'FOLD'),
+    ],
+
+    # FB-32: 3-way CO-open. Flop. CO bet, BTN called, hero BB faces bet+call.
+    # (Same shape as FB-03/16/28.)
+    'FB-32': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+        ('flop', 'BTN', 'CALL'),
+    ],
+
+    # FB-33: 3-way BTN-PFR. Flop. BB+CO check, BTN bet, BB called,
+    # hero CO faces bet+call. (Same shape as FB-22.)
+    'FB-33': [
+        ('preflop', 'BTN', 'RAISE'),
+        ('preflop', 'CO', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+        ('flop', 'BTN', 'BET'),
+        ('flop', 'BB', 'CALL'),
+    ],
+
+    # FB-34: 3-way BTN-PFR. Flop. BB+CO check, BTN bet 25%, BB called,
+    # hero CO faces bet+call. (Same shape as FB-22/33; smaller sizing.)
+    'FB-34': [
+        ('preflop', 'BTN', 'RAISE'),
+        ('preflop', 'CO', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+        ('flop', 'BTN', 'BET'),
+        ('flop', 'BB', 'CALL'),
+    ],
+
+    # FB-35: 3-way BTN-PFR. Turn. Flop check-check-bet-call-call (3-way
+    # to turn); turn check-check-bet, BB folds, hero CO faces decision.
+    # NOTE: `_FB_ACTION_HISTORY:782` prose says "BB folded" on flop, but
+    # JSONL action_string ("BB check, CO check, BTN bet 90, BB fold,
+    # CO ???") shows BB folding on TURN. Encoded per action_string
+    # (canonical ground truth); prose is stale (tracked for batch 13.3
+    # prose-cleanup commit alongside FB-13).
+    # Prior chain for primary villain BTN: flop:BET.
+    'FB-35': [
+        ('preflop', 'BTN', 'RAISE'),
+        ('preflop', 'CO', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop 3-way: check-check-bet-call-call (BTN bets, BB+CO call).
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+        ('flop', 'BTN', 'BET'),
+        ('flop', 'BB', 'CALL'),
+        ('flop', 'CO', 'CALL'),
+        # Turn decision for CO; check-check-bet-fold sequence to CO.
+        ('turn', 'BB', 'CHECK'),
+        ('turn', 'CO', 'CHECK'),
+        ('turn', 'BTN', 'BET'),
+        ('turn', 'BB', 'FOLD'),
+    ],
+
+    # FB-36: 3-way → 2-way BTN-PFR (BB folded flop). Turn HU CO vs BTN.
+    # CO checks, BTN bets, hero CO faces decision. (Same shape as FB-20.)
+    # Prior chain for primary villain BTN: flop:BET.
+    'FB-36': [
+        ('preflop', 'BTN', 'RAISE'),
+        ('preflop', 'CO', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+        ('flop', 'BTN', 'BET'),
+        ('flop', 'BB', 'FOLD'),
+        ('flop', 'CO', 'CALL'),
+        ('turn', 'CO', 'CHECK'),
+        ('turn', 'BTN', 'BET'),
+    ],
+
+    # FB-37: 3-way BTN-PFR. Turn. Flop check-through; turn check-check-bet,
+    # BB folds, hero CO faces HU on turn.
+    # Prior chain for primary villain BTN: flop:CHECK.
+    'FB-37': [
+        ('preflop', 'BTN', 'RAISE'),
+        ('preflop', 'CO', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop: check-through (primary villain BTN checks → chain step flop:CHECK).
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+        ('flop', 'BTN', 'CHECK'),
+        # Turn decision for CO; BB checked, CO checked, BTN bet, BB folded.
+        ('turn', 'BB', 'CHECK'),
+        ('turn', 'CO', 'CHECK'),
+        ('turn', 'BTN', 'BET'),
+        ('turn', 'BB', 'FOLD'),
+    ],
+
+    # FB-38: 3-way CO-open. River. All checked flop+turn; BB pot-bet
+    # river, hero CO faces decision (BTN behind to act).
+    # Prior chain for primary villain BB: flop:CHECK + turn:CHECK.
+    'FB-38': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+        ('flop', 'BTN', 'CHECK'),
+        ('turn', 'BB', 'CHECK'),
+        ('turn', 'CO', 'CHECK'),
+        ('turn', 'BTN', 'CHECK'),
+        # River decision for CO; BB donked, CO to act, BTN behind.
+        ('river', 'BB', 'BET'),
+    ],
+
+    # FB-39: 3-way BTN-PFR. River. All checked flop+turn (BTN checks
+    # back turn); river check-check-bet, hero BB faces decision.
+    # Prior chain for primary villain BTN: flop:CHECK + turn:CHECK.
+    'FB-39': [
+        ('preflop', 'BTN', 'RAISE'),
+        ('preflop', 'CO', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop check-through (primary villain BTN checks).
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+        ('flop', 'BTN', 'CHECK'),
+        # Turn check-through (BTN checks back per prose).
+        ('turn', 'BB', 'CHECK'),
+        ('turn', 'CO', 'CHECK'),
+        ('turn', 'BTN', 'CHECK'),
+        # River decision for BB; BB checks, CO checks, BTN bets.
+        ('river', 'BB', 'CHECK'),
+        ('river', 'CO', 'CHECK'),
+        ('river', 'BTN', 'BET'),
+    ],
+
+    # FB-40: 3-way BTN-PFR. Flop. BB+CO check, BTN bet, hero BB first
+    # responder (CO behind). (Same shape as FB-12.)
+    'FB-40': [
+        ('preflop', 'BTN', 'RAISE'),
+        ('preflop', 'CO', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+        ('flop', 'BTN', 'BET'),
+    ],
 }
 
 
@@ -620,6 +919,26 @@ _REFERENCE_VILLAIN_POS: Dict[str, str] = {
     'FB-18':                   'CO',
     'FB-19':                   'BTN',
     'FB-20':                   'BTN',
+    # Commit 13.3.2 — FB-21..40 (FB-23 above)
+    'FB-21':                   'CO',
+    'FB-22':                   'BTN',
+    'FB-24':                   'BB',
+    'FB-25':                   'CO',
+    'FB-26':                   'BB',
+    'FB-27':                   'CO',
+    'FB-28':                   'CO',
+    'FB-29':                   'BB',
+    'FB-30':                   'CO',
+    'FB-31':                   'BB',
+    'FB-32':                   'CO',
+    'FB-33':                   'BTN',
+    'FB-34':                   'BTN',
+    'FB-35':                   'BTN',
+    'FB-36':                   'BTN',
+    'FB-37':                   'BTN',
+    'FB-38':                   'BB',
+    'FB-39':                   'BTN',
+    'FB-40':                   'BTN',
 }
 
 
