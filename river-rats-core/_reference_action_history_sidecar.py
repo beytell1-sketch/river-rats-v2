@@ -324,6 +324,251 @@ _REFERENCE_ACTION_HISTORY: Dict[str, List[Tuple[str, str, str]]] = {
         ('flop', 'BB', 'CALL'),     # BB's last decision-bearing → chain:flop:CALL
         ('turn', 'BB', 'CHECK'),
     ],
+
+    # ─────────────────────────────────────────────────────────────────
+    # COMMIT 13.3.1 — BATCH 1/5: FB-01..20 reference entries
+    # (FB-17 already shipped in commit 13 dry-run; remaining 19 entries
+    # below per MAIN_TERMINAL_COMMIT13_3_GREENLIGHT_2026-04-25.md)
+    # ─────────────────────────────────────────────────────────────────
+    # Convention recap:
+    #   - 3-way CO-open pots: preflop CO RAISE + BTN CALL + BB CALL.
+    #     Postflop position order: BB → CO → BTN.
+    #   - 3-way BTN-PFR pots (FB-12/13/19): preflop BTN RAISE + CO CALL
+    #     + BB CALL. Postflop position order: BB → CO → BTN. Preflop
+    #     actor-order detail (CO acting before BTN preflop) is
+    #     simplified into single-raise encoding for AH purposes; opener
+    #     is metadata-only and the chain only consumes postflop villain
+    #     actions per the prior-street-only rule.
+    #   - 2-way pots after a fold (FB-20): preserved as 3-way preflop +
+    #     full flop sequence including the fold + heads-up turn action.
+    # Source: each entry's `action_string` field in
+    # training-data/facing_bet_test_set_40.jsonl is the ground-truth
+    # decision-street sequence; `_FB_OPENER_POSITION` in
+    # reference_evaluator.py provides the preflop opener; prose in
+    # `_FB_ACTION_HISTORY` provides the prior-street context for turn
+    # decisions (FB-18/19/20).
+    # Hero is the position with the "???" marker in the action_string.
+
+    # FB-01: 3-way CO-open. Flop. CO c-bet, BTN folded, hero BB faces HU.
+    'FB-01': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop decision for BB; same-street sequence up to hero action.
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+        ('flop', 'BTN', 'FOLD'),
+    ],
+
+    # FB-02: 3-way CO-open. Flop. BB donk-bet, CO folded, hero BTN faces HU.
+    'FB-02': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop decision for BTN; BB donked, CO folded.
+        ('flop', 'BB', 'BET'),
+        ('flop', 'CO', 'FOLD'),
+    ],
+
+    # FB-03: 3-way CO-open. Flop. CO bet, BTN called, hero BB faces bet+call.
+    'FB-03': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+        ('flop', 'BTN', 'CALL'),
+    ],
+
+    # FB-04: 3-way CO-open. Flop. CO c-bet, BTN folded, hero BB.
+    # (Same shape as FB-01 with different board.)
+    'FB-04': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+        ('flop', 'BTN', 'FOLD'),
+    ],
+
+    # FB-05: 3-way CO-open. Flop. CO c-bet 66%, hero BTN first responder
+    # (BB behind to act after BTN).
+    'FB-05': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop decision for BTN; BB checked, CO bet, BTN to act, BB behind.
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+    ],
+
+    # FB-06: 3-way CO-open. Flop. CO c-bet, BTN folded, hero BB faces HU.
+    # (Same shape as FB-01.)
+    'FB-06': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+        ('flop', 'BTN', 'FOLD'),
+    ],
+
+    # FB-07: 3-way CO-open. Flop. BB donk; hero CO sandwiched (BTN behind).
+    'FB-07': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop decision for CO; BB donked, CO to act, BTN behind.
+        ('flop', 'BB', 'BET'),
+    ],
+
+    # FB-08: 3-way CO-open. Flop. BB donk; hero CO sandwiched.
+    # (Same shape as FB-07 with different board.)
+    'FB-08': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'BET'),
+    ],
+
+    # FB-09: 3-way CO-open. Flop. CO pot-bet, hero BTN first responder.
+    'FB-09': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+    ],
+
+    # FB-10: 3-way CO-open. Flop. CO c-bet, BTN folded, hero BB closes HU.
+    # (Same shape as FB-01.)
+    'FB-10': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+        ('flop', 'BTN', 'FOLD'),
+    ],
+
+    # FB-11: 3-way CO-open. Flop. BB donk, CO folded, hero BTN closes HU.
+    'FB-11': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'BET'),
+        ('flop', 'CO', 'FOLD'),
+    ],
+
+    # FB-12: 3-way BTN-PFR pot. Flop. BB+CO check-through, BTN bet,
+    # hero BB first responder (CO still to act after BB).
+    'FB-12': [
+        ('preflop', 'BTN', 'RAISE'),
+        ('preflop', 'CO', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop decision for BB after action returns; check-check-bet,
+        # BB facing decision (CO behind).
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+        ('flop', 'BTN', 'BET'),
+    ],
+
+    # FB-13: 3-way BTN-PFR pot. Flop. Check-check-bet, BB folded,
+    # hero CO closes HU vs BTN bet.
+    'FB-13': [
+        ('preflop', 'BTN', 'RAISE'),
+        ('preflop', 'CO', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop decision for CO; BB checked then folded after BTN bet.
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+        ('flop', 'BTN', 'BET'),
+        ('flop', 'BB', 'FOLD'),
+    ],
+
+    # FB-14: 3-way CO-open. Flop. BB donk, CO folded, hero BTN closes HU.
+    # (Same shape as FB-11.)
+    'FB-14': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'BET'),
+        ('flop', 'CO', 'FOLD'),
+    ],
+
+    # FB-15: 3-way CO-open. Flop. CO c-bet, BTN folded, hero BB closes HU.
+    # (Same shape as FB-01.)
+    'FB-15': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+        ('flop', 'BTN', 'FOLD'),
+    ],
+
+    # FB-16: 3-way CO-open. Flop. CO bet, BTN called, hero BB faces bet+call.
+    # (Same shape as FB-03.)
+    'FB-16': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+        ('flop', 'BTN', 'CALL'),
+    ],
+
+    # FB-18: 3-way CO-open. Turn. Flop check-through; turn CO delayed
+    # c-bet, hero BTN first responder (BB behind).
+    # Prior chain for primary villain CO: flop:CHECK.
+    'FB-18': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop: check-through (primary villain CO checks → chain step flop:CHECK).
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+        ('flop', 'BTN', 'CHECK'),
+        # Turn decision for BTN; BB checked, CO bet, BTN to respond, BB behind.
+        ('turn', 'BB', 'CHECK'),
+        ('turn', 'CO', 'BET'),
+    ],
+
+    # FB-19: 3-way BTN-PFR pot. Turn. Flop CO bet + BTN called + BB called;
+    # turn check-check-BTN bet, hero BB faces decision (sandwich; CO behind).
+    # Prior chain for primary villain BTN: flop:CALL.
+    'FB-19': [
+        ('preflop', 'BTN', 'RAISE'),
+        ('preflop', 'CO', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop: BB CHECK, CO BET, BTN CALL (primary villain), BB CALL (hero).
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+        ('flop', 'BTN', 'CALL'),
+        ('flop', 'BB', 'CALL'),
+        # Turn decision for BB; BB checked, CO checked, BTN bet, BB to respond.
+        ('turn', 'BB', 'CHECK'),
+        ('turn', 'CO', 'CHECK'),
+        ('turn', 'BTN', 'BET'),
+    ],
+
+    # FB-20: 3-way → 2-way (BB folded flop). Turn HU (CO vs BTN).
+    # CO checks, BTN bets, hero CO faces decision.
+    # Prior chain for primary villain BTN: flop:BET.
+    'FB-20': [
+        ('preflop', 'BTN', 'RAISE'),
+        ('preflop', 'CO', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop: BB CHECK, CO CHECK, BTN BET, BB FOLD, CO CALL (hero closes flop).
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+        ('flop', 'BTN', 'BET'),
+        ('flop', 'BB', 'FOLD'),
+        ('flop', 'CO', 'CALL'),
+        # Turn decision for CO (HU vs BTN); CO checks, BTN bets, CO to respond.
+        ('turn', 'CO', 'CHECK'),
+        ('turn', 'BTN', 'BET'),
+    ],
 }
 
 
@@ -355,6 +600,26 @@ _REFERENCE_VILLAIN_POS: Dict[str, str] = {
     'SYN-T_J02_synthetic':     'BB',
     'SYN-T_B05_synthetic':     'BB',
     'SYN-F7_HU_donk_x_bet':    'BB',
+    # Commit 13.3.1 — FB-01..20 (FB-17 above)
+    'FB-01':                   'CO',
+    'FB-02':                   'BB',
+    'FB-03':                   'CO',
+    'FB-04':                   'CO',
+    'FB-05':                   'CO',
+    'FB-06':                   'CO',
+    'FB-07':                   'BB',
+    'FB-08':                   'BB',
+    'FB-09':                   'CO',
+    'FB-10':                   'CO',
+    'FB-11':                   'BB',
+    'FB-12':                   'BTN',
+    'FB-13':                   'BTN',
+    'FB-14':                   'BB',
+    'FB-15':                   'CO',
+    'FB-16':                   'CO',
+    'FB-18':                   'CO',
+    'FB-19':                   'BTN',
+    'FB-20':                   'BTN',
 }
 
 
