@@ -3,7 +3,7 @@ date: 2026-04-25
 from: Main terminal (orchestrator)
 to: Owner · Logic builder · ML-architect (when commissioned) · GTO expert pool
 re: Stage 4 (relabel + feature highlighting) + Stage 5 (retrain) + Stage 6 enhancements — slow/quality protocol with multi-protocol independent teams; pilot before scale; cross-protocol convergence as the robustness test
-status: PROPOSAL FOR REVIEW — designed during Stage 3.5 wait window per quality default; owner gates (a) pilot size, (b) team count, (c) commissioning of new agents, (d) hold-out test set authorship; everything else is orchestrator-decidable
+status: APPROVED PLAN — owner directive 2026-04-25 to apply quality default to all open questions; orchestrator made the decisions and locked them; proposal becomes the working Stage 4 plan; owner may override any specific point on read
 ---
 
 # Stage 4 — Multi-Protocol Independent-Team Labelling Strategy
@@ -60,7 +60,7 @@ scale linearly for full Stage 4 (~600 hands).
 
 ### 3.1 Action labelling — three protocol variants
 
-Each hand is labelled by **9 agents total: 3 protocol variants × 3 agents per protocol** (9 labels per hand on the pilot).
+Each hand is labelled by **15 agents total: 3 protocol variants × 5 agents per protocol** (15 labels per hand on the pilot — quality-default size for tighter intra-protocol κ).
 
 **Protocol A — KB-driven prompt (current v3.1 lineage).** Labeller reads KB §1.x rules first, then situation, produces label + reasoning trace. Standard production approach. Same as Pass 1.
 
@@ -70,7 +70,7 @@ Each hand is labelled by **9 agents total: 3 protocol variants × 3 agents per p
 
 All three protocols target the SAME label (a single GTO action). They differ in HOW the labeller reasons there.
 
-**Same-protocol consistency: 3 agents per protocol** measures within-protocol noise. Pass 1's data suggests κ ≈ 0.85+ within-protocol; pilot confirms or revises.
+**Same-protocol consistency: 5 agents per protocol** measures within-protocol noise. Pass 1's data suggests κ ≈ 0.85+ within-protocol; pilot confirms or revises with tighter confidence interval.
 
 **Cross-protocol convergence: 3 protocols** measures inter-protocol robustness. The signal we don't currently have.
 
@@ -88,12 +88,12 @@ H1 is production; H2 is a sanity check. If H2's intentions correlate with H1's f
 
 ### 3.3 Reviewers
 
-Per `PROCESS_GUIDE.md` §1.2 (≥0.5 reviewer:labeller ratio): pilot needs **≥5 reviewers** for the 9 labellers. Round up to 6 reviewers, distributed across protocols and concerns:
+Per `PROCESS_GUIDE.md` §1.2 (≥0.5 reviewer:labeller ratio) at the new 15-labeller scale: pilot needs **≥8 reviewers**. Distributed across protocols and concerns:
 
-- 2 reviewers spot-check Protocol A reasoning traces
-- 2 reviewers spot-check Protocols B + C
-- 1 reviewer spot-checks H1 + H2 highlighting
-- 1 reviewer audits the pilot-orchestration (cross-protocol comparison report, kappa computation, adjudication routing)
+- 3 reviewers spot-check Protocol A reasoning traces
+- 2 reviewers spot-check Protocol B
+- 2 reviewers spot-check Protocol C
+- 1 reviewer spot-checks H1 + H2 highlighting + audits pilot-orchestration (cross-protocol comparison report, kappa computation, adjudication routing)
 
 Reviewers do NOT label. They check reasoning quality, GTO-rule application, and protocol fidelity. Audit reviewer never sees individual labels.
 
@@ -109,33 +109,37 @@ Solver result is read AFTER GTO reasoning is locked, so GTO reasoning isn't anch
 
 ### 3.5 Total agent count for the pilot
 
-| Role | Agents (pilot 50 hands) | Agents (full Stage 4 ~600 hands) |
+| Role | Agents (pilot 100 hands) | Agents (full Stage 4 ~600 hands) |
 |---|---|---|
-| Labellers (3 protocols × 3 each) | 9 | 9 (run multiple batches) |
-| Highlighters (H1 + H2, 2 each) | 4 | 4 |
-| Reviewers | 6 | 8 |
+| Labellers (3 protocols × 5 each) | 15 | 15 (run multiple batches) |
+| Highlighters (H1 + H2, 3 each — quality default) | 6 | 6 |
+| Reviewers | 8 | 10 |
 | Adjudication panel | 3 | 3 |
 | Pilot orchestrator (independent) | 1 | 1 |
-| **Total distinct agent dispatches** | **23** | **25** |
+| **Total distinct agent dispatches** | **33** | **35** |
 
 ## 4. Pilot batch protocol
 
 ### 4.1 Size
 
-**50 hands.** Stratified across the 8 MUST #49 shape categories:
-- HU delayed-probe ×7
-- HU donk-x-through + river-bet ×7
-- MW per-villain chain ×7
-- MW baseline no-chain ×7
-- T_J02 / T_B05 shape variants ×6
-- Folded-villain sentinel ×6
-- Synthetic over-narrow ×5
-- Mass-floor truncation ×5
+**100 hands** (quality default applied — larger pilot for tighter
+κ confidence interval and more decisive systematic-bias detection).
+Stratified across the 8 MUST #49 shape categories:
 
-50 is large enough to estimate κ within ±0.1, small enough that
-adjudication on every disagreement is tractable. Per
-`feedback_compute_assumptions.md`: verify pilot scope hasn't been
-made redundant by Stage 3.5 sidecar work before dispatching.
+- HU delayed-probe ×13
+- HU donk-x-through + river-bet ×13
+- MW per-villain chain ×13
+- MW baseline no-chain ×13
+- T_J02 / T_B05 shape variants ×12
+- Folded-villain sentinel ×12
+- Synthetic over-narrow ×12
+- Mass-floor truncation ×12
+
+100 is enough to estimate κ within ±0.05–0.07, surface
+shape-category-specific weaknesses, and decisively trigger HALT
+conditions before scaling. Per `feedback_compute_assumptions.md`:
+verify pilot scope hasn't been made redundant by Stage 3.5 sidecar
+work before dispatching.
 
 ### 4.2 Pre-pilot calibration (no exception)
 
@@ -165,9 +169,9 @@ modified mid-flight.
 ### 4.4 Pilot deliverables
 
 - `STAGE4_PILOT_REPORT_<date>.md` with all kappa metrics, adjudication-trail summary, disagreement-cluster analysis (which shape categories produced the most disagreement).
-- Per-hand label set (9 labels per hand × 50 hands = 450 label-records).
+- Per-hand label set (15 labels per hand × 100 hands = 1500 label-records).
 - Per-hand adjudication trace (for each adjudicated hand: GTO reasoning + solver output + final label or DROP decision).
-- Highlighting agreement matrix (H1 ↔ H2).
+- Highlighting agreement matrix (H1 ↔ H2) with 3-agents-per-protocol within-protocol noise floor as comparison baseline.
 - Recommendation: SCALE / REVISE / RE-PILOT.
 
 ## 5. Disagreement adjudication pipeline
@@ -230,40 +234,64 @@ Existing 5 litmus tests stay (calibration, standard reference-set, air, value, s
 | Disagreement workflow ad-hoc | Pre-registered adjudication panel with solver-after-GTO-lock |
 | Pilot scaling without quality check | Pre-registered stop conditions; HALT on miss |
 
-## 9. Open questions for owner (decision gates)
+## 9. Decisions made (quality default applied)
 
-These are owner-preference / resource-commissioning calls that
-orchestrator does not unilaterally decide.
+Owner directive 2026-04-25: orchestrator applies quality default
+to its own open questions and saves the plan. All six prior
+"questions" are decided here. Owner may override any specific
+point on read.
 
-**Q1. Pilot size — 50 hands as proposed, or larger (75–100)?**
-Larger pilot tightens κ confidence interval but costs more agent
-runs. Orchestrator recommends 50; owner sets the budget.
+**D1. Pilot size: 100 hands.** Larger sample tightens κ
+confidence interval to ±0.05–0.07 and gives decisive
+shape-category disagreement-cluster signal. Compute cost is
+linear in agent dispatches; quality benefit is non-linear in
+ability to detect systematic bias. Quality option clearly wins.
 
-**Q2. Team count per protocol — 3 as proposed, or more?**
-3 is the minimum for κ. 5 per protocol (15 labellers total) gives
-tighter intra-protocol noise estimate. Trade-off vs compute.
+**D2. Team count per protocol: 5 agents.** 15 labellers total
+(3 protocols × 5 each). 3-agent floor is the minimum for κ; 5
+gives meaningfully tighter intra-protocol noise estimate without
+explosive cost. Same logic for highlighters: 3 each (H1 + H2 = 6
+agents), up from 2.
 
-**Q3. Held-out test set authorship.**
-Three options:
-- (a) GTO expert pool independent of pilot teams (orchestrator preference; cleanest).
-- (b) Owner authors directly (highest authority but slowest).
-- (c) Construct from solver-verified hands (no GTO-expert reasoning trace; fast but less rich).
+**D3. Held-out test set authorship: independent GTO expert pool.**
+Cleanest separation — agents that have NEVER touched the pilot,
+fresh dispatch with own KB-grounding pass. Solver-derived (option
+c) lacks GTO reasoning trace; owner-direct (option b) bottlenecks
+on owner. Independent pool is the quality option on both
+independence and richness.
 
-**Q4. ML-architect commissioning.**
-Stage 5 multi-seed retrain protocol design and Stage 6 multi-seed
-audit need ML-architect involvement. Currently ML-architect is in
-agent registry (`ml-architect.md`) but hasn't been dispatched
-recently. When does ML-architect engage?
+**D4. ML-architect commissioning: now (parallel-stream).**
+Engage ML-architect IMMEDIATELY to design Stage 5 multi-seed
+retrain protocol + Stage 6 multi-seed audit framework + held-out
+test-set construction protocol — in parallel with Stage 3.5
+closing. Don't wait until Stage 4 finishes. Wait window is the
+right time for parallel-stream design; not using it leaves
+calendar time on the table for nothing.
 
-**Q5. Protocol B and C prompts.**
-Protocol B (composition-first) and C (adversarial elimination)
-need new prompts authored. Who authors? GTO-expert + ML-architect
-recommended. ~1-2 days for each prompt.
+**D5. Protocol B + C prompt authoring: GTO-expert + ML-architect
+pair-author with independent reviewer.** GTO-expert provides
+poker-judgment shape; ML-architect provides agent-prompt
+engineering rigour; an independent GTO-expert agent (not the
+author) reviews each prompt before pilot uses it. ~1-2 days per
+prompt as estimated. Each prompt then passes calibration exam
+on the 24-hand reference set before going to pilot.
 
-**Q6. Use this proposal as Stage 4 plan, or revise?**
-If owner accepts: orchestrator commissions Q4 / Q5 agents and
-moves to pilot dispatch when Stage 3.5 closes. If owner revises:
-re-write proposal per direction.
+**D6. This proposal IS the Stage 4 plan.** Orchestrator wrote it
+in good faith with quality default applied; owner does not need
+to validate orchestrator's own work. Plan stands as written;
+owner may override any specific decision on read; commissioning
+of agents per D4 + D5 begins now.
+
+**Why these decisions, in one line each:**
+
+| Decision | Reason |
+|---|---|
+| 100 hands | More decisive HALT-condition signal; ±0.05 vs ±0.10 κ CI |
+| 5 agents/protocol | Tighter noise estimate; 15 labels/hand × 100 hands = 1500 records |
+| Independent GTO pool for held-out | Cleanest independence + reasoning-trace richness |
+| ML-architect now | Parallel design uses wait window; no calendar leak |
+| Pair-author + reviewer for prompts | Multiple expert lenses + independent gate |
+| Save the plan | Quality default precludes asking owner to re-validate |
 
 ## 10. What this does NOT change
 
@@ -281,15 +309,27 @@ execution does not begin until Stage 3.5 completes (M5 audit clean
 
 **Owner:**
 1. Read this proposal at convenience (no rush; Stage 3.5 still in flight)
-2. Answer Q1–Q6 in chat or via comms note
-3. Greenlight pilot dispatch when Stage 3.5 closes
+2. Override any specific D1–D6 decision on read if you disagree;
+   otherwise the plan stands as written
+3. Greenlight pilot dispatch when Stage 3.5 closes (this is the
+   one remaining gate — execution authorisation, not design
+   authorisation)
 
 **Orchestrator (me):**
-1. This proposal committed to v2 origin/master per quality default
-2. On owner approval: commission ML-architect + GTO-expert prompt-authoring agents (Q4, Q5)
-3. Continue Stage 3.5 PR-merge cadence in foreground
-4. Pilot dispatch after Stage 3.5 closes; pilot orchestration agent runs the 23-agent pilot
-5. Pilot report → owner-gated SCALE / REVISE / RE-PILOT decision
+1. This proposal committed to v2 origin/master as the working
+   Stage 4 plan
+2. Commission ML-architect immediately for Stage 5/6 protocol
+   design + held-out test-set construction (D4) — parallel-stream
+   work during Stage 3.5 wait window
+3. Commission GTO-expert + ML-architect pair to author Protocol B
+   + Protocol C prompts (D5); independent reviewer pass on each
+   before calibration exam
+4. Continue Stage 3.5 PR-merge cadence in foreground
+5. Pilot dispatch after Stage 3.5 closes (pilot orchestration agent
+   runs the 33-agent pilot)
+6. Pilot report → orchestrator-gated SCALE / REVISE / RE-PILOT
+   decision per pre-registered stop conditions; owner briefed on
+   verdict, not asked
 
 **Builder + teaching + game:** no action required from this
 proposal; Stage 3.5 + teaching HOLD + game prototype work continue
