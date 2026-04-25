@@ -52,17 +52,28 @@ _EXPECTED_COMMIT13_3_3_REFIDS = {
     'MW-20', 'MW-21', 'MW-22', 'MW-23', 'MW-24', 'MW-25', 'MW-26',
     'MW-27', 'MW-28', 'MW-29',
 }
+# Commit 13.3.4 — batch 4 of 5. MW-31..50 = 20 entries (second
+# multiway). MW-41..46/49/50 are turn/river decisions — first MW
+# chain narrowing across multiple postflop streets.
+_EXPECTED_COMMIT13_3_4_REFIDS = {
+    'MW-31', 'MW-32', 'MW-33', 'MW-34', 'MW-35', 'MW-36', 'MW-37',
+    'MW-38', 'MW-39', 'MW-40', 'MW-41', 'MW-42', 'MW-43', 'MW-44',
+    'MW-45', 'MW-46', 'MW-47', 'MW-48', 'MW-49', 'MW-50',
+}
 _EXPECTED_REFERENCE_REFIDS = (
     _EXPECTED_COMMIT13_REFIDS
     | _EXPECTED_COMMIT13_2_SYN_REFIDS
     | _EXPECTED_COMMIT13_3_1_REFIDS
     | _EXPECTED_COMMIT13_3_2_REFIDS
     | _EXPECTED_COMMIT13_3_3_REFIDS
+    | _EXPECTED_COMMIT13_3_4_REFIDS
 )
-# Calibration set: original commit-13 MW-* (3) + commit-13.3.3 MW-* (17) = 20.
+# Calibration set: original commit-13 MW-* (3) + commit-13.3.3 MW-* (17)
+# + commit-13.3.4 MW-* (20) = 40.
 _EXPECTED_CALIBRATION_REFIDS = (
     {'MW-11', 'MW-30', 'MW-15'}
     | _EXPECTED_COMMIT13_3_3_REFIDS
+    | _EXPECTED_COMMIT13_3_4_REFIDS
 )
 
 
@@ -404,6 +415,38 @@ def test_dryrun_entries_exercise_chain_narrowing():
         'MW-27': (['9d', '6c', '2h'], 'BB',  'flop', False),
         'MW-28': (['9d', '6c', '2h'], 'BTN', 'flop', False),
         'MW-29': (['Kd', 'Jc', '6s'], 'CO',  'flop', False),
+        # ─────────────────────────────────────────────────────────────
+        # Commit 13.3.4 — MW-31..50 (second multiway batch)
+        # ─────────────────────────────────────────────────────────────
+        # Boards from design/multiway_reference_set/BATCH2_8_HAND_DESIGNS.md.
+        # Mix of flop/turn/river decisions:
+        #   Flop (10): MW-31/33/34/35/36/37/38/39/40/47/48 (chain empty)
+        #   Turn (8):  MW-32/41/44/45/49/50 (+ MW-46 river-decision-with-prior)
+        #   River (3): MW-42/43/46 (chain across flop+turn)
+        # Wait — let me restate. MW-32/41/44/45/49/50 are turn decisions
+        # (6 entries); MW-42/43/46 are river decisions (3 entries);
+        # MW-31/33/34/35/36/37/38/39/40/47/48 are flop decisions
+        # (11 entries) = 20 total. ✓
+        'MW-31': (['Ac', 'Qd', '5h'],             'CO',  'flop',  False),
+        'MW-32': (['Tc', '8h', '4d', '3s'],       'CO',  'turn',  True),   # flop:BET
+        'MW-33': (['8d', '7c', '3h'],             'CO',  'flop',  False),
+        'MW-34': (['Js', '9c', '4d'],             'BB',  'flop',  False),
+        'MW-35': (['Qh', '7c', '2s'],             'CO',  'flop',  False),
+        'MW-36': (['Qh', '7c', '2s'],             'CO',  'flop',  False),
+        'MW-37': (['Qh', '7c', '2s'],             'CO',  'flop',  False),
+        'MW-38': (['Kh', '8h', '3d'],             'BB',  'flop',  False),
+        'MW-39': (['Kh', '8h', '3d'],             'CO',  'flop',  False),
+        'MW-40': (['Ad', 'Jc', '5h'],             'BB',  'flop',  False),
+        'MW-41': (['Ks', 'Qd', '7c', 'Jh'],       'CO',  'turn',  True),   # flop:BET
+        'MW-42': (['Ad', 'Kc', '7h', '5s', '2c'], 'CO',  'river', True),   # flop:BET + turn:CALL (CHECK→CALL collapse)
+        'MW-43': (['9d', '8d', '5c', '2h', 'Kc'], 'CO',  'river', True),   # flop:CHECK + turn:CHECK
+        'MW-44': (['Ts', '9h', '4d', '7c'],       'BB',  'turn',  True),   # flop:BET
+        'MW-45': (['Ac', 'Kd', '6h', 'Qs'],       'CO',  'turn',  True),   # flop:CHECK
+        'MW-46': (['7h', '7d', '5s', '9c', 'Js'], 'CO',  'river', True),   # flop:BET + turn:CALL (CHECK→CALL collapse); river check-raise
+        'MW-47': (['Ks', 'Jd', '5s'],             'CO',  'flop',  False),
+        'MW-48': (['Qd', 'Jc', '4s'],             'BTN', 'flop',  False),
+        'MW-49': (['As', '9c', '5d', 'Tc'],       'BB',  'turn',  True),   # flop:CALL (CHECK→CALL collapse)
+        'MW-50': (['Js', '8h', '4d', '5c'],       'BTN', 'turn',  True),   # flop:RAISE (single action collapse)
     }
 
     for ref_id, ah in _REFERENCE_ACTION_HISTORY.items():

@@ -1093,6 +1093,356 @@ _REFERENCE_ACTION_HISTORY: Dict[str, List[Tuple[str, str, str]]] = {
         ('flop', 'CO', 'BET'),
         ('flop', 'BTN', 'FOLD'),
     ],
+
+    # ─────────────────────────────────────────────────────────────────
+    # COMMIT 13.3.4 — BATCH 4/5: MW-31..50 (second multiway batch;
+    # 20 entries) per MAIN_TERMINAL_PR_4_MERGED greenlight (a8af4aa).
+    # ─────────────────────────────────────────────────────────────────
+    # Same conventions as 13.3.3. NEW shape territory: MW-41..46/49/50
+    # are turn/river decisions — first time MW shapes exercise chain
+    # narrowing across multiple postflop streets. Same-street collapse
+    # (MUST #11/#12) and check-raise scenarios (MW-31, MW-46, MW-50)
+    # exercised here.
+    # Source: design/multiway_reference_set/BATCH2_8_HAND_DESIGNS.md
+    # + reference_evaluator.py:186-227 _ACTION_STRINGS for
+    # decision-street ground truth.
+    # action_string compression rule continues: implicit pre-hero
+    # actions inferred from postflop position order + pot-odds
+    # confirmation of caller count, included in AH for chain
+    # completeness.
+
+    # MW-31: 3-way CO-open. Flop. AsJs TPJK on AcQd5h; check-check-bet,
+    # BB folds, CO check-RAISES hero BTN (after BTN c-bets the
+    # checked flop). Decision-street check-raise; primary villain CO.
+    # Pot 210 = preflop 90 + BTN bet 30 + CO raise 90 = 210. Hero
+    # facing 60 to call → 60/270 = 22.2% pot odds ✓.
+    'MW-31': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop decision for BTN (facing CO's check-raise);
+        # BB checks, CO checks, BTN bets, BB folds, CO raises.
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+        ('flop', 'BTN', 'BET'),
+        ('flop', 'BB', 'FOLD'),
+        ('flop', 'CO', 'RAISE'),
+    ],
+
+    # MW-32: 3-way CO-open → 2-way (BB folds flop). Turn. JsTs TP on
+    # Tc8h4d-3s; CO double-barrels. Primary villain CO; chain step
+    # flop:BET. Hero BTN faces decision.
+    'MW-32': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop: BB checked, CO bet, BTN called, BB folded.
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+        ('flop', 'BTN', 'CALL'),
+        ('flop', 'BB', 'FOLD'),
+        # Turn HU CO vs BTN: CO bets, hero BTN faces.
+        ('turn', 'CO', 'BET'),
+    ],
+
+    # MW-33: 4-way CO-open + SB caller. Flop. 8h8s set on 8d7c3h;
+    # bet+call to hero (SB folds). Primary villain CO. Hero BB.
+    'MW-33': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'SB', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'SB', 'CHECK'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+        ('flop', 'BTN', 'CALL'),
+        ('flop', 'SB', 'FOLD'),
+    ],
+
+    # MW-34: 3-way CO-open. Flop. AcAd overpair on Js9c4d; hero CO is
+    # the c-bettor, BB checked first. Primary villain BB. Hero=CO is
+    # unusual (CO acts second in BB→CO→BTN postflop order; only BB's
+    # check is pre-hero on flop).
+    'MW-34': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop decision for CO (BTN behind); BB checks first.
+        ('flop', 'BB', 'CHECK'),
+    ],
+
+    # MW-35: 3-way CO-open. Flop. QcJd top pair on Qh7c2s, low SPR ~3.
+    # BB checks, CO bets, hero BTN faces. Same shape as MW-36/37
+    # (different SPRs). Primary villain CO.
+    'MW-35': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+    ],
+
+    # MW-36: 3-way CO-open. Flop. Same as MW-35 (Qh7c2s) at standard
+    # SPR ~8.
+    'MW-36': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+    ],
+
+    # MW-37: 3-way CO-open. Flop. Same as MW-35 (Qh7c2s) at deep SPR
+    # ~15.
+    'MW-37': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+    ],
+
+    # MW-38: 3-way CO-open. Flop. AhJh nut FD on Kh8h3d; BB donks low
+    # SPR ~3, CO folds, hero BTN faces HU. Primary villain BB.
+    'MW-38': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'BET'),
+        ('flop', 'CO', 'FOLD'),
+    ],
+
+    # MW-39: 3-way CO-open. Flop. AhJh nut FD on Kh8h3d (same as
+    # MW-38) at deep SPR ~15; CO bets instead of BB donking. Hero
+    # BTN. Primary villain CO.
+    'MW-39': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+    ],
+
+    # MW-40: 4-way HJ-open. Flop. AhTs top pair on AdJc5h; 4-way checks
+    # to hero BTN. Same shape family as MW-16/25 (4-way check-through-
+    # to-BTN). Primary villain BB.
+    'MW-40': [
+        ('preflop', 'HJ', 'RAISE'),
+        ('preflop', 'CO', 'CALL'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'HJ', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+    ],
+
+    # MW-41: 3-way CO-open. Turn. QhTc middle pair+gutshot on
+    # KsQd7c-Jh; CO double-barrel, hero BTN faces. Primary villain CO;
+    # chain step flop:BET. First MW turn-decision in batch 13.3.4.
+    'MW-41': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop: BB checked, CO bet, BTN called, BB called → 3-way to turn.
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+        ('flop', 'BTN', 'CALL'),
+        ('flop', 'BB', 'CALL'),
+        # Turn decision for BTN: BB checks, CO 2nd barrel.
+        ('turn', 'BB', 'CHECK'),
+        ('turn', 'CO', 'BET'),
+    ],
+
+    # MW-42: 3-way CO-open → 2-way (BB folds flop). River. AsJs TPTK
+    # on AdKc7h-5s-2c; 2-street action then CO checks river. Primary
+    # villain CO. Chain steps flop:BET + turn:CALL (CO's turn
+    # CHECK→CALL collapses to CALL via MUST #11).
+    'MW-42': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop: BB checked, CO bet, BTN called, BB folded.
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+        ('flop', 'BTN', 'CALL'),
+        ('flop', 'BB', 'FOLD'),
+        # Turn HU: CO checks, hero BTN bets, CO calls.
+        ('turn', 'CO', 'CHECK'),
+        ('turn', 'BTN', 'BET'),
+        ('turn', 'CO', 'CALL'),
+        # River decision for BTN: CO checks.
+        ('river', 'CO', 'CHECK'),
+    ],
+
+    # MW-43: 4-way CO-open + SB caller. River. 9s7s middle pair on
+    # 9d8d5c-2h-Kc; flop+turn check-through, CO leads river, BTN folds,
+    # SB folds (per pot-odds 40%), hero BB faces. Primary villain CO.
+    # Chain steps flop:CHECK + turn:CHECK (CO's check-throughs).
+    'MW-43': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'SB', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop check-through.
+        ('flop', 'SB', 'CHECK'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+        ('flop', 'BTN', 'CHECK'),
+        # Turn check-through.
+        ('turn', 'SB', 'CHECK'),
+        ('turn', 'BB', 'CHECK'),
+        ('turn', 'CO', 'CHECK'),
+        ('turn', 'BTN', 'CHECK'),
+        # River decision for BB: SB checks, BB checks, CO bets, BTN
+        # folds, SB folds (pot-odds 40% confirms no caller before hero).
+        ('river', 'SB', 'CHECK'),
+        ('river', 'BB', 'CHECK'),
+        ('river', 'CO', 'BET'),
+        ('river', 'BTN', 'FOLD'),
+        ('river', 'SB', 'FOLD'),
+    ],
+
+    # MW-44: 3-way CO-open. Turn. Th8h TP+OESD on Ts9h4d-7c; BB donks
+    # flop AND turn (double-lead), CO folded turn. Primary villain BB.
+    # Chain step flop:BET (BB single action collapses trivially).
+    'MW-44': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop: BB donks, CO calls, BTN calls → 3-way to turn.
+        ('flop', 'BB', 'BET'),
+        ('flop', 'CO', 'CALL'),
+        ('flop', 'BTN', 'CALL'),
+        # Turn: BB leads again, CO folds; hero BTN faces.
+        ('turn', 'BB', 'BET'),
+        ('turn', 'CO', 'FOLD'),
+    ],
+
+    # MW-45: 4-way CO-open + SB caller. Turn. 6d6c flopped set on
+    # AcKd6h-Qs; flop check-through (hero slowplays set); turn CO bets,
+    # BTN folds, SB folds (pot-odds 38.5% confirms). Primary villain CO.
+    # Chain step flop:CHECK.
+    'MW-45': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'SB', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop check-through.
+        ('flop', 'SB', 'CHECK'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+        ('flop', 'BTN', 'CHECK'),
+        # Turn decision for BB: SB checks, BB checks, CO bets, BTN folds, SB folds.
+        ('turn', 'SB', 'CHECK'),
+        ('turn', 'BB', 'CHECK'),
+        ('turn', 'CO', 'BET'),
+        ('turn', 'BTN', 'FOLD'),
+        ('turn', 'SB', 'FOLD'),
+    ],
+
+    # MW-46: 4-way HJ-open → HU CO vs BTN (HJ+BB fold flop).
+    # River. Ks7c trips on 7h7d5s-9c-Js; CO BET flop, BTN call, others
+    # fold; turn CO check, BTN bet, CO call; river CO check, BTN bet,
+    # CO check-RAISES. Primary villain CO. Chain steps flop:BET +
+    # turn:CALL (CHECK-CALL collapse). RIVER CHECK-RAISE on
+    # decision-street.
+    'MW-46': [
+        ('preflop', 'HJ', 'RAISE'),
+        ('preflop', 'CO', 'CALL'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop: BB check, HJ check, CO bet, BTN call, BB fold, HJ fold.
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'HJ', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+        ('flop', 'BTN', 'CALL'),
+        ('flop', 'BB', 'FOLD'),
+        ('flop', 'HJ', 'FOLD'),
+        # Turn HU CO vs BTN: CO check, BTN bet, CO call.
+        ('turn', 'CO', 'CHECK'),
+        ('turn', 'BTN', 'BET'),
+        ('turn', 'CO', 'CALL'),
+        # River decision for BTN (facing CO's check-raise): CO check,
+        # BTN bet, CO RAISE.
+        ('river', 'CO', 'CHECK'),
+        ('river', 'BTN', 'BET'),
+        ('river', 'CO', 'RAISE'),
+    ],
+
+    # MW-47: 4-way CO-open + SB caller. Flop. AsQs nut FD+gutshot OOP
+    # SB on KsJd5s; faces bet+call. Hero=SB. Primary villain CO.
+    'MW-47': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'SB', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop decision for SB; SB checked, BB checked, CO bet, BTN called.
+        ('flop', 'SB', 'CHECK'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+        ('flop', 'BTN', 'CALL'),
+    ],
+
+    # MW-48: 3-way BTN-PFR. Flop. AhTc gutshot+overcards low SPR ~2
+    # OOP BB on QdJc4s; SB checks, hero BB first to act OOP-after-SB
+    # (with BTN behind). Primary villain BTN.
+    'MW-48': [
+        ('preflop', 'BTN', 'RAISE'),
+        ('preflop', 'SB', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop decision for BB; SB checked first, BB to act, BTN behind.
+        ('flop', 'SB', 'CHECK'),
+    ],
+
+    # MW-49: 4-way HJ-open → 3-way (HJ folds flop). Turn. AdKd TPTK on
+    # As9c5d-Tc; hero BTN bets flop, HJ folds, CO+BB call; turn checks
+    # to hero. Primary villain BB. Chain step flop:CALL (BB's
+    # CHECK→CALL collapse via MUST #11).
+    'MW-49': [
+        ('preflop', 'HJ', 'RAISE'),
+        ('preflop', 'CO', 'CALL'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop: BB check, HJ check, CO check, BTN (hero) bet, BB call,
+        # HJ fold, CO call → 3-way to turn (HJ out).
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'HJ', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+        ('flop', 'BTN', 'BET'),
+        ('flop', 'BB', 'CALL'),
+        ('flop', 'HJ', 'FOLD'),
+        ('flop', 'CO', 'CALL'),
+        # Turn decision for BTN: BB check, CO check.
+        ('turn', 'BB', 'CHECK'),
+        ('turn', 'CO', 'CHECK'),
+    ],
+
+    # MW-50: 4-way CO-open + SB caller → 3-way (SB folds flop). Turn.
+    # JcTc top pair on Js8h4d-5c; flop CO bet, BTN raises, SB fold,
+    # BB call, CO call → 3-way to turn; turn check-check-BTN bet, hero
+    # BB faces. Primary villain BTN. Chain step flop:RAISE (BTN's
+    # single flop action collapses trivially to RAISE).
+    # Note: hero BB acts second on turn (postflop order BB → CO → BTN
+    # in 3-way after SB folds).
+    'MW-50': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'SB', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop: SB check, BB check, CO bet, BTN raise, SB fold, BB call,
+        # CO call → 3-way to turn.
+        ('flop', 'SB', 'CHECK'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+        ('flop', 'BTN', 'RAISE'),
+        ('flop', 'SB', 'FOLD'),
+        ('flop', 'BB', 'CALL'),
+        ('flop', 'CO', 'CALL'),
+        # Turn decision for BB: BB check, CO check, BTN bet.
+        ('turn', 'BB', 'CHECK'),
+        ('turn', 'CO', 'CHECK'),
+        ('turn', 'BTN', 'BET'),
+    ],
 }
 
 
@@ -1184,6 +1534,29 @@ _REFERENCE_VILLAIN_POS: Dict[str, str] = {
     'MW-27':                   'BB',
     'MW-28':                   'BTN',
     'MW-29':                   'CO',
+    # Commit 13.3.4 — MW-31..50 (second multiway batch). Per
+    # design/multiway_reference_set/BATCH2_8_HAND_DESIGNS.md
+    # "Primary villain position" field.
+    'MW-31':                   'CO',
+    'MW-32':                   'CO',
+    'MW-33':                   'CO',
+    'MW-34':                   'BB',
+    'MW-35':                   'CO',
+    'MW-36':                   'CO',
+    'MW-37':                   'CO',
+    'MW-38':                   'BB',
+    'MW-39':                   'CO',
+    'MW-40':                   'BB',
+    'MW-41':                   'CO',
+    'MW-42':                   'CO',
+    'MW-43':                   'CO',
+    'MW-44':                   'BB',
+    'MW-45':                   'CO',
+    'MW-46':                   'CO',
+    'MW-47':                   'CO',
+    'MW-48':                   'BTN',
+    'MW-49':                   'BB',
+    'MW-50':                   'BTN',
 }
 
 
