@@ -302,14 +302,20 @@ _REFERENCE_ACTION_HISTORY: Dict[str, List[Tuple[str, str, str]]] = {
     #
     # FIX #1 (commit 13.2.5, GTO review): for villain BB, BB's flop
     # actions are [BET, CALL]. BTN's RAISE is a HERO-side action and
-    # is filtered out of BB's villain_street_actions by position
-    # filter at narrow_by_action_history:814. BB's [BET, CALL] then
+    # is filtered out of BB's villain_street_actions by the position
+    # filter in narrow_by_action_history's chain loop (only entries
+    # with position == villain_pos are kept). BB's [BET, CALL] then
     # goes through _collapse_same_street_sequence which keeps the
     # LAST decision-bearing action = CALL (not RAISE).
-    # Chain for villain BB is flop:CALL + (turn-CHECK is decision-
-    # street chain step on turn if decision_street=='turn'). Prior
-    # header comment saying "collapses to RAISE-only" was wrong
-    # direction — corrected.
+    # FIX #1 (commit 13.2.6, GTO review APPROVE_WITH_FIXES on 13.2.5):
+    # narrative cleanup — replaced stale `:814` line ref with a
+    # description of the position filter, and clarified chain shape:
+    # with decision_street='turn', the chain loop walks flop ONLY
+    # (it breaks before processing decision_street actions per the
+    # prior-street-only rule). So the chain is exactly [flop:CALL];
+    # turn:CHECK is on the decision street and does NOT enter the
+    # postflop chain. Prior header comment saying "collapses to
+    # RAISE-only" was wrong direction — corrected.
     'SYN-T_B05_synthetic': [
         ('preflop', 'BTN', 'RAISE'),
         ('preflop', 'BB', 'CALL'),
@@ -318,6 +324,37 @@ _REFERENCE_ACTION_HISTORY: Dict[str, List[Tuple[str, str, str]]] = {
         ('flop', 'BB', 'CALL'),     # BB's last decision-bearing → chain:flop:CALL
         ('turn', 'BB', 'CHECK'),
     ],
+}
+
+
+# ───────────────────────────────────────────────────────────────────────
+# COMMIT 13.2.6 FIX #2 — POSITION-AWARE CLASSIFIER PREDICATE
+# ───────────────────────────────────────────────────────────────────────
+# Per-fixture villain position. Threaded into solver_verify_sidecars
+# _classify_shape so the donk-shape predicate can require villain
+# (not hero) as the flop bettor — defensive against position-agnostic
+# mis-routing in the upcoming 13.3 130-entry full lift.
+#
+# Source of truth: this dict. The test-side fixture_meta block in
+# tests/test_commit13_sidecar_dryrun.py imports villain_pos from here
+# (DRY); local fixture_meta retains decision_street/expects_fire only.
+#
+# Schema: ref_id → villain_pos. Position vocab matches action_history
+# tuples ('UTG'/'EP'/'HJ'/'MP'/'CO'/'BTN'/'SB'/'BB').
+_REFERENCE_VILLAIN_POS: Dict[str, str] = {
+    # Real fixtures (commit 13 dry-run)
+    'MW-11':                   'CO',
+    'MW-30':                   'CO',
+    'FB-17':                   'CO',
+    'FB-23':                   'CO',
+    'MW-15':                   'BB',
+    # Synthetic fixtures (commit 13.2 / 13.2.5)
+    'SYN-F3_HU_folded':        'BB',
+    'SYN-F5_HU_overflow':      'BB',
+    'SYN-F6_MW_all_live':      'CO',
+    'SYN-T_J02_synthetic':     'BB',
+    'SYN-T_B05_synthetic':     'BB',
+    'SYN-F7_HU_donk_x_bet':    'BB',
 }
 
 

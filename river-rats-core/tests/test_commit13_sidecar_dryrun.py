@@ -134,8 +134,11 @@ def test_must66_stratification_covers_multiple_shapes():
     """MUST #66: stratification across shape buckets. Dry-run batch
     covers ≥3 distinct shapes so Cochran sampling isn't degenerate."""
     from tests.solver_verify_sidecars import _classify_shape, _stratify
-    from _reference_action_history_sidecar import _REFERENCE_ACTION_HISTORY
-    by_shape = _stratify(_REFERENCE_ACTION_HISTORY)
+    from _reference_action_history_sidecar import (
+        _REFERENCE_ACTION_HISTORY,
+        _REFERENCE_VILLAIN_POS,
+    )
+    by_shape = _stratify(_REFERENCE_ACTION_HISTORY, _REFERENCE_VILLAIN_POS)
     assert len(by_shape) >= 3, (
         f'Dry-run batch should cover ≥3 shapes; got {len(by_shape)}: '
         f'{list(by_shape.keys())}'
@@ -145,13 +148,79 @@ def test_must66_stratification_covers_multiple_shapes():
 def test_commit13_2_5_hu_donk_x_bet_bucket_covered():
     """FIX #3 (commit 13.2.5): SYN-F7_HU_donk_x_bet lands in the
     hu_donk_x_bet classifier bucket — covers the last real-world
-    shape authoring pattern per GTO review recommendation."""
+    shape authoring pattern per GTO review recommendation.
+    Commit 13.2.6: classifier signature now requires villain_pos;
+    looked up from _REFERENCE_VILLAIN_POS."""
     from tests.solver_verify_sidecars import _classify_shape
-    from _reference_action_history_sidecar import _REFERENCE_ACTION_HISTORY
+    from _reference_action_history_sidecar import (
+        _REFERENCE_ACTION_HISTORY,
+        _REFERENCE_VILLAIN_POS,
+    )
     ah = _REFERENCE_ACTION_HISTORY['SYN-F7_HU_donk_x_bet']
-    shape = _classify_shape(ah)
+    villain_pos = _REFERENCE_VILLAIN_POS['SYN-F7_HU_donk_x_bet']
+    shape = _classify_shape(ah, villain_pos)
     assert shape == 'hu_donk_x_bet', (
         f'SYN-F7 expected hu_donk_x_bet bucket; got {shape!r}'
+    )
+
+
+def test_commit13_2_6_classifier_position_aware_donk():
+    """FIX #2 (commit 13.2.6, GTO review APPROVE_WITH_FIXES on 13.2.5):
+    classifier's hu_donk_x_bet branch is position-aware. A hand where
+    HERO bets flop and VILLAIN bets river (with check-through on turn)
+    is NOT a donk shape from villain's range-narrowing POV — pre-fix
+    this would mis-route to hu_donk_x_bet (position-agnostic
+    flop_bet_count >= 1 matched any flop bettor); post-fix the
+    flop_has_villain_bet predicate excludes it."""
+    from tests.solver_verify_sidecars import _classify_shape
+
+    # Hero=BTN bets flop, both check turn, Villain=BB bets river.
+    # NOT a donk for villain BB (BB called flop, didn't donk).
+    hero_bet_flop_villain_bet_river = [
+        ('preflop', 'BTN', 'RAISE'),
+        ('preflop', 'BB',  'CALL'),
+        ('flop',    'BTN', 'BET'),     # HERO bets flop (not villain)
+        ('flop',    'BB',  'CALL'),
+        ('turn',    'BB',  'CHECK'),
+        ('turn',    'BTN', 'CHECK'),
+        ('river',   'BB',  'BET'),
+    ]
+    shape = _classify_shape(hero_bet_flop_villain_bet_river, villain_pos='BB')
+    assert shape != 'hu_donk_x_bet', (
+        f'Position-aware predicate must exclude hero-bet-flop case '
+        f'from hu_donk_x_bet bucket; got {shape!r}'
+    )
+
+    # Regression guard: SYN-F7's real BB-donks-flop+BB-bets-river still
+    # routes to hu_donk_x_bet (no regression on the original case).
+    from _reference_action_history_sidecar import (
+        _REFERENCE_ACTION_HISTORY,
+        _REFERENCE_VILLAIN_POS,
+    )
+    syn_f7_ah = _REFERENCE_ACTION_HISTORY['SYN-F7_HU_donk_x_bet']
+    syn_f7_pos = _REFERENCE_VILLAIN_POS['SYN-F7_HU_donk_x_bet']
+    assert _classify_shape(syn_f7_ah, syn_f7_pos) == 'hu_donk_x_bet'
+
+    # Regression guard: SYN-T_J02 still routes to hu_bet_x_call_bet
+    # (4-class chain, turn_has_call=True) — unaffected by FIX #2 which
+    # only touched the donk-shape branch.
+    syn_tj02_ah = _REFERENCE_ACTION_HISTORY['SYN-T_J02_synthetic']
+    syn_tj02_pos = _REFERENCE_VILLAIN_POS['SYN-T_J02_synthetic']
+    assert _classify_shape(syn_tj02_ah, syn_tj02_pos) == 'hu_bet_x_call_bet'
+
+
+def test_commit13_2_6_villain_pos_map_covers_all_reference_entries():
+    """FIX #2 (commit 13.2.6): _REFERENCE_VILLAIN_POS must cover every
+    ref_id in _REFERENCE_ACTION_HISTORY. _stratify raises KeyError on
+    drift; this test catches it earlier with a clearer message."""
+    from _reference_action_history_sidecar import (
+        _REFERENCE_ACTION_HISTORY,
+        _REFERENCE_VILLAIN_POS,
+    )
+    missing = set(_REFERENCE_ACTION_HISTORY) - set(_REFERENCE_VILLAIN_POS)
+    assert not missing, (
+        f'_REFERENCE_VILLAIN_POS missing entries for: {sorted(missing)}; '
+        f'add to sidecar so classifier can apply position-aware predicate.'
     )
 
 

@@ -50,13 +50,22 @@ _SHAPE_PATTERNS = (
 )
 
 
-def _classify_shape(action_history: List[Tuple[str, str, str]]) -> str:
+def _classify_shape(
+    action_history: List[Tuple[str, str, str]],
+    villain_pos: str,
+) -> str:
     """Classify an action_history by rough shape. Heuristic; refined
     over time as more entries land.
 
     Priority order matters: specific shapes checked before catch-alls.
     Commit 13.2: added folded branches (HU + MW) + MW-all-live bucket
-    per MUST #49 coverage requirement."""
+    per MUST #49 coverage requirement.
+    Commit 13.2.6 FIX #2 (GTO review on 13.2.5): villain_pos now
+    REQUIRED. The donk-shape branch uses a position-aware
+    `flop_has_villain_bet` predicate (`e[1] == villain_pos`) instead
+    of the prior position-agnostic `flop_bet_count`. Defensive against
+    a hero-as-flop-bettor + villain-led-river-bet pattern in the 13.3
+    130-entry lift mis-routing to `hu_donk_x_bet`."""
     streets = [e[0] for e in action_history]
     actions = [e[2] for e in action_history]
     positions = {e[1] for e in action_history}
@@ -68,6 +77,12 @@ def _classify_shape(action_history: List[Tuple[str, str, str]]) -> str:
     flop_bet_count = sum(
         1 for e in action_history
         if e[0] == 'flop' and e[2] == 'BET'
+    )
+    # FIX #2: position-aware flop-bet predicate (replaces
+    # flop_bet_count >= 1 in the donk branches below).
+    flop_has_villain_bet = any(
+        e[0] == 'flop' and e[2] == 'BET' and e[1] == villain_pos
+        for e in action_history
     )
     flop_check_count = sum(
         1 for e in action_history
@@ -110,10 +125,10 @@ def _classify_shape(action_history: List[Tuple[str, str, str]]) -> str:
             and river_present
             and any(e[0] == 'river' and e[2] == 'BET' for e in action_history)):
         return 'hu_bet_x_call_bet'
-    # hu_donk_x_bet = flop BET (villain donks) + turn CHECK (no CALL)
+    # hu_donk_x_bet = villain BETs flop (donks) + turn CHECK (no CALL)
     # + river BET. Distinct from hu_bet_x_call_bet by absence of
-    # turn-CALL.
-    if (flop_bet_count >= 1 and turn_check_count >= 1
+    # turn-CALL. Position-aware predicate per FIX #2 (commit 13.2.6).
+    if (flop_has_villain_bet and turn_check_count >= 1
             and not turn_has_call
             and river_present
             and any(e[0] == 'river' and e[2] == 'BET' for e in action_history)):
@@ -132,11 +147,25 @@ def _classify_shape(action_history: List[Tuple[str, str, str]]) -> str:
     return 'other'
 
 
-def _stratify(entries: Dict[str, List]) -> Dict[str, List[str]]:
-    """Group sidecar entries by shape category. Returns {shape: [ref_ids]}."""
+def _stratify(
+    entries: Dict[str, List],
+    villain_pos_map: Dict[str, str],
+) -> Dict[str, List[str]]:
+    """Group sidecar entries by shape category. Returns {shape: [ref_ids]}.
+
+    Commit 13.2.6 FIX #2: villain_pos_map (ref_id → villain_pos) is
+    REQUIRED so the classifier can apply the position-aware donk
+    predicate. Source-of-truth is `_REFERENCE_VILLAIN_POS` in
+    `_reference_action_history_sidecar.py`."""
     by_shape: Dict[str, List[str]] = {}
     for ref_id, ah in entries.items():
-        shape = _classify_shape(ah)
+        if ref_id not in villain_pos_map:
+            raise KeyError(
+                f'_stratify: villain_pos_map missing entry for {ref_id!r}; '
+                f'add to _REFERENCE_VILLAIN_POS in '
+                f'_reference_action_history_sidecar.py'
+            )
+        shape = _classify_shape(ah, villain_pos_map[ref_id])
         by_shape.setdefault(shape, []).append(ref_id)
     return by_shape
 
@@ -181,7 +210,10 @@ def _solver_verify_stub(ref_id: str, action_history) -> Tuple[bool, str]:
 
 def main() -> int:
     from _calibration_action_history_sidecar import _CALIBRATION_ACTION_HISTORY
-    from _reference_action_history_sidecar import _REFERENCE_ACTION_HISTORY
+    from _reference_action_history_sidecar import (
+        _REFERENCE_ACTION_HISTORY,
+        _REFERENCE_VILLAIN_POS,
+    )
 
     # Merge both sidecars for stratified sample (MUST #66 works across
     # the combined authoring set)
@@ -192,7 +224,12 @@ def main() -> int:
         if k not in combined:
             combined[k] = v
 
-    by_shape = _stratify(combined)
+    # Commit 13.2.6 FIX #2: villain_pos map for position-aware
+    # classifier. All current sidecar entries (reference + calibration)
+    # are covered by _REFERENCE_VILLAIN_POS since the calibration set
+    # is a subset of reference. If a future calibration-only entry is
+    # added, _stratify will raise KeyError pointing at the missing key.
+    by_shape = _stratify(combined, _REFERENCE_VILLAIN_POS)
     sampled = _stratified_sample(by_shape, pct=0.10)
 
     print('MUST #54 + #66 solver-verify (STUB mode — Stage 3.5 commit 13)')
