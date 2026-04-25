@@ -44,13 +44,26 @@ _EXPECTED_COMMIT13_3_2_REFIDS = {
     'FB-29', 'FB-30', 'FB-31', 'FB-32', 'FB-33', 'FB-34', 'FB-35',
     'FB-36', 'FB-37', 'FB-38', 'FB-39', 'FB-40',
 }
+# Commit 13.3.3 — batch 3 of 5. MW-12..30 minus MW-15/MW-30 = 17
+# entries (first multiway batch). All MW-* entries also mirror into
+# _CALIBRATION_ACTION_HISTORY per existing convention.
+_EXPECTED_COMMIT13_3_3_REFIDS = {
+    'MW-12', 'MW-13', 'MW-14', 'MW-16', 'MW-17', 'MW-18', 'MW-19',
+    'MW-20', 'MW-21', 'MW-22', 'MW-23', 'MW-24', 'MW-25', 'MW-26',
+    'MW-27', 'MW-28', 'MW-29',
+}
 _EXPECTED_REFERENCE_REFIDS = (
     _EXPECTED_COMMIT13_REFIDS
     | _EXPECTED_COMMIT13_2_SYN_REFIDS
     | _EXPECTED_COMMIT13_3_1_REFIDS
     | _EXPECTED_COMMIT13_3_2_REFIDS
+    | _EXPECTED_COMMIT13_3_3_REFIDS
 )
-_EXPECTED_CALIBRATION_REFIDS = {'MW-11', 'MW-30', 'MW-15'}
+# Calibration set: original commit-13 MW-* (3) + commit-13.3.3 MW-* (17) = 20.
+_EXPECTED_CALIBRATION_REFIDS = (
+    {'MW-11', 'MW-30', 'MW-15'}
+    | _EXPECTED_COMMIT13_3_3_REFIDS
+)
 
 
 def test_reference_sidecar_has_commit13_plus_synthetic_entries():
@@ -71,9 +84,11 @@ def test_reference_sidecar_synthetic_entries_use_syn_prefix():
     assert syn_keys == _EXPECTED_COMMIT13_2_SYN_REFIDS
 
 
-def test_calibration_sidecar_has_3_mw_entries():
-    """Commit 13 dry-run: _CALIBRATION_ACTION_HISTORY mirrors the 3
-    MW-* entries (FB-* fixtures don't flow through calibration_exam)."""
+def test_calibration_sidecar_mirrors_mw_entries():
+    """_CALIBRATION_ACTION_HISTORY mirrors the MW-* entries (FB-*
+    fixtures don't flow through calibration_exam). Commit 13 dry-run
+    landed 3; commit 13.3.3 added the first batch of MW-12..29
+    (17 more, total 20)."""
     from _calibration_action_history_sidecar import _CALIBRATION_ACTION_HISTORY
     assert set(_CALIBRATION_ACTION_HISTORY.keys()) == _EXPECTED_CALIBRATION_REFIDS
 
@@ -366,6 +381,29 @@ def test_dryrun_entries_exercise_chain_narrowing():
         'FB-38': (['Ad', '9c', '3h', '2s', 'Kd'], 'BB',  'river', True),   # flop:CHECK + turn:CHECK
         'FB-39': (['Qd', '8d', '4c', '7s', 'Jh'], 'BTN', 'river', True),   # flop:CHECK + turn:CHECK
         'FB-40': (['Kc', '8c', '4d'],             'BTN', 'flop',  False),
+        # ─────────────────────────────────────────────────────────────
+        # Commit 13.3.3 — MW-12..30 minus MW-15/MW-30 (first multiway)
+        # ─────────────────────────────────────────────────────────────
+        # Boards from design/multiway_reference_set/BATCH2_8_HAND_DESIGNS.md
+        # `Board:` field per fixture. All entries are FLOP DECISIONS
+        # → expects_chain_fire=False (no prior postflop street).
+        'MW-12': (['8c', '5d', '2h'], 'BB',  'flop', False),
+        'MW-13': (['Ac', '9d', '3s'], 'BTN', 'flop', False),
+        'MW-14': (['Jd', '8d', '3h'], 'CO',  'flop', False),
+        'MW-16': (['8c', '5d', '2h'], 'BB',  'flop', False),
+        'MW-17': (['Jd', '8d', '4c'], 'CO',  'flop', False),
+        'MW-18': (['Jd', '8d', '4c'], 'CO',  'flop', False),
+        'MW-19': (['Qh', 'Js', '8d'], 'BB',  'flop', False),
+        'MW-20': (['Kd', 'Qc', 'Jh'], 'BB',  'flop', False),
+        'MW-21': (['Jh', 'Th', '2c'], 'CO',  'flop', False),
+        'MW-22': (['Kd', '9d', '4h'], 'CO',  'flop', False),
+        'MW-23': (['Qc', '8d', '3s'], 'BB',  'flop', False),
+        'MW-24': (['Qc', '8d', '3s'], 'BTN', 'flop', False),
+        'MW-25': (['As', '9s', '5d'], 'BB',  'flop', False),
+        'MW-26': (['As', '9s', '5d'], 'CO',  'flop', False),
+        'MW-27': (['9d', '6c', '2h'], 'BB',  'flop', False),
+        'MW-28': (['9d', '6c', '2h'], 'BTN', 'flop', False),
+        'MW-29': (['Kd', 'Jc', '6s'], 'CO',  'flop', False),
     }
 
     for ref_id, ah in _REFERENCE_ACTION_HISTORY.items():

@@ -868,6 +868,231 @@ _REFERENCE_ACTION_HISTORY: Dict[str, List[Tuple[str, str, str]]] = {
         ('flop', 'CO', 'CHECK'),
         ('flop', 'BTN', 'BET'),
     ],
+
+    # ─────────────────────────────────────────────────────────────────
+    # COMMIT 13.3.3 — BATCH 3/5: MW-12..30 minus MW-15/MW-30 (first
+    # multiway batch; 17 entries) per
+    # MAIN_TERMINAL_COMMIT13_3_GREENLIGHT_2026-04-25.md.
+    # MW-11/15/30 already shipped in commit 13 dry-run.
+    # ─────────────────────────────────────────────────────────────────
+    # Source: design/multiway_reference_set/BATCH2_8_HAND_DESIGNS.md
+    # provides hero_position / primary_villain_position / opener /
+    # action_history per fixture; reference_evaluator.py:186-227
+    # `_ACTION_STRINGS` provides the abbreviated decision-street
+    # action_string with `???` marking hero.
+    #
+    # Conventions:
+    #   - 3-way CO-open: preflop CO RAISE + BTN CALL + BB CALL.
+    #     Postflop position order: BB → CO → BTN.
+    #   - 3-way BTN-PFR: preflop BTN RAISE + SB CALL + BB CALL (or
+    #     other callers per design); postflop order: SB → BB → BTN.
+    #   - 4-way HJ-open: preflop HJ RAISE + CO CALL + BTN CALL + BB
+    #     CALL; postflop order: BB → HJ → CO → BTN.
+    #   - 4-way CO-open with SB caller: preflop CO RAISE + BTN CALL +
+    #     SB CALL + BB CALL; postflop order: SB → BB → CO → BTN.
+    # action_string compression: when the design says "checks around
+    # to hero" or hero faces just one bet, intermediate-position
+    # checks/folds are inferred from postflop position order even if
+    # not explicit in the action_string. All inferred actions are
+    # included in the AH for chain-narrowing completeness.
+    # ALL MW-12..29 entries are FLOP DECISIONS → expects_chain_fire=
+    # False for every entry (no prior postflop street to chain on).
+
+    # MW-12: 3-way CO-open. Flop. JsTs IP overcards on 852r; 3-way
+    # checks around to hero BTN. Primary villain BB.
+    'MW-12': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop decision for BTN; check-through (BB+CO check, BTN to act).
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+    ],
+
+    # MW-13: 3-way BTN-PFR. Flop. KhJh OOP overcards on A93r;
+    # hero SB first to act OOP. Primary villain BTN.
+    'MW-13': [
+        ('preflop', 'BTN', 'RAISE'),
+        ('preflop', 'SB', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop decision for SB; hero acts first OOP, no pre-hero actions.
+    ],
+
+    # MW-14: 3-way CO-open. Flop. Td9d flush+gutshot on Jd8d3h;
+    # hero BB faces CO bet 33 (BTN folded). Primary villain CO.
+    'MW-14': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop decision for BB; BB checked, CO bet, BTN folded.
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+        ('flop', 'BTN', 'FOLD'),
+    ],
+
+    # MW-16: 4-way HJ-open. Flop. JsTs IP overcards on 852r; 4-way
+    # checks around to hero BTN. Primary villain BB. Compare to MW-12
+    # (3-way same hand).
+    'MW-16': [
+        ('preflop', 'HJ', 'RAISE'),
+        ('preflop', 'CO', 'CALL'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop decision for BTN; check-through (BB+HJ+CO check).
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'HJ', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+    ],
+
+    # MW-17: 3-way CO-open. Flop. AdKs nut FD+overcards on Jd8d4c;
+    # hero BB faces CO bet 33 (BTN folded). Primary villain CO.
+    # Same shape as MW-14 (different hand on different board).
+    'MW-17': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+        ('flop', 'BTN', 'FOLD'),
+    ],
+
+    # MW-18: 3-way CO-open. Flop. Qd3d non-nut FD on Jd8d4c (same
+    # board as MW-17; nut-potential comparison). Same shape as MW-17.
+    'MW-18': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+        ('flop', 'BTN', 'FOLD'),
+    ],
+
+    # MW-19: 3-way CO-open. Flop. TcNc nut straight on QhJs8d; 3-way
+    # checks to hero BTN. Primary villain BB. Same shape as MW-12.
+    'MW-19': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+    ],
+
+    # MW-20: 4-way HJ-open. Flop. TsNs non-nut straight on KdQcJh;
+    # hero BTN faces BB lead 40 into 110 (HJ+CO folded between).
+    # Primary villain BB. Pot odds 26.7% confirms HU when BTN acts.
+    'MW-20': [
+        ('preflop', 'HJ', 'RAISE'),
+        ('preflop', 'CO', 'CALL'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop decision for BTN; BB donked, HJ+CO folded, BTN to act.
+        ('flop', 'BB', 'BET'),
+        ('flop', 'HJ', 'FOLD'),
+        ('flop', 'CO', 'FOLD'),
+    ],
+
+    # MW-21: 4-way CO-open with SB caller. Flop. Ah9h nut FD+gutshot
+    # on JhTh2c; hero BB faces CO bet (BTN folded). SB checked first.
+    # Primary villain CO.
+    'MW-21': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'SB', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop decision for BB; SB checked, BB checked, CO bet, BTN folded.
+        ('flop', 'SB', 'CHECK'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+        ('flop', 'BTN', 'FOLD'),
+    ],
+
+    # MW-22: 4-way CO-open with SB caller. Flop. AdQs nut FD OOP on
+    # Kd9d4h; hero BB first to act OOP after SB. Primary villain CO.
+    'MW-22': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'SB', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop decision for BB; SB checked, BB to act.
+        ('flop', 'SB', 'CHECK'),
+    ],
+
+    # MW-23: 3-way CO-open. Flop. QhJc top pair IP BTN on Q83r;
+    # 3-way checks to hero. Primary villain BB. Same shape as MW-12.
+    'MW-23': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+    ],
+
+    # MW-24: 3-way BTN-PFR. Flop. QsJd top pair OOP SB on Q83r
+    # (mirror of MW-23); hero SB first to act OOP. Primary villain BTN.
+    'MW-24': [
+        ('preflop', 'BTN', 'RAISE'),
+        ('preflop', 'SB', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop decision for SB; hero first to act OOP, no pre-hero actions.
+    ],
+
+    # MW-25: 4-way HJ-open. Flop. Ks7s flush draw IP BTN on As9s5d;
+    # 4-way checks to hero. Primary villain BB. Same shape family as
+    # MW-16 (4-way checks-through-to-BTN).
+    'MW-25': [
+        ('preflop', 'HJ', 'RAISE'),
+        ('preflop', 'CO', 'CALL'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'HJ', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+    ],
+
+    # MW-26: 4-way CO-open with SB caller. Flop. Ks7s flush draw OOP
+    # SB on As9s5d (mirror of MW-25); hero SB first to act OOP.
+    # Primary villain CO.
+    'MW-26': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'SB', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop decision for SB; hero first to act OOP, no pre-hero actions.
+    ],
+
+    # MW-27: 3-way CO-open. Flop. JhJc overpair IP BTN on 962r; 3-way
+    # checks to hero. Primary villain BB. Same shape as MW-12/MW-23.
+    'MW-27': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+    ],
+
+    # MW-28: 3-way BTN-PFR. Flop. JhJd overpair OOP SB on 962r
+    # (mirror of MW-27); hero SB first to act OOP. Primary villain BTN.
+    'MW-28': [
+        ('preflop', 'BTN', 'RAISE'),
+        ('preflop', 'SB', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        # Flop decision for SB; hero first to act OOP, no pre-hero actions.
+    ],
+
+    # MW-29: 4-way CO-open with SB caller. Flop. KcTh top pair facing
+    # single CO bet on KdJc6s; SB checked, BB checked, CO bet, BTN
+    # folded, hero BB faces decision. Primary villain CO. Pot odds
+    # 22.6% (35 into 155) confirms BTN folded with no caller.
+    'MW-29': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'SB', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'SB', 'CHECK'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+        ('flop', 'BTN', 'FOLD'),
+    ],
 }
 
 
@@ -939,6 +1164,26 @@ _REFERENCE_VILLAIN_POS: Dict[str, str] = {
     'FB-38':                   'BB',
     'FB-39':                   'BTN',
     'FB-40':                   'BTN',
+    # Commit 13.3.3 — MW-12..30 minus MW-15/MW-30 (first multiway batch)
+    # Per design/multiway_reference_set/BATCH2_8_HAND_DESIGNS.md
+    # "Primary villain position" field for each fixture.
+    'MW-12':                   'BB',
+    'MW-13':                   'BTN',
+    'MW-14':                   'CO',
+    'MW-16':                   'BB',
+    'MW-17':                   'CO',
+    'MW-18':                   'CO',
+    'MW-19':                   'BB',
+    'MW-20':                   'BB',
+    'MW-21':                   'CO',
+    'MW-22':                   'CO',
+    'MW-23':                   'BB',
+    'MW-24':                   'BTN',
+    'MW-25':                   'BB',
+    'MW-26':                   'CO',
+    'MW-27':                   'BB',
+    'MW-28':                   'BTN',
+    'MW-29':                   'CO',
 }
 
 
