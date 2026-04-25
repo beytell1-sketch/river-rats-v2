@@ -90,6 +90,143 @@ _CALIBRATION_ACTION_HISTORY: Dict[str, List[Tuple[str, str, str]]] = {
         ('flop', 'CO', 'BET'),
         ('flop', 'BTN', 'CALL'),
     ],
+
+    # ─────────────────────────────────────────────────────────────────
+    # COMMIT 13.3.3 — MW-12..29 calibration mirrors (first MW batch in
+    # the full lift). MW-* entries live in BOTH sidecars per existing
+    # convention (MW-11/15/30 pattern). Values are byte-identical to
+    # `_REFERENCE_ACTION_HISTORY` for the same ref_id; the cross-sidecar
+    # consistency test (test_mw_entries_match_across_sidecars) gates
+    # any drift.
+    # ─────────────────────────────────────────────────────────────────
+
+    'MW-12': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+    ],
+    'MW-13': [
+        ('preflop', 'BTN', 'RAISE'),
+        ('preflop', 'SB', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+    ],
+    'MW-14': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+        ('flop', 'BTN', 'FOLD'),
+    ],
+    'MW-16': [
+        ('preflop', 'HJ', 'RAISE'),
+        ('preflop', 'CO', 'CALL'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'HJ', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+    ],
+    'MW-17': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+        ('flop', 'BTN', 'FOLD'),
+    ],
+    'MW-18': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+        ('flop', 'BTN', 'FOLD'),
+    ],
+    'MW-19': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+    ],
+    'MW-20': [
+        ('preflop', 'HJ', 'RAISE'),
+        ('preflop', 'CO', 'CALL'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'BET'),
+        ('flop', 'HJ', 'FOLD'),
+        ('flop', 'CO', 'FOLD'),
+    ],
+    'MW-21': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'SB', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'SB', 'CHECK'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+        ('flop', 'BTN', 'FOLD'),
+    ],
+    'MW-22': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'SB', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'SB', 'CHECK'),
+    ],
+    'MW-23': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+    ],
+    'MW-24': [
+        ('preflop', 'BTN', 'RAISE'),
+        ('preflop', 'SB', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+    ],
+    'MW-25': [
+        ('preflop', 'HJ', 'RAISE'),
+        ('preflop', 'CO', 'CALL'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'HJ', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+    ],
+    'MW-26': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'SB', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+    ],
+    'MW-27': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'CHECK'),
+    ],
+    'MW-28': [
+        ('preflop', 'BTN', 'RAISE'),
+        ('preflop', 'SB', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+    ],
+    'MW-29': [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'SB', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'SB', 'CHECK'),
+        ('flop', 'BB', 'CHECK'),
+        ('flop', 'CO', 'BET'),
+        ('flop', 'BTN', 'FOLD'),
+    ],
 }
 
 
