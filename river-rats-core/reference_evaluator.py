@@ -757,7 +757,7 @@ _FB_ACTION_HISTORY = {
     'FB-10': (1, 0, 0, 0, 0),  # Flop. CO c-bet 33%; BTN folded; hero closes HU.
     'FB-11': (0, 0, 0, 0, 0),  # Flop. BB donk 50%; CO folded; BTN closes HU.
     'FB-12': (0, 0, 0, 0, 0),  # Flop. BTN c-bet after CO check; BB first resp; CO behind.
-    'FB-13': (0, 0, 0, 1, 0),  # Flop. BTN bet, BB folded; CO closes HU vs BTN bet-and-call.
+    'FB-13': (0, 0, 0, 1, 0),  # Flop. Check-check-bet (BTN c-bet), BB folded; CO closes HU vs BTN bet (BB fold, no call). Stale-prose cleanup commit 13.3.5: prior comment said "bet-and-call" but JSONL action_string shows BB fold, not call.
     'FB-14': (0, 0, 0, 0, 0),  # Flop. BB donk 33%; CO folded; BTN closes HU.
     'FB-15': (1, 0, 0, 0, 0),  # Flop. CO c-bet 50%; BTN folded; hero closes HU.
     'FB-16': (1, 0, 0, 1, 0),  # Flop. CO bet, BTN called; hero faces bet+call.
@@ -779,7 +779,7 @@ _FB_ACTION_HISTORY = {
     'FB-32': (1, 0, 0, 1, 0),  # Flop. CO bet, BTN called; hero faces bet+call.
     'FB-33': (0, 0, 0, 1, 0),  # Flop. BTN bet, BB called; CO faces bet+call.
     'FB-34': (0, 0, 0, 1, 0),  # Flop. BTN bet 25%, BB called; CO faces bet+call.
-    'FB-35': (0, 0, 1, 0, 0),  # Turn. BB folded; CO called BTN flop bet; BTN bets turn.
+    'FB-35': (0, 0, 1, 0, 0),  # Turn. Flop check-check-bet-call-call (3-way to turn); turn check-check-bet, BB folds turn (not flop). CO called BTN flop bet. Stale-prose cleanup commit 13.3.5: prior comment said "BB folded" without specifying when; JSONL turn action_string shows BB checking then folding turn (so BB called flop).
     'FB-36': (0, 0, 1, 0, 0),  # Turn. BB folded flop; CO called BTN flop bet; BTN bets turn.
     'FB-37': (0, 0, 0, 0, 0),  # Turn. All checked flop; BTN delayed bet; BB folded.
     'FB-38': (0, 0, 0, 0, 0),  # River. All checked flop+turn; BB pot-bet river; CO sandwich.

@@ -269,6 +269,23 @@ def test_commit13_2_6_villain_pos_map_covers_all_reference_entries():
     )
 
 
+def test_commit13_3_5_villain_pos_map_covers_calibration_entries():
+    """Commit 13.3.5 wrap: extension of the reference-side coverage
+    check to the calibration sidecar. Every MW-* entry in
+    _CALIBRATION_ACTION_HISTORY must also appear in
+    _REFERENCE_VILLAIN_POS so any downstream consumer (calibration
+    pipeline + classifier) can resolve the primary villain. Catches
+    the case where a future MW entry lands in calibration but its
+    villain_pos was forgotten in the reference map."""
+    from _calibration_action_history_sidecar import _CALIBRATION_ACTION_HISTORY
+    from _reference_action_history_sidecar import _REFERENCE_VILLAIN_POS
+    missing = set(_CALIBRATION_ACTION_HISTORY) - set(_REFERENCE_VILLAIN_POS)
+    assert not missing, (
+        f'_REFERENCE_VILLAIN_POS missing entries for calibration ref_ids: '
+        f'{sorted(missing)}; add to sidecar.'
+    )
+
+
 def test_commit13_2_5_fixture_meta_boards_list_of_strings():
     """FIX #5 (commit 13.2.5): validator extension catches fixture_meta
     board-format drift. Every fixture_meta board must be List[str]
@@ -419,14 +436,10 @@ def test_dryrun_entries_exercise_chain_narrowing():
         # Commit 13.3.4 — MW-31..50 (second multiway batch)
         # ─────────────────────────────────────────────────────────────
         # Boards from design/multiway_reference_set/BATCH2_8_HAND_DESIGNS.md.
-        # Mix of flop/turn/river decisions:
-        #   Flop (10): MW-31/33/34/35/36/37/38/39/40/47/48 (chain empty)
-        #   Turn (8):  MW-32/41/44/45/49/50 (+ MW-46 river-decision-with-prior)
+        # Decision-street mix across 20 entries:
+        #   Flop (11): MW-31/33/34/35/36/37/38/39/40/47/48 (chain empty)
+        #   Turn (6):  MW-32/41/44/45/49/50 (chain step on flop)
         #   River (3): MW-42/43/46 (chain across flop+turn)
-        # Wait — let me restate. MW-32/41/44/45/49/50 are turn decisions
-        # (6 entries); MW-42/43/46 are river decisions (3 entries);
-        # MW-31/33/34/35/36/37/38/39/40/47/48 are flop decisions
-        # (11 entries) = 20 total. ✓
         'MW-31': (['Ac', 'Qd', '5h'],             'CO',  'flop',  False),
         'MW-32': (['Tc', '8h', '4d', '3s'],       'CO',  'turn',  True),   # flop:BET
         'MW-33': (['8d', '7c', '3h'],             'CO',  'flop',  False),
@@ -449,6 +462,47 @@ def test_dryrun_entries_exercise_chain_narrowing():
         'MW-50': (['Js', '8h', '4d', '5c'],       'BTN', 'turn',  True),   # flop:RAISE (single action collapse)
     }
 
+    # Commit 13.3.5 NIT-1: explicit chain-step content per entry where
+    # chain fires. Asserts both shape (which actions enter chain) and
+    # class (BET/CHECK/CALL/FOLD per `_action_to_narrow` normalisation
+    # at range_narrowing.py:739-758, where BET and RAISE both map to
+    # 'BET' class). Computed authoritatively by running each entry
+    # through `narrow_by_action_history` at commit 13.3.5 baseline.
+    # Future regression in chain-narrowing class semantics gets caught
+    # here, not just truthiness of `chain_steps`.
+    expected_chain_steps = {
+        'FB-17':                     ['flop:CHECK'],
+        'FB-18':                     ['flop:CHECK'],
+        'FB-19':                     ['flop:CALL'],
+        'FB-20':                     ['flop:BET'],
+        'FB-21':                     ['flop:CHECK'],
+        'FB-23':                     ['flop:CHECK', 'turn:CHECK'],
+        'FB-24':                     ['flop:CHECK', 'turn:CHECK'],
+        'FB-25':                     ['flop:BET', 'turn:BET'],
+        'FB-26':                     ['flop:CHECK', 'turn:CHECK'],
+        'FB-35':                     ['flop:BET'],
+        'FB-36':                     ['flop:BET'],
+        'FB-37':                     ['flop:CHECK'],
+        'FB-38':                     ['flop:CHECK', 'turn:CHECK'],
+        'FB-39':                     ['flop:CHECK', 'turn:CHECK'],
+        'MW-15':                     ['flop:CHECK', 'turn:CHECK'],
+        'MW-32':                     ['flop:BET'],
+        'MW-41':                     ['flop:BET'],
+        'MW-42':                     ['flop:BET', 'turn:CALL'],
+        'MW-43':                     ['flop:CHECK', 'turn:CHECK'],
+        'MW-44':                     ['flop:BET'],
+        'MW-45':                     ['flop:CHECK'],
+        'MW-46':                     ['flop:BET', 'turn:CALL'],
+        'MW-49':                     ['flop:CALL'],
+        'MW-50':                     ['flop:BET'],
+        'SYN-F3_HU_folded':          ['flop:FOLD'],
+        'SYN-F5_HU_overflow':        ['flop:CALL', 'turn:CALL'],
+        'SYN-F6_MW_all_live':        ['flop:CHECK'],
+        'SYN-F7_HU_donk_x_bet':      ['flop:BET', 'turn:CHECK'],
+        'SYN-T_B05_synthetic':       ['flop:CALL'],
+        'SYN-T_J02_synthetic':       ['flop:BET', 'turn:CALL'],
+    }
+
     for ref_id, ah in _REFERENCE_ACTION_HISTORY.items():
         assert ref_id in fixture_meta, (
             f'test fixture_meta missing entry for {ref_id}; '
@@ -462,6 +516,17 @@ def test_dryrun_entries_exercise_chain_narrowing():
         if expects_fire:
             assert meta['chain_steps'], (
                 f'{ref_id}: chain_steps empty but expected fire '
+                f'(decision_street={decision_street}, villain={villain_pos})'
+            )
+            # NIT-1 (commit 13.3.5): explicit chain-step content check.
+            assert ref_id in expected_chain_steps, (
+                f'{ref_id}: fires chain but missing from expected_chain_steps; '
+                f'add explicit expected list (got {meta["chain_steps"]})'
+            )
+            assert meta['chain_steps'] == expected_chain_steps[ref_id], (
+                f'{ref_id}: chain_steps content mismatch — '
+                f'expected {expected_chain_steps[ref_id]}, '
+                f'got {meta["chain_steps"]} '
                 f'(decision_street={decision_street}, villain={villain_pos})'
             )
         # Never empty range on structural test (sample_range has enough
