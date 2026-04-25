@@ -38,10 +38,17 @@ _EXPECTED_COMMIT13_3_1_REFIDS = {
     'FB-08', 'FB-09', 'FB-10', 'FB-11', 'FB-12', 'FB-13', 'FB-14',
     'FB-15', 'FB-16', 'FB-18', 'FB-19', 'FB-20',
 }
+# Commit 13.3.2 — batch 2 of 5. FB-21..40 minus FB-23 = 19 entries.
+_EXPECTED_COMMIT13_3_2_REFIDS = {
+    'FB-21', 'FB-22', 'FB-24', 'FB-25', 'FB-26', 'FB-27', 'FB-28',
+    'FB-29', 'FB-30', 'FB-31', 'FB-32', 'FB-33', 'FB-34', 'FB-35',
+    'FB-36', 'FB-37', 'FB-38', 'FB-39', 'FB-40',
+}
 _EXPECTED_REFERENCE_REFIDS = (
     _EXPECTED_COMMIT13_REFIDS
     | _EXPECTED_COMMIT13_2_SYN_REFIDS
     | _EXPECTED_COMMIT13_3_1_REFIDS
+    | _EXPECTED_COMMIT13_3_2_REFIDS
 )
 _EXPECTED_CALIBRATION_REFIDS = {'MW-11', 'MW-30', 'MW-15'}
 
@@ -328,6 +335,37 @@ def test_dryrun_entries_exercise_chain_narrowing():
         'FB-18': (['Ac', 'Jh', '5d', 'Ks'], 'CO', 'turn', True),    # flop:CHECK
         'FB-19': (['Kh', '6h', '3d', 'Qc'], 'BTN', 'turn', True),   # flop:CALL
         'FB-20': (['Kh', '6h', '3d', 'Qc'], 'BTN', 'turn', True),   # flop:BET
+        # ─────────────────────────────────────────────────────────────
+        # Commit 13.3.2 — FB-21..40 (FB-23 above in commit-13 dryrun)
+        # ─────────────────────────────────────────────────────────────
+        # Boards from training-data/facing_bet_test_set_40.jsonl. Mix of
+        # flop / turn / river decisions per the JSONL `street` field.
+        # Flop decisions (FB-22/27/28/29/30/31/32/33/34/40):
+        #   expects_chain_fire=False (no prior postflop street).
+        # Turn decisions (FB-21/35/36/37):
+        #   expects_chain_fire=True (prior flop chain step).
+        # River decisions (FB-24/25/26/38/39):
+        #   expects_chain_fire=True (prior flop+turn chain steps, or
+        #   prior flop+turn aggression chain).
+        'FB-21': (['Ts', '8c', '4h', 'Jd'],       'CO',  'turn',  True),   # flop:CHECK
+        'FB-22': (['Ts', '8c', '4h'],             'BTN', 'flop',  False),
+        'FB-24': (['Ad', '9c', '3h', '2s', 'Kd'], 'BB',  'river', True),   # flop:CHECK + turn:CHECK
+        'FB-25': (['Qd', '8d', '4c', '7s', 'Jh'], 'CO',  'river', True),   # flop:BET + turn:BET
+        'FB-26': (['Qd', '8d', '4c', '7s', 'Jh'], 'BB',  'river', True),   # flop:CHECK + turn:CHECK
+        'FB-27': (['8s', '5s', '3d'],             'CO',  'flop',  False),
+        'FB-28': (['8s', '5s', '3d'],             'CO',  'flop',  False),
+        'FB-29': (['8s', '5s', '3d'],             'BB',  'flop',  False),
+        'FB-30': (['8s', '5s', '3d'],             'CO',  'flop',  False),
+        'FB-31': (['Jd', '8s', '6h'],             'BB',  'flop',  False),
+        'FB-32': (['Jd', '8s', '6h'],             'CO',  'flop',  False),
+        'FB-33': (['Th', 'Td', '7c'],             'BTN', 'flop',  False),
+        'FB-34': (['As', '9s', '4s'],             'BTN', 'flop',  False),
+        'FB-35': (['Kh', '6h', '3d', 'Qc'],       'BTN', 'turn',  True),   # flop:BET
+        'FB-36': (['Ts', '8c', '4h', 'Jd'],       'BTN', 'turn',  True),   # flop:BET
+        'FB-37': (['Ac', 'Jh', '5d', 'Ks'],       'BTN', 'turn',  True),   # flop:CHECK
+        'FB-38': (['Ad', '9c', '3h', '2s', 'Kd'], 'BB',  'river', True),   # flop:CHECK + turn:CHECK
+        'FB-39': (['Qd', '8d', '4c', '7s', 'Jh'], 'BTN', 'river', True),   # flop:CHECK + turn:CHECK
+        'FB-40': (['Kc', '8c', '4d'],             'BTN', 'flop',  False),
     }
 
     for ref_id, ah in _REFERENCE_ACTION_HISTORY.items():
