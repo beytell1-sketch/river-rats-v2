@@ -30,7 +30,19 @@ _EXPECTED_COMMIT13_2_SYN_REFIDS = {
     # FIX #3 (commit 13.2.5): donk-line bucket
     'SYN-F7_HU_donk_x_bet',
 }
-_EXPECTED_REFERENCE_REFIDS = _EXPECTED_COMMIT13_REFIDS | _EXPECTED_COMMIT13_2_SYN_REFIDS
+# Commit 13.3.1 — batch 1 of 5 (~25-entry sub-batches per
+# MAIN_TERMINAL_COMMIT13_3_GREENLIGHT_2026-04-25.md). FB-01..20 minus
+# FB-17 (already in commit 13 dry-run set) = 19 entries.
+_EXPECTED_COMMIT13_3_1_REFIDS = {
+    'FB-01', 'FB-02', 'FB-03', 'FB-04', 'FB-05', 'FB-06', 'FB-07',
+    'FB-08', 'FB-09', 'FB-10', 'FB-11', 'FB-12', 'FB-13', 'FB-14',
+    'FB-15', 'FB-16', 'FB-18', 'FB-19', 'FB-20',
+}
+_EXPECTED_REFERENCE_REFIDS = (
+    _EXPECTED_COMMIT13_REFIDS
+    | _EXPECTED_COMMIT13_2_SYN_REFIDS
+    | _EXPECTED_COMMIT13_3_1_REFIDS
+)
 _EXPECTED_CALIBRATION_REFIDS = {'MW-11', 'MW-30', 'MW-15'}
 
 
@@ -289,6 +301,33 @@ def test_dryrun_entries_exercise_chain_narrowing():
         # villain BB donked flop then check-turn. Chain: flop:BET +
         # turn:CHECK — fires. River-BET enters via facing_bet gate.
         'SYN-F7_HU_donk_x_bet': (['Kh', '7d', '2c', '9s', '5h'], 'BB', 'river', True),
+        # ─────────────────────────────────────────────────────────────
+        # Commit 13.3.1 — FB-01..20 (FB-17 above in commit-13 dryrun)
+        # ─────────────────────────────────────────────────────────────
+        # Boards from training-data/facing_bet_test_set_40.jsonl. All
+        # FB-01..16 are flop decisions → expects_chain_fire=False (no
+        # prior postflop street). FB-18/19/20 are turn decisions with
+        # at least one prior-street villain action → expects_fire=True.
+        'FB-01': (['Ah', '6d', '2c'], 'CO', 'flop', False),
+        'FB-02': (['Ah', '6d', '2c'], 'BB', 'flop', False),
+        'FB-03': (['Ah', '6d', '2c'], 'CO', 'flop', False),
+        'FB-04': (['Kc', '8c', '4d'], 'CO', 'flop', False),
+        'FB-05': (['Kc', '8c', '4d'], 'CO', 'flop', False),
+        'FB-06': (['Jd', '8s', '6h'], 'CO', 'flop', False),
+        'FB-07': (['Jd', '8s', '6h'], 'BB', 'flop', False),
+        'FB-08': (['Qh', '7h', '3s'], 'BB', 'flop', False),
+        'FB-09': (['Qh', '7h', '3s'], 'CO', 'flop', False),
+        'FB-10': (['As', '9s', '4s'], 'CO', 'flop', False),
+        'FB-11': (['As', '9s', '4s'], 'BB', 'flop', False),
+        'FB-12': (['Th', 'Td', '7c'], 'BTN', 'flop', False),
+        'FB-13': (['Th', 'Td', '7c'], 'BTN', 'flop', False),
+        'FB-14': (['9d', '7d', '2c'], 'BB', 'flop', False),
+        'FB-15': (['9d', '7d', '2c'], 'CO', 'flop', False),
+        'FB-16': (['9d', '7d', '2c'], 'CO', 'flop', False),
+        # Turn decisions: chain fires on prior-street villain action.
+        'FB-18': (['Ac', 'Jh', '5d', 'Ks'], 'CO', 'turn', True),    # flop:CHECK
+        'FB-19': (['Kh', '6h', '3d', 'Qc'], 'BTN', 'turn', True),   # flop:CALL
+        'FB-20': (['Kh', '6h', '3d', 'Qc'], 'BTN', 'turn', True),   # flop:BET
     }
 
     for ref_id, ah in _REFERENCE_ACTION_HISTORY.items():
