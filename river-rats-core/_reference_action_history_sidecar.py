@@ -1082,7 +1082,8 @@ _REFERENCE_ACTION_HISTORY: Dict[str, List[Tuple[str, str, str]]] = {
     # MW-29: 4-way CO-open with SB caller. Flop. KcTh top pair facing
     # single CO bet on KdJc6s; SB checked, BB checked, CO bet, BTN
     # folded, hero BB faces decision. Primary villain CO. Pot odds
-    # 22.6% (35 into 155) confirms BTN folded with no caller.
+    # 22.6% = 35 / (120 preflop pot + 35 CO bet) confirms BTN folded
+    # with no caller (post-bet pot 155 is the call denominator).
     'MW-29': [
         ('preflop', 'CO', 'RAISE'),
         ('preflop', 'BTN', 'CALL'),
