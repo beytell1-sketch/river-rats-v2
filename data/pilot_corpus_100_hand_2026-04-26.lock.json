@@ -1,0 +1,61 @@
+{
+  "build_directive": "review/comms/MAIN_TERMINAL_PR37_MERGE_ACK_BUILD_C_KICKOFF_2026-04-26.md",
+  "build_seed": 20260426,
+  "byte_size": 131835,
+  "candidate_pool_size_post_disjointness": 953,
+  "disjointness": {
+    "post_sample_overlap_anchor": 0,
+    "post_sample_overlap_calibration": 0,
+    "post_sample_overlap_holdout": 0,
+    "stage6_holdout_fingerprints": 49,
+    "total_forbidden_fingerprints_deduplicated": 79,
+    "v23_anchor_9hand_extension_fingerprints": 9,
+    "v23_calibration_24hand_legacy_fingerprints": 21,
+    "within_pilot_unique_fingerprints": 100
+  },
+  "fingerprint_method": "(sorted(hero_cards), sorted(board_cards)) per Stage 6 v1.0 spec \u00a7Non-overlap verification (notes feature: card-class equivalence not enforced \u2014 see Stage 6 v1.0 reviewer flag)",
+  "pilot_hand_count": 100,
+  "predecessor_directive": "review/comms/MAIN_TERMINAL_PILOT_HALT_ACK_BUILDS_ABC_DIRECTIVE_2026-04-26.md (3f9564e)",
+  "sha256": "492154529eb70f07bb5e082a55765c0626b948b72fc48d8aa4a86c424928ef4b",
+  "source_pool": "training-data/3way_situations_10k.jsonl",
+  "source_pool_size": 962,
+  "stage6_holdout_reference_hash": "65cfbf26ad3c6b228a3462574b86c33be41397258519ffd35b1cc08037a4cba5",
+  "stratification_dimensions": [
+    "street",
+    "hero_position",
+    "opponent_count_bucket",
+    "board_texture",
+    "hero_range_placement"
+  ],
+  "stratification_report": {
+    "board_texture": {
+      "monotone": 16,
+      "paired": 23,
+      "rainbow_dry": 29,
+      "two_tone": 32
+    },
+    "hero_position": {
+      "BB": 25,
+      "BTN": 24,
+      "CO": 16,
+      "HJ": 22,
+      "SB": 3,
+      "UTG": 10
+    },
+    "hero_range_placement": {
+      "bluff": 23,
+      "draw": 23,
+      "premium": 17,
+      "value": 37
+    },
+    "opponent_count_bucket": {
+      "3way": 100
+    },
+    "street": {
+      "flop": 36,
+      "river": 34,
+      "turn": 30
+    }
+  },
+  "v23_calibration_constants_reference": "river-rats-core/calibration_exam.py v2.3 \u2014 STANDARD_EXAM_SIZE=28, STANDARD_PASS_THRESHOLD=23, GTO_REVERSAL_HANDS, GROUP_D_REVERSAL_HANDS"
+}
