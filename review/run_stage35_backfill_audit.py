@@ -13,10 +13,15 @@ Reports:
   - Isolation check: flop-only hands show ≤ 0.01 absolute delta on
     villain_top_pair_plus_pct / _medium_made_pct / _draw_pct / _air_pct
 
-Writes report to review/comms/BUILDER_V24_STAGE35_BACKFILL_AUDIT_2026-04-20.md
+Phase 1 HIGH fix (Task 4.5): default output path is now timestamped
+(`review/comms/RERUN_run_stage35_backfill_audit_<UTC-iso>.md`)
+so re-running the script does NOT overwrite the committed 2026-04-20
+baseline. Pass `--out <path>` to choose an explicit destination.
 """
 from __future__ import annotations
 
+import argparse
+import datetime as _dt
 import json
 import os
 import statistics
@@ -256,7 +261,37 @@ def _rerun_feature_extraction(row):
     return feat_dict, None, action_history
 
 
-def main():
+def _default_report_path():
+    """Phase 1 HIGH fix (Task 4.5): timestamped default so re-runs
+    don't overwrite the immutable 2026-04-20 baseline."""
+    ts = _dt.datetime.now(_dt.timezone.utc).strftime('%Y-%m-%dT%H-%M-%SZ')
+    return os.path.join(
+        _REPO, 'review', 'comms',
+        f'RERUN_run_stage35_backfill_audit_{ts}.md',
+    )
+
+
+def _parse_args(argv=None):
+    parser = argparse.ArgumentParser(
+        description='Stage 3.5 M4 distribution-shift audit.',
+    )
+    parser.add_argument(
+        '--out',
+        default=None,
+        help=(
+            'Output report path. Defaults to a timestamped path under '
+            'review/comms/ so re-runs preserve prior outputs (Phase 1 '
+            'HIGH fix; the original 2026-04-20 file is no longer '
+            'overwritten by default).'
+        ),
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv=None):
+    args = _parse_args(argv)
+    report_path = args.out or _default_report_path()
+
     print('=' * 72)
     print('Stage 3.5 M4 — distribution-shift audit')
     print('=' * 72)
@@ -364,10 +399,8 @@ def main():
     print()
 
     # Write report
-    report_path = os.path.join(
-        _REPO, 'review', 'comms',
-        'BUILDER_V24_STAGE35_BACKFILL_AUDIT_2026-04-20.md',
-    )
+    # Phase 1 HIGH fix (Task 4.5): `report_path` from `--out` flag with
+    # timestamped default; original 04-20 baseline preserved on disk.
     with open(report_path, 'w') as f:
         f.write(f"""---
 date: 2026-04-20

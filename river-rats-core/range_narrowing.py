@@ -275,10 +275,57 @@ class HandClassification:
     draw_outs: int
 
 
+_VALID_RANKS = frozenset('23456789TJQKA')
+_VALID_SUITS = frozenset('shdc')
+
+
+def _is_valid_hand_notation(hand) -> bool:
+    """Whitelist validator for hand notation accepted by classify_hand.
+
+    Phase 3 HIGH-2 fix (Task 4.5): callers historically wrapped
+    `classify_hand` in a try/except expecting it to raise on malformed
+    input. It never raised — `_parse_hand_to_cards` returned None for
+    short input and silently accepted unknown rank chars (mapping them
+    to rank value 0), so 'BOGUS' / '' / 'AAA' were CLASSIFIED instead
+    of rejected. Validation now happens up-front.
+
+    Accepted forms:
+      - 'AKs' / 'AKo' / 'AK'    — preflop notation (3 or 2 chars; ranks
+                                  + optional s/o modifier)
+      - 'JJ' / 'TT'             — pocket pair (2 chars, two equal ranks)
+      - 'AhKs'                  — explicit specific cards (4 chars,
+                                  rank+suit pairs)
+    """
+    if not isinstance(hand, str) or len(hand) < 2:
+        return False
+    # 4-char specific-card form: rank+suit+rank+suit
+    if len(hand) == 4:
+        return (
+            hand[0].upper() in _VALID_RANKS
+            and hand[1].lower() in _VALID_SUITS
+            and hand[2].upper() in _VALID_RANKS
+            and hand[3].lower() in _VALID_SUITS
+        )
+    # 2- or 3-char shorthand: ranks + optional 's'/'o' modifier
+    if len(hand) not in (2, 3):
+        return False
+    if hand[0].upper() not in _VALID_RANKS:
+        return False
+    if hand[1].upper() not in _VALID_RANKS:
+        return False
+    if len(hand) == 3:
+        # 'o' / 's' modifier; pairs ('JJo') would be nonsensical → reject
+        if hand[2].lower() not in ('s', 'o'):
+            return False
+        if hand[0].upper() == hand[1].upper():
+            return False  # pairs cannot carry s/o modifier
+    return True
+
+
 def classify_hand(hand: str, board: List[str]) -> HandClassification:
     """
     Classify a hand into GTO betting categories.
-    
+
     Categories:
         - nuts: Best possible hand or near-nuts
         - strong_value: Sets, straights, flushes, top two pair
@@ -288,10 +335,25 @@ def classify_hand(hand: str, board: List[str]) -> HandClassification:
         - weak_made: Bottom pair, weak showdown
         - bluff: Has blockers but no made hand
         - air: No showdown value, no blockers
+
+    Phase 3 HIGH-2 fix (Task 4.5): raises `ValueError` on unrecognised
+    hand notation. Previously returned 'air' for empty / short input
+    and silently classified malformed ranks (e.g. 'BOGUS', 'AAA') as
+    'weak_made' / 'strong_value'. Production callers should pass
+    well-formed notation; corrupted ranges (audit scripts loading
+    from disk; pilot fixtures) now fail loudly.
     """
+    if not _is_valid_hand_notation(hand):
+        raise ValueError(
+            f"Unrecognised hand notation: {hand!r} (expected forms: "
+            f"'AKs'/'AKo'/'AK'/'JJ'/'AhKs')"
+        )
+
     # Convert hand notation to hole cards
     hole_cards = _parse_hand_to_cards(hand, board)
     if not hole_cards:
+        # Notation passed validation but parser still failed → treat as
+        # genuine air (defensive; should not occur with valid notation).
         return HandClassification(hand, 'air', 0.0, False, 0)
     
     # Evaluate the hand
