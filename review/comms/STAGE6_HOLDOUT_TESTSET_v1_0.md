@@ -2,19 +2,28 @@
 date: 2026-04-26
 author: general-purpose subagent acting as gto-expert (dedicated subagent unavailable)
 derived_from: STAGE6_HOLDOUT_TESTSET_DRAFT_2026-04-26.md
-version: v1.0.1
+version: v1.0.2
 review_chain:
   - orchestrator skeleton (DRAFT v0.1, 2026-04-26)
   - v1.0 fill (general-purpose-as-gto-expert, 2026-04-26)
   - v1.0 independent reviewer pass APPROVE-WITH-NITS at commit 9758a99 (2026-04-26) — REVIEW_VERDICT_PR_16_STAGE6_HOLDOUT_2026-04-26.md
   - v1.0.1 fix-forward dispatch (general-purpose-as-gto-expert, 2026-04-26) — addresses 2 HIGH + 4 MEDIUM + 1 LOW-MEDIUM from PR #16 verdict; see MAIN_TERMINAL_PR_16_FIX_FORWARD_REQUIRED_2026-04-26.md (006a13e)
+  - v1.0.1 independent reviewer pass APPROVE-WITH-NITS at commit cc247ac (2026-04-26) — REVIEW_VERDICT_PR_18_STAGE6_HOLDOUT_V1_0_1_2026-04-26.md (1 new MEDIUM cosmetic + 4 NITs)
+  - v1.0.2 micro-correction (this revision, 2026-04-26) — H025 header + hash re-lock + closure tally per MAIN_TERMINAL_PR_18_MERGED_TASK4_2_DIRECTIVE_2026-04-26.md
+  - v1.0.2 independent reviewer pass — REQUIRED before pilot use
   - solver verification on 10-hand sample — REQUIRED before pilot
   - owner final approval — REQUIRED
-status: v1.0.1 (APPROVE-WITH-NITS fix-forward on v1.0; HIGH-severity hash + arithmetic addressed)
+status: v1.0.2 (micro-correction on v1.0.1; H025 header consistency + hash re-lock + closure tally)
 from: Stage 4 prep fix-forward dispatch
 to: Owner · Independent reviewer pool · ML-architect · Builder
 re: Stage 6 held-out test set construction protocol — 50-hand authored corpus, immutability hash, pre-pilot prerequisites
 changelog:
+  v1.0.2 (2026-04-26):
+    - MEDIUM (cosmetic) — H025 header consistency: "Pot at decision: 105.2bb" → "94.2bb" (per v1.0.1 reviewer cc247ac Item B + H concerns; FOLD conclusion unchanged; pot odds 29.3% validates against 94.2). The H025 header sits inside the hashed block so this triggers a hash re-lock.
+    - Hash re-lock: v1.0.1 SHA256 b775df2a... (47653 bytes) superseded by v1.0.2 SHA256 65cfbf26... (47652 bytes; -1 byte from "105.2"→"94.2"). Both hashes preserved in the v1.0.2 historical traceability section.
+    - NIT — Closure §6 solver-sample tally cleanup: v1.0.1 stated "4 HIGH / 5 MEDIUM / 1 LOW; 1 FOLD / 2 CHECK / 3 CALL / 3 BET / 1 RAISE" — both stale from a pre-swap count. v1.0.2 corrects to empirical "5 HIGH / 3 MEDIUM / 2 LOW; 1 FOLD / 3 CHECK / 2 CALL / 3 BET / 1 RAISE" (verified against the 10 sample IDs).
+    - Other 4 NITs from v1.0.1 verdict (H001 minor poker overstatement, H027 inline self-correction artifact, solver-sample FOLD is LOW-band, optional HIGH-band FOLD addition) deferred to v1.1 calibration material per orchestrator directive.
+
   v1.0.1 (2026-04-26):
     - HIGH #1 — Hash discipline: removed grep-ambiguous literal start/end HTML-comment block markers from prereq prose and the python recompute snippet (constructed via concatenation). Exactly one literal pair of HTML-comment delimiters now exists in the file (only at the actual delimiter sites). Hash-resolution rule documented (bytes between markers, exclusive of marker lines). New SHA256 + byte count recorded after all v1.0.1 edits.
     - HIGH #2 — Pot/SPR full audit: SB-dead-money convention documented as canonical (0.5bb dead-SB included in postflop pots, 1.0bb dead-BB when SB completes). Approximately 30 hands had pot/SPR/pot-odds figures corrected. Major fixes: H022/H028/H048 (turn bet double-counted, off by 6.6bb each); H039 (river bet 7.5 → corrected to 6.6 to match 75%-of-8.8 sizing); H014/H025/H031 (multi-street cascading arithmetic redone with consistent sizing tags). All `bet_33` pot-odds claims of "25%" corrected to ~20%.
@@ -261,11 +270,11 @@ that the source code of this very file contains the literal forms
 only at the actual delimiter sites. Builders / reviewers running
 the snippet should copy the python verbatim.)
 
-**v1.0.1 SHA256 (50-hand spec block, payload-only between markers):**
-`b775df2a1c2d53935f7094746063812c43f25ac21d3d1ba354c1908abc738539`
+**v1.0.2 SHA256 (50-hand spec block, payload-only between markers):**
+`65cfbf26ad3c6b228a3462574b86c33be41397258519ffd35b1cc08037a4cba5`
 
-**v1.0.1 byte count of hashed payload:**
-`47653`
+**v1.0.2 byte count of hashed payload:**
+`47652`
 
 Locate the delimiter pair via `grep -n HASHED-BLOCK file.md` since
 absolute line numbers may shift if non-spec sections (frontmatter,
@@ -275,12 +284,20 @@ and do not require version bump. Any edit to a hand spec inside the
 bracketed block changes the hash and forces v1.1 (or v1.0.x for
 in-place amendments) with re-verification.
 
+**v1.0.1 (superseded) SHA256:**
+`b775df2a1c2d53935f7094746063812c43f25ac21d3d1ba354c1908abc738539`
+— this hash certified the v1.0.1 spec block (47653 bytes). v1.0.2
+fixes the H025 header inconsistency (`105.2bb` → `94.2bb`) which
+sits inside the hashed block, so v1.0.2 re-locks at a new SHA256
+over 47652 bytes (the H025 header is one byte shorter). Preserved
+here for traceability.
+
 **v1.0 (superseded) SHA256:**
 `8b553de0745bb50f5867a330d507eb106c04b9bc09f385e16966eec925b3b74b`
 — this hash certified the v1.0 spec block but was recorded against
 markers that the reviewer found in 3 places in the file. v1.0.1
-collapses the marker count to 1 pair and re-locks. The v1.0 hash is
-preserved here for historical traceability only.
+collapsed the marker count to 1 pair and re-locked. The v1.0 hash
+is preserved here for historical traceability only.
 
 ## Mandatory pre-pilot solver-verification sample (10 hands)
 
@@ -900,7 +917,7 @@ against this convention.
   flop: BB check, CO bet_33 2.7, BTN call, BB fold;
   turn: CO check, BTN bet_75 9.9, CO call;
   river: CO check, BTN bet_33 11.0, CO raise to 50`
-- Pot at decision: 105.2bb after CO check-raise (preflop 8.0; flop
+- Pot at decision: 94.2bb after CO check-raise (preflop 8.0; flop
   +2×2.7 → 13.4; turn +2×9.9 → 33.2; river BTN bet 11.0 → 44.2; CO
   raise 50 puts CO total in at 50, +50 → 94.2; reframe: pot now =
   44.2 + 50 = 94.2); hero (BTN) to-call 50 − 11 = 39; pot odds ≈
@@ -1637,9 +1654,11 @@ Self-consistency pass run after authoring:
    PASS.
 
 6. **10-hand solver sample spans bands + classes.** Composition:
-   4 HIGH / 5 MEDIUM / 1 LOW; actions: 1 FOLD / 2 CHECK / 3 CALL /
+   5 HIGH / 3 MEDIUM / 2 LOW; actions: 1 FOLD / 3 CHECK / 2 CALL /
    3 BET / 1 RAISE. FOLD class now represented (HOLDOUT_046 swapped
-   in for HOLDOUT_037). PASS.
+   in for HOLDOUT_037). PASS. (v1.0.2 correction: v1.0.1 closure
+   stated 4/5/1 bands and 1/2/3/3/1 actions — both stale from a
+   pre-swap count; verified empirically against the 10 sample IDs.)
 
 7. **Non-overlap verification (programmatic).** Built fingerprint
    set from 56 jsonl files in `training-data/` (1,996 unique
