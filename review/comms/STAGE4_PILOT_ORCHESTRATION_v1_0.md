@@ -159,16 +159,29 @@ surfaces inconsistency at review time per QC HIGH-2 (S-X1) close.
 running the blind calibration exam, Pilot Orchestrator runs a
 5-hand partial-fold MW fixture verification:
 
-- Sample 5 hands from the pilot 100-hand corpus where
-  `len(per_villain) ≥ 2` AND `any(per_villain_folded.values()) ==
-  True` AND `not all(per_villain_folded.values())` (i.e. partial-fold
-  MW pots with at least one live opponent)
-- For each sampled hand, assert `_villain_pos_raw` is set to a live
+- **Fixture source** (per V-X2 close, post-PR-#45 merge): load the
+  5 fixtures from `data/phase_a5_partial_fold_fixtures_2026-04-26.jsonl`
+  (Build D v1.0.1 output, hash-locked at SHA256
+  `98e4309a21b464f8087d525eee0c12681d5f815a3b1b5bd7444d3f108eef4319`).
+  These are purpose-built synthetic partial-fold MW fixtures
+  (`fixture_id` = `phase_a5_pf_001` ... `phase_a5_pf_005`) — not
+  sampled from the pilot 100 corpus (which is "live 3-way only" by
+  source-pool construction; QC V-X2 lookup confirmed zero partial-fold
+  candidates exist in any v2.3 calibration constants).
+- Each fixture record has `len(per_villain) ≥ 2` AND
+  `any(per_villain_folded.values()) == True` AND
+  `not all(per_villain_folded.values())` (i.e. partial-fold MW pots
+  with at least one live opponent) by Build D construction
+- For each fixture, assert `_villain_pos_raw` is set to a live
   (non-folded, non-overflowed) opponent — verify against the
-  per-villain dicts in the fixture record
-- If ANY sample violates the live-selection rule: HALT pilot;
+  `villain_positions` field which Build D constrains to LIVE villains
+  only (validator-enforced)
+- If ANY fixture violates the live-selection rule: HALT pilot;
   surface to owner via the run-status comms doc; require fixture
   prep fix before dispatching Phase B
+- Fixture file determinism: SEED=20260426 in
+  `scripts/build_phase_a5_partial_fold_fixtures.py`; re-running the
+  script reproduces the corpus byte-identical (V-D9 close)
 - This preflight is independent of the 33-agent calibration exam
   and runs BEFORE it (sequential gate)
 
