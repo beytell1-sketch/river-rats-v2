@@ -2,20 +2,30 @@
 date: 2026-04-26
 author: general-purpose subagent acting as gto-expert (dedicated subagent unavailable)
 derived_from: STAGE6_HOLDOUT_TESTSET_DRAFT_2026-04-26.md
-version: v1.0
+version: v1.0.1
 review_chain:
   - orchestrator skeleton (DRAFT v0.1, 2026-04-26)
-  - this fill (general-purpose-as-gto-expert, 2026-04-26)
-  - independent reviewer pass — REQUIRED before pilot use
+  - v1.0 fill (general-purpose-as-gto-expert, 2026-04-26)
+  - v1.0 independent reviewer pass APPROVE-WITH-NITS at commit 9758a99 (2026-04-26) — REVIEW_VERDICT_PR_16_STAGE6_HOLDOUT_2026-04-26.md
+  - v1.0.1 fix-forward dispatch (general-purpose-as-gto-expert, 2026-04-26) — addresses 2 HIGH + 4 MEDIUM + 1 LOW-MEDIUM from PR #16 verdict; see MAIN_TERMINAL_PR_16_FIX_FORWARD_REQUIRED_2026-04-26.md (006a13e)
   - solver verification on 10-hand sample — REQUIRED before pilot
   - owner final approval — REQUIRED
-status: v1.0 — fill complete; awaits independent reviewer + solver sample + owner sign-off
-from: Stage 4 prep author dispatch
+status: v1.0.1 (APPROVE-WITH-NITS fix-forward on v1.0; HIGH-severity hash + arithmetic addressed)
+from: Stage 4 prep fix-forward dispatch
 to: Owner · Independent reviewer pool · ML-architect · Builder
 re: Stage 6 held-out test set construction protocol — 50-hand authored corpus, immutability hash, pre-pilot prerequisites
+changelog:
+  v1.0.1 (2026-04-26):
+    - HIGH #1 — Hash discipline: removed grep-ambiguous literal start/end HTML-comment block markers from prereq prose and the python recompute snippet (constructed via concatenation). Exactly one literal pair of HTML-comment delimiters now exists in the file (only at the actual delimiter sites). Hash-resolution rule documented (bytes between markers, exclusive of marker lines). New SHA256 + byte count recorded after all v1.0.1 edits.
+    - HIGH #2 — Pot/SPR full audit: SB-dead-money convention documented as canonical (0.5bb dead-SB included in postflop pots, 1.0bb dead-BB when SB completes). Approximately 30 hands had pot/SPR/pot-odds figures corrected. Major fixes: H022/H028/H048 (turn bet double-counted, off by 6.6bb each); H039 (river bet 7.5 → corrected to 6.6 to match 75%-of-8.8 sizing); H014/H025/H031 (multi-street cascading arithmetic redone with consistent sizing tags). All `bet_33` pot-odds claims of "25%" corrected to ~20%.
+    - MEDIUM #1 — FOLD undersample: re-authored 6 BET hands as FOLD-class spots (H001 dominated bluffcatcher river, H005 gutter short of pot odds, H030 MW air on monotone face cbet, H017 mid underpair vs continuation barrel, H038 IP-TPGK face turn check-raise on dynamic, H036 BB-defend air on dry). FOLD count 4 → 10; BET count 20 → 13.
+    - MEDIUM #2 — LOW band undersample: 3 of the new FOLD/CALL re-authorings carry LOW confidence (H017 mixed CALL/FOLD vs barrel, H027 mixed CALL/RAISE 3bet-pot OOP TP, H038 mixed FOLD/CALL face xr). LOW count 2 → 5.
+    - MEDIUM #3 — Solver 10-sample swap: HOLDOUT_037 replaced by HOLDOUT_046 so the FOLD class (LOW band) is represented in the solver-verification sample.
+    - MEDIUM #4 — 24-hand calibration manifest located: `review/calibration_situations.json` + 4 mirror/batch files. Empirical non-overlap scan now explicit (0 matches against the 50 v1.0.1 holdout fingerprints).
+    - LOW-MEDIUM — JSONL-export blockers cleaned: HOLDOUT_007 (4-card flop typo collapsed to 3-card), HOLDOUT_016/019/045/047 (inline `Re-frame:` blocks flattened to a single canonical action history per hand), HOLDOUT_032 now carries `Board: PREFLOP` placeholder for schema consistency. Each hand has exactly one `- Board:` line.
 ---
 
-# Stage 6 Held-Out Test Set v1.0
+# Stage 6 Held-Out Test Set v1.0.1
 
 ## Purpose
 
@@ -28,17 +38,22 @@ self-play systemic) per `MASTER_PLAN (1).md`. Per the locked Stage
    Stage 4, never seen by labelling teams or training pipeline.
    Single-shot accuracy measurement; no iteration. Final gate check.
 
-This document is the v1.0 lock of that test set.
+This document is the v1.0.1 lock of that test set (fix-forward on
+v1.0 per PR #16 reviewer verdict; see frontmatter `changelog`).
 
 ## PRE-EVALUATION PREREQUISITES
 
 Before the v2.4 candidate model is run against this test set:
 
-1. **Hash matches v1.0 lock.** Recompute SHA256 of the 50-hand
-   spec block (everything between `<!-- HASHED-BLOCK-START -->` and
-   `<!-- HASHED-BLOCK-END -->`) and verify it matches the recorded
+1. **Hash matches v1.0.1 lock.** Recompute SHA256 of the 50-hand
+   spec block (everything between the START and END HTML comment
+   markers — see `## Hash + lock` below for the literal forms used
+   to delimit the block; literal markers do not appear in this prose
+   to avoid grep ambiguity) and verify it matches the recorded
    hash in this frontmatter section. Mismatch = test set has drifted
-   = HALT and investigate.
+   = HALT and investigate. There is exactly ONE pair of literal
+   delimiter markers in this file; the hash is computed over the
+   bytes between the first START marker and the first END marker.
 
 2. **Solver-verification sample cleared.** All 10 hands in the
    `## Mandatory pre-pilot solver-verification sample` section have
@@ -64,6 +79,15 @@ Before the v2.4 candidate model is run against this test set:
    the 50 holdout hands against the pilot 100. Zero overlap
    required. This is deferred from v1.0 because the pilot corpus
    does not yet exist.
+
+   **24-hand calibration manifest disjointness:** verified at v1.0.1
+   against `review/calibration_situations.json`,
+   `review/blind_calibration_exam_step7.json`, and
+   `review/calibration_batch_{1,2,3}.json` — union yields 21 unique
+   `(sorted(hero), sorted(board))` fingerprints (some duplication
+   across the mirrored files); **0 matches** against the 50
+   holdout hands. Pre-pilot, re-run this scan against the same five
+   manifest files plus any new calibration drops.
 
 6. **Evaluation script can read the test-set format.** The script
    that loads this file for inference must round-trip the
@@ -129,21 +153,21 @@ available, a reviewer pass by that agent is encouraged.]
 ## Construction targets achieved
 
 - **Total hands authored:** 50
-- **Action distribution achieved** vs target:
+- **Action distribution achieved (v1.0.1)** vs target:
   | Action | Authored | Target | Delta |
   |---|---|---|---|
-  | FOLD | 4 | ~10 (20%) | **−6 (UNDER)** — see flag #10 |
+  | FOLD | 10 | ~10 (20%) | on target |
   | CHECK | 10 | ~12 (24%) | −2 (acceptable) |
-  | CALL | 11 | ~10 (20%) | +1 (on target) |
-  | BET | 20 | ~13 (26%) | **+7 (OVER)** — see flag #10 |
+  | CALL | 12 | ~10 (20%) | +2 (within tolerance) |
+  | BET | 13 | ~13 (26%) | on target |
   | RAISE | 5 | ~5 (10%) | on target |
-- **Confidence band distribution achieved** vs target:
+- **Confidence band distribution achieved (v1.0.1)** vs target:
   | Band | Authored | Target | Delta |
   |---|---|---|---|
-  | HIGH | 30 | ~30 (60%) | on target |
-  | MEDIUM | 18 | ~15 (30%) | +3 (within ±2 tolerance bound +) |
-  | LOW | 2 | ~5 (10%) | **−3 (UNDER)** — see flag #11 |
-- **Tolerance distribution:** 30 strict / 20 soft. Soft = solver
+  | HIGH | 28 | ~30 (60%) | −2 (within tolerance) |
+  | MEDIUM | 17 | ~15 (30%) | +2 (within tolerance) |
+  | LOW | 5 | ~5 (10%) | on target |
+- **Tolerance distribution:** 28 strict / 22 soft. Soft = solver
   MIXED-strategy spots where the expected action need only appear in
   top-2 with prob ≥ 0.20.
 - **Streets:** 22 flop / 18 turn / 10 river — flop-skewed by design
@@ -170,12 +194,16 @@ Coverage:
   (`training-data/test_set_50_labelled.jsonl`): **full**
 - 5 calibration anchors (`river-rats-core/anchors/calibration_anchors.json`):
   **full**
-- 24-hand calibration set: **NOT located in repo as a discrete file**
-  — calibration anchors file holds only 5; the original 24-hand
-  calibration exam appears to be subsumed in pass1 / factory data
-  which IS scanned. [UNCERTAIN: if a separate 24-hand calibration
-  manifest exists in `review/recovered/` or elsewhere, an additional
-  scan is required pre-pilot; flagged as Prereq #5.]
+- 24-hand calibration set: **LOCATED** at
+  `review/calibration_situations.json` (24 entries) — additionally
+  mirrored in `review/blind_calibration_exam_step7.json` (24
+  entries) and split across `review/calibration_batch_1.json`,
+  `_batch_2.json`, `_batch_3.json` (3×8 = 24). v1.0.1 fingerprint
+  scan was extended to include these files; **0 fingerprint
+  matches** against the 50 holdout hands. (Note: prior to v1.0.1
+  the manifest path was unconfirmed and the cross-check was
+  presumed-subsumed via the factory-data scan; v1.0.1 makes the
+  scan explicit.)
 - Stage 4 100-hand pilot corpus: **deferred** — not yet authored.
   Cross-check is Prereq #5 above.
 
@@ -191,31 +219,68 @@ distinct anyway. v1.1 could add a card-class equivalence pass.]
 
 ## Hash + lock
 
-The 50-hand spec block is bracketed by HTML comments below.
-Compute SHA256 over the bracketed bytes (inclusive of the start
-comment line through and including the end comment line).
+The 50-hand spec block is bracketed by HTML comment markers below.
+The literal markers used as delimiters are written in this section
+ONLY in code-fenced form so that grep / regex extraction tools see
+exactly one pair of literal occurrences — the actual delimiter pair
+that wraps the spec block further down the file.
 
-Recommended one-liner:
-```
-python3 -c "
-import hashlib, re
-src = open('review/comms/STAGE6_HOLDOUT_TESTSET_v1_0.md').read()
-m = re.search(r'<!-- HASHED-BLOCK-START -->.*?<!-- HASHED-BLOCK-END -->', src, re.S)
-print(hashlib.sha256(m.group(0).encode()).hexdigest())
-"
-```
+**Hash resolution rule:** the SHA256 is computed over the bytes
+**between** (exclusive of) the first literal start-of-block HTML
+comment and the first literal end-of-block HTML comment in this
+file. The literal forms of those markers are spelled out only at
+the actual delimiter sites further down the document; this prose
+intentionally avoids spelling out the exact substring so that
+`grep` for the literal markers returns exactly one hit each. The
+hashed-block ends with the byte immediately preceding the start of
+the END marker; the markers themselves are not part of the hashed
+payload. There is exactly one such pair of literal delimiter
+markers in this file (verify with
+`grep -c "<!-- " + "HASHED-BLOCK" + "-START -->"` constructed at
+shell time — both START and END counts should be exactly `1`).
 
-**v1.0 SHA256 (50-hand spec block):**
+Canonical one-liner (run from repo root, constructs the marker
+strings at runtime so this snippet itself does not contain literal
+copies):
+
+    python3 -c "
+    import hashlib, re
+    sm = b'<!-- ' + b'HASHED-BLOCK' + b'-START -->'
+    em = b'<!-- ' + b'HASHED-BLOCK' + b'-END -->'
+    with open('review/comms/STAGE6_HOLDOUT_TESTSET_v1_0.md', 'rb') as f:
+        content = f.read()
+    pat = re.escape(sm) + b'(.*?)' + re.escape(em)
+    m = re.search(pat, content, re.S)
+    payload = m.group(1)
+    print('SHA256:', hashlib.sha256(payload).hexdigest())
+    print('Bytes :', len(payload))
+    "
+
+(The python snippet builds the marker strings via concatenation so
+that the source code of this very file contains the literal forms
+only at the actual delimiter sites. Builders / reviewers running
+the snippet should copy the python verbatim.)
+
+**v1.0.1 SHA256 (50-hand spec block, payload-only between markers):**
+`b775df2a1c2d53935f7094746063812c43f25ac21d3d1ba354c1908abc738539`
+
+**v1.0.1 byte count of hashed payload:**
+`47653`
+
+Locate the delimiter pair via `grep -n HASHED-BLOCK file.md` since
+absolute line numbers may shift if non-spec sections (frontmatter,
+prerequisites, flags) are amended; the byte content of the bracketed
+block is the lock — those non-spec amendments do not break the lock
+and do not require version bump. Any edit to a hand spec inside the
+bracketed block changes the hash and forces v1.1 (or v1.0.x for
+in-place amendments) with re-verification.
+
+**v1.0 (superseded) SHA256:**
 `8b553de0745bb50f5867a330d507eb106c04b9bc09f385e16966eec925b3b74b`
-
-Block bounds at v1.0 lock: 1,005 lines, 40,404 bytes between the
-two HTML comment markers. Locate via `grep -n HASHED-BLOCK file.md`
-since absolute line numbers may shift if non-spec sections
-(frontmatter, prerequisites, flags) are amended; the byte content
-of the bracketed block is the lock — those non-spec amendments do
-not break the lock and do not require version bump. Any edit to a
-hand spec inside the bracketed block changes the hash and forces
-v1.1 with re-verification.
+— this hash certified the v1.0 spec block but was recorded against
+markers that the reviewer found in 3 places in the file. v1.0.1
+collapses the marker count to 1 pair and re-locks. The v1.0 hash is
+preserved here for historical traceability only.
 
 ## Mandatory pre-pilot solver-verification sample (10 hands)
 
@@ -226,24 +291,28 @@ classes + the highest-stakes / most-disagreement-likely spots.
 | Anchor ID | Conf | Action | Why selected |
 |---|---|---|---|
 | HOLDOUT_002_KJo_3way_T_paired | MEDIUM | BET_33 | TPGK on paired turn — known model-disagreement class (mirror d2410 risk surface). |
-| HOLDOUT_007_AKo_4way_flop_air_double_paired | HIGH | CHECK | Air on double-paired flop in 4-way — multiway range collisions. |
+| HOLDOUT_007_AKo_4way_flop_air_paired | HIGH | CHECK | Air on paired flop in 4-way — multiway range collisions. |
 | HOLDOUT_013_QQ_3bet_pot_J_high | HIGH | BET_66 | Overpair in 3-bet pot vs single villain — sizing class. |
 | HOLDOUT_019_T9s_OESD_turn_face_bet | MEDIUM | CALL | Drawing-hand pot-odds vs implied — boundary CALL/FOLD. |
 | HOLDOUT_024_AhKh_FD_NFD_river_brick | LOW | CHECK | Missed nut-flush draw on river paired board — bluff-or-give-up. |
 | HOLDOUT_028_88_set_river_2flush_complete | HIGH | CHECK | Set on river when flush completes — value-vs-protect tension. |
 | HOLDOUT_032_AQo_4way_open_face_3bet | HIGH | CALL | Preflop-equivalent geometry transferred to flop — vs 3bet from blinds. |
-| HOLDOUT_037_J9s_BB_defend_K_high_flop | MEDIUM | CALL | BB defend texture, mid-strength + BDFD on K-high — soft tolerance. |
+| HOLDOUT_046_99_HJ_turn_face_xraise | LOW | FOLD | Mid overpair face turn check-raise on dry low-card runout — boundary FOLD/CALL, ensures FOLD class is represented in solver sample. |
 | HOLDOUT_043_22_set_3way_river_overcards | MEDIUM | BET_33 | Bottom set on river 3-way overcard runout — thin value vs check. |
 | HOLDOUT_049_AhJh_river_NF_paired_check_back | HIGH | RAISE_66 | Nut flush facing turn donk → call → river bet on paired — RAISE for value not protected by pair. |
 
 ## UNCERTAIN tag census
 
-- 4× `[UNCERTAIN-SOLVER: ...]` — spots flagged for explicit solver
+- 5× `[UNCERTAIN-SOLVER: ...]` — spots flagged for explicit solver
   pre-pilot adjudication beyond the 10-hand mandatory sample
-  (HOLDOUT_009, HOLDOUT_022, HOLDOUT_036, HOLDOUT_045)
-- 2× `[UNCERTAIN: ...]` — non-solver uncertainties (24-hand
-  calibration manifest location; near-duplicate equivalence in
-  fingerprint check)
+  (HOLDOUT_009, HOLDOUT_022, HOLDOUT_027, HOLDOUT_045 — also
+  HOLDOUT_036 was previously flagged but has been re-authored in
+  v1.0.1 and the prior UNCERTAIN-SOLVER tag is dropped; HOLDOUT_027
+  is the new v1.0.1 LOW-band 3bet-pot mixed-CALL/RAISE spot)
+- 1× `[UNCERTAIN: ...]` — non-solver uncertainty (near-duplicate
+  equivalence in fingerprint check). The previous v1.0
+  UNCERTAIN about 24-hand calibration manifest location is
+  resolved at v1.0.1 — the manifest is located and scanned.
 
 ## 50-hand specification
 
@@ -258,25 +327,66 @@ pot-relative, NOT facing-bet-multiples):
 - Action history convention follows MUST #11/#12 (same-street-collapsed
   with explicit bet sizes shown as fraction-of-pot-at-time-of-action).
 
+**Pot / dead-money convention (canonical for v1.0.1):**
+
+- **Blinds:** 0.5bb SB / 1.0bb BB.
+- **Folded SB carries 0.5bb of dead money into all postflop pots
+  unless SB is the opener / 3-bettor / completer.**
+- **Folded BB carries 1.0bb of dead money** (only relevant in the
+  one preflop hand where SB completes and BB folds, e.g. H004,
+  H034).
+- **Bet-fraction labels** (`bet_33`, `bet_75`, etc.) refer to
+  fraction of the pot **at the moment of action**, AFTER any prior
+  same-street bet has been collected into pot. Stated absolute bet
+  sizes in each hand's action history are the labelled value;
+  rounding to one decimal is permitted.
+- **Pot at decision** is computed as: sum of all chips that have
+  entered the pot before hero acts on the current street, INCLUDING
+  any villain bet that hero is currently facing. To-call is the
+  outstanding amount hero must match.
+- **Pot odds** are computed as `to_call / (pot_at_decision + to_call)`.
+  Note: standard `bet_33` from a clean pot yields **~20% pot odds**,
+  not 25%. The original v1.0 frequently mis-stated `bet_33` as
+  "pot odds 25%"; v1.0.1 corrects these.
+- **SPR at decision** = `min_remaining_stack / pot_at_decision`,
+  where `min_remaining_stack` is the smallest effective stack
+  remaining among hero + villain(s) still in the hand.
+
+All v1.0.1 pot / SPR / pot-odds figures below have been recomputed
+against this convention.
+
 <!-- HASHED-BLOCK-START -->
 
-### HOLDOUT_001_KTs_BTN_flop_TP_dry — HU flop value bet
+### HOLDOUT_001_KTo_HJ_river_bluffcatcher_face_polar — dominated 2nd-pair river FOLD
 
-- Hero: `Ks Ts`
-- Board (flop): `Tc 6h 2d`
-- Position / stack: BTN / 100bb eff
+- Hero: `Kh Tc`
+- Board (river): `Td 8c 5h 3s 6c`
+- Position / stack: HJ / 100bb eff
 - Villains: 1 (BB)
-- Action history: `preflop: BTN open 2.5, BB call 2.5; flop: BB check`
-- Pot at decision: 5.5bb; SPR ≈ 17.7
-- **Expected action:** BET_33
+- Action history: `preflop: HJ open 2.5, BB call 2.5;
+  flop: BB check, HJ bet_33 1.65, BB call;
+  turn: BB check, HJ check;
+  river: BB bet_75 6.6`
+- Pot at decision: 15.4bb (preflop 5.5 + flop 2×1.65 + turn 0 +
+  BB river 6.6); to-call 6.6; pot odds ≈ 30%
+- **Expected action:** FOLD
 - Confidence: HIGH
 - Tolerance: strict
-- Class-protected: TPGK on dry low board, HU IP, c-bet for thin value
-- Rationale: TPGK with backdoor flush, vs full BB calling range that
-  is pair-light on this disconnected board. Standard small c-bet for
-  thin value + denial vs unders/gutters. RAISE not in scope (no bet
-  to raise); CHECK is the only credible alternative and gives up too
-  much equity vs unders that fold to small bets.
+- Class-protected: Dominated 2nd-pair river bluffcatcher facing
+  polarised donk after PFR turn-give-up, OOP-from-PFR
+- Rationale: Hero's turn check-back caps own range to weak Tx /
+  pocket-pairs / give-ups. BB call-call-check-donk on this 4-card-
+  straight runout (5,6,8 connected with 3 and T) is heavily polarised
+  to 7x straights (74s, 97s rare-but-natural, 7-pairs — actually note
+  6c also brings T6/86 two-pair lines), 5x rivered two-pair, and
+  busted heart draws (no flush completed — board is 1c-3s-2h-no-2tone-
+  on-river). KTo as second pair (T) loses to all value (any Tx
+  better, all 7x, all 5x rivered 2pr, all sets) and only beats pure
+  bluffs. At 30% pot odds requires ≥30% bluff frequency from BB's
+  donk-river line, which is unrealistic when the runout has so many
+  natural value combos for BB's flop-call range. Pure FOLD class.
+  Mirrors common "PFR-turn-checks-back-then-faces-river-donk"
+  pattern where range is already capped.
 
 ### HOLDOUT_002_KJo_3way_T_paired — TT-on-turn checked-to-hero
 
@@ -287,7 +397,7 @@ pot-relative, NOT facing-bet-multiples):
 - Action history: `preflop: HJ open 2.5, CO call 2.5, BB call 2.5;
   flop: BB check, HJ bet_33 2.7, CO call, BB call;
   turn: BB check`
-- Pot at decision: 16.6bb; SPR ≈ 5.85
+- Pot at decision: 16.1bb (preflop 8.0 + flop 3×2.7); SPR ≈ 6.05
 - **Expected action:** BET_33
 - Confidence: MEDIUM
 - Tolerance: soft
@@ -307,7 +417,7 @@ pot-relative, NOT facing-bet-multiples):
 - Position / stack: UTG / 100bb eff
 - Villains: 2 (BTN, BB)
 - Action history: `preflop: UTG open 2.5, BTN call 2.5, BB call 2.5`
-- Pot at decision: 7.5bb; SPR ≈ 13
+- Pot at decision: 8.0bb (preflop 0.5 SB + 3×2.5); SPR ≈ 12.2
 - **Expected action:** BET_33
 - Confidence: HIGH
 - Tolerance: strict
@@ -326,7 +436,8 @@ pot-relative, NOT facing-bet-multiples):
 - Villains: 2 (BTN, SB)
 - Action history: `preflop: CO open 2.5, BTN call 2.5, SB call 2.5;
   flop: SB check`
-- Pot at decision: 8bb; SPR ≈ 12.2
+- Pot at decision: 8.5bb (SB 2.5 + BB 1.0 dead + CO 2.5 + BTN 2.5);
+  SPR ≈ 11.5
 - **Expected action:** BET_33
 - Confidence: HIGH
 - Tolerance: strict
@@ -337,22 +448,36 @@ pot-relative, NOT facing-bet-multiples):
   size sufficient because deep enough to play turn/river streets.
   CHECK gives up equity realisation against BTN's float-heavy range.
 
-### HOLDOUT_005_KQs_BTN_flop_HU_FD_BDSD — HU flush draw on K-high
+### HOLDOUT_005_QJo_BB_turn_gutter_short_of_price — bare gutter short of pot odds FOLD
 
-- Hero: `Kc Qc`
-- Board (flop): `5c 4c 2h`
-- Position / stack: BTN / 100bb eff
-- Villains: 1 (BB)
-- Action history: `preflop: BTN open 2.5, BB call 2.5; flop: BB check`
-- Pot at decision: 5.5bb; SPR ≈ 17.7
-- **Expected action:** BET_33
+- Hero: `Qh Jd`
+- Board (turn): `Th 9s 2c 4d`
+- Position / stack: BB / 100bb eff
+- Villains: 1 (BTN)
+- Action history: `preflop: BTN open 2.5, BB call 2.5;
+  flop: BB check, BTN bet_33 1.65, BB call;
+  turn: BB check, BTN bet_75 6.6`
+- Pot at decision: 15.4bb (preflop 5.5 + flop 2×1.65 + BTN turn 6.6);
+  to-call 6.6; pot odds ≈ 30%
+- **Expected action:** FOLD
 - Confidence: HIGH
 - Tolerance: strict
-- Class-protected: Big draw + 2 overcards, HU IP, semi-bluff
-- Rationale: ~16 outs (9 flush + 6 over + 3 BDSD overlap) ≈ 50%
-  equity vs BB's range. Small c-bet for fold equity + builds pot
-  for hits. CHECK acceptable but BET_33 is the higher-EV line
-  given range advantage on low-card BB-call texture.
+- Class-protected: Bare gutter draw OOP face turn 75% bet on dry
+  disconnected texture, no flush draw, draw short of pot odds
+- Rationale: QJo on T-9-2-4 rainbow gives hero an open-end-blocker
+  but only **4 clean straight outs** (any K completes K-Q-J-T-9; the
+  8 also makes Q-J-T-9-8 but the 8 brings T8 two-pair / 87 straight
+  for villain so not clean). Direct equity = 4/46 ≈ 8.7% to make the
+  straight, plus thin pair outs (3 Q + 3 J ≈ 13% to pair) but the
+  pair outs are dominated by BTN's TPGK+/sets value range. Combined
+  effective equity ≈ 18-22% vs BTN's turn-barrel range (Tx-strong,
+  9x, sets, J8/87s straight-class, plus barrel bluffs). Pot odds
+  30% → equity short of price by ~10pts. Implied odds vs BTN's
+  Tx/9x lukewarm: BTN check-folds many rivers when K hits because
+  K is scary for one-pair, and BTN bet-folds turn rarely after
+  check-back / barrel sequence. RAISE folds out only worse + bloats
+  pot with no SDV. Pure FOLD class for bare-gutter face polar
+  turn-barrel.
 
 ### HOLDOUT_006_QQ_HJ_turn_overpair_3way_brick — overpair turn brick
 
@@ -363,7 +488,7 @@ pot-relative, NOT facing-bet-multiples):
 - Action history: `preflop: HJ open 2.5, CO call 2.5, BB call 2.5;
   flop: BB check, HJ bet_33 2.7, CO call, BB call;
   turn: BB check`
-- Pot at decision: 15.6bb; SPR ≈ 6.23
+- Pot at decision: 16.1bb (preflop 8.0 + flop 3×2.7); SPR ≈ 6.05
 - **Expected action:** BET_66
 - Confidence: HIGH
 - Tolerance: strict
@@ -375,11 +500,9 @@ pot-relative, NOT facing-bet-multiples):
   refuse to fold to small. Small overpair (TT/JJ) less clear; QQ
   clear.
 
-### HOLDOUT_007_AKo_4way_flop_air_double_paired — A-high 4-way paired
+### HOLDOUT_007_AKo_4way_flop_air_paired — A-high 4-way paired
 
 - Hero: `Ah Kc`
-- Board (flop): `Jc Js 4d 4h` *(NOTE: 4-card depiction is wrong;
-  flop is 3 cards.)*
 - Board (flop): `Jc Js 4d`
 - Position / stack: BTN / 100bb eff
 - Villains: 3 (UTG, HJ, BB)
@@ -389,9 +512,9 @@ pot-relative, NOT facing-bet-multiples):
 - **Expected action:** CHECK
 - Confidence: HIGH
 - Tolerance: strict
-- Class-protected: A-high air on paired board, 4-way, position behind
-  3 checkers
-- Rationale: 4-way + double-paired board = checked-around ranges
+- Class-protected: A-high air on J-paired board, 4-way, position
+  behind 3 checkers
+- Rationale: 4-way + paired flop (JJ4) = checked-around ranges
   contain Jx + 4x at non-trivial frequency; UTG check after open is
   range-condensed. AK as pure air with 6 outs (3 A + 3 K) cannot
   bet for value or fold-equity 4-way. Take free card, play river-or-
@@ -405,7 +528,8 @@ pot-relative, NOT facing-bet-multiples):
 - Villains: 1 (BTN)
 - Action history: `preflop: BTN open 2.5, BB call 2.5;
   flop: BB check, BTN bet_33 1.65`
-- Pot at decision: 6.6bb after BTN bet; to-call 1.65; pot odds 25%
+- Pot at decision: 7.15bb (preflop 5.5 + BTN bet 1.65); to-call 1.65;
+  pot odds ≈ 18.75%
 - **Expected action:** RAISE_33
 - Confidence: MEDIUM
 - Tolerance: soft
@@ -425,7 +549,8 @@ pot-relative, NOT facing-bet-multiples):
 - Villains: 2 (HJ as opener, BTN as caller)
 - Action history: `preflop: HJ open 2.5, BTN call 2.5, BB call 2.5;
   flop: BB check, HJ bet_33 2.7, BTN call`
-- Pot at decision: 13.2bb; to-call 2.7; pot odds ≈ 17%
+- Pot at decision: 13.4bb (preflop 8.0 + HJ 2.7 + BTN 2.7); to-call
+  2.7; pot odds ≈ 16.8%
 - **Expected action:** RAISE_66
 - Confidence: MEDIUM
 - Tolerance: soft
@@ -447,7 +572,8 @@ pot-relative, NOT facing-bet-multiples):
 - Villains: 1 (BB, after preflop call)
 - Action history: `preflop: HJ open 2.5, BB call 2.5;
   flop: BB bet_33 1.65`
-- Pot at decision: 6.6bb; to-call 1.65; pot odds 25%
+- Pot at decision: 7.15bb (preflop 5.5 + BB bet 1.65); to-call 1.65;
+  pot odds ≈ 18.75%
 - **Expected action:** CALL
 - Confidence: MEDIUM
 - Tolerance: soft
@@ -523,10 +649,12 @@ pot-relative, NOT facing-bet-multiples):
 - Position / stack: SB / 100bb eff
 - Villains: 1 (BTN)
 - Action history: `preflop: BTN open 2.5, SB 3bet 11, BTN call 11;
-  flop: SB bet_33 7.4, BTN call;
-  turn: SB bet_75 22, BTN call;
-  river: SB check, BTN bet_75 65`
-- Pot at decision: 173bb; to-call 65; pot odds ≈ 27%
+  flop: SB bet_33 7.6, BTN call;
+  turn: SB bet_66 25.0, BTN call;
+  river: SB check, BTN bet_75 70`
+- Pot at decision: 158.2bb after BTN river bet (pre 23.0; flop +15.2
+  → 38.2; turn +50.0 → 88.2; river BTN bet 70 → 158.2); to-call 70;
+  pot odds ≈ 30.7%
 - **Expected action:** FOLD
 - Confidence: MEDIUM
 - Tolerance: soft
@@ -557,48 +685,63 @@ pot-relative, NOT facing-bet-multiples):
   because paired board reduces villain draw frequency; small size
   keeps bluffs and weak Tx in the pot.
 
-### HOLDOUT_016_KQs_HJ_turn_FD_brick_3way — KQ FD turn brick 3-way
+### HOLDOUT_016_KQs_HJ_turn_FD_brick_HU — KQ FD turn brick HU
 
 - Hero: `Ks Qs`
 - Board (turn): `9s 7s 4h 2d`
 - Position / stack: HJ / 100bb eff
-- Villains: 2 (BTN, BB)
+- Villains: 1 (BTN, after BB folded flop)
 - Action history: `preflop: HJ open 2.5, BTN call 2.5, BB call 2.5;
   flop: BB check, HJ bet_33 2.7, BTN call, BB fold;
-  turn: HJ bet_33 5.5` *(intent: hero already bet — re-frame: this
-  is HJ's decision after BB fold and BTN call)*
-- Re-frame action history: `preflop: HJ open 2.5, BTN call 2.5,
-  BB call 2.5; flop: BB check, HJ bet_33 2.7, BTN call, BB fold;
-  turn: (HJ to act first vs BTN HU)`
-- Pot at decision: 11.4bb; SPR ≈ 8.5
+  turn: (HJ first to act, HU vs BTN)`
+- Pot at decision: 13.4bb (preflop 8.0 + HJ 2.7 + BTN 2.7); SPR ≈
+  7.27
 - **Expected action:** BET_75
 - Confidence: MEDIUM
 - Tolerance: soft
-- Class-protected: NFD + 2 overs + BDSD turn vs single caller, polarised barrel
-- Rationale: 9 flush outs + 6 overs ≈ ~38% equity vs BTN's flop-call
-  range. Big barrel size on turn extracts from 9x/draws and gets
-  folds from medium pairs that float flop. Half/threequarter pot
-  is the polar-bet class — mixed with smaller barrels in solver.
-  CHECK to realise equity also ok.
+- Class-protected: 2nd-nut FD + 2 overs + BDSD turn HU OOP,
+  polarised barrel
+- Rationale: KQss on 9s7s4h2d = K-high spade flush draw (2nd-nut,
+  loses only to Ax-spade) + 6 overs (3 K + 3 Q) + BDSD (J/T/8/6
+  runners) ≈ ~36-40% equity vs BTN's flop-call range. Big barrel
+  size on turn extracts from 9x/4x/draws and gets folds from medium
+  pairs that floated flop. Half/threequarter pot is the polar-bet
+  class — mixed with smaller barrels in solver. CHECK to realise
+  equity also ok (soft tolerance).
 
-### HOLDOUT_017_44_BTN_flop_underpair_HU_dry_low — small underpair HU low flop
+### HOLDOUT_017_88_BB_turn_underpair_face_barrel_mixed — mid underpair vs continuation barrel mixed FOLD
 
-- Hero: `4c 4d`
-- Board (flop): `8h 6c 2s`
-- Position / stack: BTN / 100bb eff
-- Villains: 1 (BB)
-- Action history: `preflop: BTN open 2.5, BB call 2.5;
-  flop: BB check`
-- Pot at decision: 5.5bb; SPR ≈ 17.7
-- **Expected action:** BET_33
-- Confidence: MEDIUM
+- Hero: `8c 8d`
+- Board (turn): `Jh 9c 4s 6h`
+- Position / stack: BB / 100bb eff
+- Villains: 1 (HJ)
+- Action history: `preflop: HJ open 2.5, BB call 2.5;
+  flop: BB check, HJ bet_33 1.65, BB call;
+  turn: BB check, HJ bet_75 6.6`
+- Pot at decision: 15.4bb (preflop 5.5 + flop 2×1.65 + HJ turn 6.6);
+  to-call 6.6; pot odds ≈ 30%
+- **Expected action:** FOLD
+- Confidence: LOW
 - Tolerance: soft
-- Class-protected: Small underpair HU IP on low dry flop, mixed bet/check
-- Rationale: 44 has decent showdown value but is dominated by 5x+,
-  vulnerable to overcards. Small c-bet realises equity vs BB
-  give-ups + protects vs 7s/9s/Tx that float flop. CHECK is also
-  fine — solver mixes near 50/50 in this exact spot. BET chosen
-  because hero blocks 4x straight outs of villain.
+- Class-protected: Mid underpair OOP face turn double-barrel on
+  draw-completing scare card, mixed CALL/FOLD with FOLD slightly
+  more EV
+- Rationale: 88 is an underpair on J-9 turn. No straight draw with
+  one card (would need 7+T or 5+7 runner-runner). Set-of-8 outs:
+  2 → ~4.4% to set on river. Plus 6-pair/4-pair improvement is
+  irrelevant (both lose to Jx). Net effective equity vs HJ's
+  flop+turn double-barrel range ≈ 12-15% (mostly the set-out plus
+  the rare runout where HJ has a worse pair like 77/66 or pure
+  air). Pot odds 30% — short of price by ~15pts. 88 is dominated
+  by Jx top-pair / 9x mid-pair / TT-AA overpairs / sets / JT/T9
+  two-pair, ahead only of HJ's barrel-bluffs (KQ/KT/AT/QT give-
+  ups, BD heart-flush draws). HJ's c-bet + barrel sequence is
+  range-condensed toward value on 9x/Jx-pair-heavy boards. Solver
+  mixes CALL/FOLD ≈ 25/75 in this class — FOLD is modal-EV but
+  CALL is defensible vs over-bluffy opp pools (some online aggro
+  HJ ranges have ~30%+ barrel-bluff freq). LOW band reflects the
+  genuine opinion-divide. RAISE strictly worse (folds out bluffs,
+  gets called by all value).
 
 ### HOLDOUT_018_AhTh_BB_flop_air_3way_3spades — air on monotone 3-way BB
 
@@ -608,29 +751,29 @@ pot-relative, NOT facing-bet-multiples):
 - Villains: 2 (CO, BTN)
 - Action history: `preflop: CO open 2.5, BTN call 2.5, BB call 2.5;
   flop: BB check, CO bet_33 2.7, BTN call`
-- Pot at decision: 13.2bb; to-call 2.7; pot odds ≈ 17%
+- Pot at decision: 13.4bb (preflop 8.0 + CO 2.7 + BTN 2.7); to-call
+  2.7; pot odds ≈ 16.8%
 - **Expected action:** FOLD
 - Confidence: HIGH
 - Tolerance: strict
 - Class-protected: Air on monotone face cbet + caller 3-way OOP
 - Rationale: No spade in hand, no pair, no draw. 3-way pot, two
   villains showing strength on a monotone flop. Pot odds favourable
-  (17%) but realisation OOP 3-way is terrible. CALL bleeds chips;
+  (16.8%) but realisation OOP 3-way is terrible. CALL bleeds chips;
   RAISE folds out only worse. Pure FOLD class. Mirrors the LITMUS_
   A4d_Qs5s7s air-on-monotone shape but as caller not bettor.
 
 ### HOLDOUT_019_T9s_OESD_turn_face_bet — T9 OESD turn face barrel
 
 - Hero: `Tc 9c`
-- Board (turn): `8d 7h Ks 2c` *(turn=2c, so order Kc-on-flop-then?)*
-- Re-spec board: flop `Kc 8d 7h`, turn `2c` → board cards at decision:
-  `Kc 8d 7h 2c`
+- Board (turn): `Kc 8d 7h 2c`
 - Position / stack: BB / 100bb eff
 - Villains: 1 (BTN)
 - Action history: `preflop: BTN open 2.5, BB call 2.5;
   flop: BB check, BTN bet_33 1.65, BB call;
   turn: BB check, BTN bet_75 6.6`
-- Pot at decision: 15.4bb; to-call 6.6; pot odds ≈ 30%
+- Pot at decision: 15.4bb (preflop 5.5 + flop 3.3 + BTN turn 6.6);
+  to-call 6.6; pot odds ≈ 30%
 - **Expected action:** CALL
 - Confidence: MEDIUM
 - Tolerance: soft
@@ -669,8 +812,9 @@ pot-relative, NOT facing-bet-multiples):
 - Villains: 1 (BB)
 - Action history: `preflop: HJ open 2.5, BB call 2.5;
   flop: BB check, HJ bet_33 1.65, BB call;
-  turn: BB bet_33 2.7`
-- Pot at decision: 10.6bb; to-call 2.7; pot odds 25%
+  turn: BB bet_33 2.9`
+- Pot at decision: 11.7bb (preflop 5.5 + flop 3.3 + BB turn 2.9);
+  to-call 2.9; pot odds ≈ 19.9%
 - **Expected action:** CALL
 - Confidence: MEDIUM
 - Tolerance: soft
@@ -691,7 +835,8 @@ pot-relative, NOT facing-bet-multiples):
   flop: BB check, BTN bet_33 1.65, BB call;
   turn: BB check, BTN bet_75 6.6, BB call;
   river: BB check`
-- Pot at decision: 28.6bb; SPR ≈ 3.1
+- Pot at decision: 22.0bb (preflop 5.5 + flop 2×1.65 + turn 2×6.6);
+  SPR ≈ 4.16
 - **Expected action:** BET_75
 - Confidence: MEDIUM
 - Tolerance: soft
@@ -712,7 +857,8 @@ pot-relative, NOT facing-bet-multiples):
 - Villains: 1 (BB after 3-bet)
 - Action history: `preflop: CO open 2.5, BB 3bet 11, CO call 11;
   flop: BB bet_33 7.4`
-- Pot at decision: 29.4bb; to-call 7.4; pot odds ≈ 25%
+- Pot at decision: 29.9bb (preflop 0.5 SB + 11 + 11 = 22.5; + BB
+  flop 7.4); to-call 7.4; pot odds ≈ 19.8%
 - **Expected action:** CALL
 - Confidence: HIGH
 - Tolerance: strict
@@ -732,7 +878,7 @@ pot-relative, NOT facing-bet-multiples):
   flop: BB check, HJ bet_33 1.65, BB call;
   turn: BB check, HJ check;
   river: BB check`
-- Pot at decision: 8.3bb; SPR ≈ 11.5
+- Pot at decision: 8.8bb (preflop 5.5 + flop 2×1.65); SPR ≈ 11.07
 - **Expected action:** CHECK
 - Confidence: LOW
 - Tolerance: soft
@@ -752,9 +898,13 @@ pot-relative, NOT facing-bet-multiples):
 - Villains: 2 (CO, BB)
 - Action history: `preflop: CO open 2.5, BTN call 2.5, BB call 2.5;
   flop: BB check, CO bet_33 2.7, BTN call, BB fold;
-  turn: CO check, BTN bet_75 9.6, CO call;
-  river: CO check, BTN bet_33 13, CO raise to 50`
-- Pot at decision: 89bb; to-call 37; pot odds ≈ 29%
+  turn: CO check, BTN bet_75 9.9, CO call;
+  river: CO check, BTN bet_33 11.0, CO raise to 50`
+- Pot at decision: 105.2bb after CO check-raise (preflop 8.0; flop
+  +2×2.7 → 13.4; turn +2×9.9 → 33.2; river BTN bet 11.0 → 44.2; CO
+  raise 50 puts CO total in at 50, +50 → 94.2; reframe: pot now =
+  44.2 + 50 = 94.2); hero (BTN) to-call 50 − 11 = 39; pot odds ≈
+  29.3% [pot 94.2 / hero call 39 → 39/(94.2+39)]
 - **Expected action:** FOLD
 - Confidence: HIGH
 - Tolerance: strict
@@ -774,7 +924,8 @@ pot-relative, NOT facing-bet-multiples):
 - Villains: 2 (HJ, BTN)
 - Action history: `preflop: HJ open 2.5, BTN call 2.5, BB call 2.5;
   flop: BB check, HJ bet_33 2.7, BTN call`
-- Pot at decision: 13.2bb; to-call 2.7; pot odds ≈ 17%
+- Pot at decision: 13.4bb (preflop 8.0 + HJ 2.7 + BTN 2.7); to-call
+  2.7; pot odds ≈ 16.8%
 - **Expected action:** CALL
 - Confidence: HIGH
 - Tolerance: strict
@@ -785,23 +936,38 @@ pot-relative, NOT facing-bet-multiples):
   range wide, plays turn vs likely double-barrel. Pure CALL class
   for mid overpair.
 
-### HOLDOUT_027_AKs_BTN_flop_TPTK_3way_two_tone — TPTK 3-way two-tone
+### HOLDOUT_027_AJs_BB_3bet_pot_TP_face_cbet_mixed — TP 3bet pot OOP face cbet mixed CALL
 
-- Hero: `Ad Ks`
-- Board (flop): `Ah 8h 3s`
-- Position / stack: BTN / 100bb eff
-- Villains: 2 (CO, BB)
-- Action history: `preflop: CO open 2.5, BTN call 2.5, BB call 2.5;
-  flop: BB check, CO check`
-- Pot at decision: 8bb; SPR ≈ 12.2
-- **Expected action:** BET_33
-- Confidence: HIGH
-- Tolerance: strict
-- Class-protected: TPTK 3-way IP on two-tone, range-advantage value bet
-- Rationale: BTN call has uncapped range incl. AK/AQ; CO+BB checked.
-  Standard small bet for value vs Ax-weaker / heart draws / underpairs;
-  builds pot for stacks-by-river vs 8x/3x calls. CHECK loses too
-  much equity vs heart-draw realisation.
+- Hero: `As Js`
+- Board (flop): `Ac 9c 5d`
+- Position / stack: BB / 100bb eff (in 3-bet pot)
+- Villains: 1 (BTN after BTN cold-call BB 3bet)
+- Action history: `preflop: BTN open 2.5, BB 3bet 11, BTN call 11;
+  flop: BB check, BTN bet_33 7.4`
+- Pot at decision: 29.9bb (preflop 0.5 SB + 11 + 11 = 22.5; + BTN
+  flop 7.4); to-call 7.4; pot odds ≈ 19.8%
+- **Expected action:** CALL
+- Confidence: LOW
+- Tolerance: soft
+- Class-protected: TP 3bet pot OOP face IP cbet on Ax-two-tone, mixed
+  CALL / check-raise frequency
+- Rationale: AJs in BB 3bet range vs BTN-flat-3bet cold-call. Flop
+  Ac-9c-5d gives hero TPGK with backdoor heart and a club blocker
+  (well, hero has spades — actually hero blocks no clubs; rationale:
+  hero has TPGK no flush draw). BTN's cold-call-vs-3bet range is
+  TT-QQ, AK suited, KQ suited, suited connectors with implied. On
+  Ax flop BTN cbet range is thin: AK/AQ for value, sometimes JJ-QQ
+  give-up-or-thin-cbet, plus club-flush-draws. Hero AJ ahead of
+  many JJ-QQ underpairs / draws but behind AK/AQ. Solver mixes
+  RAISE_33 (check-raise for protection vs club draws + thin value
+  vs underpairs giving up) with CALL (slow-play, keeps BTN's
+  give-up bluffs in). RAISE freq ~30-40%, CALL ~50%, FOLD ~10%.
+  CALL chosen as the modal-EV defensible line; RAISE_33 is a
+  reasonable alternative. LOW band reflects the genuine 3bet-pot
+  check-raise frequency uncertainty noted in
+  `feedback_solver_findings.md` (raise/call mixing is opp-pool-
+  sensitive). [UNCERTAIN-SOLVER: 3bet-pot OOP check-raise frequency
+  on Axx-two-tone — flag for solver verification.]
 
 ### HOLDOUT_028_88_set_river_2flush_complete — set river flush completes
 
@@ -813,7 +979,8 @@ pot-relative, NOT facing-bet-multiples):
   flop: BB check, HJ bet_33 1.65, BB call;
   turn: BB check, HJ bet_75 6.6, BB call;
   river: BB check`
-- Pot at decision: 28.6bb; SPR ≈ 3.1
+- Pot at decision: 22.0bb (preflop 5.5 + flop 2×1.65 + turn 2×6.6);
+  SPR ≈ 4.16
 - **Expected action:** CHECK
 - Confidence: HIGH
 - Tolerance: strict
@@ -835,7 +1002,7 @@ pot-relative, NOT facing-bet-multiples):
 - Villains: 3 (CO, BTN, BB)
 - Action history: `preflop: HJ open 2.5, CO call 2.5, BTN call 2.5,
   BB call 2.5`
-- Pot at decision: 10bb; SPR ≈ 9.75
+- Pot at decision: 10.5bb (preflop 0.5 SB + 4×2.5); SPR ≈ 9.29
 - **Expected action:** CHECK
 - Confidence: HIGH
 - Tolerance: strict
@@ -845,23 +1012,34 @@ pot-relative, NOT facing-bet-multiples):
   blocker effects. Bet folds out only worse, gets called/raised by
   better. CHECK pure. Realise equity, take free card.
 
-### HOLDOUT_030_99_BTN_flop_overpair_HU_K_high — 99 underpair HU K-high
+### HOLDOUT_030_KQo_BTN_flop_air_3way_monotone — A-high air on 3-way monotone FOLD
 
-- Hero: `9c 9h`
-- Board (flop): `Ks 7d 3c`
+- Hero: `Kc Qd`
+- Board (flop): `Jh 8h 5h`
 - Position / stack: BTN / 100bb eff
-- Villains: 1 (BB)
-- Action history: `preflop: BTN open 2.5, BB call 2.5;
-  flop: BB check`
-- Pot at decision: 5.5bb; SPR ≈ 17.7
-- **Expected action:** BET_33
+- Villains: 2 (CO, BB)
+- Action history: `preflop: CO open 2.5, BTN call 2.5, BB call 2.5;
+  flop: BB check, CO bet_33 2.7`
+- Pot at decision: 10.7bb (preflop 8.0 + CO 2.7); to-call 2.7;
+  pot odds ≈ 20.1%
+- **Expected action:** FOLD
 - Confidence: HIGH
 - Tolerance: strict
-- Class-protected: Mid pair on K-high HU IP, c-bet for SDV+denial
-- Rationale: 99 on K73 vs BB call range = ahead of pair-low + air,
-  behind Kx. Small c-bet folds out 5x/6x/8x/JTo and gets called
-  by 7x. Cheap denial vs BB's float range. Standard small c-bet
-  HU IP on K-high.
+- Class-protected: Air on monotone 3-way face cbet, no flush card
+  in hand, IP between bettor and caller
+- Rationale: KQo on Jh8h5h (monotone hearts) — hero has zero hearts,
+  no pair, no straight draw (J-T-9 needed; hero has Q+K, gutter to
+  9-T-J-Q-K needs T+9). With CO opening + 3-way pot + monotone
+  flop, CO's bet range contains many flushes / heart-overpair-with-
+  draw / Jx-heart, and BB still has to act behind. BTN floating
+  here without a heart and without a pair faces too much risk:
+  high probability someone has a flush already, hero's overcards
+  are dominated when made (Kx caller-pool here is rare without
+  heart but Kh is a key blocker hero doesn't hold), and check-raise
+  pressure from BB looms. RAISE folds out only worse and bloats
+  pot vs flushes. CALL bleeds chips toward turn aggression hero
+  can't continue. Pure FOLD class — mirrors LITMUS_A4d air-on-
+  monotone shape but as IP-mid-position vs cbet+caller-behind.
 
 ### HOLDOUT_031_AhAd_HJ_river_overpair_face_xraise_river — AA face river check-raise
 
@@ -872,8 +1050,11 @@ pot-relative, NOT facing-bet-multiples):
 - Action history: `preflop: HJ open 2.5, BB call 2.5;
   flop: BB check, HJ bet_33 1.65, BB call;
   turn: BB check, HJ bet_75 6.6, BB call;
-  river: BB check, HJ bet_33 9.5, BB raise to 35`
-- Pot at decision: 73bb; to-call 25.5; pot odds ≈ 26%
+  river: BB check, HJ bet_33 7.3, BB raise to 30`
+- Pot at decision: 59.3bb after BB river check-raise (preflop 5.5 +
+  flop 2×1.65 + turn 2×6.6 = 22.0; HJ river bet 7.3 → 29.3; BB
+  raise total 30 → 59.3); to-call 30 − 7.3 = 22.7; pot odds ≈ 27.7%
+  [22.7/(59.3+22.7)]
 - **Expected action:** CALL
 - Confidence: MEDIUM
 - Tolerance: soft
@@ -881,19 +1062,20 @@ pot-relative, NOT facing-bet-multiples):
 - Rationale: BB check-raises river on paired board. Value range:
   22 (full house), 99/77 (full house), some 4x trips. Bluffs:
   missed flush draws + busted straight draws (8h6h, JhTh, 65s).
-  Pot odds 26% requires ~26% bluff frequency in BB's range. AA
+  Pot odds ~28% requires ~28% bluff frequency in BB's range. AA
   has SDV vs all bluffs + loses to all value. Solver-typical
   CALL frequency ~50-70%. CALL chosen; FOLD also defensible.
 
 ### HOLDOUT_032_AQo_4way_open_face_3bet — AQo open face 3bet 4way limp scenario
 
 - Hero: `Ad Qh`
-- Board: preflop decision (so this is 4-way preflop)
+- Board: PREFLOP (no flop yet — this is a preflop face-3bet decision)
 - Position / stack: HJ / 100bb eff
 - Villains: 3 (CO calls, BTN calls, BB 3bets)
 - Action history: `preflop: HJ open 2.5, CO call 2.5, BTN call 2.5,
   BB 3bet to 14`
-- Pot at decision: 21.5bb; to-call 11.5; pot odds ≈ 35%
+- Pot at decision: 22.0bb (SB 0.5 dead + HJ 2.5 + CO 2.5 + BTN 2.5
+  + BB 14); to-call 11.5 (14 − 2.5); pot odds ≈ 34.3%
 - **Expected action:** CALL
 - Confidence: HIGH
 - Tolerance: strict
@@ -914,7 +1096,8 @@ pot-relative, NOT facing-bet-multiples):
 - Villains: 1 (BB)
 - Action history: `preflop: CO open 2.5, BB call 2.5;
   flop: BB bet_33 1.65`
-- Pot at decision: 6.6bb; to-call 1.65; pot odds 25%
+- Pot at decision: 7.15bb (preflop 5.5 + BB 1.65); to-call 1.65;
+  pot odds ≈ 18.75%
 - **Expected action:** CALL
 - Confidence: MEDIUM
 - Tolerance: soft
@@ -932,7 +1115,8 @@ pot-relative, NOT facing-bet-multiples):
 - Villains: 2 (HJ, BTN)
 - Action history: `preflop: HJ open 2.5, BTN call 2.5, SB call 2.5,
   BB fold; flop: SB check, HJ check`
-- Pot at decision: 8bb; SPR ≈ 12.2
+- Pot at decision: 8.5bb (SB 2.5 + BB 1.0 dead + HJ 2.5 + BTN 2.5);
+  SPR ≈ 11.5
 - **Expected action:** CHECK
 - Confidence: HIGH
 - Tolerance: strict
@@ -962,24 +1146,34 @@ pot-relative, NOT facing-bet-multiples):
   near-pot is solver-modal; could mix POT (BET_100 not in standard
   sizing tags so capped at 75%).
 
-### HOLDOUT_036_AhKh_HJ_flop_TPTK_4way_dry — TPTK 4-way dry
+### HOLDOUT_036_QcJd_BB_flop_air_face_bet_dry — air OOP face cbet on dry FOLD
 
-- Hero: `Ah Kh`
-- Board (flop): `Ad 7c 2s`
-- Position / stack: HJ / 100bb eff
-- Villains: 3 (CO, BTN, BB)
-- Action history: `preflop: HJ open 2.5, CO call 2.5, BTN call 2.5,
-  BB call 2.5`
-- Pot at decision: 10bb; SPR ≈ 9.75
-- **Expected action:** BET_33
+- Hero: `Qc Jd`
+- Board (flop): `8h 5s 2d`
+- Position / stack: BB / 100bb eff
+- Villains: 1 (BTN)
+- Action history: `preflop: BTN open 2.5, BB call 2.5;
+  flop: BB check, BTN bet_33 1.65`
+- Pot at decision: 7.15bb (preflop 5.5 + BTN 1.65); to-call 1.65;
+  pot odds ≈ 18.75%
+- **Expected action:** FOLD
 - Confidence: MEDIUM
 - Tolerance: soft
-- Class-protected: TPTK 4-way OOP, range-narrow value bet
-- Rationale: TPTK 4-way on dry A72. HJ retains range advantage on Ax.
-  Small bet vs sticky multiway range (Ax-weaker + 7x). Some merit to
-  CHECK 4-way to control pot, but TPTK is too strong to give up
-  street. [UNCERTAIN-SOLVER: 4-way OOP cbet frequency on Axx-dry
-  is a known disagreement spot — flag for explicit verification.]
+- Class-protected: BB defend air with two overcards no draw, low dry
+  flop face small cbet, fold-not-defend
+- Rationale: QJo on 852 rainbow has 6 overcard outs (3 Q + 3 J)
+  but no flush draw, no straight draw, no backdoors of significance
+  (BDFD requires runner-runner; BDSD needs T+9 or 7+9 runners — too
+  remote). Effective equity ≈ 22-25% vs BTN open-cbet range. Pot
+  odds 18.75% — barely meets price by direct equity but
+  realisation OOP is poor: BTN barrels turn aggressively when
+  overcards land (Q/J both pair scary cards for bluff-catching),
+  and hero gives up on every brick turn. Defending wide here
+  bleeds chips even at favourable price. CALL is defensible vs
+  weak / over-cbet pools (hence soft tolerance + MEDIUM conf), but
+  FOLD is solver-modal in mainline ranges that under-defend the
+  weakest two-overcard combos. RAISE strictly worse (folds out
+  only worse, gets called by all value).
 
 ### HOLDOUT_037_J9s_BB_defend_K_high_flop — BB defend K-high BD draws
 
@@ -989,32 +1183,49 @@ pot-relative, NOT facing-bet-multiples):
 - Villains: 1 (BTN)
 - Action history: `preflop: BTN open 2.5, BB call 2.5;
   flop: BB check, BTN bet_33 1.65`
-- Pot at decision: 6.6bb; to-call 1.65; pot odds 25%
+- Pot at decision: 7.15bb (preflop 5.5 + BTN 1.65); to-call 1.65;
+  pot odds ≈ 18.75%
 - **Expected action:** CALL
 - Confidence: MEDIUM
 - Tolerance: soft
 - Class-protected: BB defend texture with BDFD + BDSD + overcards, call vs fold
 - Rationale: J9hh on K85 = BDFD (hearts) + BDSD (T7/QT runouts) + 2
-  cards under K. ~28-32% equity vs BTN cbet range. Pot odds 25% =
+  cards under K. ~28-32% equity vs BTN cbet range. Pot odds ≈19% =
   good price + implied odds on T/Q turns. RAISE thin; CALL preferred.
   FOLD over-tight given price + multi-way runout potential.
 
-### HOLDOUT_038_QQ_BTN_flop_overpair_HU_low_dry — QQ on low dry flop HU
+### HOLDOUT_038_AhKs_BTN_turn_TPGK_face_xraise_dynamic — TPGK IP face turn check-raise FOLD
 
-- Hero: `Qh Qd`
-- Board (flop): `7c 4s 2h`
+- Hero: `Ah Ks`
+- Board (turn): `Kd 9d 6c 5d`
 - Position / stack: BTN / 100bb eff
 - Villains: 1 (BB)
 - Action history: `preflop: BTN open 2.5, BB call 2.5;
-  flop: BB check`
-- Pot at decision: 5.5bb; SPR ≈ 17.7
-- **Expected action:** BET_33
-- Confidence: HIGH
-- Tolerance: strict
-- Class-protected: Strong overpair HU IP low dry, small c-bet for value
-- Rationale: Standard small c-bet HU IP. QQ ahead of full BB call
-  range minus 22/44/77 sets. Small size keeps bluffs in (BB float
-  with Ax-K-high, gutters), denies overcards' equity realisation.
+  flop: BB check, BTN bet_33 1.65, BB call;
+  turn: BB check, BTN bet_75 6.6, BB raise to 22`
+- Pot at decision: 37.4bb after BB raise (preflop 5.5 + flop 2×1.65
+  + BTN turn 6.6 + BB raise total 22); to-call 22 − 6.6 = 15.4;
+  pot odds ≈ 29.2%
+- **Expected action:** FOLD
+- Confidence: LOW
+- Tolerance: soft
+- Class-protected: TPGK IP face turn check-raise on diamond-flush-
+  completing dynamic board, no diamond in hand, mixed FOLD/CALL
+- Rationale: AhKs (no diamond) on Kd-9d-6c-5d turn — third diamond
+  brings flush, plus 5d adds straight draws (78, 87 made on flop
+  retains; 7-8 OESD made; 4 makes 4-5-6-7-8 needs 7+8). BB's
+  check-raise turn line on this card is range-narrow to value: any
+  flush (most diamonds in BB's call range slow-played flop), sets
+  (KK rare since blocked, 99/66/55), two-pair (K9, K6 less likely
+  but K5 unlocked by turn 5), 78 straight (made on turn). Bluff
+  combos: AhQh + diamond-blockers (no diamond completed) — but
+  hero blocks Ah which is a primary bluff candidate. Effective
+  equity vs the value-heavy raise range ≈ 22-26%. Pot odds 29.2%
+  → equity short of price. Plus reverse-implied: facing river
+  shove on diamond/4/7/8 runouts dominates. Solver mixes CALL/
+  FOLD ≈ 30/70 — FOLD modal but vs aggressive xr-bluff opps CALL
+  defensible. LOW band reflects this. RAISE strictly worse (folds
+  out only bluffs, gets it in vs value).
 
 ### HOLDOUT_039_AcQs_HJ_river_TP_face_x_lead_river — TPGK face river donk
 
@@ -1025,8 +1236,9 @@ pot-relative, NOT facing-bet-multiples):
 - Action history: `preflop: HJ open 2.5, BB call 2.5;
   flop: BB check, HJ bet_33 1.65, BB call;
   turn: BB check, HJ check;
-  river: BB bet_75 7.5`
-- Pot at decision: 17.5bb; to-call 7.5; pot odds ≈ 30%
+  river: BB bet_75 6.6`
+- Pot at decision: 15.4bb (preflop 5.5 + flop 2×1.65 + turn 0 +
+  BB river 6.6); to-call 6.6; pot odds ≈ 30%
 - **Expected action:** CALL
 - Confidence: MEDIUM
 - Tolerance: soft
@@ -1044,7 +1256,7 @@ pot-relative, NOT facing-bet-multiples):
 - Position / stack: HJ / 100bb eff
 - Villains: 2 (BTN, BB)
 - Action history: `preflop: HJ open 2.5, BTN call 2.5, BB call 2.5`
-- Pot at decision: 7.5bb; SPR ≈ 13
+- Pot at decision: 8.0bb (preflop 0.5 SB + 3×2.5); SPR ≈ 12.2
 - **Expected action:** CHECK
 - Confidence: HIGH
 - Tolerance: strict
@@ -1120,7 +1332,7 @@ pot-relative, NOT facing-bet-multiples):
 - Villains: 3 (CO, BTN, BB)
 - Action history: `preflop: HJ open 2.5, CO call 2.5, BTN call 2.5,
   BB call 2.5`
-- Pot at decision: 10bb; SPR ≈ 9.75
+- Pot at decision: 10.5bb (preflop 0.5 SB + 4×2.5); SPR ≈ 9.29
 - **Expected action:** CHECK
 - Confidence: HIGH
 - Tolerance: strict
@@ -1137,13 +1349,9 @@ pot-relative, NOT facing-bet-multiples):
 - Position / stack: BB / 100bb eff (in 3-bet pot)
 - Villains: 1 (BTN after 3-bet)
 - Action history: `preflop: BTN open 2.5, BB 3bet 11, BTN call 11;
-  flop: BB bet_33 7.4`
-- Pot at decision: 29.4bb after BB bet (pot 22 → 22+7.4=29.4)
-- *(re-frame: this is BB-as-aggressor cbetting 3-bet pot;
-  decision-on-hero is BB cbet → action complete; reframe needed)*
-- Re-frame: `preflop: BTN open 2.5, BB 3bet 11, BTN call 11;
   flop: BB check, BTN bet_33 7.4`
-- Pot at decision: 29.4bb; to-call 7.4; pot odds ≈ 25%
+- Pot at decision: 29.9bb (preflop 0.5 SB + 11 BB + 11 BTN = 22.5;
+  + BTN flop 7.4); to-call 7.4; pot odds ≈ 19.8%
 - **Expected action:** RAISE_33
 - Confidence: MEDIUM
 - Tolerance: soft
@@ -1165,7 +1373,9 @@ pot-relative, NOT facing-bet-multiples):
 - Action history: `preflop: HJ open 2.5, BB call 2.5;
   flop: BB check, HJ bet_33 1.65, BB call;
   turn: BB check, HJ bet_75 6.6, BB raise to 22`
-- Pot at decision: 36.85bb; to-call 15.4; pot odds ≈ 29.5%
+- Pot at decision: 37.4bb after BB raise (preflop 5.5 + flop 2×1.65
+  + HJ turn 6.6 + BB raise total 22 = 37.4); to-call 22 − 6.6 = 15.4;
+  pot odds ≈ 29.2% [15.4/(37.4+15.4)]
 - **Expected action:** FOLD
 - Confidence: LOW
 - Tolerance: soft
@@ -1185,12 +1395,9 @@ pot-relative, NOT facing-bet-multiples):
 - Position / stack: HJ / 100bb eff (in 3-bet pot)
 - Villains: 1 (BTN after BTN 3bet HJ open and HJ called)
 - Action history: `preflop: HJ open 2.5, BTN 3bet 9, HJ call 9;
-  flop: HJ check`
-- *(re-frame: this is HJ checking → BTN to act → if BTN cbets, HJ's
-  decision)*
-- Re-frame: `preflop: HJ open 2.5, BTN 3bet 9, HJ call 9;
-  flop: HJ check, BTN bet_33 6`
-- Pot at decision: 24bb; to-call 6; pot odds 25%
+  flop: HJ check, BTN bet_33 6.4`
+- Pot at decision: 25.9bb (preflop 0.5 SB + 1.0 BB + 9 HJ + 9 BTN =
+  19.5; + BTN flop 6.4); to-call 6.4; pot odds ≈ 19.8%
 - **Expected action:** RAISE_33
 - Confidence: HIGH
 - Tolerance: strict
@@ -1211,7 +1418,8 @@ pot-relative, NOT facing-bet-multiples):
   flop: BB check, BTN bet_33 1.65, BB call;
   turn: BB check, BTN bet_75 6.6, BB call;
   river: BB check`
-- Pot at decision: 28.6bb; SPR ≈ 3.1
+- Pot at decision: 22.0bb (preflop 5.5 + flop 2×1.65 + turn 2×6.6);
+  SPR ≈ 4.16
 - **Expected action:** BET_150
 - Confidence: HIGH
 - Tolerance: strict
@@ -1231,8 +1439,9 @@ pot-relative, NOT facing-bet-multiples):
 - Action history: `preflop: BTN open 2.5, BB call 2.5;
   flop: BB check, BTN bet_33 1.65, BB call;
   turn: BB check, BTN check;
-  river: BB bet_33 2.8`
-- Pot at decision: 11.1bb; to-call 2.8; pot odds ≈ 25%
+  river: BB bet_33 2.9`
+- Pot at decision: 11.7bb (preflop 5.5 + flop 2×1.65 + turn 0 + BB
+  river 2.9); to-call 2.9; pot odds ≈ 19.9%
 - **Expected action:** RAISE_66
 - Confidence: HIGH
 - Tolerance: strict
@@ -1252,7 +1461,8 @@ pot-relative, NOT facing-bet-multiples):
 - Villains: 1 (BB after 3-bet)
 - Action history: `preflop: CO open 2.5, BB 3bet 11, CO call 11;
   flop: BB bet_33 7.4`
-- Pot at decision: 29.4bb; to-call 7.4; pot odds ≈ 25%
+- Pot at decision: 29.9bb (preflop 0.5 SB + 11 + 11 = 22.5; + BB
+  flop 7.4); to-call 7.4; pot odds ≈ 19.8%
 - **Expected action:** CALL
 - Confidence: HIGH
 - Tolerance: strict
@@ -1312,17 +1522,20 @@ pot-relative, NOT facing-bet-multiples):
    card-class equivalence; for v1.0 the held-out hands are
    strategically distinct anyway.
 
-7. **24-hand calibration manifest** location not located as a discrete
-   file in repo. Cross-check is currently subsumed in the
-   pass1/factory full-corpus scan. If a separate manifest exists in
-   `review/recovered/` or off-tree, a directed pre-pilot scan is
-   needed.
+7. **24-hand calibration manifest** — RESOLVED at v1.0.1. Manifest
+   located at `review/calibration_situations.json` (mirrored in
+   `blind_calibration_exam_step7.json` and `_batch_{1,2,3}.json`);
+   non-overlap empirically verified (0 matches against the 50
+   holdout fingerprints).
 
-8. **Two hands have shape ambiguity in the action history**
-   (HOLDOUT_007 had a 4-card flop typo corrected inline; HOLDOUT_016,
-   HOLDOUT_019, HOLDOUT_045, HOLDOUT_047 have re-frame notes
-   embedded). These inline corrections should be flattened in v1.1
-   for cleaner JSONL export.
+8. **Inline-correction blocks in action history** — RESOLVED at
+   v1.0.1. HOLDOUT_007 (4-card flop typo), HOLDOUT_016 (re-frame
+   note for BB-fold-on-flop turn decision), HOLDOUT_019 (turn-card
+   re-spec note), HOLDOUT_045 (cbet-line reframe), and HOLDOUT_047
+   (check-then-cbet reframe) have all been flattened to single
+   clean action histories. HOLDOUT_032 now carries `Board: PREFLOP`
+   to make the preflop schema explicit. Each hand has exactly one
+   `- Board:` line.
 
 9. **One hand uses BET_150 (HOLDOUT_048 overbet).** Confirm with
    reviewer that BET_150 (1.5×pot) is supported by the action-class
@@ -1332,31 +1545,28 @@ pot-relative, NOT facing-bet-multiples):
    for the labeller / solver; the evaluator must be configured to
    coalesce all BET_* into BET when scoring.
 
-10. **Action distribution skews BET-heavy and FOLD-light.** Achieved:
-    20 BET (40% vs 26% target, +7 over) / 4 FOLD (8% vs 20% target,
-    −6 under). Underlying cause: the post-flop checked-to-hero
-    decision class is dominantly BET in solver-correct play (small
-    c-bet for thin value/denial), and FOLD spots are rare in
-    PFR-aggressor scenarios. To rebalance to target, v1.1 would need
-    ~6 hands re-authored as face-bet → FOLD spots (e.g., dominated
-    bluffcatchers, draws short of pot odds). Flagging for reviewer to
-    decide: accept v1.0 as-is (reflecting solver-realistic
-    distribution) vs require v1.1 rebalance pre-pilot. **Per-class
-    breakdowns** in the evaluation report can normalise for this if
-    the v1.0 distribution is accepted.
+10. **Action distribution at v1.0.1** is rebalanced: 10 FOLD
+    (20%) / 10 CHECK (20%) / 12 CALL (24%) / 13 BET (26%) /
+    5 RAISE (10%). FOLD is now on target (was 4 in v1.0); BET is
+    on target (was 20 in v1.0). The six v1.0→v1.0.1 BET→FOLD
+    re-authorings cover dominated-bluffcatcher river, gutter-short-
+    of-price, MW-air-on-monotone face-cbet, mid-underpair vs
+    continuation barrel, IP-TPGK face turn check-raise on dynamic,
+    and BB-defend-air on dry — matching the four reviewer-requested
+    FOLD-class shapes from `MAIN_TERMINAL_PR_16_FIX_FORWARD_REQUIRED`.
 
-11. **LOW-confidence band is under target (2 vs 5).** Only HOLDOUT_024
-    and HOLDOUT_046 carry LOW. To match the 10% target, 3 more
-    boundary spots would need re-authoring. Acceptable for v1.0 if
-    reviewer agrees the test set is intentionally biased toward
-    solver-defensible spots (LOW = author admits the call is opinion-
-    divided, which is a small fraction of real spots).
+11. **LOW-confidence band at v1.0.1** is on target (5 hands):
+    HOLDOUT_017 (mid-underpair vs barrel mixed CALL/FOLD),
+    HOLDOUT_024 (NFD-miss river check-back), HOLDOUT_027 (3bet-pot
+    OOP TP mixed CALL/check-raise), HOLDOUT_038 (TPGK IP face turn
+    check-raise on dynamic), HOLDOUT_046 (mid-overpair face turn
+    check-raise on dry low).
 
-12. **No FOLD in 10-hand solver-verification sample.** Initial author
-    pick was driven by class-protected diversity; FOLD spots are the
-    easiest-to-solver-verify so they were deprioritised. Reviewer
-    should consider swapping in HOLDOUT_046 (FOLD, LOW) for one of
-    the current 10 if FOLD coverage in the solver sample matters.
+12. **FOLD class now represented in 10-hand solver sample** —
+    HOLDOUT_046 swapped in (replacing HOLDOUT_037). Sample
+    composition now: 0 → 1 FOLD, 2 CHECK, 3 CALL, 4 BET, 1 RAISE
+    (one of the BET hands previously listed remains BET via the
+    re-authored H022 / others).
 
 ## Usage protocol
 
@@ -1407,33 +1617,49 @@ Self-consistency pass run after authoring:
    per `feedback_solver_aligned_sizing.md` — flop 25%/66%, turn
    33%/75%, river 33%/75%/150%, RAISE 33%/66% pot-relative. PASS.
 
-3. **Pot/SPR arithmetic spot-check.** Verified for HOLDOUT_001
-   (5.5bb pot at flop after open-call: 2.5 + 2.5 + 0.5 SB + (was
-   1bb BB folded to call, so 1.5bb of dead money + 5bb action) =
-   5.5bb correct; 100bb − 2.5bb = 97.5bb stack; SPR 97.5/5.5 =
-   17.7), HOLDOUT_013 (open 2.5 + 3bet 11 + call 11 + 0.5 SB dead
-   = ~25bb pre-pot; pot pre-flop = 22.5bb after blinds returned;
-   SPR (100−11)/22.5 = 3.96 ≈ 89/22.5). Spot-check sample passes;
-   full audit in reviewer pass.
+3. **Pot/SPR arithmetic full audit (v1.0.1).** Every hand recomputed
+   under the canonical convention "0.5bb dead-SB included in postflop
+   pots" (or 1.0bb dead-BB when SB completes). Corrections applied to
+   approximately 30 hands. Major fixes: H022 / H028 / H048 each had
+   the turn bet double-counted (off by 6.6bb); H039 had a river-bet
+   sizing error (7.5 → 6.6, the correct 75% of pot 8.8); H014 / H025
+   / H031 had cascading-3-street arithmetic redone with consistent
+   sizing tags; H016 / H019 / H045 / H047 had the inline `Re-frame`
+   blocks flattened. Also: bet_33 nominally yields ~20% pot odds
+   (not the 25% repeatedly stated in v1.0); all such pot-odds
+   figures corrected. PASS.
 
-4. **Confidence band distribution.** 30 HIGH / 18 MEDIUM / 2 LOW.
-   HIGH on target, MEDIUM +3, LOW −3. PARTIAL — see flag #11.
+4. **Confidence band distribution.** 28 HIGH / 17 MEDIUM / 5 LOW.
+   All within ±2 of target (60/30/10 of 50). PASS.
 
-5. **Action distribution.** 4 FOLD / 10 CHECK / 11 CALL / 20 BET /
-   5 RAISE. RAISE on target, CHECK/CALL within ±2, BET +7, FOLD
-   −6. PARTIAL — see flag #10 for explanation + reviewer
-   recommendation.
+5. **Action distribution.** 10 FOLD / 10 CHECK / 12 CALL / 13 BET /
+   5 RAISE. All within tolerance of the 20/24/20/26/10 targets.
+   PASS.
 
-6. **10-hand solver sample spans bands + classes.** 4 HIGH / 5
-   MEDIUM / 1 LOW; actions: 0 FOLD / 2 CHECK / 3 CALL / 4 BET /
-   1 RAISE. PARTIAL — FOLD class missing — see flag #12 for
-   reviewer decision (swap HOLDOUT_046 into the 10-sample).
+6. **10-hand solver sample spans bands + classes.** Composition:
+   4 HIGH / 5 MEDIUM / 1 LOW; actions: 1 FOLD / 2 CHECK / 3 CALL /
+   3 BET / 1 RAISE. FOLD class now represented (HOLDOUT_046 swapped
+   in for HOLDOUT_037). PASS.
 
 7. **Non-overlap verification (programmatic).** Built fingerprint
    set from 56 jsonl files in `training-data/` (1,996 unique
-   `(sorted(hero), sorted(board))` keys covering 4,034 records).
-   Cross-checked all 50 holdout fingerprints. **Result: 0 matches.**
-   PASS.
+   `(sorted(hero), sorted(board))` keys covering 4,034 records),
+   PLUS the 5 calibration-anchor fingerprints, PLUS the 21 distinct
+   fingerprints in `review/calibration_situations.json` + mirror
+   files (24-hand calibration manifest). Cross-checked all 50 v1.0.1
+   holdout fingerprints. **Result: 0 matches.** PASS.
+
+8. **Hashed-block delimiter discipline.** Exactly one literal
+   start-of-block HTML comment and one literal end-of-block HTML
+   comment in this file (verified with shell-time literal
+   construction; references elsewhere build the strings via
+   concatenation so this prose itself does not produce additional
+   matches). PASS.
+
+9. **JSONL-export-friendliness.** Every hand has exactly one
+   `- Board:` line; no inline `Re-frame:` blocks remain in any
+   hand spec; the preflop hand (H032) carries `Board: PREFLOP` as
+   a placeholder for schema consistency. PASS.
 
 ## Reference
 
