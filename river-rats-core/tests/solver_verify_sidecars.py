@@ -160,7 +160,14 @@ def _classify_shape(
     if (flop_check_count >= 1 and turn_check_count >= 1 and river_present
             and any(e[0] == 'river' and e[2] == 'BET' for e in action_history)):
         return 'hu_donk_x_bet'  # check-through variant
+    # Commit 16: tighten predicate to HU-only per bucket label
+    # "HU delayed-probe large turn bet". Prior loose predicate
+    # mis-routed 4 multiway entries (MW-41, FB-18, FB-19,
+    # SYN-F6_MW_all_live) into delayed_probe because they have a
+    # flop-CHECK + turn-BET shape; they fall through to mw_per_villain
+    # below (more truthful — they ARE multiway per-villain chains).
     if (flop_check_count >= 1 and turn_present
+            and not is_mw
             and any(e[0] == 'turn' and e[2] == 'BET' for e in action_history)):
         return 'delayed_probe'
 

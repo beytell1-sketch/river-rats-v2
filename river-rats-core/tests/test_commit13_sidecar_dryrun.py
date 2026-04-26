@@ -323,13 +323,16 @@ def test_commit15_folded_mw_split_primary_routes_correctly():
     from tests.solver_verify_sidecars import _classify_shape
     # 3-way CO-open: CO/BTN/BB postflop. Primary villain = BB. BB
     # folds on flop. Construct AH:
+    # NIT #2 fix (commit 16): realistic postflop ordering — BB acts
+    # last in position when CO opens preflop. CO bets, BTN calls,
+    # then BB faces the bet and folds.
     primary_fold_ah = [
         ('preflop', 'CO', 'RAISE'),
         ('preflop', 'BTN', 'CALL'),
         ('preflop', 'BB', 'CALL'),
-        ('flop', 'BB', 'FOLD'),  # primary villain folds
         ('flop', 'CO', 'BET'),
         ('flop', 'BTN', 'CALL'),
+        ('flop', 'BB', 'FOLD'),  # primary villain folds facing bet
     ]
     shape = _classify_shape(primary_fold_ah, villain_pos='BB')
     assert shape == 'folded_mw_primary', (
@@ -364,6 +367,86 @@ def test_commit15_folded_mw_legacy_label_retired():
     )
     assert 'folded_mw_primary' in bucket_labels
     assert 'folded_mw_offvillain' in bucket_labels
+
+
+# =============================================================================
+# Commit 16 — delayed_probe predicate tightened to HU-only
+# =============================================================================
+# The `delayed_probe` bucket is labelled "HU delayed-probe large turn
+# bet" but the prior predicate captured any flop-CHECK + turn-BET
+# shape regardless of position count, mis-routing 4 multiway entries
+# (MW-41, FB-18, FB-19, SYN-F6_MW_all_live) into the bucket. Commit
+# 16 adds an `is_mw=False` gate so MW entries fall through to
+# `mw_per_villain` (more truthful — they ARE multiway per-villain
+# chains).
+
+
+def test_commit16_delayed_probe_hu_only_predicate_routes_hu_correctly():
+    """Commit 16: a true HU delayed-probe shape (heads-up, flop check-
+    behind, turn lead) still routes to `delayed_probe`."""
+    from tests.solver_verify_sidecars import _classify_shape
+    # HU = 2 positions postflop. CO opens, BTN calls, both check
+    # the flop, BTN probes the turn.
+    hu_delayed_probe_ah = [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('flop', 'CO', 'CHECK'),
+        ('flop', 'BTN', 'CHECK'),
+        ('turn', 'CO', 'CHECK'),
+        ('turn', 'BTN', 'BET'),
+    ]
+    shape = _classify_shape(hu_delayed_probe_ah, villain_pos='BTN')
+    assert shape == 'delayed_probe', (
+        f'HU flop-check-through + turn-lead expected delayed_probe; '
+        f'got {shape!r}'
+    )
+
+
+def test_commit16_delayed_probe_mw_falls_through_to_mw_per_villain():
+    """Commit 16: the 4 MW entries (MW-41, FB-18, FB-19,
+    SYN-F6_MW_all_live) previously mis-routed to delayed_probe must
+    now route to mw_per_villain after the predicate tightening."""
+    from tests.solver_verify_sidecars import _classify_shape
+    from _reference_action_history_sidecar import (
+        _REFERENCE_ACTION_HISTORY,
+        _REFERENCE_VILLAIN_POS,
+    )
+    previously_misrouted = ['MW-41', 'FB-18', 'FB-19', 'SYN-F6_MW_all_live']
+    for ref_id in previously_misrouted:
+        ah = _REFERENCE_ACTION_HISTORY[ref_id]
+        villain_pos = _REFERENCE_VILLAIN_POS[ref_id]
+        shape = _classify_shape(ah, villain_pos)
+        assert shape == 'mw_per_villain', (
+            f'{ref_id} previously mis-routed to delayed_probe; commit '
+            f'16 expects mw_per_villain (3 positions, MW chain); got '
+            f'{shape!r}. positions={ {e[1] for e in ah} }'
+        )
+
+
+def test_commit16_delayed_probe_bucket_truthfulness_on_corpus():
+    """Commit 16: every entry in the live `delayed_probe` bucket on the
+    full corpus must satisfy `is_mw=False` (i.e. exactly 2 distinct
+    positions in the action history). The bucket label is "HU
+    delayed-probe" — anything multiway in there is a mis-route."""
+    from tests.solver_verify_sidecars import _classify_shape
+    from _reference_action_history_sidecar import (
+        _REFERENCE_ACTION_HISTORY,
+        _REFERENCE_VILLAIN_POS,
+    )
+    misrouted = []
+    for ref_id, ah in _REFERENCE_ACTION_HISTORY.items():
+        villain_pos = _REFERENCE_VILLAIN_POS[ref_id]
+        shape = _classify_shape(ah, villain_pos)
+        if shape == 'delayed_probe':
+            num_positions = len({e[1] for e in ah})
+            if num_positions >= 3:
+                misrouted.append(
+                    f'{ref_id} (positions={num_positions})'
+                )
+    assert not misrouted, (
+        f'delayed_probe bucket contains MW entries (truthfulness '
+        f'violation): {misrouted}'
+    )
 
 
 def test_commit13_2_5_fixture_meta_boards_list_of_strings():

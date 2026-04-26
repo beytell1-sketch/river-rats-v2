@@ -189,7 +189,7 @@ _REFERENCE_ACTION_HISTORY: Dict[str, List[Tuple[str, str, str]]] = {
     #
     # Per-batch GTO review requested on these 5. Covers all 8 MUST #49
     # shape categories once combined with commit-13 batch:
-    #   Category 4 (folded_mw → folded HU) : SYN-F3_HU_folded
+    #   Category 4 (folded_hu sentinel)    : SYN-F3_HU_folded
     #   Category 5 (over_narrow)           : SYN-F5_HU_overflow (MUST #15 pathway)
     #   Category 2 (hu_bet_x_call_bet)     : SYN-T_J02_synthetic (4-class chain)
     #   Category 3 (hu_bet_raise_call)     : SYN-T_B05_synthetic (same-street BET-RAISE-CALL)
