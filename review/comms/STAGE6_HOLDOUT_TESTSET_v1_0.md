@@ -2,22 +2,30 @@
 date: 2026-04-26
 author: general-purpose subagent acting as gto-expert (dedicated subagent unavailable)
 derived_from: STAGE6_HOLDOUT_TESTSET_DRAFT_2026-04-26.md
-version: v1.0.2
+version: v1.0.3
 review_chain:
   - orchestrator skeleton (DRAFT v0.1, 2026-04-26)
   - v1.0 fill (general-purpose-as-gto-expert, 2026-04-26)
   - v1.0 independent reviewer pass APPROVE-WITH-NITS at commit 9758a99 (2026-04-26) — REVIEW_VERDICT_PR_16_STAGE6_HOLDOUT_2026-04-26.md
   - v1.0.1 fix-forward dispatch (general-purpose-as-gto-expert, 2026-04-26) — addresses 2 HIGH + 4 MEDIUM + 1 LOW-MEDIUM from PR #16 verdict; see MAIN_TERMINAL_PR_16_FIX_FORWARD_REQUIRED_2026-04-26.md (006a13e)
   - v1.0.1 independent reviewer pass APPROVE-WITH-NITS at commit cc247ac (2026-04-26) — REVIEW_VERDICT_PR_18_STAGE6_HOLDOUT_V1_0_1_2026-04-26.md (1 new MEDIUM cosmetic + 4 NITs)
-  - v1.0.2 micro-correction (this revision, 2026-04-26) — H025 header + hash re-lock + closure tally per MAIN_TERMINAL_PR_18_MERGED_TASK4_2_DIRECTIVE_2026-04-26.md
-  - v1.0.2 independent reviewer pass — REQUIRED before pilot use
+  - v1.0.2 micro-correction (2026-04-26) — H025 header + hash re-lock + closure tally per MAIN_TERMINAL_PR_18_MERGED_TASK4_2_DIRECTIVE_2026-04-26.md
+  - v1.0.2 independent reviewer pass APPROVE-WITH-NITS at commit cb4ef48 (2026-04-26; post-hoc per a9a749f direct-push ACK) — 3 NITs (NIT-A §12 stale tally + NIT-B/C version-prose lag)
+  - v1.0.3 micro-correction (this revision, 2026-04-26) — 3 NIT prose-consistency fixes per MAIN_TERMINAL_TASK_4_2_VERDICT_TASK_4_3_DIRECTIVE_2026-04-26.md (cb4ef48); all edits OUTSIDE hashed block so v1.0.2 hash 65cfbf26... over 47652 bytes UNCHANGED
+  - v1.0.3 independent reviewer pass — REQUIRED before pilot use
   - solver verification on 10-hand sample — REQUIRED before pilot
   - owner final approval — REQUIRED
-status: v1.0.2 (micro-correction on v1.0.1; H025 header consistency + hash re-lock + closure tally)
+status: v1.0.3 (NIT prose-consistency pass on v1.0.2; v1.0.2 hash-lock UNCHANGED — all edits outside hashed block)
 from: Stage 4 prep fix-forward dispatch
 to: Owner · Independent reviewer pool · ML-architect · Builder
 re: Stage 6 held-out test set construction protocol — 50-hand authored corpus, immutability hash, pre-pilot prerequisites
 changelog:
+  v1.0.3 (2026-04-26):
+    - NIT-A — Concern §12 tally consistency: "Sample composition now: 0 → 1 FOLD, 2 CHECK, 3 CALL, 4 BET, 1 RAISE" → "1 FOLD / 3 CHECK / 2 CALL / 3 BET / 1 RAISE" (matches §6 canonical tally). Same-class as the v1.0.2 §6 fix; v1.0.2 missed this duplicate location in §12 prose.
+    - NIT-B — Document title + lock-prose: title "v1.0.1" → "v1.0.2"; line 50 "v1.0.1 lock" → "v1.0.2 lock". Cosmetic title-prose lag from v1.0.2 surgical scope.
+    - NIT-C — Prereq §1 hash-lock prose: "Hash matches v1.0.1 lock" → "Hash matches v1.0.2 lock" (specific-version variant chosen over generalised "v1.0.x" — easier to spot future drift).
+    - HASH-LOCK INVARIANT: all 3 NIT fixes are OUTSIDE the hashed block (lines 37, 50, 57, 1582-1586 are all prose / changelog / Concerns, not inside HASHED-BLOCK-START to HASHED-BLOCK-END). v1.0.2 hash 65cfbf26ad3c6b228a3462574b86c33be41397258519ffd35b1cc08037a4cba5 over 47652 bytes UNCHANGED — recompute verified.
+
   v1.0.2 (2026-04-26):
     - MEDIUM (cosmetic) — H025 header consistency: "Pot at decision: 105.2bb" → "94.2bb" (per v1.0.1 reviewer cc247ac Item B + H concerns; FOLD conclusion unchanged; pot odds 29.3% validates against 94.2). The H025 header sits inside the hashed block so this triggers a hash re-lock.
     - Hash re-lock: v1.0.1 SHA256 b775df2a... (47653 bytes) superseded by v1.0.2 SHA256 65cfbf26... (47652 bytes; -1 byte from "105.2"→"94.2"). Both hashes preserved in the v1.0.2 historical traceability section.
@@ -34,7 +42,7 @@ changelog:
     - LOW-MEDIUM — JSONL-export blockers cleaned: HOLDOUT_007 (4-card flop typo collapsed to 3-card), HOLDOUT_016/019/045/047 (inline `Re-frame:` blocks flattened to a single canonical action history per hand), HOLDOUT_032 now carries `Board: PREFLOP` placeholder for schema consistency. Each hand has exactly one `- Board:` line.
 ---
 
-# Stage 6 Held-Out Test Set v1.0.1
+# Stage 6 Held-Out Test Set v1.0.2
 
 ## Purpose
 
@@ -47,14 +55,14 @@ self-play systemic) per `MASTER_PLAN (1).md`. Per the locked Stage
    Stage 4, never seen by labelling teams or training pipeline.
    Single-shot accuracy measurement; no iteration. Final gate check.
 
-This document is the v1.0.1 lock of that test set (fix-forward on
+This document is the v1.0.2 lock of that test set (fix-forward on
 v1.0 per PR #16 reviewer verdict; see frontmatter `changelog`).
 
 ## PRE-EVALUATION PREREQUISITES
 
 Before the v2.4 candidate model is run against this test set:
 
-1. **Hash matches v1.0.1 lock.** Recompute SHA256 of the 50-hand
+1. **Hash matches v1.0.2 lock.** Recompute SHA256 of the 50-hand
    spec block (everything between the START and END HTML comment
    markers — see `## Hash + lock` below for the literal forms used
    to delimit the block; literal markers do not appear in this prose
@@ -1581,9 +1589,11 @@ against this convention.
 
 12. **FOLD class now represented in 10-hand solver sample** —
     HOLDOUT_046 swapped in (replacing HOLDOUT_037). Sample
-    composition now: 0 → 1 FOLD, 2 CHECK, 3 CALL, 4 BET, 1 RAISE
-    (one of the BET hands previously listed remains BET via the
-    re-authored H022 / others).
+    composition now: 1 FOLD / 3 CHECK / 2 CALL / 3 BET / 1 RAISE
+    (matches §6 canonical tally). v1.0.3 NIT-A fix: prior wording
+    "0 → 1 FOLD, 2 CHECK, 3 CALL, 4 BET, 1 RAISE" was a stale
+    pre-swap-count duplicate of the same error v1.0.2 corrected
+    in §6; both locations now consistent.
 
 ## Usage protocol
 
