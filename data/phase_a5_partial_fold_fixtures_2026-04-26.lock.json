@@ -1,0 +1,75 @@
+{
+  "build_directive": "review/comms/MAIN_TERMINAL_BUILD_D_DIRECTIVE_PARTIAL_FOLD_FIXTURES_2026-04-26.md",
+  "build_version": "v1.0",
+  "byte_size": 10761,
+  "disjointness": {
+    "pilot_corpus_100_fingerprints": 100,
+    "post_validation_overlap_anchor": 0,
+    "post_validation_overlap_calibration": 0,
+    "post_validation_overlap_holdout": 0,
+    "post_validation_overlap_pilot": 0,
+    "stage6_holdout_fingerprints": 49,
+    "total_forbidden_fingerprints_deduplicated": 179,
+    "v23_anchor_9hand_extension_fingerprints": 9,
+    "v23_calibration_24hand_legacy_fingerprints": 21,
+    "within_fixture_unique_fingerprints": 5
+  },
+  "diversity_coverage": {
+    "folded_positions_observed_across_fixtures": [
+      "BTN",
+      "SB",
+      "UTG",
+      "SB",
+      "BB",
+      "SB",
+      "BB",
+      "HJ",
+      "CO",
+      "SB",
+      "BB"
+    ],
+    "live_villain_count_distribution": {
+      "1": 1,
+      "2": 2,
+      "3": 2
+    },
+    "street_distribution": {
+      "flop": 2,
+      "river": 1,
+      "turn": 2
+    },
+    "streets": [
+      "river",
+      "turn",
+      "flop"
+    ],
+    "unique_folded_positions": [
+      "BB",
+      "SB",
+      "CO",
+      "BTN",
+      "HJ",
+      "UTG"
+    ]
+  },
+  "feat_dict_contract_source": "Stage 5 retrain v1.0.1 \u00a7Hyperparameters point #4: FEATURE_COLUMNS (length 55) + 4 v2.4 P1 blockers = 59 raw (inherited from Build C v1.0.1)",
+  "feat_dict_feature_count": 59,
+  "fingerprint_method": "(sorted(hero_cards), sorted(board_cards)) per Stage 6 v1.0 spec \u00a7Non-overlap verification",
+  "fixture_count": 5,
+  "nit_carryforward_from_build_c_v1_0_1": [
+    "Same 59-feature embedding via feature_extractor.extract_all_features",
+    "Same SHA256 hash-lock + sidecar pattern",
+    "Same disjointness verification methodology (against Stage 6 + v2.3 calibration + v2.3 anchors + pilot 100 corpus)",
+    "Same `force-add` past `.gitignore *.json` pattern for .lock.json"
+  ],
+  "pilot_corpus_reference_hash": "c93a41c4f0d2c7ceb85d753852f7a5d1cfbaed65d3bdc5a7d6abfdcb57f45e40",
+  "predecessor_directives": [
+    "review/comms/MAIN_TERMINAL_PILOT_HALT_ACK_BUILDS_ABC_DIRECTIVE_2026-04-26.md (3f9564e \u2014 Builds A/B/C)",
+    "review/comms/MAIN_TERMINAL_PR41_MERGE_ACK_BUILD_D_KICKOFF_2026-04-26.md (Build D kickoff post-PR-#41-merge)"
+  ],
+  "purpose": "Phase A.5 preflight assertion fixtures per Stage 4 pilot orchestration spec v1.0.3 \u00a7'Phase A.5' + QC HIGH-1 / S-A12 close. Each fixture exercises `_villain_pos_raw` live-vs-folded discrimination on partial-fold MW situations. Pilot Orchestrator loads these as Phase A.5 test cases; assertion HALTs Phase A if any fixture selects a folded opponent as `_villain_pos_raw`.",
+  "sha256": "c196fb82cf78b6c02660dca72051df36938ebfeca87ebd23e935ec96b510f513",
+  "stage6_holdout_reference_hash": "65cfbf26ad3c6b228a3462574b86c33be41397258519ffd35b1cc08037a4cba5",
+  "v23_calibration_constants_reference": "river-rats-core/calibration_exam.py v2.3 \u2014 STANDARD_EXAM_SIZE=28, STANDARD_PASS_THRESHOLD=23, GTO_REVERSAL_HANDS, GROUP_D_REVERSAL_HANDS",
+  "v_x2_origin": "QC PR #40 V-X2 finding; Phase A.5 fixture source"
+}
