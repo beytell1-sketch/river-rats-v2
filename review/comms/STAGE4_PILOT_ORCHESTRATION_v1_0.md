@@ -2,13 +2,30 @@
 date: 2026-04-26
 author: general-purpose subagent acting as ml-architect (dedicated subagent unavailable)
 derived_from: STAGE4_PILOT_ORCHESTRATION_DRAFT_2026-04-26.md
-version: v1.0
+version: v1.0.1
 review_chain:
   - orchestrator structural skeleton (DRAFT v0.1, 2026-04-26)
-  - v1.0 fill (general-purpose subagent acting as ml-architect, this file)
-  - independent reviewer pass — REQUIRED before pilot dispatch
-  - owner final approval — REQUIRED before pilot dispatch
-status: v1.0 (fill complete; pending independent reviewer pass + owner approval)
+  - v1.0 fill (general-purpose subagent acting as ml-architect, 2026-04-26)
+  - v1.0 independent reviewer pass APPROVE-WITH-NITS at commit ba8d062 (2026-04-26) — REVIEW_VERDICT_PR_24_TASK_5_PILOT_ORCHESTRATION_2026-04-26.md
+  - v1.0 PR #24 merged at f33e4f7 (2026-04-26) — Stage 4 prep Wave 2 COMPLETE
+  - v1.0.1 pre-dispatch fix-forward (this revision, 2026-04-26) — addresses M-1 + L-1/L-8/L-11/L-12 per MAIN_TERMINAL_PR24_MERGED_TASK5_V1_0_1_DIRECTIVE_2026-04-26.md (309ad35)
+  - v1.0.1 independent reviewer pass — REQUIRED before pilot dispatch
+  - owner pilot-dispatch authorization — REQUIRED
+status: v1.0.1 (pre-dispatch fix-forward on v1.0; M-1 terminology + L-1 cross-protocol firewall + L-8 tool restrictions + L-11 API/model prereqs + L-12 path)
+changelog:
+  v1.0.1 (2026-04-26):
+    - M-1 (MEDIUM) — Stage 5 contract terminology fix at line 586. "55-feature vector + post-commit-14 multiway promotions = 59 raw features per Stage 5 retrain v1.0.1" → "55-feature vector + 4 v2.4 blocker features = 59 raw features per Stage 5 retrain v1.0.1 §Hyperparameters point #4". Stage 5 v1.0.1 names the +4 features as v2.4 blocker features (nut_flush_block + 3 *_block_pct); "post-commit-14 multiway promotions" was wrong terminology (those are the per_villain_* fields promoted by Finding B at commit 14, not the +4 features added pre-Stage-5).
+    - L-1 (LOW; pre-dispatch) — Cross-protocol output-path firewall. Each Labeller brief (A/B/C) now restricts Read/Write to `review/pilot_run_<date>/labels/protocol_<your_protocol>/agent_<your_slot>/`; cross-protocol traversal PROHIBITED to preserve protocol-diversity guarantee.
+    - L-8 (LOW; pre-dispatch) — Tool restrictions across all 6 brief types per Task 4.5 whitelist-or-raise discipline. Added ALLOWED/PROHIBITED sections to: Labeller A (canonical) + Labeller B/C (inherit + slot-specific path) + Highlighter H1/H2 + Reviewer + Adjudicator (per-role 1/2/3). Pilot Orchestrator brief already had whitelist-or-raise per v1.0 (Task 4.5 lesson).
+    - L-11 (LOW; pre-dispatch) — Promoted API-tier + model-selection from footnotes to PRE-DISPATCH PREREQUISITES rows #14 + #15. Drives 5× cost swing ($140-$700) and rate-limit risk; should be operator-checkable PRE-DISPATCH items.
+    - L-12 (LOW; pre-dispatch) — `LABELLING_PIPELINE.md` path corrected to `docs/LABELLING_PIPELINE.md` at all 4 references (lines 464, 500, 801, 884).
+    - Pilot Orchestrator brief read-list updated: "verify ALL 13 prereqs are GREEN" → "verify ALL 15 prereqs are GREEN" (post-L-11 row count).
+    - Author concerns from v1.0 reviewer (5 NITs) folded:
+      - Phase B band-tightness footnote — NOT addressed in v1.0.1 (deferred to v1.1; preflight 5-call gate mitigates)
+      - HIGH-4 cross-stream prereq — NOT addressed (HIGH-4 SEALED via PR #26 d3fcd02; no longer a gate)
+      - Adjudicator role 1+3 dispatch-ID verification — partially addressed via tool restrictions per role; full dispatch-ID tracking deferred to orchestrator runtime
+      - LABELLING_PIPELINE.md path — ADDRESSED (L-12)
+      - Cost telemetry as new ask — NOT addressed (orchestrator commission-time concern; deferred to v1.1)
 from: Stage 4 prep Wave 2 — Task 5
 to: Owner · Independent reviewer · Pilot Orchestrator agent (when commissioned)
 re: Stage 4 pilot orchestration script — concrete agent-dispatch sequence,
@@ -57,6 +74,8 @@ this section is the gate.
 | 11 | **Solver options match `feedback_solver_aligned_sizing.md`** | Adjudication panel preconfigured with flop 25%/66%, turn 33%/75%, river 33%/75%/150% sizing options BEFORE adjudication phase opens | YES |
 | 12 | **Pilot orchestrator session-launch cwd verified** | `~/river-rats-v2/` (project-local subagents accessible: gto-expert, ml-architect, reviewer); no `cd` outside the project tree per Tasks 4 / 4.2 lessons | YES |
 | 13 | **Owner explicit greenlight** | Per locked plan §11 "execution authorisation, not design"; owner posts ack to comms doc | YES |
+| 14 | **Anthropic API tier confirmed** | Tier ≥ X for Phase B 5-way × 3-batch parallelism (verifiable via live tier check OR rate-limit headers from a 5-call preflight). At Tier 1 default (~50 RPM / 40k input TPM / 8k output TPM) the 5-way batch fits with margin; at higher tiers orchestrator may upgrade to single-batch 15-way per §"Parallelism limits" decision rule. Drives wall-time envelope (10-13h baseline). | YES |
+| 15 | **Model selection locked (Opus vs Sonnet)** | Per-role: Labeller / Highlighter / Reviewer / Adjudicator each pinned to a specific model. Drives cost envelope from $140 (all-Sonnet) to $700 (all-Opus). Recommended starting mix: Labeller Sonnet (volume), Highlighter + Reviewer + Adjudicator Opus (judgment). Surface owner-explicit choice in pre-dispatch comms doc. | YES |
 
 If ANY row is RED: pilot does NOT dispatch. Halt. Surface the failed
 prerequisite to owner. Do NOT improvise.
@@ -459,7 +478,7 @@ Read first (ALL):
 - prompts/gto_labeller_v3.1.md (your full labelling prompt — the
   canonical Protocol A artifact; bucket taxonomy, features, DO NOT
   Rules, all worked examples)
-- LABELLING_PIPELINE.md (output schema reference)
+- docs/LABELLING_PIPELINE.md (output schema reference)
 
 Input you will receive:
 - 100 hands from the Stage 4 pilot corpus, in JSONL with hand_id,
@@ -492,6 +511,21 @@ Rules:
 - NEVER reason about the solver — Protocol A is KB-first; solver
   is Phase F adjudication only
 - NEVER use 'raise' for an opening bet (per `feedback_terminology_raise_vs_bet.md`)
+
+Tool restrictions (whitelist-or-raise per Task 4.5 lesson):
+- ALLOWED: Read (project files only — your own protocol prompt,
+  docs/LABELLING_PIPELINE.md, your input hand JSONL); Write (ONLY to
+  `review/pilot_run_<date>/labels/protocol_<your_protocol>/agent_<your_slot>/`
+  — cross-protocol path traversal is PROHIBITED to preserve
+  protocol-diversity firewall per L-1 directive); Bash (read-only
+  verification: `ls`, `cat` your input file, NO writes outside
+  your slot, NO git operations).
+- PROHIBITED: cross-protocol Read/Write into other labellers' slots
+  (e.g. Protocol A reading `protocol_b/` outputs); Edit anything
+  outside your slot; Agent dispatch (you are the leaf labeller —
+  no nested dispatch); git commit / push / PR; cd outside project.
+- On any tool use outside ALLOWED list, REFUSE the operation in
+  reasoning trace + flag to Phase E reviewer.
 ```
 
 ### Brief template — Labeller (Protocol B — composition-first)
@@ -504,6 +538,9 @@ Same skeleton as Protocol A above, with these substitutions:
   1/2/3" — derive villain composition slices (TP+ / draws / air),
   pick action from the triple, justify
 - Output path: `review/pilot_run_<date>/labels/protocol_b/agent_<your_slot>/<hand_id>.json`
+- Tool restrictions: same whitelist-or-raise pattern as Protocol A
+  brief (Read project files only; Write only to `protocol_b/agent_<your_slot>/`;
+  cross-protocol traversal PROHIBITED)
 
 ### Brief template — Labeller (Protocol C — adversarial elimination)
 
@@ -516,6 +553,9 @@ Same skeleton as Protocol A above, with these substitutions:
   `feedback_solver_aligned_sizing.md` — NOT facing-bet multiples),
   rank by elimination weakness, return survivor
 - Output path: `review/pilot_run_<date>/labels/protocol_c/agent_<your_slot>/<hand_id>.json`
+- Tool restrictions: same whitelist-or-raise pattern as Protocol A
+  brief (Read project files only; Write only to `protocol_c/agent_<your_slot>/`;
+  cross-protocol traversal PROHIBITED)
 
 ### Brief template — Convergence checker (= Pilot Orchestrator solo)
 
@@ -583,8 +623,8 @@ Read first (ALL):
 - review/comms/STAGE4_PILOT_ORCHESTRATION_v1_0.md (this script —
   §"Phase C — Highlighting" for context-scope rules)
 - prompts/gto_labeller_v3.1.md §Features (the 55-feature vector
-  + post-commit-14 multiway promotions = 59 raw features per Stage 5
-  retrain v1.0.1)
+  + 4 v2.4 blocker features = 59 raw features per Stage 5 retrain
+  v1.0.1 §Hyperparameters point #4)
 - The Exp 3 attention vocabulary spec (orchestrator provides at
   dispatch — separate file referenced by Stage 5 retrain v1.0.1)
 
@@ -615,6 +655,17 @@ Rules:
 - DO use the cross-protocol vote tally to calibrate attention to
   disputed factors (3-of-3 unanimous → high-confidence flag set;
   mixed votes → narrower / lower-confidence flag set)
+
+Tool restrictions (whitelist-or-raise per Task 4.5 lesson):
+- ALLOWED: Read (Phase D consensus output, your input hands JSONL,
+  attention vocabulary spec, your protocol prompts); Write (ONLY to
+  `review/pilot_run_<date>/highlighting/h1/agent_<your_slot>/`);
+  Bash read-only (`ls`, `cat` your inputs).
+- PROHIBITED: Read of per-labeller attribution data (Phase B raw
+  records); Read of solver output; Write outside your slot; Edit;
+  Agent dispatch; git operations; cd outside project.
+- On any tool use outside ALLOWED list, REFUSE + flag to Phase E
+  reviewer.
 ```
 
 ### Brief template — Highlighter H2 (intent multi-label)
@@ -626,6 +677,10 @@ Same skeleton as H1 above, with these substitutions:
   vocabulary in the orchestrator-provided Exp 4 spec)
 - Output path: `review/pilot_run_<date>/highlighting/h2/agent_<your_slot>/<hand_id>.json`
 - Schema: `{hand_id, intents: {intent_value_extract: bool, ...}}`
+- Tool restrictions: same whitelist-or-raise pattern as H1 (Read
+  Phase D consensus + Exp 4 vocab spec; Write only to
+  `highlighting/h2/agent_<your_slot>/`; PROHIBITED: per-labeller
+  attribution, solver output, cross-slot Write, agent dispatch)
 
 ### Brief template — Reviewer
 
@@ -662,6 +717,18 @@ Rules:
 - NEVER consult solver output (solver is Phase F adjudicator's tool)
 - ALWAYS verify the actual source artifact — don't trust an upstream
   summary (per `feedback_verify_source_not_plan.md`)
+
+Tool restrictions (whitelist-or-raise per Task 4.5 lesson):
+- ALLOWED: Read (your assigned-scope artifacts including labels +
+  highlighting + Phase D output for your sample; protocol prompts);
+  Write (ONLY to `review/pilot_run_<date>/reviews/reviewer_<your_slot>.md`);
+  Bash read-only (`ls`, `cat` artifacts in your scope).
+- PROHIBITED: Edit any label / highlight artifact (you spot-check,
+  not modify); Read solver output (Phase F tool); Write outside
+  your reviewer comms file; Agent dispatch; git operations; cd
+  outside project.
+- On any tool use outside ALLOWED list, REFUSE + flag in your
+  reviewer comms file as a process anomaly.
 ```
 
 ### Brief template — Adjudicator (3 roles, sequential per hand)
@@ -699,6 +766,23 @@ Schema (final-writer record):
 
 Provenance: roles 1 and 3 must be DIFFERENT subagent dispatches
 (reviewer ≠ author; same-agent-doing-both = independence violation).
+
+Tool restrictions per role (whitelist-or-raise per Task 4.5 lesson):
+- Role 1 (GTO expert): ALLOWED Read project files (labels + protocol
+  prompts + KB) + Write only to `adjudication/<hand_id>/role_1_gto.json`;
+  PROHIBITED Read solver output, Write outside hand-id slot, agent
+  dispatch.
+- Role 2 (Solver-verify): ALLOWED Read assigned hand spot + Bash
+  to invoke solver per `feedback_solver_aligned_sizing.md` sizings;
+  Write only to `adjudication/<hand_id>/role_2_solver.json`;
+  PROHIBITED Read role 1 output (writer integrates), interpretation
+  beyond raw solver action distribution.
+- Role 3 (Adjudication writer): ALLOWED Read role 1 + role 2 outputs
+  + protocol prompts; Write only to `adjudication/<hand_id>/role_3_final.json`;
+  PROHIBITED edit roles 1+2 outputs (synthesise, don't modify).
+- All roles PROHIBITED: cross-hand path traversal; agent dispatch;
+  git operations; cd outside project. On any tool use outside
+  ALLOWED, REFUSE + flag.
 ```
 
 ### Brief template — Pilot Orchestrator (top-level)
@@ -718,7 +802,7 @@ file operations)
 
 Read first (ALL):
 - review/comms/STAGE4_PILOT_ORCHESTRATION_v1_0.md (this script,
-  including PRE-DISPATCH PREREQUISITES — verify ALL 13 prereqs are
+  including PRE-DISPATCH PREREQUISITES — verify ALL 15 prereqs are
   GREEN before starting Phase A)
 - review/comms/MAIN_TERMINAL_STAGE4_STRATEGY_PROPOSAL_2026-04-25.md
   (locked plan)
@@ -731,7 +815,7 @@ Read first (ALL):
   118-column v2.4 = 59 raw + 59 attn_*)
 - review/comms/STAGE6_HOLDOUT_TESTSET_v1_0.md (held-out hash-lock
   for prereq #1)
-- LABELLING_PIPELINE.md (calibration exam infrastructure)
+- docs/LABELLING_PIPELINE.md (calibration exam infrastructure)
 - All Stage 4 stop-conditions (locked plan §4.3)
 
 Tool restrictions: read any project file; write only to
@@ -814,7 +898,7 @@ does NOT execute until ALL 13 PRE-DISPATCH PREREQUISITES are GREEN
 - `STAGE6_HOLDOUT_TESTSET_v1_0.md` (v1.0.3 sealed) — held-out set
   hash must be GREEN before pilot dispatch (so it's not in pilot
   corpus) AND pilot 100 must be disjoint from holdout 50
-- `LABELLING_PIPELINE.md` — calibration exam infrastructure
+- `docs/LABELLING_PIPELINE.md` — calibration exam infrastructure
 - `MAIN_TERMINAL_PR21_MERGED_TASK5_GREENLIGHT_2026-04-26.md` — Task
   4.5 logic hardening sealed at `add2617`; PILOT GATE clearance
 - `MAIN_TERMINAL_BUILDER_STAGE4_PREP_TASKS_2026-04-26.md` — original
