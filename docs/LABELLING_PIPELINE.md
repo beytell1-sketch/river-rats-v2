@@ -6,6 +6,18 @@ Situations → Batches → GTO Expert agents → Collect → Training CSV
 
 All commands run from `river-rats-core/`.
 
+> **Scope note (2026-04-26, v1.0.3 refresh per QC S-X3):** Step 0
+> calibration gate, Key Files table, and Checksums sections are kept
+> current with v2.3 infrastructure. Steps 1–7 below describe the v1-era
+> operational pipeline (single-agent labelling, 5-factor framework
+> dispatch, batched JSONL flow). For the Stage 4 pilot (15-labeller ×
+> 3-protocol orchestration), the canonical dispatch spec is
+> `review/comms/STAGE4_PILOT_ORCHESTRATION_v1_0.md` v1.0.3+ — that
+> spec supersedes the dispatch flow in Steps 2–4 here for any pilot
+> or production labelling round, while the calibration gate (Step 0)
+> and post-labelling checks (Step 5) remain authoritative for both
+> pipelines.
+
 ---
 
 ## Step 0: Pre-flight Checks
@@ -49,7 +61,21 @@ Agent must NOT access calibration_exam.py, BATCH2_8_HAND_DESIGNS.md,
 or any file containing answer keys.
 
 Grade independently against `/tmp/calibration_answer_key.json`.
-Gate: 20/24 minimum, all 3 GTO-reversal hands correct.
+
+Gate (v2.3, sourced from `river-rats-core/calibration_exam.py` —
+refer to constants by name so future drift surfaces inconsistency):
+- `STANDARD_PASS_THRESHOLD/STANDARD_EXAM_SIZE` (= 23/28 at v2.3) on
+  the standard exam (24 existing MW reference hands + 4 new hard
+  anchors)
+- 100% on the reversal set
+  `GTO_REVERSAL_HANDS ∪ GROUP_D_REVERSAL_HANDS` (= 10 hands at v2.3:
+  MW-30, MW-33, MW-50 + d2410_CO_turn, d3178_CO_river
+  predicate-matching anchors + d3688_BB_flop, d4312_CO_turn,
+  d9556_BB_flop, d2074_BTN_turn, d5466_CO_flop Group-D anchors).
+  ANY single reversal failure = FAIL.
+
+Per `calibration_exam.py` v2.3 docstring: "If gate fails, the agent
+must not label training data."
 
 ---
 
@@ -196,11 +222,12 @@ Gates:
 
 | File | Role |
 |------|------|
-| `prompts/gto_labeller_v1.md` | Labelling agent prompt |
-| `knowledge/three_way_gto.md` | GTO knowledge base (v1.1) |
+| `prompts/gto_labeller_v3.1.md` | Labelling agent prompt (current; v3.1) |
+| `prompts/gto_labeller_v3.md` / `v2.md` / `v1.md` | Historical lineage (do not use for new labelling) |
+| `knowledge/three_way_gto.md` | GTO knowledge base (current: v1.3) |
 | `review/label_batches/agent_context.txt` | Combined prompt + knowledge |
 | `labelling_agent.py` | Prepare batches + collect results |
-| `calibration_exam.py` | Exam infrastructure |
+| `calibration_exam.py` | Exam infrastructure (v2.3 — `STANDARD_EXAM_SIZE = 28`, `STANDARD_PASS_THRESHOLD = 23`, `GTO_REVERSAL_HANDS ∪ GROUP_D_REVERSAL_HANDS = 10` reversal hands) |
 | `export_3way_training.py` | JSONL → CSV conversion |
 | `situation_factory.py` | Construct situations from specs |
 | `reference_evaluator.py` | Gate check evaluator |
@@ -208,11 +235,18 @@ Gates:
 ## Checksums (verify files haven't changed)
 
 ```bash
-md5sum knowledge/three_way_gto.md prompts/gto_labeller_v1.md
-# Expected (as of 7 Apr 2026, v1.2):
-# 78dd5008d39d1388bcb428faaa4d3869  knowledge/three_way_gto.md
-# ddccb338b59123086f3f5a57857a886a  prompts/gto_labeller_v1.md
+sha256sum knowledge/three_way_gto.md prompts/gto_labeller_v3.1.md \
+          river-rats-core/calibration_exam.py
+# Recompute and record the SHA256 of the current canonical artifacts
+# at pilot dispatch time (per Stage 4 pilot orchestration spec
+# PRE-DISPATCH PREREQUISITES row #4 — Protocol A v3.1 frozen +
+# checksum recorded; capture in pilot run report).
 ```
 
-If checksums differ, the knowledge base was edited. Re-run
-calibration before labelling.
+If checksums differ between dispatch and end-of-pilot, an
+infrastructure file was edited mid-pilot. Re-run calibration before
+trusting any labels produced after the edit. Per QC HIGH-2 (S-X1)
+2026-04-26 finding: do NOT hardcode expected hashes here — the
+canonical sources of truth are the file contents at master HEAD;
+hardcoded hashes invariably go stale and produce false-positive
+"changed" alarms.

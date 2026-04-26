@@ -2,7 +2,7 @@
 date: 2026-04-26
 author: general-purpose subagent acting as ml-architect (dedicated subagent unavailable)
 derived_from: STAGE4_PILOT_ORCHESTRATION_DRAFT_2026-04-26.md
-version: v1.0.2
+version: v1.0.3
 review_chain:
   - orchestrator structural skeleton (DRAFT v0.1, 2026-04-26)
   - v1.0 fill (general-purpose subagent acting as ml-architect, 2026-04-26)
@@ -11,11 +11,23 @@ review_chain:
   - v1.0.1 pre-dispatch fix-forward (2026-04-26) — addresses M-1 + L-1/L-8/L-11/L-12 per MAIN_TERMINAL_PR24_MERGED_TASK5_V1_0_1_DIRECTIVE_2026-04-26.md (309ad35)
   - v1.0.1 independent reviewer pass APPROVE-WITH-NITS at commit 0f1c5c4 (2026-04-26) — REVIEW_VERDICT_PR_28_TASK_5_V1_0_1_2026-04-26.md (2 cosmetic NITs)
   - v1.0.1 PR #28 merged at 9cf8792 (2026-04-26)
-  - v1.0.2 NIT prose-consistency pass (this revision, 2026-04-26) — addresses NIT-1 (line 884 stray '13' → '15') per MAIN_TERMINAL_PR28_MERGED_TASK5_V1_0_2_DIRECTIVE_2026-04-26.md (d41041e); NIT-2 ACCEPTED AS DESIGNED (placeholder pattern for preflight tier check)
-  - v1.0.2 independent reviewer pass — REQUIRED before pilot dispatch
+  - v1.0.2 NIT prose-consistency pass (2026-04-26) — addresses NIT-1 (line 884 stray '13' → '15') per MAIN_TERMINAL_PR28_MERGED_TASK5_V1_0_2_DIRECTIVE_2026-04-26.md (d41041e); NIT-2 ACCEPTED AS DESIGNED (placeholder pattern for preflight tier check)
+  - v1.0.2 independent reviewer pass APPROVE at commit aaa6897 (2026-04-26) — REVIEW_VERDICT_PR_29_TASK_5_V1_0_2_2026-04-26.md (no NITs)
+  - v1.0.2 PR #29 merged at b2fbf02 (2026-04-26)
+  - v1.0.3 QC Phase 5 fix-forward (this revision, 2026-04-26) — addresses QC HIGH-1 (S-A12 villain selection) + HIGH-2 (S-X1 calibration manifest drift) + 3 MEDIUMs (S-X3 LABELLING_PIPELINE refresh, S-X4 highlighter anonymisation token-strip, S-X10 post-Phase-B firewall audit) per MAIN_TERMINAL_QC_PHASE5_ACK_V1_0_3_DIRECTIVE_2026-04-26.md (af7a502)
+  - v1.0.3 independent reviewer pass — REQUIRED before pilot dispatch
   - owner pilot-dispatch authorization — REQUIRED
-status: v1.0.2 (NIT prose-consistency pass on v1.0.1; line 884 "ALL 13" → "ALL 15" + review_chain timeline accuracy)
+status: v1.0.3 (QC Phase 5 fix-forward on v1.0.2; HIGH-1 + HIGH-2 + 3 MEDIUMs from QC adversarial sweep)
 changelog:
+  v1.0.3 (2026-04-26):
+    - HIGH-1 (S-A12) — `_villain_pos_raw` live-selection rule added. New PRE-DISPATCH PREREQUISITE row #16 (live-villain selection) + new Phase A preflight assertion (5-hand partial-fold MW fixture verification). Closes pilot risk: HIGH-4 OR-derivation (monotone-True) at `feature_extractor.py:2412-2429` correctly handles aggregate flagging on partial-fold MW pots, but pilot dispatch with `_villain_pos_raw` set to a folded opponent loses blocker training signal because the per-villain dict for the folded primary returns NaN-flagged blockers under the OR-with-prior-True semantics. Spec now requires labellers to designate a live (non-folded, non-overflowed) opponent as `_villain_pos_raw` on any multi-opponent hand where any opponent is live. No code change; spec edit only.
+    - HIGH-2 (S-X1) — Calibration manifest reconciled to `river-rats-core/calibration_exam.py` v2.3. Phase A pass criterion + PRE-DISPATCH PREREQUISITES rows #3 and #10 + dispatch sequence text + cost table + time estimates table footnote all updated from stale "24 hands / 20 pass / 3 reversals" to current v2.3 "STANDARD_EXAM_SIZE=28 / STANDARD_PASS_THRESHOLD=23 / 10 reversal hands (GTO_REVERSAL_HANDS ∪ GROUP_D_REVERSAL_HANDS, 100%-must-pass)". Spec now refers to v2.3 constants by name so future drift surfaces inconsistency at review time. Closes spec-vs-infrastructure-code drift incident class.
+    - MEDIUM (S-X3) — `docs/LABELLING_PIPELINE.md` refreshed: prompt v1 → v3.1; KB v1.1 → v1.3; calibration gate 20/24+3 → 23/28+10 with v2.3 constant cross-references; checksum block updated. Compounds HIGH-2 fix.
+    - MEDIUM (S-X4) — Pre-Phase-C anonymisation step added. New §"Phase C input prep — anonymisation" between Phase B and Phase C: orchestrator strips protocol-vocabulary tokens (KB-driven, composition-first, adversarial-elimination, KB anchor, bucket, TP+ slice, elimination weakness, etc.) from aggregate reasoning text before dispatching to highlighters. Highlighter brief templates updated to reference token-stripped input.
+    - MEDIUM (S-X10) — Post-Phase-B cross-protocol firewall audit added. New step in §"Phase B — Action labelling" + new line in Pilot Orchestrator brief: after Phase B completes, orchestrator scans all label-output paths against dispatch records; flags any path-traversal where a labeller wrote outside `review/pilot_run_<date>/labels/protocol_<own_protocol>/agent_<own_slot>/`. Promotes L-1 firewall rule from labeller self-report to orchestrator-side audit.
+    - NOT in v1.0.3 scope: S-A3 cache-key dict-vs-tuple form (defer v1.1 housekeeping); 5 LOW findings (defer v1.1).
+    - Pilot Orchestrator brief read-list updated: "verify ALL 15 prereqs are GREEN" → "verify ALL 16 prereqs are GREEN" (post-HIGH-1 row addition).
+
   v1.0.2 (2026-04-26):
     - NIT-1 (cosmetic) — Line 884 stray "ALL 13 PRE-DISPATCH PREREQUISITES" → "ALL 15 PRE-DISPATCH PREREQUISITES" (matches table size post-L-11 row addition; was missed during v1.0.1 L-11 propagation that updated the Pilot Orchestrator brief read-list at line 805 but missed this second occurrence). Production-summary paragraph rewritten to also reflect actual review_chain timeline (v1.0 reviewer pass + PR #24 merge + v1.0.1 pre-dispatch fix-forward + this v1.0.2 pass).
     - NIT-2 (DEFERRED — accepted as designed): row #14 "Tier ≥ X" placeholder is intentional UNCERTAIN-tag pattern per orchestrator directive `MAIN_TERMINAL_PR28_MERGED_TASK5_V1_0_2_DIRECTIVE_2026-04-26.md`. Operator fills "Tier ≥ N" at preflight live-tier check time. NOT a fix.
@@ -70,19 +82,20 @@ this section is the gate.
 |---|---|---|---|
 | 1 | **Stage 6 held-out hash matches v1.0.3 lock** | `STAGE6_HOLDOUT_TESTSET_v1_0.md` §"Hash + lock" — recompute SHA256 over the hashed block; must match recorded `65cfbf26ad3c6b228a3462574b86c33be41397258519ffd35b1cc08037a4cba5` (47652 bytes, v1.0.2 hash preserved through v1.0.3 since v1.0.3 edits are outside the hashed block) | YES |
 | 2 | **Pilot 100-hand corpus disjoint from Stage 6 holdout** | Run the non-overlap check defined in Stage 6 §"Non-overlap verification" against the pilot 100; zero `(sorted(hero), sorted(board))` fingerprint matches | YES |
-| 3 | **Pilot 100-hand corpus disjoint from 24-hand calibration manifest** | Same fingerprint scan against `review/calibration_situations.json` + 4 mirror/batch files (per Stage 6 v1.0.1 closure: 21 unique fingerprints) — zero matches | YES |
+| 3 | **Pilot 100-hand corpus disjoint from v2.3 calibration manifest (28-hand standard exam + 10 reversal hands)** | Same fingerprint scan against `river-rats-core/calibration_exam.py` v2.3 manifest (`STANDARD_EXAM_SIZE = 28` standard hands; reversal set = `GTO_REVERSAL_HANDS ∪ GROUP_D_REVERSAL_HANDS` = 10 hands) plus historical `review/calibration_situations.json` + 4 mirror/batch files for backward compatibility (per Stage 6 v1.0.1 closure: 21 unique fingerprints in legacy set; v2.3 adds 4 hard-anchor + 5 Group-D fingerprints) — zero matches across union | YES |
 | 4 | **Protocol A v3.1 frozen + checksum recorded** | `prompts/gto_labeller_v3.1.md` SHA256 captured in pilot run report; no edits during pilot | YES |
 | 5 | **Protocol B v1.0.1 sealed + labeller-facing artifact built** | `prompts/protocol_b_composition_first_v1_0.md` v1.0.1 reviewer-passed; `prompts/protocol_b_composition_first_v1_0_pilot.md` (verbatim-inlined Bucket taxonomy + Features + DO NOT Rules per Protocol B v1.0.1 PRE-PILOT BUILD REQUIREMENT) exists and reviewer-verified | YES |
 | 6 | **Protocol C v1.0.1 sealed + labeller-facing artifact built** | `prompts/protocol_c_adversarial_elimination_v1_0.md` v1.0.1 reviewer-passed; `prompts/protocol_c_adversarial_elimination_v1_0_pilot.md` built (same inlining requirement) and reviewer-verified | YES |
 | 7 | **Stage 5 retrain protocol v1.0.1 sealed** | `STAGE5_RETRAIN_PROTOCOL_v1_0.md` v1.0.1 reviewer-passed; provides downstream contract (118-column v2.4 = 59 raw + 59 attn_*) so labellers know what schema their output feeds | YES |
 | 8 | **Task 4.5 logic hardening sealed** | PR #21 merged at `add2617` — STREET_NAME_MAP whitelist, `classify_hand` raises, cache-key + AH (PILOT GATE), audit-runner immutability — confirmed via `MAIN_TERMINAL_PR21_MERGED_TASK5_GREENLIGHT_2026-04-26.md` | YES |
 | 9 | **QC pre-pilot sweep clean (Phase 5)** | QC standing roadmap Phase 5 sweep returns zero NEW HIGH/CRITICAL findings on the labelling pipeline; Phase 2 HIGH-1 (teaching renderer) status confirmed (parallel stream, not blocking pilot logic) | YES |
-| 10 | **All 33 pilot agents pass blind calibration** | Phase A of this script — 20/24 + all 3 GTO-reversal hands correct on the 24-hand reference set | YES |
+| 10 | **All 33 pilot agents pass blind calibration (v2.3 gate)** | Phase A of this script — `STANDARD_PASS_THRESHOLD/STANDARD_EXAM_SIZE` (= 23/28 at v2.3) on standard exam AND 100% on `GTO_REVERSAL_HANDS ∪ GROUP_D_REVERSAL_HANDS` (= 10 reversal hands at v2.3: MW-30, MW-33, MW-50 + d2410_CO_turn, d3178_CO_river predicate-matching anchors + d3688_BB_flop, d4312_CO_turn, d9556_BB_flop, d2074_BTN_turn, d5466_CO_flop Group-D anchors). Constants sourced from `river-rats-core/calibration_exam.py` v2.3 — refer by name so future drift surfaces inconsistency at review time. | YES |
 | 11 | **Solver options match `feedback_solver_aligned_sizing.md`** | Adjudication panel preconfigured with flop 25%/66%, turn 33%/75%, river 33%/75%/150% sizing options BEFORE adjudication phase opens | YES |
 | 12 | **Pilot orchestrator session-launch cwd verified** | `~/river-rats-v2/` (project-local subagents accessible: gto-expert, ml-architect, reviewer); no `cd` outside the project tree per Tasks 4 / 4.2 lessons | YES |
 | 13 | **Owner explicit greenlight** | Per locked plan §11 "execution authorisation, not design"; owner posts ack to comms doc | YES |
 | 14 | **Anthropic API tier confirmed** | Tier ≥ X for Phase B 5-way × 3-batch parallelism (verifiable via live tier check OR rate-limit headers from a 5-call preflight). At Tier 1 default (~50 RPM / 40k input TPM / 8k output TPM) the 5-way batch fits with margin; at higher tiers orchestrator may upgrade to single-batch 15-way per §"Parallelism limits" decision rule. Drives wall-time envelope (10-13h baseline). | YES |
 | 15 | **Model selection locked (Opus vs Sonnet)** | Per-role: Labeller / Highlighter / Reviewer / Adjudicator each pinned to a specific model. Drives cost envelope from $140 (all-Sonnet) to $700 (all-Opus). Recommended starting mix: Labeller Sonnet (volume), Highlighter + Reviewer + Adjudicator Opus (judgment). Surface owner-explicit choice in pre-dispatch comms doc. | YES |
+| 16 | **`_villain_pos_raw` live-selection rule honored on partial-fold MW fixtures** | Pilot labeller fixture preparation MUST select a live (non-folded, non-overflowed) opponent as `_villain_pos_raw` on any multi-opponent hand where any opponent is live. Closes QC HIGH-1 (S-A12) pilot-fitness gap: `feature_extractor.py:2412-2429` HIGH-4 OR-derivation correctly handles aggregate flagging, but folded-primary `_villain_pos_raw` selection on partial-fold MW pots NaN-flags blockers — losing training signal. Phase A preflight verifies the rule on a 5-hand partial-fold MW sample before Phase B dispatches (assertion: for each sampled hand, `_villain_pos_raw` ∈ live-opponent set; if any sample violates, HALT pilot for fixture prep fix). No code change required; spec rule + preflight check only. | YES |
 
 If ANY row is RED: pilot does NOT dispatch. Halt. Surface the failed
 prerequisite to owner. Do NOT improvise.
@@ -130,18 +143,49 @@ DRAFT v0.1 line 257-259 flag):
 
 ### Phase A — Calibration (parallel, 33 agents)
 
-ALL 33 pilot agents take the calibration exam in parallel (same 24
-hands, blind, independent grading). Pilot Orchestrator dispatches
-33 agents with the same blind exam input.
+ALL 33 pilot agents take the calibration exam in parallel (the v2.3
+manifest: `STANDARD_EXAM_SIZE = 28` standard hands + reversal set
+`GTO_REVERSAL_HANDS ∪ GROUP_D_REVERSAL_HANDS` = 10 hands; blind,
+independent grading). Pilot Orchestrator dispatches 33 agents with
+the same blind exam input.
+
+Constants are sourced from `river-rats-core/calibration_exam.py`
+v2.3 by name (`STANDARD_EXAM_SIZE`, `STANDARD_PASS_THRESHOLD`,
+`GTO_REVERSAL_HANDS`, `GROUP_D_REVERSAL_HANDS`) — referring by name
+rather than hardcoded numerals so future infrastructure drift
+surfaces inconsistency at review time per QC HIGH-2 (S-X1) close.
+
+**Phase A preflight (HIGH-1 / S-A12 close, prereq #16):** BEFORE
+running the blind calibration exam, Pilot Orchestrator runs a
+5-hand partial-fold MW fixture verification:
+
+- Sample 5 hands from the pilot 100-hand corpus where
+  `len(per_villain) ≥ 2` AND `any(per_villain_folded.values()) ==
+  True` AND `not all(per_villain_folded.values())` (i.e. partial-fold
+  MW pots with at least one live opponent)
+- For each sampled hand, assert `_villain_pos_raw` is set to a live
+  (non-folded, non-overflowed) opponent — verify against the
+  per-villain dicts in the fixture record
+- If ANY sample violates the live-selection rule: HALT pilot;
+  surface to owner via the run-status comms doc; require fixture
+  prep fix before dispatching Phase B
+- This preflight is independent of the 33-agent calibration exam
+  and runs BEFORE it (sequential gate)
 
 Each agent returns:
-- 24 actions (their answers)
+- 28 actions (their answers — one per standard exam hand) + reversal
+  hand answers (10 hands; counted separately for the 100%-must-pass
+  gate)
 - Reasoning trace per hand (per protocol; protocol-specific format)
 
 Pilot Orchestrator grades against answer key (NOT visible to agents).
 Records pass/fail per agent.
 
-Pass criterion: 20/24 + all 3 GTO-reversal hands correct.
+Pass criterion: `STANDARD_PASS_THRESHOLD/STANDARD_EXAM_SIZE` (= 23/28
+at v2.3) on the standard exam AND 100% on the reversal set
+(`GTO_REVERSAL_HANDS ∪ GROUP_D_REVERSAL_HANDS` = 10 hands at v2.3 —
+any single reversal failure = FAIL per `calibration_exam.py` v2.3
+gate).
 
 | Outcome | Action |
 |---|---|
@@ -201,9 +245,93 @@ preflight to support 15-way parallel:** orchestrator may upgrade
 to single-batch 15-way. Decision: orchestrator-level, surfaced to
 owner in pre-dispatch readiness comms.
 
+### Phase B post-completion — cross-protocol firewall audit (Pilot Orchestrator solo)
+
+After Phase B completes (all 1500 label records collected) and
+BEFORE Phase D dispatches: Pilot Orchestrator runs a cross-protocol
+firewall audit per QC MEDIUM (S-X10) close.
+
+The audit:
+
+1. Enumerate dispatch records: for each of the 15 labellers, recover
+   the (protocol, agent_slot) tuple from dispatch lineage in the
+   per-record provenance field
+2. Enumerate output paths: for each label record, the file path
+   under `review/pilot_run_<date>/labels/...`
+3. For each (protocol, agent_slot, path) triple, assert:
+   `path.startswith(f"review/pilot_run_<date>/labels/protocol_{protocol}/agent_{agent_slot}/")`
+4. Any path-traversal violation (e.g. Protocol A labeller wrote to
+   `protocol_b/` slot, or to a different agent_slot within own
+   protocol): FLAG to run-status comms doc; HALT pilot until owner
+   reviews; do NOT dispatch Phase D / E on a corpus where firewall
+   integrity is uncertain
+
+Why orchestrator-side audit (not labeller self-report): the L-1
+firewall rule (v1.0.1) restricts each labeller's tool whitelist to
+their own slot; but a labeller could in principle subvert the
+restriction (REFUSE-and-flag fallback may be evaded by output-path
+manipulation in the JSON record itself). Orchestrator-side audit
+makes the firewall observable + verifiable on every Phase B
+completion.
+
+Output: `review/pilot_run_<date>/firewall_audit.json` with per-record
+verdict (`PASS` / `VIOLATION` + offending path + offending
+labeller dispatch ID).
+
+If audit clean: PROCEED to Phase D + Phase C input prep.
+If audit flags violations: HALT, surface, owner reviews.
+
+### Phase C input prep — anonymisation (Pilot Orchestrator solo; runs concurrent with Phase D)
+
+BEFORE Phase C dispatches, Pilot Orchestrator prepares the aggregate
+reasoning text that highlighters consume per QC MEDIUM (S-X4) close.
+
+Without this step, highlighters can fingerprint per-protocol
+reasoning style by vocabulary tokens (KB-driven phrasing identifies
+Protocol A; composition slice phrasing identifies Protocol B;
+adversarial-elimination phrasing identifies Protocol C). Even though
+per-labeller attribution is stripped (per v1.0 highlighter brief),
+protocol-vocabulary fingerprinting compromises the
+protocol-diversity guarantee.
+
+Anonymisation step:
+
+1. Concatenate per-hand reasoning text from all 15 labellers (5 per
+   protocol)
+2. Apply token-strip: replace each token in the protocol-vocabulary
+   list with a neutral token. Vocabulary list (extensible — start
+   with this set, expand as patterns surface in pre-pilot review):
+   - Protocol A markers: `KB-driven`, `KB anchor`, `KB-first`,
+     `knowledge base says`, `per the KB`, `KB rules`, `the anchor
+     hand`, `bucket`, `bucket assignment`, `bucket category`
+   - Protocol B markers: `composition-first`, `composition slice`,
+     `TP+ slice`, `TP+ composition`, `draws slice`, `air slice`,
+     `the triple`, `TP+/draws/air`, `composition triple`
+   - Protocol C markers: `adversarial elimination`, `adversarial
+     elimination step`, `eliminate`, `elimination weakness`,
+     `survivor`, `case against`, `build the case against`,
+     `weakest elimination`
+   - Cross-protocol markers: protocol identifiers `Protocol A`,
+     `Protocol B`, `Protocol C` themselves; v3.1 / v1.0.1 / v3 / v1
+     version-string mentions; specific `feedback_*.md` filename
+     mentions
+3. Replace stripped tokens with neutral placeholder `[REASONING]`
+   (preserves text flow without leaking protocol provenance)
+4. Output anonymised aggregate per hand to:
+   `review/pilot_run_<date>/highlighter_input/agent_input_<hand_id>.txt`
+5. Highlighter brief Read-list points to the anonymised file, NOT
+   the raw per-labeller reasoning
+
+The token list is intentionally explicit + extensible — orchestrator
+SHOULD review the first ~10 hands of anonymised aggregate text and
+extend the vocabulary list if additional fingerprinting tokens
+surface, then re-run anonymisation before dispatching highlighters
+on those records.
+
 ### Phase C — Highlighting (parallel; 6 agents; depends on Phase B + D)
 
-Once Phase B labels collected AND Phase D consensus computed: Pilot
+Once Phase B labels collected AND firewall audit clean AND
+anonymisation prep complete AND Phase D consensus computed: Pilot
 Orchestrator dispatches 6 highlighters in parallel (3 H1 + 3 H2).
 
 Each highlighter receives:
@@ -228,9 +356,13 @@ Highlighters receive:
 - Per-protocol vote tally (e.g. "Protocol A: 5/5 BET; Protocol B:
   4/5 BET + 1 CHECK; Protocol C: 5/5 BET") — REQUIRED for
   calibrated attention to known-disputed factors
-- Aggregate (concatenated, anonymised) reasoning text from ALL 15
-  labellers — REQUIRED for H2 intent-tagging which depends on
-  why-the-action-was-chosen, not what
+- Aggregate reasoning text from ALL 15 labellers PASSED THROUGH the
+  Phase C anonymisation step (per QC MEDIUM S-X4 close): per-hand
+  reasoning concatenated then token-stripped of protocol-vocabulary
+  markers, file at `review/pilot_run_<date>/highlighter_input/agent_input_<hand_id>.txt`.
+  REQUIRED for H2 intent-tagging which depends on
+  why-the-action-was-chosen, not what — but anonymised so highlighter
+  cannot fingerprint per-protocol style
 
 Highlighters do NOT receive:
 - Per-labeller attribution (which agent said what) — keeps
@@ -340,28 +472,48 @@ Owner reviews report. Decision authorisation:
 ### Phase B/C/D/E/F overlap rules
 
 Strict ordering edges (must serialise):
+- A-preflight → A (HIGH-1 / S-A12 5-hand partial-fold MW fixture
+  verification must clear before the 33-agent calibration exam runs)
 - A → B (calibration must clear before labelling)
-- B → D (labels must exist for convergence)
-- D → C (consensus must exist for highlighters)
+- B → firewall audit (S-X10): cross-protocol firewall audit runs
+  immediately after Phase B completes; HALT pilot if violations
+  flag; MUST clear before any downstream phase
+- B + firewall audit → anonymisation (S-X4): token-strip
+  protocol-vocabulary from aggregate reasoning text; produces
+  highlighter input files
+- B → D (labels must exist for convergence; D may overlap with the
+  anonymisation step since they read the same Phase B records but
+  for different purposes)
+- D → C (consensus must exist for highlighters; AND anonymisation
+  files must exist before C dispatches)
 - D → F (adjudication routing requires Phase D output)
 
 Permitted overlaps:
+- D + anonymisation prep may overlap: both consume Phase B labels
+  (D reads action votes for κ; anonymisation reads reasoning text
+  for token-strip)
 - D + E may overlap: reviewers spot-check Phase B labels while
   orchestrator computes κ — reviewer findings can fold into the
-  Phase G report regardless of κ outcome.
+  Phase G report regardless of κ outcome
 - C + F may overlap: highlighters work the consensus-set hands
   while adjudicators work the disputed-set hands; the two sets are
-  disjoint by construction.
+  disjoint by construction
 - E + F may overlap: reviewers and adjudicators look at different
-  artifacts (reasoning traces vs disputed-hand resolution).
+  artifacts (reasoning traces vs disputed-hand resolution)
 
 NOT permitted to overlap:
+- A-preflight + A (preflight is a sequential gate; if it FAILs, no
+  calibration runs)
+- B + firewall audit (audit operates on completed corpus; running
+  audit on partial data risks false-clean verdict)
 - B + D (labels still landing while κ being computed = κ on
-  incomplete data; orchestrator must wait for all 1500 records
-  before invoking κ math).
+  incomplete data; orchestrator must wait for all 1500 records AND
+  firewall audit clean before invoking κ math)
+- B + anonymisation (anonymisation needs the full per-hand
+  reasoning aggregate, available only after Phase B completes)
 - D + (C or F) (consensus must exist before highlighters or
   adjudicators dispatch — both depend on Phase D's routing
-  decisions).
+  decisions; AND C additionally depends on anonymisation files)
 
 ---
 
@@ -408,7 +560,7 @@ Per-call cost target ranges (UNCERTAIN — depends on model selection
 
 | Cost component | Per-label estimate | Per-phase total | Notes |
 |---|---|---|---|
-| Phase A (calibration) | 33 agents × 24 hands × ~$0.02-$0.10/hand | ~$15-$80 | [UNCERTAIN: per-call cost depends on Opus vs Sonnet selection + reasoning-trace verbosity. Sonnet 4.5 ~5× cheaper than Opus 4.7 per equivalent token.] |
+| Phase A (calibration) | 33 agents × (28 standard + 10 reversal = 38 hands at v2.3) × ~$0.02-$0.10/hand | ~$25-$130 | [UNCERTAIN: per-call cost depends on Opus vs Sonnet selection + reasoning-trace verbosity. Sonnet 4.5 ~5× cheaper than Opus 4.7 per equivalent token. v1.0.3 update: Phase A volume grew from 24 hands (v2.2 manifest) to 38 hands (v2.3 manifest = STANDARD_EXAM_SIZE + 10 reversal); cost band scales proportionally.] |
 | Phase B (labelling) | 1500 calls × ~$0.05-$0.25/call | ~$75-$375 | Largest cost component. Reasoning-trace heavy. |
 | Phase C (highlighting) | 6 agents × 100 hands × ~$0.04-$0.20/hand | ~$24-$120 | H2 multi-label intent tags shorter than H1 attention flags. |
 | Phase D (convergence) | Orchestrator-internal (Python kappa math, no model calls) | ~$0 | |
@@ -440,7 +592,7 @@ estimate, halt + re-plan.]
 
 | Phase | Agents in parallel | Per-agent work | Estimated wall-time |
 |---|---|---|---|
-| A — Calibration | 33 (single batch) | 24 hands × ~60s = ~24 min | **~30 min** (incl. orchestrator grading) |
+| A — Calibration | 33 (single batch) | 38 hands (28 standard + 10 reversal at v2.3) × ~60s = ~38 min | **~45 min** (incl. orchestrator grading + 5-hand partial-fold MW preflight per HIGH-1 prereq #16) |
 | B — Labelling | 5 per batch × 3 sequential batches | 100 hands × ~60s = ~100 min per labeller | **~5-6 h** (3 batches × ~100 min + dispatch overhead) |
 | C — Highlighting | 6 (single batch) | 100 hands × ~30s (shorter than full label) = ~50 min | **~1 h** |
 | D — Convergence | 1 (orchestrator, Python math) | κ + agreement matrix computation | **~30 min** |
@@ -454,9 +606,11 @@ v1.0 narrows to 10-13 h based on:
 - Phase B refined to 3-batch sequential×5-parallel pattern (matches
   CCN concurrency reality more closely than 15-way single-batch
   aspiration)
-- Phase A reduced to ~30 min (33-way parallel calibration is short
-  per-agent because the 24-hand exam is bounded; the bottleneck is
-  orchestrator grading, not subagent compute)
+- Phase A bounded to ~45 min (33-way parallel calibration is short
+  per-agent because the 38-hand v2.3 exam is bounded — 28 standard +
+  10 reversal; the bottleneck is orchestrator grading + the 5-hand
+  partial-fold MW preflight per HIGH-1 prereq #16, not subagent
+  compute)
 - Phase E reduced to ~30-45 min (reviewer spot-checks are bounded
   to ~10 hands each)
 
@@ -639,8 +793,11 @@ Input you will receive:
 - 100 hands from the pilot corpus
 - Cross-protocol consensus action per hand (Phase D output)
 - Per-protocol vote tally per hand
-- Aggregate (anonymised, concatenated) reasoning text from all 15
-  labellers per hand
+- Aggregate reasoning text per hand from
+  `review/pilot_run_<date>/highlighter_input/agent_input_<hand_id>.txt`
+  — concatenated from all 15 labellers AND token-stripped of
+  protocol-vocabulary markers per QC MEDIUM (S-X4) close. You do NOT
+  read raw per-labeller reasoning; you read the anonymised aggregate.
 
 For each hand, produce:
 - PRIMARY attention flags: features whose value DROVE the action
@@ -809,8 +966,9 @@ file operations)
 
 Read first (ALL):
 - review/comms/STAGE4_PILOT_ORCHESTRATION_v1_0.md (this script,
-  including PRE-DISPATCH PREREQUISITES — verify ALL 15 prereqs are
-  GREEN before starting Phase A)
+  including PRE-DISPATCH PREREQUISITES — verify ALL 16 prereqs are
+  GREEN before starting Phase A; row #16 added in v1.0.3 per QC
+  HIGH-1 / S-A12 close)
 - review/comms/MAIN_TERMINAL_STAGE4_STRATEGY_PROPOSAL_2026-04-25.md
   (locked plan)
 - prompts/gto_labeller_v3.1.md (Protocol A artifact)
@@ -822,8 +980,28 @@ Read first (ALL):
   118-column v2.4 = 59 raw + 59 attn_*)
 - review/comms/STAGE6_HOLDOUT_TESTSET_v1_0.md (held-out hash-lock
   for prereq #1)
-- docs/LABELLING_PIPELINE.md (calibration exam infrastructure)
+- docs/LABELLING_PIPELINE.md (calibration exam infrastructure;
+  v3.1 prompt + v1.3 KB + v2.3 28-hand exam per v1.0.3 refresh)
+- river-rats-core/calibration_exam.py (v2.3 manifest constants:
+  STANDARD_EXAM_SIZE, STANDARD_PASS_THRESHOLD, GTO_REVERSAL_HANDS,
+  GROUP_D_REVERSAL_HANDS — refer by name in run-status comms doc)
 - All Stage 4 stop-conditions (locked plan §4.3)
+
+Phase A preflight responsibility (v1.0.3 — HIGH-1 / S-A12 close):
+BEFORE running the 33-agent blind calibration exam, run the 5-hand
+partial-fold MW fixture verification per §"Phase A — Calibration".
+HALT and surface to owner if any sample violates the
+`_villain_pos_raw` live-selection rule.
+
+Phase B post-completion responsibilities (v1.0.3):
+- Firewall audit (S-X10 close): scan all 1500 label-output paths
+  against dispatch records; HALT on any path-traversal violation;
+  output `review/pilot_run_<date>/firewall_audit.json`
+- Anonymisation prep (S-X4 close): token-strip
+  protocol-vocabulary from aggregate reasoning text; output
+  per-hand anonymised aggregates to
+  `review/pilot_run_<date>/highlighter_input/agent_input_<hand_id>.txt`
+  before Phase C dispatches
 
 Tool restrictions: read any project file; write only to
 review/comms/ (your own posts) and review/pilot_run_<date>/
@@ -888,9 +1066,12 @@ Per Task 5 lessons-applied analog:
 
 Production: this v1.0 file went to independent reviewer pass at
 v1.0 (ba8d062 APPROVE-WITH-NITS) → PR #24 merge (f33e4f7) → v1.0.1
-pre-dispatch fix-forward (PR #28 merge 9cf8792) → this v1.0.2 NIT
-prose-consistency pass. Pilot does NOT execute until ALL 15
-PRE-DISPATCH PREREQUISITES are GREEN + owner explicit greenlight.
+pre-dispatch fix-forward (PR #28 merge 9cf8792) → v1.0.2 NIT
+prose-consistency pass (PR #29 merge b2fbf02) → this v1.0.3 QC
+Phase 5 fix-forward addressing the 2 HIGH + 3 MEDIUM findings from
+the QC adversarial sweep at af7a502. Pilot does NOT execute until
+ALL 16 PRE-DISPATCH PREREQUISITES are GREEN + owner explicit
+greenlight.
 
 ---
 
