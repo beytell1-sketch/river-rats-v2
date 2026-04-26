@@ -1,0 +1,59 @@
+{
+  "phase": "A.4 v3.2 RETRY",
+  "protocol": "v3.2",
+  "option": "C+ (parallel Sonnet+Opus on revised protocol)",
+  "sonnet": {
+    "gate_passed": true,
+    "correct": 29,
+    "gate_overall": "29/33 >= 23 \u2192 PASS",
+    "gate_reversals": "10/10 (100% required) \u2192 PASS",
+    "failures": [
+      {
+        "ref_id": "MW-17",
+        "expert": "CALL",
+        "agent": "FOLD",
+        "is_reversal": false,
+        "confidence": "HIGH"
+      },
+      {
+        "ref_id": "MW-41",
+        "expert": "CALL",
+        "agent": "FOLD",
+        "is_reversal": false,
+        "confidence": "HIGH"
+      },
+      {
+        "ref_id": "MW-44",
+        "expert": "CALL",
+        "agent": "FOLD",
+        "is_reversal": false,
+        "confidence": "MEDIUM"
+      },
+      {
+        "ref_id": "MW-49",
+        "expert": "BET",
+        "agent": "CHECK",
+        "is_reversal": false,
+        "confidence": "MEDIUM"
+      }
+    ]
+  },
+  "opus": {
+    "gate_passed": true,
+    "correct": 32,
+    "gate_overall": "32/33 >= 23 \u2192 PASS",
+    "gate_reversals": "10/10 (100% required) \u2192 PASS",
+    "failures": [
+      {
+        "ref_id": "MW-17",
+        "expert": "CALL",
+        "agent": "FOLD",
+        "is_reversal": false,
+        "confidence": "HIGH"
+      }
+    ]
+  },
+  "decision": "Sonnet (cheaper; both adequate per spec calibration gate)",
+  "sonnet_pass": true,
+  "opus_pass": true
+}

@@ -1,0 +1,207 @@
+{
+  "lane": "sonnet",
+  "model": "claude-sonnet-4-6",
+  "protocol_version": "v3.2",
+  "total_labels": 33,
+  "input_tokens_estimate": 18500,
+  "labels": [
+    {
+      "ref_id": "MW-12",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (JsTs with no draw on 8c5d2h rainbow dry board — no straight draw since JT needs 9 and 7 to make a straight, and 8-5-2 doesn't connect; draw_outs=0, has_straight_draw=0). Hero is IP but has 0.14 equity, better_hand_pct=0.89 meaning nearly 90% of villain range beats this hand. villain_air_pct=0.56 is high, but pure bluffs 3-way are unprofitable per KB §1.1 — need both opponents to fold. With no draw equity and 14% equity total, betting is a pure bluff into two opponents with only 56% combined air. SPR is compressed at 1.33. Checking keeps hero's 14% equity intact without commitment."
+    },
+    {
+      "ref_id": "MW-13",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (KhJh on Ac9d3s rainbow — no pair, no draw, draw_outs=0). Hero is OOP (SB) with 0.16 equity and better_hand_pct=0.61. villain_top_pair_plus_pct=0.11 is low, but hero still beats only 38% of villain range and is OOP first to act. villain_aggression_count=1 suggests BTN already bet (action history says BTN opened), meaning hero faces a bet from the opener on a board that heavily favours the opener (Ace-high dry). With no made hand and no draw, OOP bet/bluff is unsupported — fold equity is insufficient 3-way for a pure bluff. CHECK is mandatory."
+    },
+    {
+      "ref_id": "MW-14",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "This is a drawing hand (Td9d on Jd8d3h — nut flush draw + open-ended straight draw = combo draw with 17 outs, draw_outs=17). Hero faces CO c-bet of 33 into 90 (pot odds 26.8%) with 55% equity well above the 26.8% needed. However, KB §1.7 semi-bluff RAISE requires nut draw + blocker — hero's Td9d is a nut flush draw (has Ad? No — hero holds Td9d, not the Ad; flush draw rank is 10, not 14). Without the Ace-of-suit blocker, the nut-FD raise carve-out does not apply per KB §1.7. CALL is correct: equity far exceeds pot odds, combo draw is strong, and calling preserves equity realization. villain_air_pct=0.30 is notable but not sufficient for RAISE without the nut blocker."
+    },
+    {
+      "ref_id": "MW-15",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air/busted-draw hand (9s8s on QsJd5h2c6c river — river is 6c completing to five-board, hero has a straight draw remaining draw_outs=4 but raw_equity=0.00 meaning no realized equity). On the river with 0% equity against villain's range and worse_hand_pct=0.94, hero cannot bet for value. villain_air_pct=0.40 suggests some fold equity, but river bluffs 3-way require the strongest bluffs only per KB §1.4. Hero has no showdown value and no made hand. villain_checked_back=1 shows weakness, but hero has no equity to bluff with on the river when 94% of villain range beats this busted draw. CHECK is correct — no hand, no bet."
+    },
+    {
+      "ref_id": "MW-17",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (AdKs on Jd8d4c flop — two overcards only, no draw, draw_outs=0, has_flush_draw=0, has_straight_draw=0). Hero faces CO c-bet of 33 into 90 (pot odds 26.8%) with only 22.6% equity below pot odds. better_hand_pct=0.60 means 60% of villain range currently beats hero. Without a flush draw or straight draw, AdKs is pure overcards with only runner-runner equity on this connected two-tone board. Pot odds (26.8%) exceed hero's equity (22.6%), making CALL mathematically incorrect. FOLD is required with no draw and negative equity margin."
+    },
+    {
+      "ref_id": "MW-18",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "This is a drawing hand (Qd3d on Jd8d4c — flush draw with 9 outs, has_flush_draw=1, draw_outs=9). Hero faces CO c-bet of 33 into 90 (pot odds 26.8%) with 36.2% equity, a positive equity margin of ~9.5pp above pot odds. However, Qd3d holds a non-nut flush draw (Queen-high, not Ace-high). Per KB §1.7, RAISE requires nut draw + blocker; Qd3d does not hold the Ad so nut-FD RAISE carve-out does not fire. villain_air_pct=0.31 is moderate but below the v3.2 OVERRIDE threshold requirement for the raise. CALL is correct: equity (36.2%) comfortably exceeds pot odds (26.8%) with a flush draw that has meaningful realization potential."
+    },
+    {
+      "ref_id": "MW-19",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "This is a monster hand (Tc9c on QhJs8d — flopped straight with 83.5% equity, is_monster=1). Hero is IP with closing action after both opponents checked. villain_top_pair_plus_pct=0.21 and villain_air_pct=0.37. With a flopped straight (near-nut) and two opponents who checked, hero must bet for value and protection — per KB Example 4 monsters must bet 3-way IP checked-to. The board is semi-connected (QJs8 is extremely draw-heavy) and free cards are dangerous. Betting charges villain draws and builds the pot. IP position and monster equity strongly support BET."
+    },
+    {
+      "ref_id": "MW-23",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "This is a medium-made hand (QhJc on Qc8d3s — top pair second kicker, is_made_hand=1, is_strong_made=0). Hero is IP (BTN) after both opponents checked. villain_top_pair_plus_pct=0.14 (thin on value per KB §1.9), villain_air_pct=0.51 (very high), worse_hand_pct=0.89. This matches KB Example 6 pattern: IP with top pair, low TP+ villain range, high air, dry rainbow board. IP position allows thin value betting against 51% air without OOP pot-control concerns. BET (25-33% pot) is correct to extract value from the large air fraction."
+    },
+    {
+      "ref_id": "MW-24",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "This is a medium-made hand (QsJd on Qc8d3s — top pair second kicker, OOP as SB). Hero is OOP but villain_top_pair_plus_pct=0.12 (very thin on value), villain_air_pct=0.52 (very high), worse_hand_pct=0.92, board_favour=+0.18. This matches KB Example 6 (QJ on Q83r OOP, BET) exactly: OOP position normally defaults to CHECK but extreme air fraction (52%) + board heavily favouring hero + very low TP+ (<20%) overrides the OOP pot-control default. villain_aggression_count=1 (BTN opened preflop) is irrelevant postflop. BET is correct per KB Example 6 pattern."
+    },
+    {
+      "ref_id": "MW-27",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "This is a medium-made hand (JhJc on 9d6c2h — overpair IP as BTN, is_made_hand=1). Hero is IP after both opponents checked. villain_top_pair_plus_pct=0.20, villain_air_pct=0.51 (high), worse_hand_pct=0.93. Board is dry rainbow (danger_score=0.00) — no flush draws, no straight draws possible. IP + overpair + high villain air + both opponents checked = thin value BET is strongly supported. Board favours hero's range (board_favour=+0.10). BET (25-33% pot) extracts value from the large air fraction while protecting against backdoor equity."
+    },
+    {
+      "ref_id": "MW-28",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "This is a medium-made hand (JhJd on 9d6c2h — overpair OOP as SB, is_made_hand=1). Hero is OOP but villain_top_pair_plus_pct=0.16 (thin on value), villain_air_pct=0.56 (very high), worse_hand_pct=0.94, board_favour=+0.14. Board is dry rainbow (danger_score=0.00). villain_aggression_count=1 (BTN opened preflop). OOP position with high air fraction and low TP+: the combination of extremely high air (56%), nearly 94% of villain range below JJ, and dry non-threatening board pushes toward BET for thin value even OOP. The logic parallels KB Example 6's override of OOP default when conditions are strongly favourable. MEDIUM confidence because OOP is a real concern, but the feature values are extreme."
+    },
+    {
+      "ref_id": "MW-30",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "This is the v2 reversal anchor. Medium-made hand (KcTh on KdJc6s — top pair weak kicker, facing CO bet + BTN call). villain_top_pair_plus_pct=0.31 (moderate, not the ≥60% 'heavy' bucket), villain_air_pct=0.18 (below 0.20 v3.2 OVERRIDE threshold). Hero has 45% equity vs 18.4% pot odds — equity surplus of 27pp. Per KB Example 3 solver correction and KB §2 Factor 5: bet-and-call signal DOES narrow ranges but equity surplus of 25+pp with a made hand is insufficient to flip to FOLD. KcTh beats ~80% of villain range (worse_hand_pct=0.80). CALL is the solver-verified correct action for this hand."
+    },
+    {
+      "ref_id": "MW-33",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "This is the v2 reversal anchor for RAISE. Monster hand (8h8s on 8d7c3h — middle set, is_monster=1, better_hand_pct=0.00, worse_hand_pct=1.00). Hero faces CO bet + BTN call with 89% equity. Per KB §1.7 default: sets and pure nuts are labelled RAISE. villain_top_pair_plus_pct=0.42, villain_air_pct=0.34, SPR=0.50 (committed). Sets MUST raise for value extraction vs bet+call 3-way — slowplaying risks free cards and fails to stack off at compressed SPR. This is a must-raise monster per calibration anchor MW-33."
+    },
+    {
+      "ref_id": "MW-34",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "This is a strong-made hand (AcAd on Js9c4d — overpair IP as CO with closing action, is_made_hand=1). Hero acts after BB checks (CO/hero is in middle position with BTN behind, but is_ip=1 per features). villain_top_pair_plus_pct=0.18 (thin on value), villain_air_pct=0.44 (high), worse_hand_pct=0.94. Board is dry rainbow (danger_score=0.00). IP with AA overpair, very thin villain range, 44% air: BET for thin value is clearly supported. Board does not trigger DO NOT Rule 11 (not OOP, and this is a dry non-paired non-2-tone board)."
+    },
+    {
+      "ref_id": "MW-35",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "This is a medium-made hand (QcJd on Qh7c2s — top pair second kicker, IP as BTN, spr=3.70). Hero faces CO c-bet of 9 into 27 with IP position. Pot odds = 25.0%, equity = 52%, margin +27pp. villain_top_pair_plus_pct=0.30, villain_air_pct=0.33, worse_hand_pct=0.89. With SPR=3.70 (standard), IP position, and top pair that beats 89% of villain range, hero has showdown value and position. CALL is correct at SPR 3.70: hero is IP and can realize equity on later streets. RAISE might overcommit with TPSK against a board that CO opened on. Calling preserves the pot control that this marginal hand benefits from."
+    },
+    {
+      "ref_id": "MW-36",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "This is a medium-made hand (QcJd on Qh7c2s — top pair second kicker, IP as BTN). Hero faces CO c-bet of 33 into 90 (spr=1.11 compressed, pot odds 26.8%) with 51% equity. villain_top_pair_plus_pct=0.30, villain_air_pct=0.33. At compressed SPR=1.11, calling with top pair is the natural line — RAISE would commit near-all stacks with a marginal hand against CO's bet on a board that favours CO's range. CALL with 51% equity vs 26.8% pot odds is profitable with IP position allowing pot-control on later streets."
+    },
+    {
+      "ref_id": "MW-37",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "This is a medium-made hand (QcJd on Qh7c2s — top pair second kicker, IP as BTN, spr=2.22 deep stacks). Hero faces CO c-bet of 15 into 45 (pot odds 25.0%) with 51.9% equity. villain_top_pair_plus_pct=0.30, villain_air_pct=0.33. At SPR=2.22 with deeper remaining stacks, CALL is correct with top pair IP. RAISE bloats the pot on a dry board with a marginal holding when hero already has positional advantage. IP CALL with 52% equity and a hand that beats 89% of villain range is the GTO line."
+    },
+    {
+      "ref_id": "MW-38",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "This is a drawing hand (AhJh on Kh8h3d — nut flush draw with Ah, has_flush_draw=1, draw_outs=9). Hero faces BB lead of 15 into 30 (spr=3.33, pot odds 33.3%) with 41.6% equity. villain_air_pct=0.09 (<0.20 threshold). Per v3.2 KB §1.7 OVERRIDE (Fix 2): nut-FD RAISE applies ONLY when villain_air_pct >= 0.20. Here villain_air_pct=0.09 is far below 0.20 — fold equity is insufficient to justify raise EV. CALL is correct: equity (41.6%) exceeds pot odds (33.3%), and the OVERRIDE routes nut-FD to CALL when air is sub-0.20."
+    },
+    {
+      "ref_id": "MW-39",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "This is the key v3.2 anchor hand. Drawing hand (AhJh on Kh8h3d — nut flush draw with Ah, has_flush_draw=1, draw_outs=9). Hero faces CO c-bet of 33 into 90 (spr=1.11, pot odds 26.8%) with 46.4% equity. villain_air_pct=0.053 (<0.20 v3.2 OVERRIDE threshold). Per v3.2 KB §1.7 OVERRIDE (Fix 2): nut-FD RAISE fires ONLY when villain_air_pct >= 0.20. Here villain_air_pct=0.053 — effectively zero fold equity. Raising generates no fold equity against a value-heavy CO betting range. CALL is correct: 46.4% equity vs 26.8% pot odds is a very comfortable call; raise would be -EV with no fold equity per the OVERRIDE threshold."
+    },
+    {
+      "ref_id": "MW-41",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "This is a medium-made hand with draws (QhTc on KsQd7cJh — second pair Queen with straight draw, has_straight_draw=1, draw_outs=8). Hero faces CO's second barrel of 60 into 200 (pot odds 23.1%) with only 30.5% equity. villain_top_pair_plus_pct=0.61 (heavy with strong hands — ≥60% bucket per KB §1.9), villain_aggression_count=2 (multi-street aggression). CO is firing a second barrel on a K-Q-7-J board into a BTN-caller; CO's range is concentrated in the ≥60% TP+ bucket. With 30.5% equity close to pot odds (23.1%), the equity margin is thin (~7pp) and villain's range is value-heavy. The multi-street aggression signal combined with ≥60% TP+ is the 'composition-supported fold' per KB §2 Factor 5 and Example 3 teaching point. FOLD."
+    },
+    {
+      "ref_id": "MW-44",
+      "action": "FOLD",
+      "confidence": "MEDIUM",
+      "reasoning": "This is a medium-made hand with draw (Th8h on Ts9h4d7c — top pair with OESD, has_straight_draw=1, draw_outs=8). Hero faces BB's second barrel of 70 into 180 (pot odds 28.0%) with 35.2% equity. villain_top_pair_plus_pct=0.67 (heavy with strong hands, ≥60% bucket), villain_aggression_count=1 (donk-led twice: flop donk + turn barrel). better_hand_pct=0.61. BB's double-barreling range on T94+7 has two-pair and trips-heavy composition per the 67% TP+ reading. With 35.2% equity vs 28.0% pot odds (thin margin) and facing a villian range that is 67% TP+, continuing with TPMK into a value-heavy multi-barreling range is -EV. FOLD is correct given the heavy TP+ composition."
+    },
+    {
+      "ref_id": "MW-48",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air/drawing hand (AhTc on QdJc4s — no pair, gutshot only with draw_outs=4, has_straight_draw=1, OOP). Hero is OOP (BB) first to act with 27.5% equity. villain_top_pair_plus_pct=0.14, villain_air_pct=0.42. With only a gutshot and no made hand, OOP betting is a semi-bluff attempt that fails KB §1.1 minimum: gutshot-only hands are check/fold per KB §1.7 (not qualifying for semi-bluff). Despite moderate air (0.42), fold equity 3-way requires both opponents to fold, and gutshot without pair provides insufficient equity. CHECK and realize equity cheaply or fold to action."
+    },
+    {
+      "ref_id": "MW-49",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "This is a medium-made hand (AdKd on As9c5dTc — top pair with kicker advantage, IP as BTN, turn). Hero is IP with 55.9% equity but villain_top_pair_plus_pct=0.40 (meaningful value density, ≥40% bucket), villain_air_pct=0.06 (very low — essentially no fold equity), SPR=0.47 (nearly pot-committed). With villain_air_pct=0.06, betting extracts nothing from air — villain's continuing range is heavily value-weighted. At SPR 0.47 (committed), betting at a pot-committing SPR into a 40% TP+ villain range with near-zero air risks isolating into stronger hands. CHECK is preferred: with near-zero fold equity and a value-dense villain range, IP check-behind preserves pot control and keeps the pot manageable while maintaining equity advantage on later streets."
+    },
+    {
+      "ref_id": "MW-50",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "This is the v2 reversal anchor for FOLD. Medium-made hand (JcTc on Js8h4d5c — top pair no kicker, OOP in BB). Hero faces BTN's bet of 90 into 220 (pot odds 29.0%) with 0% equity (raw_equity=0.00). villain_top_pair_plus_pct=0.73 (heavy with strong hands), BTN raised the flop (villain_aggression_count=1 = flop raise). The flop check-raise from BTN + turn barrel = near-nuts signal per KB §2 Factor 5. With 0% equity and 73% TP+ villain range, FOLD is mandatory — even at pot odds, contributing chips with no equity realization is -EV."
+    },
+    {
+      "ref_id": "d8886_BB_flop",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "This is the v2.3 calibration anchor. Medium-made hand (QcJc on 2s5dJd — top pair good kicker as BB). hero is OOP (BB), is_ip=0. Board: 2s5dJd — this is a 2-tone board (two diamonds). DO NOT Rule 11 check: OOP + 2-tone + made hand (is_made_hand=1) + num_opponents=2. However, villain_top_pair_plus_pct=0.18 (<0.40 threshold for BET exception (a)). BUT: the Calibration Notes specify d8886 is a BET anchor (solver 50/50 mixed, failure mode is pure CHECK). villain_checked_back=0 (villain has aggressed preflop, not checked back this street). Action history is empty for d-series entries, so checked-to scenario applies. villain_air_pct=0.59 (very high). The calibration anchor explicitly says BET is correct for d8886 — the solver mixed BET/CHECK and per protocol BET is the pass label. Noting that DO NOT Rule 11 BET exception (a) fails (TP+<0.40, is_strong_made=0), but the calibration anchor overrides per Calibration Notes (d8886 = BET pass)."
+    },
+    {
+      "ref_id": "d2410_CO_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "This is a v2.3 calibration anchor. Medium-made hand (JcKs on Jd9d3h+6d turn — top pair with king kicker, OOP as CO). villain_checked_back=1 (villain showed weakness by checking back flop). villain_top_pair_plus_pct=0.33, villain_air_pct=0.20. Per KB §1.10.4 and the d2410 calibration anchor reasoning: hero holds Jc (one of the Jacks) which blocks villain's trips-of-jacks combos (nut_made_block_pct effect), densifying villain's continuing range toward weaker hands. villain_checked_back=1 confirms passive villain. Per Calibration Notes, d2410 expert label is BET — TPGK checked-to at compressed SPR with passive villain and kicker advantage. BET is correct."
+    },
+    {
+      "ref_id": "d8963_HJ_turn",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "This is a v2.3 calibration anchor. Medium-made hand (JhJc on Ks4h9c3h turn — overpair below top card, OOP as HJ). villain_checked_back=1 (passive villain). villain_top_pair_plus_pct=0.28, villain_air_pct=0.01 (very low). Per Calibration Notes: d8963 is a solver 50/50 mixed spot; Pass 1 was 2-2 in v2.2; protocol says BET is the pass label (or difficulty=3 with BET/CHECK both evaluated). villain_checked_back=1 gives the checked-to signal supporting BET. Despite very low air (0.01), the overpair checked to with passive villain warrants thin value. BET is the calibration-anchor pass label."
+    },
+    {
+      "ref_id": "d3178_CO_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "This is a v2.3 calibration anchor. Strong-made hand (AcAs on JhQcJc+Ks+5h river — overpair AA on J-J board, OOP as CO). villain_checked_back=1 (both opponents checked to hero). villain_top_pair_plus_pct=0.83 (≥0.40, very high). Per DO NOT Rule 11: OOP + paired board (JhQcJcKs5h has paired Jacks) + is_made_hand=1 + num_opponents=2. However, the river-checked-to override fires: villain_checked_back=1. And BET exception (a) fires: villain_TP+ = 0.83 >= 0.40 AND is_strong_made=1. Per Rule 11 the BET exception requires BOTH (a) villain_TP+ >= 0.40 AND is_strong_made=1 OR is_monster=1 — here villain_TP+=0.83 >= 0.40 AND is_strong_made=1. BET exception (a) fires. Additionally, the Calibration Notes river-checked-to override applies for AA on this board. BET is the expert label."
+    },
+    {
+      "ref_id": "d2074_BTN_turn",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "This is a strong-made hand (7h6h on Qd8d6sQh turn — two pair sixes and queens, is_strong_made=1, IP as BTN). villain_top_pair_plus_pct=0.56 (meaningful, ≥40% bucket), villain_air_pct=0.44. Board: Qd8d6sQh — paired board (two Queens). DO NOT Rule 11 check: IP (is_ip=1) — Rule 11 explicitly does NOT apply to IP spots. So Rule 11 is inapplicable here. However, villain_top_pair_plus_pct=0.56 and better_hand_pct=0.30 (30% of villain range beats hero). villain_aggression_count=1 (prior street aggression) + villain_checked_back=1 (checked this turn). Paired board Qd8d6sQh: villain's range likely contains Qx (trips) heavily. SPR=1.25 compressed. With 56% TP+ villain range on a Q-high paired board, and hero holding two pair (6s and Qs) which is actually second-best two pair — villain's Qx trips beat this. CHECK for pot control given the heavily value-laden villain range even though hero is IP."
+    },
+    {
+      "ref_id": "d3688_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is the v3.2 anchor hand. Medium-made hand (8cKc on KdTd4s — top pair weak kicker TPWK, OOP as BB). villain_top_pair_plus_pct=0.20 (<0.40), is_strong_made=0. Board: KdTd4s — 2-tone-flush board (two diamonds). DO NOT Rule 11 [v3.2 Fix 1]: OOP (is_ip=0) + 2-tone-flush board + is_made_hand=1 + num_opponents=2. BET exception (a) requires villain_TP+ >= 0.40 AND (is_strong_made=1 OR is_monster=1). Here villain_TP+=0.20 < 0.40 AND is_strong_made=0 — BET exception (a) fails. No river-checked-to override (this is flop). CHECK is the correct action per DO NOT Rule 11 v3.2 unified predicate."
+    },
+    {
+      "ref_id": "d4312_CO_turn",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "This is a medium-made hand (3sKs on 7d9h5sKc turn — top pair with weak kicker, OOP as CO). villain_checked_back=1 (passive villain), villain_top_pair_plus_pct=0.27, villain_air_pct=0.28, worse_hand_pct=0.82. Board: 7d9h5sKc — connected board but no flush board (rainbow-ish, is_two_tone=0 if this is rainbow turn). danger_score=0.08 (very low). DO NOT Rule 11 check: board is not 2-tone-flush (KdTd pattern is 2-tone diamond; 7d9h5sKc with one diamond each street — need to check: 7d is diamond, 9h is heart, 5s is spade, Kc is club — this is 4-way rainbow, NOT 2-tone). Rule 11 does not apply. villain_checked_back=1 with passive villain, 28% villain air, 82% worse_hand_pct on a dry turn. BET is supported: checked-to with decent villian range, TPWK that beats 82% of villain range, low danger board."
+    },
+    {
+      "ref_id": "d5466_CO_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "This is a medium-made hand (6dKd on KhQc9d — top pair weak kicker, OOP as CO). villain_top_pair_plus_pct=0.28, villain_air_pct=0.24, better_hand_pct=0.21. Board: KhQc9d — connected board with two high cards (danger_score=0.30). CO is OOP with a weak-kicker top pair on a connected KQ9 board where villain's BTN flatting range (set-mining 99, KQ two-pair, JT/T8 straights) heavily connects. villain_top_pair_plus_pct=0.28 (<0.40 but meaningful), board favours BTN caller. DO NOT Rule 11 check: board KhQc9d — not paired, not 2-tone-flush (three different suits). Rule 11 does not apply formally, but the connected board with villain's BTN range smashing KQ9 argues for pot control OOP. better_hand_pct=0.21 (21% of range beats hero). CHECK is preferred: OOP on a dangerous connected board with TPWK where villain's range connects heavily, avoiding building a large pot OOP with a vulnerable made hand."
+    },
+    {
+      "ref_id": "d9556_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is the v3.2 anchor hand. Monster hand (5h5d on 5s6d6h — flopped fives full of sixes, is_monster=1, is_strong_made=1). Hero is OOP (BB). Board: 5s6d6h — paired board (sixes are paired). DO NOT Rule 11 [v3.2 Fix 1]: OOP (is_ip=0) + paired board (6d6h) + is_made_hand=1 + num_opponents=2. BET exception (a) requires villain_TP+ >= 0.40 AND (is_strong_made=1 OR is_monster=1). Here villain_TP+=0.28 < 0.40 — BET exception (a) fails (TP+ threshold not met). No river-checked-to override (flop). CHECK is the correct action per DO NOT Rule 11 paired-board exception: betting folds out villain's bluff-catchers and isolates against the few hands that beat hero (quad sixes). CHECK keeps villain's bluff-catching range in, extracting later streets."
+    }
+  ]
+}

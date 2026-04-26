@@ -1,0 +1,207 @@
+{
+  "lane": "opus",
+  "model": "claude-opus-4-7",
+  "protocol_version": "v3.2",
+  "total_labels": 33,
+  "input_tokens_estimate": 95000,
+  "labels": [
+    {
+      "ref_id": "MW-12",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "JsTs on 8c5d2h is air (no made hand, no draw, equity 0.14). BTN IP and checks back to last act, but a pure bluff into two opponents is unprofitable per KB Section 1.4 (3-way bluff-to-value tightens to 1:4) and DO NOT Rule 2 (do not barrel air 3-way). With no SDV and no fold equity case, CHECK and give up."
+    },
+    {
+      "ref_id": "MW-13",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "KhJh on Ac9d3s is air (no pair, no draw on rainbow Ace-high board, equity 0.16). Hero is OOP in SB facing two villains, and Ace-high boards favour the original raiser's range, not the cold-callers. Pure bluff fold equity is insufficient 3-way (KB Section 1.1); CHECK and give up."
+    },
+    {
+      "ref_id": "MW-14",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Td9d on Jd8d3h is a monster combo draw (FD + OESD, 17 outs, equity 0.55 well above pot odds 0.27). KB Section 1.7 only authorises a semi-bluff RAISE with a NUT draw plus blocker; Td9d is a non-nut FD, so the carve-out does not apply. CALL to realise equity; DO NOT Rule 2 forbids barrelling non-nut draws into two opponents."
+    },
+    {
+      "ref_id": "MW-15",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "9s8s on QsJd5h2c6c by river is air with zero showdown value (9-high, no pair, no straight) and equity 0.00. Both flop and turn checked through into a 3-way pot, so villain ranges contain meaningful SDV that will not fold to a river bluff; per KB Section 1.4 pure river bluffs are nearly extinct 3-way. CHECK and concede."
+    },
+    {
+      "ref_id": "MW-17",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "AdKs on Jd8d4c is air (overcards, no draw, equity 0.225 below pot odds 0.268). Hero is OOP, board favours CO's opening range, equity_margin negative. Per the bucket-first protocol, air with no fold-equity case folds — DO NOT Rule 2 forbids continuing without nut draw + blocker."
+    },
+    {
+      "ref_id": "MW-18",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Qd3d on Jd8d4c has a flush draw (9 outs, equity 0.36 above pot odds 0.27). Not a NUT FD (Ad would be the nut), so KB Section 1.7 raise carve-out does not apply, and Fix 2 OVERRIDE confirms RAISE only when villain_air >= 0.20 AND nut draw + blocker. CALL to realise equity at the right price; DO NOT Rule 2 forbids barrelling non-nut draws 3-way."
+    },
+    {
+      "ref_id": "MW-19",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Tc9c on QhJs8d is the absolute nut straight (Q-J-T-9-8), is_monster=1, equity 0.83, worse_hand_pct 0.975. Checked-through to BTN IP — BET for value extraction; villain_TP+ 0.21 + villain_air 0.37 means there is still call-down range to extract from, and the dynamic board makes free cards expensive."
+    },
+    {
+      "ref_id": "MW-23",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "QhJc on Qc8d3s is TPGK on a dry rainbow board (equity 0.51, danger_score 0). Hero is BTN IP, checked through to him; villain_TP+ 0.14 (thin on value) and villain_air 0.51 (high) — KB Worked Example 6 pattern (low TP+ + high air → small thin value bet). Rule 11 does NOT fire (board is dry rainbow, not paired, not 2-tone-flush). BET small for value/protection."
+    },
+    {
+      "ref_id": "MW-24",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "QsJd on Qc8d3s is TPGK with very high equity 0.67 against capped BB and BTN ranges. Board is dry rainbow (not paired, not 2-tone-flush), so Rule 11 does NOT fire even though hero is OOP. villain_TP+ 0.12, villain_air 0.52 — strong thin-value-bet conditions. BET small for value/protection."
+    },
+    {
+      "ref_id": "MW-27",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "JhJc on 9d6c2h is an overpair (JJ over 9) on a dry rainbow board; equity 0.47, danger_score 0. BTN IP and checked through; villain_TP+ 0.20, villain_air 0.51 — thin value + protection conditions. Rule 11 does NOT fire (board dry rainbow, unpaired). BET small to deny equity to overcards/backdoor draws and extract from worse pairs."
+    },
+    {
+      "ref_id": "MW-28",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "JhJd on 9d6c2h is an overpair OOP on a dry rainbow board; equity 0.61, low villain_TP+ 0.16, high villain_air 0.56. Rule 11 does NOT fire (board not paired, not 2-tone-flush, just dry rainbow). BET small for value/protection — DO NOT Rule 4 doesn't apply since this is BB defending into the IP cold-caller's range, but the static dry texture supports a small lead."
+    },
+    {
+      "ref_id": "MW-30",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "KcTh on KdJc6s — v2 reversal anchor. TPSK with equity 0.45 well above pot odds 0.18, villain_TP+ 0.31 (under the 0.40 'meaningful value' bucket per KB Section 1.9). Per Calibration Notes, the equity surplus overrides the bet+call action-implied narrowing; 3-way fold to a raise here would be a miscall. CALL — KB §1.9 composition triple drives postflop strength, not preflop structural geometry."
+    },
+    {
+      "ref_id": "MW-33",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "8h8s on 8d7c3h — v2 reversal anchor. Flopped middle set (is_monster=1), equity 0.89, worse_hand_pct 1.00. Facing CO bet + BTN call signals a value-heavy continuing range full of overpairs / TP + draws. Per Calibration Notes, set vs bet+call → RAISE for value extraction at compressed SPR 0.50, not pot control. Board is dynamic (8-7-3 connected) so charging draws is essential."
+    },
+    {
+      "ref_id": "MW-34",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "AcAd on Js9c4d is an overpair (AA over J) on a dry rainbow board, hero is the preflop aggressor. equity 0.66, villain_TP+ 0.18, villain_air 0.44 — clear small c-bet conditions for value + protection. Rule 11 does NOT fire (board not paired, not 2-tone-flush). BET small to extract from worse pairs and deny equity to overcards."
+    },
+    {
+      "ref_id": "MW-35",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "QcJd on Qh7c2s is TPGK at SPR ~3.7 facing a small CO c-bet. equity 0.52 above pot odds 0.25, dry rainbow board. Per DO NOT Rule 5, TP is medium 3-way → pot control via CALL, not raise; raising isolates against CO's value while folding out his bluffs. CALL and re-evaluate turn."
+    },
+    {
+      "ref_id": "MW-36",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "QcJd on Qh7c2s, same hand at compressed SPR 1.11 facing a third-pot c-bet. equity 0.51 above pot odds 0.27, dry board. Even at compressed SPR, raising TPGK 3-way (with BB still live behind) isolates badly against CO's value range; per DO NOT Rule 5 prefer pot control. CALL and let BB act — if BB folds we are HU on the turn with TP+kicker advantage."
+    },
+    {
+      "ref_id": "MW-37",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "QcJd on Qh7c2s deep (SPR 2.22), facing 1/3-pot CO c-bet. equity 0.52 vs pot odds 0.25, dry rainbow board. Same logic as MW-35/36 — TPGK is a pot-control hand 3-way (DO NOT Rule 5), CALL and realise equity IP. Deeper stacks make raising worse, not better, because future-street commitment with TP weak-kicker shape is bad against value-heavy raise calls."
+    },
+    {
+      "ref_id": "MW-38",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "AhJh on Kh8h3d facing BB lead — hero has nut FD (Ah blocker) + 2 overcards. equity 0.42 above pot odds 0.33. Per v3.2 KB §1.7 OVERRIDE (Fix 2), nut-FD RAISE requires villain_air_pct >= 0.20; villain_air = 0.092 here is well below 0.20, so the carve-out does NOT fire. CALL to realise the nut draw equity vs villain's value-heavy lead range."
+    },
+    {
+      "ref_id": "MW-39",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "AhJh on Kh8h3d facing CO c-bet — nut FD + Ah blocker + overcard, equity 0.46 vs pot odds 0.27. Per v3.2 KB §1.7 OVERRIDE (Fix 2), nut-FD RAISE requires villain_air_pct >= 0.20; here villain_air = 0.053, effectively zero fold equity, so the §1.7 carve-out is suppressed. CALL to realise equity vs the value-heavy CO c-bet range; raising would isolate into the value range that does not fold and burn the nut draw EV."
+    },
+    {
+      "ref_id": "MW-41",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "QhTc on KsQd7cJh turn — TPGK + OESD (any 9 or A makes a straight, ~8 outs). equity 0.31 above pot odds 0.23. villain_TP+ 0.61 (multi-street agg = near-nuts skew per KB §1.9), but pot-odds + draw equity + showdown value combine to make CALL profitable. Raising is bad — DO NOT Rule 2 (don't barrel non-nut draws) and DO NOT Rule 3 (raises into 2 villains are near-nut). CALL and realise."
+    },
+    {
+      "ref_id": "MW-44",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "Th8h on Ts9h4d7c turn — TP weak kicker + OESD (any J or 6, 8 outs). equity 0.35 above pot odds 0.28. villain_TP+ 0.67 means BB's donk-twice line is value-heavy, but draw equity + TP showdown value justify the CALL price. DO NOT Rule 2 forbids raising non-nut draws into 2 opponents; CALL and re-evaluate river."
+    },
+    {
+      "ref_id": "MW-48",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "AhTc on QdJ4r is air with a gutshot (need K, 4 outs, equity 0.27). Per KB Section 1.1 + DO NOT Rule 2, gutshot-only and backdoor-only hands are check/folds 3-way; betting OOP into BTN cold-caller with no flush draw equity has insufficient fold equity. CHECK and give up if faced with bet."
+    },
+    {
+      "ref_id": "MW-49",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "AdKd on As9c5dTc — TPTK + nut FD (Ad+Kd, board has 5d+Td = 2 diamonds). equity 0.56, both villains checked turn after calling flop bet, compressed SPR 0.47 (essentially commit-or-fold). Strong-made + nut redraw at near-pot-commit SPR mandates BET for value extraction; checking back wastes equity and lets free turn cards complete villain draws. Rule 11 does NOT fire (hero is_ip=1 and is_strong_made; both Rule 11 exclusions)."
+    },
+    {
+      "ref_id": "MW-50",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "JcTc on Js8h4d5c turn — v2 reversal anchor. Hero TP weak kicker OOP, but BTN raised the flop and bet the turn after CO called the flop raise. Per Calibration Notes, BTN's flop raise into 2 opponents is near-nuts 3-way (DO NOT Rule 3), villain_TP+ 0.73, equity_vs_range 0.00. The action history overrides any raw-equity reading; FOLD."
+    },
+    {
+      "ref_id": "d8886_BB_flop",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "QcJc on 2s5dJd — TPGK, equity 0.59, low villain_TP+ 0.18 + high villain_air 0.59. Per Calibration Notes (v2.3 anchor, solver mixed 50/50), the expert label is BET, with BET-as-primary even at difficulty 3. Rule 11 predicates trigger (OOP, made hand, 2-tone diamonds, multiway), but the explicit calibration anchor overrides Rule 11 default for d8886 specifically; mark difficulty 3 mixed strategy. BET small for thin value + protection."
+    },
+    {
+      "ref_id": "d2410_CO_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "JcKs on Jd9d3h6d turn — TPGK at compressed SPR 1.25, villain_checked_back=1 (BTN passed flop). Per Calibration Notes (v2.3 anchor d2410), expert label is BET. KB §1.10.4 nut_made_block_pct supports the BET (hero blocks half of villain's JJ trips combos), and the river-checked-back-by-villain pattern signals weakness in villain's continuing range. BET for value."
+    },
+    {
+      "ref_id": "d8963_HJ_turn",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "JhJc on Ks4h9c3h turn — pocket pair below top card K, equity 0.38, villain checked back flop. Per Calibration Notes (v2.3 anchor d8963, solver mixed 50/50), expert label is BET (or difficulty 3 mixed). Villain_aggression=0 + checked_back means villain capped to non-K, non-set range — JJ extracts thin value from underpairs and 9x. Rule 11 considered (2-tone hearts) but anchor overrides for d8963; difficulty 3 mixed strategy noted. BET small for thin value/protection."
+    },
+    {
+      "ref_id": "d3178_CO_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "AcAs on JhQcJc+Ks+5h river — two pair AA+JJ (is_strong_made=1), equity 0.61, villain_TP+ 0.83, villain_air 0.17. Per Rule 11 BET exception (a): villain_TP+ >= 0.40 (0.83) AND is_strong_made=1 — exception fires. Also Rule 11 river-checked-to override (c) fires (villain checked the river to hero per the d3178 calibration anchor pattern). BET for value — checking traps no additional bluffs and forfeits the value of villain's Qx/Kx call-downs."
+    },
+    {
+      "ref_id": "d2074_BTN_turn",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "7h6h on Qd8d6sQh turn — hero has 2-pair via board pair (66 + QQ), but is_strong_made=1 with equity only 0.27 because villain_TP+ 0.56 is loaded with Qx (which beats hero), full-house outs against, and strong made flushes/draws. Hero is BTN IP, villain checked back the flop (passive line, weak). Pot-control CHECK back is correct — betting isolates into the Qx/FH range that beats hero, while villain's capped range has little to call worse with. DO NOT Rule 5 (TP/2P-via-board-pair is medium-strength 3-way)."
+    },
+    {
+      "ref_id": "d3688_BB_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "8cKc on KdTd4s — TPWK on 2-tone-diamond board, BB OOP, num_opponents=2. Per v3.2 DO NOT Rule 11 (Fix 1), all four predicates fire: is_made_hand=1, is_ip=0, board is 2-tone-flush (KdTd diamonds), num_opponents>=2 → default CHECK. BET exception (a) requires villain_TP+ >= 0.40 AND (is_strong_made=1 OR is_monster=1); here villain_TP+ = 0.20 < 0.40 AND is_strong_made=0 — exception fails. CHECK to keep villain's bluff-catch range in and avoid isolating into the live villain's flush draws / better TP+ continues."
+    },
+    {
+      "ref_id": "d4312_CO_turn",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "3sKs on 7d9h5sKc turn — TP very weak kicker (3) but turn-checked-to with villain_checked_back=1. equity 0.52, villain_TP+ 0.27 (under 0.40 'meaningful value' bucket per KB §1.9), villain_air 0.28. Board is rainbow + unpaired → Rule 11 does NOT fire. Per d2410 anchor pattern (TP at compressed SPR with passive villain line), BET small for thin value + protection from straight draws (8-6, 6-8 gutshots / OESD). Difficulty 2."
+    },
+    {
+      "ref_id": "d5466_CO_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "6dKd on KhQc9d — TP very weak kicker (6) on connected dynamic board; equity 0.47, BTN still to act behind. Board KhQc9d is rainbow but high-connectivity (JT/AJ make straights; danger_score 0.30). Hero OOP with TPWK against an IP cold-caller whose flat range crushes connected high boards (KQ, QJs, JTs, KJ). DO NOT Rule 5 — TP is medium 3-way; OOP TPWK on dynamic board prefers pot control. Rule 11 does not fire (board rainbow + unpaired) but Rule 5 + position + texture together push CHECK."
+    },
+    {
+      "ref_id": "d9556_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "5h5d on 5s6d6h — fives full of sixes (is_monster=1), BB OOP, num_opponents=2, paired board. Per v3.2 DO NOT Rule 11 (Fix 1), all four predicates fire: is_made_hand=1, is_ip=0, board paired (66), num_opponents>=2 → default CHECK. BET exception (a) requires villain_TP+ >= 0.40; villain_TP+ = 0.28 < 0.40 — exception fails. Paired-board structure caps villain to mostly-air or bluff-catcher range; betting folds out the bluff-catchers and isolates against the few hands that beat us (only 66 has us beat). CHECK to induce later-street bluffs from villain's air."
+    }
+  ]
+}
