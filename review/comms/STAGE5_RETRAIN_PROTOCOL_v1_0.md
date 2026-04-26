@@ -1,13 +1,18 @@
 ---
 author: general-purpose subagent acting as ml-architect (dedicated subagent unavailable)
 date: 2026-04-26
-version: v1.0
+version: v1.0.1
 derived_from: STAGE5_RETRAIN_PROTOCOL_DRAFT_2026-04-26.md
-status: v1.0 (ML-architect persona fill on orchestrator skeleton)
+status: v1.0.1 (REQUEST-CHANGES fix-forward on v1.0)
 review_chain:
   - orchestrator structural skeleton (v0.1 DRAFT, 2026-04-26)
-  - v1.0 fill (ml-architect persona pass — this file)
-  - independent reviewer pass — REQUIRED before retrain dispatch
+  - v1.0 fill (ml-architect persona pass)
+  - v1.0 independent reviewer pass — REQUEST-CHANGES at `463e718`
+    (2 MEDIUMs + 1 MEDIUM-NIT)
+  - v1.0.1 fix-forward (ml-architect persona, this file) — addresses
+    REQUEST-CHANGES per orchestrator directive `9f8457e`
+  - independent reviewer re-pass on v1.0.1 — REQUIRED before retrain
+    dispatch
   - owner final approval — REQUIRED before retrain dispatch
 changelog:
   v1.0:
@@ -40,9 +45,75 @@ changelog:
         forward authoring path."
       - "PRE-RETRAIN PREREQUISITES section added (analogous to Protocol
         B/C PRE-PILOT BUILD REQUIREMENT)."
+  v1.0.1:
+    date: 2026-04-26
+    derived_from_verdict: "review/comms/REVIEW_VERDICT_PR_14_STAGE5_RETRAIN_2026-04-26.md (`463e718`)"
+    derived_from_directive: "review/comms/MAIN_TERMINAL_PR_14_FIX_FORWARD_REQUIRED_2026-04-26.md (`9f8457e`)"
+    fixes:
+      - "MEDIUM #1 — Prereq #2 column-count rewrite. Old text was
+        self-contradictory ('110-column contract (54 raw + 4 v2.4
+        blocker = 58 raw + 58 attn_*)' — 58+58=116, not 110, and 54
+        undercounts v2.3.2 by 1). Rewritten to '118-column v2.4
+        contract (55 raw + 4 v2.4 blocker = 59 raw + 59 attn_*)' —
+        consistent with §Hyperparameters point #4 (v2.3.2 = 55+55=110)
+        and the 'training-tensor goes 110 → 118 columns' line. Verified
+        against `gto_model.py:33-62` (FEATURE_COLUMNS, N_FEATURES=55)
+        and v2.3.2 training report `n_features: 110`."
+      - "MEDIUM #2 — Mode D anchor inventory resolution. Verified that
+        `river-rats-core/anchors/calibration_anchors.json` (introduced
+        at commit `570ece2`, 2026-04-19; only commit ever to touch
+        that file) contains 5 anchors: `d2410_CO_turn`,
+        `LITMUS_A4d_Qs5s7s_flop`, `LITMUS_T5h_JJ2_flop`,
+        `LITMUS_AA_7h5d2c_flop`, `LITMUS_KQ_KsTs3h_flop`.
+        `d0182_BTN_turn` and `d8411_BB_turn` were NEVER in the
+        production calibration fixture — they exist only as hard-coded
+        diagnostic specs inside `review/run_v231_anchor_recheck_stage35.py`
+        (a one-off Stage 3.5 M5 recheck script). The Stage 3.5 closure
+        and M4/M5 audit closure used d0182/d8411 as β-panel
+        diagnostics, not as live calibration anchors. Selected option
+        (a): updated Mode D + the Gate 3 d0182/d8411 references to the
+        actual production anchor IDs from `calibration_anchors.json`.
+        Mode C diagnostic step #3 retains the historical d8411 +0.072
+        Finding B note (referencing the M5 recheck artifact) since
+        that's the relevant baseline to compare any v2.4 multiway
+        BET-strength regression against, but it's framed as a Stage
+        3.5 audit baseline, not a current-fixture anchor."
+      - "MEDIUM-NIT — Variance-reduction math. Old text:
+        '~30% lower predictive variance (1/√3)' — neither 1/√3≈0.577
+        (SD ratio for N=3 averaging) nor 1/3 (variance ratio).
+        Rewritten to '~42% lower predictive SD (1/√3 ≈ 0.577 ratio
+        for averaging N=3 independent models; equivalently ~67% lower
+        variance, 1/N for N=3)'. Both framings included for ML rigor."
+    bundled_nits:
+      - "Prereq #3 explicit orchestrator-action assignment — added
+        sentence: 'This step requires orchestrator action pre-Stage-5
+        (tag baseline model commit on origin); not automatic.'
+        (Item G NIT from verdict.)"
+    deferred_to_v1_1_or_task_5_wrapup:
+      - "Bouthillier 3-vs-10-seed framing nuance (Item B NIT) — v1.1
+        language tightening; gate behaviour unchanged."
+      - "±2pp vs cv_std between-seed-vs-within-fold statistical nuance
+        (Item D) — v1.0 already carries an UNCERTAIN tag; further
+        formalisation deferred."
+      - "Per-class precision floor for RAISE class (Item D NIT) —
+        deferred to Task 5 wrap-up; Mode E + per-shape-category
+        breakdown in §Reporting cover diagnostic path for now."
+      - "Prereq #6 v2.3.2 MW reference-set baseline measurement
+        (Item F NIT) — deferred to Task 5 wrap-up since option (a)
+        was selected for MEDIUM #2 (no other Prereq #6 created)."
+      - "Ensemble disagreement-as-uncertainty trade-off row (Item E
+        NIT) — v1.1."
+      - "Promote MW-stratified accuracy from Mode-E-diagnosis to
+        Gate-1.5 (Item D promotion) — v1.1."
+    not_changed:
+      - "ML core unchanged: hyperparameter spec, 5-point hyperparameter
+        defence, SHA256 seed scheme, per-library seed propagation,
+        ±2pp + Spearman ≥ 0.8 thresholds, median-seed-over-ensemble
+        decision, 5 rollback modes."
+      - "All v1.0 UNCERTAIN tags preserved."
 ---
 
-# Stage 5 Multi-Seed Retrain Protocol — v1.0
+# Stage 5 Multi-Seed Retrain Protocol — v1.0.1
 
 ## Purpose
 
@@ -68,15 +139,24 @@ ARE MET.** Builder MUST verify each before calling the retrain script.
    step has been run and the resulting CSV passes `_preflight_schema_check`
    (see `train_v2_3_2.py:84`). Verification: row count matches Stage 4
    consensus count minus DROPs; class distribution non-degenerate
-   (all 5 classes present, none < 5% of corpus); 110-column contract
-   (54 raw + 4 v2.4 blocker = 58 raw + 58 attn_*) validated, OR the
-   contract is updated and the change is documented in the report.
+   (all 5 classes present, none < 5% of corpus); **118-column v2.4
+   contract (55 raw + 4 v2.4 blocker = 59 raw + 59 attn_*)** validated,
+   OR the contract is updated and the change is documented in the
+   report. (v2.3.2 baseline was 55+55=110 columns per
+   `gto_model.py:33-62` `N_FEATURES=55` and v2.3.2 training report
+   `n_features: 110`; the v2.4 delta is +4 raw blocker features per
+   §Hyperparameters point #4, so 55+4=59 raw and the parallel
+   attn_* layer also goes 55→59 per
+   `feedback_attention_flags_when_features_change.md`.)
 
 3. **Baseline model preserved as rollback.** `v2_3_2_model.json` and
    its manifest are tagged on origin (e.g.
    `pre-stage5-baseline-v2-3-2`) before any v2.4 training begins.
    Rollback rule: if all gates fail and Stage 5 is rejected, the live
-   production model remains v2.3.2.
+   production model remains v2.3.2. **This step requires orchestrator
+   action pre-Stage-5 (tag baseline model commit on origin); not
+   automatic.** Builder verifies the tag exists before calling the
+   retrain script and HALTs (per CLAUDE.md §5) if absent.
 
 4. **Calibration / reference / held-out sets confirmed disjoint from
    training corpus.** Per `feedback_units_and_dedup.md`: explicitly
@@ -437,9 +517,17 @@ against answer key). Required: 20/24 + all 3 GTO-reversal hands
 
 Per `evaluate_calibration_anchors.py` (existing file in
 `river-rats-core/`): the script already grades against the
-calibration set and reports per-anchor d2410 / d0182 / d8411
-predictions. Gate 3 requires this script to run on each of the
-3 seed-models.
+calibration fixture (`river-rats-core/anchors/calibration_anchors.json`)
+and reports per-anchor predictions. As of `570ece2` (2026-04-19) the
+fixture contains exactly 5 anchors: `d2410_CO_turn` (TPGK turn,
+expected BET — the v2.3.2 regression anchor), `LITMUS_A4d_Qs5s7s_flop`
+(air on monotone, expected CHECK), `LITMUS_T5h_JJ2_flop` (air on
+paired board, expected CHECK), `LITMUS_AA_7h5d2c_flop` (overpair
+dry, expected BET), `LITMUS_KQ_KsTs3h_flop` (TPGK two-tone, expected
+BET). Gate 3 requires `evaluate_calibration_anchors.py` to run on
+each of the 3 seed-models and pass all 5 anchors per their
+`tolerance` rule (`strict`: top-1 == expected; `mixed`: expected in
+top-2 with p ≥ 0.20).
 
 | All 3 seeds pass (20/24 + all 3 reversals) | Verdict |
 |---|---|
@@ -469,18 +557,19 @@ mean of 3 seed predictions). REJECTED for v2.4. Trade-offs:
 | Calibration anchor reproducibility | Exact (same model object) | Approximate (averaging adds float-error noise) |
 | `oracle_router.py` compatibility | Drop-in (replaces `v2_3_2_model.json`) | Requires router rework to handle 3 models |
 | `gto_model.py` compatibility | Drop-in (single XGBoost predictor) | Requires aggregation layer (mean of probs, then argmax) |
-| Variance reduction | None (you discard 2 of 3 models' info) | ~30% lower predictive variance (1/√3) |
+| Variance reduction | None (you discard 2 of 3 models' info) | ~42% lower predictive SD (1/√3 ≈ 0.577 ratio for averaging N=3 independent models; equivalently ~67% lower variance, 1/N for N=3) |
 | Selection bias | None (median is unbiased) | None (uses all 3) |
 | Reproducibility | Single artifact + single trainer SHA | 3 artifacts + 3 trainer SHAs (all same script, different seeds) |
 
 The variance-reduction case for ensemble is real but the
 deployment + router-compatibility cost is concrete and immediate,
-while the variance reduction is a theoretical 1/√3 improvement
-that may not show up in shape-category accuracy. v2.4 ships with
-median single-seed; if Stage 6 ship-gate identifies a class of
-hands where ensemble would have helped (e.g. close-call hands
-where seed disagreement maps to user-visible inconsistency),
-ensemble is a v2.5 candidate.
+while the variance reduction is a theoretical 1/√3 SD ratio
+(~42% lower SD, equivalently ~67% lower variance for N=3 averaging
+of independent models) that may not show up in shape-category
+accuracy. v2.4 ships with median single-seed; if Stage 6 ship-gate
+identifies a class of hands where ensemble would have helped
+(e.g. close-call hands where seed disagreement maps to user-visible
+inconsistency), ensemble is a v2.5 candidate.
 
 The chosen seed is **v2.4 candidate**. Submit to Stage 6 ship gate.
 
@@ -504,8 +593,12 @@ Stage 5 produces `STAGE5_RETRAIN_REPORT_<date>.md` with:
   breakdown (8 MUST #49 categories)
 - Top-10 + top-20 feature importance ranking per seed (gain) +
   pairwise Spearman matrix
-- Calibration exam result per seed (24-hand grades + d2410 / d0182
-  / d8411 anchors)
+- Calibration exam result per seed (24-hand grades + the 5 production
+  calibration_anchors.json anchors: `d2410_CO_turn`,
+  `LITMUS_A4d_Qs5s7s_flop`, `LITMUS_T5h_JJ2_flop`,
+  `LITMUS_AA_7h5d2c_flop`, `LITMUS_KQ_KsTs3h_flop`; + the optional
+  Stage 3.5 audit diagnostic `d8411_BB_turn` per
+  `review/run_v231_anchor_recheck_stage35.py`)
 - Gate 1 / 2 / 3 outcomes with thresholds + actuals
 - Median-seed selection rationale (which seed, why)
 - Tie-break invocation if applicable
@@ -607,11 +700,20 @@ Owner-gated.
 2. Cross-reference failed anchors with Stage 4 labels for the same
    situations. If Stage 4 mislabelled the analogous shapes, the model
    has internalised the wrong label.
-3. Run the d2410 / d0182 / d8411 calibration anchors per
-   `evaluate_calibration_anchors.py`. The d8411 anchor was
-   STRENGTHENED in Stage 3.5 commit 14 Finding B (per
-   pre-Stage-6 gate doc). If d8411 regresses below v2.3.2 baseline,
-   Stage 4 may have mis-labelled the multiway BET-strength signal.
+3. Run the 5 production calibration anchors per
+   `evaluate_calibration_anchors.py` (`d2410_CO_turn` +
+   `LITMUS_A4d_Qs5s7s_flop` + `LITMUS_T5h_JJ2_flop` +
+   `LITMUS_AA_7h5d2c_flop` + `LITMUS_KQ_KsTs3h_flop`). Additionally,
+   re-run `review/run_v231_anchor_recheck_stage35.py` on each seed
+   to obtain the d8411_BB_turn diagnostic — the d8411 multiway
+   BET-strength signal was STRENGTHENED in Stage 3.5 commit 14
+   Finding B (0.589 → 0.661 p(BET) per
+   `BUILDER_M4_M5_AUDIT_CLOSURE_2026-04-26.md`). If d8411 regresses
+   below the 0.661 Stage 3.5 baseline (or back to v2.3.2's pre-Finding-B
+   level), Stage 4 may have mis-labelled the multiway BET-strength
+   signal. (d8411 is a Stage 3.5 audit-script diagnostic, not a
+   production calibration-fixture anchor; for v2.4 ship Gate 3 only
+   the 5 fixture anchors are mandatory.)
 4. Per `feedback_solver_findings.md` + `reference_corrections.md`:
    verify the calibration exam answer key still reflects solver-
    corrected labels (MW-30 CALL, MW-46 CALL, MW-47 RAISE).
@@ -625,41 +727,74 @@ Owner-gated.
   on a borderline call. Pick the seed that passed (NOT median in this
   case — calibration exam is the harder bar than reference accuracy).
   Document the deviation from median rule.
-- IF d8411 regresses below v2.3.2: Stage 4 corpus did not preserve
-  the Finding B multiway BET-strength signal. ROLLBACK to Stage 4;
-  re-adjudicate multiway hands.
+- IF the d8411_BB_turn audit-script diagnostic regresses below the
+  Stage 3.5 Finding-B baseline of 0.661 p(BET) (per
+  `BUILDER_M4_M5_AUDIT_CLOSURE_2026-04-26.md`): Stage 4 corpus did
+  not preserve the Finding B multiway BET-strength signal. ROLLBACK
+  to Stage 4; re-adjudicate multiway hands.
 
 **Fix-forward authoring path:** Stage 5 author writes
 `STAGE5_GATE3_FAIL_<date>.md`. Owner-gated.
 
-### Mode D — Calibration anchor regression (specific to d2410 / d0182 / d8411)
+### Mode D — Calibration anchor regression (5 production anchors in `calibration_anchors.json`)
 
 This is a sub-mode of Gate 3 but warrants explicit treatment because
-the 3 d-series anchors are the strongest GTO-reversal signal in the
-corpus.
+the production calibration fixture (`river-rats-core/anchors/calibration_anchors.json`,
+introduced at `570ece2` 2026-04-19) is the strongest known-correct
+distribution-shift signal in the corpus. The 5 anchors:
+
+| Anchor ID | Tolerance | Expected | Class protected |
+|---|---|---|---|
+| `d2410_CO_turn` | strict | BET | TPGK turn after flop check (the v2.3.2 regression class) |
+| `LITMUS_A4d_Qs5s7s_flop` | strict | CHECK | Air on monotone (v2.3.1 air-class playtest fix) |
+| `LITMUS_T5h_JJ2_flop` | strict | CHECK | Air on paired board (v2.3.1 air-class playtest fix) |
+| `LITMUS_AA_7h5d2c_flop` | strict | BET | Overpair dry (v2.3.2 Path C value litmus) |
+| `LITMUS_KQ_KsTs3h_flop` | strict | BET | TPGK two-tone (v2.3.2 Path C value litmus) |
+
+Plus an OPTIONAL Stage 3.5 audit diagnostic: `d8411_BB_turn` — NOT in
+`calibration_anchors.json`, only in `review/run_v231_anchor_recheck_stage35.py`
+— provides the multiway BET-strength baseline (0.661 p(BET) post-Finding-B
+per `BUILDER_M4_M5_AUDIT_CLOSURE_2026-04-26.md`).
 
 **Diagnosis steps:**
 
 1. Run `evaluate_calibration_anchors.py` against each of the 3 seeds'
-   models.
-2. Compare per-anchor predicted action + p(BET) value against the
-   v2.3.2 baseline values recorded in
-   `MAIN_TERMINAL_PRE_STAGE6_GATE_CLEARED_STAGE35_CLOSED_2026-04-26.md`.
-3. d8411 specifically: post-Stage-3.5 STRENGTHENED +0.072 p(BET) per
-   commit 14 Finding B. v2.4 must preserve OR strengthen this signal.
-4. If d2410 or d0182 regresses, examine the Stage 4 labels for the
-   analogous shapes (HU continued-bet on flush-draw board for d2410;
-   HU paired-board for d0182). If labels diverged from v2.3.2
-   training labels for the same shape, Stage 4 introduced a regression.
+   models. All 5 production anchors must pass per their `tolerance`
+   rule.
+2. Compare per-anchor predicted action + top-1 probability against
+   the v2.3.1/v2.3.2 retroactive-audit baseline recorded in
+   `BUILDER_V24_P0_LANDED_2026-04-19.md` (commit `570ece2`):
+   v2.3.1 5/5 PASS clean margins 0.93-0.99; v2.3.2 4/5 with
+   d2410_CO_turn FAIL (predicts CHECK 0.713 vs expected BET 0.287).
+   v2.4 must restore d2410_CO_turn → BET (the Stage-4 + Stage-5
+   primary objective) and preserve all 4 LITMUS_* anchors.
+3. Run `review/run_v231_anchor_recheck_stage35.py` against each
+   seed to obtain the d8411_BB_turn p(BET) diagnostic. v2.4 must
+   preserve OR strengthen the post-Finding-B baseline of 0.661
+   p(BET); regression below v2.3.1's pre-Finding-B 0.589 is a
+   multiway BET-strength regression signal.
+4. If `d2410_CO_turn` or any LITMUS_* anchor regresses, examine the
+   Stage 4 labels for the analogous shapes (TPGK turn-after-flop-check
+   for d2410; air-on-monotone or air-on-paired for the air LITMUSes;
+   overpair-dry or TPGK-two-tone for the value LITMUSes). If labels
+   diverged from v2.3.1/v2.3.2 training labels for the same shape,
+   Stage 4 introduced a regression.
 
 **Rollback decision criteria:**
 
-- IF any of the 3 anchors flips action (BET → CHECK or similar): the
-  model has lost a known-correct GTO signal. ROLLBACK to v2.3.2.
-- IF p(BET) regresses on d8411 (loses the Finding B strengthening):
-  Stage 4 corpus does not encode the multiway BET-strength signal.
-  ROLLBACK to Stage 4 with directive to re-adjudicate multiway hands
-  with explicit Finding B reasoning trace required.
+- IF `d2410_CO_turn` does NOT pass (the primary v2.3.2 regression
+  anchor that motivates the entire v2.4 retrain): v2.4 has not
+  achieved its core objective. ROLLBACK to v2.3.2 OR diagnose Stage 4
+  label coverage of TPGK-turn shapes per Mode A/C.
+- IF any LITMUS_* anchor flips action (BET → CHECK or similar): the
+  model has lost a known-correct GTO signal previously protected by
+  v2.3.1/v2.3.2. ROLLBACK to v2.3.2.
+- IF d8411_BB_turn p(BET) regresses below 0.661 (loses Finding B
+  strengthening): Stage 4 corpus does not encode the multiway
+  BET-strength signal. ROLLBACK to Stage 4 with directive to
+  re-adjudicate multiway hands with explicit Finding B reasoning
+  trace required. (Diagnostic, not Gate-3-blocking — d8411 is a
+  Stage 3.5 audit anchor, not in the production fixture.)
 
 **Fix-forward authoring path:** Stage 5 author writes
 `STAGE5_ANCHOR_REGRESSION_<date>.md`. Owner-gated.
@@ -701,6 +836,18 @@ DRAFT (hyperparameters, seed selection, train/CV split, threshold
 values, ensemble vs median, rollback procedures) and adds a
 PRE-RETRAIN PREREQUISITES section.
 
+v1.0.1 surgically addresses the v1.0 reviewer REQUEST-CHANGES
+verdict (`463e718`) per orchestrator directive (`9f8457e`):
+Prereq #2 column-count rewrite (110 → 118 with 55+4=59 raw and
+59 attn_*); Mode D + Gate 3 + Mode C + §Reporting anchor IDs
+updated to match the active production fixture
+(`river-rats-core/anchors/calibration_anchors.json`: d2410_CO_turn
++ 4 LITMUS_*; d0182/d8411 retired as fixture-eligible anchors,
+d8411 retained as a Stage 3.5 audit-script diagnostic only);
+variance-reduction math corrected from "30% lower variance (1/√3)"
+to the mathematically-correct 42% SD / 67% variance reduction for
+N=3 averaging. ML core unchanged.
+
 The dominant risk is corpus-size-driven: at ~600 hands, three
 hyperparameter-related decisions (max_depth=5, n_estimators=800,
 80/20 split) are inherited from v2.3.2's 716-row training. If
@@ -708,8 +855,8 @@ Stage 4 corpus comes in materially smaller (< 400 hands), the
 Mode A trigger conditions in §Hyperparameters apply and Stage 5
 should pause for a corpus-size-aware re-tune before dispatching.
 
-v1.0 awaits independent reviewer pass + owner approval before any
-retrain dispatch.
+v1.0.1 awaits independent reviewer re-pass + owner approval before
+any retrain dispatch.
 
 ## Self-consistency notes (author pass)
 
