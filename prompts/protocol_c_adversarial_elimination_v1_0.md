@@ -1,31 +1,55 @@
 ---
 author: general-purpose subagent acting as gto-expert + ml-architect (dedicated subagents unavailable)
 date: 2026-04-26
-version: v1.0
+version: v1.0.1
 derived_from: protocol_c_adversarial_elimination_v0_1_DRAFT.md
-status: v1.0 (initial fill — pending independent reviewer pass)
+status: v1.0.1 (APPROVE-WITH-NITS fix-forward on v1.0)
 review_chain:
   - orchestrator structural skeleton (v0.1 DRAFT)
-  - v1.0 fill (gto-expert + ml-architect persona pass) — THIS REVISION
-  - v1.0 independent reviewer pass — REQUIRED before pilot use
+  - v1.0 fill (gto-expert + ml-architect persona pass)
+  - v1.0 independent reviewer pass at `7d56b09` — APPROVE-WITH-NITS (1 MEDIUM, 2 LOW, several NITs)
+  - v1.0.1 fix-forward (gto-expert + ml-architect persona pass) — THIS REVISION (addresses MEDIUM #1; LOWs/NITs deferred to v1.1 / pilot calibration)
+  - v1.0.1 independent reviewer pass — REQUIRED before pilot use
   - calibration exam against 24-hand reference set — REQUIRED before pilot
   - owner final approval — REQUIRED before pilot
 sister_protocols:
   - protocol_a_kb_first (current v3.1 lineage)
   - protocol_b_composition_first_v1_0.md (v1.0.1 merged)
   - protocol_c_adversarial_elimination (THIS FILE)
+changelog:
+  v1.0.1:
+    references:
+      - reviewer verdict at `7d56b09` (REVIEW_VERDICT_PR_12_PROTOCOL_C_2026-04-26.md)
+      - orchestrator fix-forward directive at `31aa43c` (MAIN_TERMINAL_PR_12_FIX_FORWARD_REQUIRED_2026-04-26.md)
+    addressed:
+      - "MEDIUM #1 — Raise-sizing taxonomy. Replaced facing-bet-multiple `RAISE_2_5X` / `RAISE_3X` with pot-relative `RAISE_33` / `RAISE_66` per `feedback_solver_aligned_sizing.md` (RAISE all streets: 33% / 66% pot-relative). Edits: §\"Step 1\" raise-sizings paragraph (facing-bet → pot-relative framing), §\"Step 2\" case-against argument templates for RAISE, §\"Output schema\" sizing-tags + JSON sample, §\"Anti-pattern\" wording where it referenced raise sizings, Example 2 (cross-protocol pair) candidate enumeration + cases-against + tier ratings + elimination trail."
+    deferred_to_v1_1_or_pilot_calibration:
+      - "LOW (verdict Item B) — WEAK-tier '<5% EV cost' boundary fuzziness for hands at 4-6% EV cost; flag in v1.1 calibration material (verdict action item #4)."
+      - "LOW (verdict Item E) — Example 3 EV-cost arithmetic tightening in v1.1 (verdict action item #2)."
+      - "LOW (verdict Item E) — Example 5 worse_hand_pct derivation tightening in v1.1 (verdict action item #3)."
+      - "NIT (verdict Item J/K) — κ ≥ 0.65 trail-grading target borrowed from Protocol B; measure empirically at calibration and adjust in v1.1 (verdict action items #6, #8)."
+      - "NIT — minor wording NITs surfaced in verdict to fold into Task 5 wrap-up commit OR pilot calibration phase per orchestrator directive."
+    uncertain_downgrades:
+      - "Tag #3 (schema-compatibility re-run for Protocol C field names) — downgraded to 'reviewer-verified by PR #12 reviewer Item G + Item J: direct enumeration vs FEATURE_COLUMNS confirmed no name collisions; v2.4 ship requires no trainer-side changes'."
+      - "Tag #6 (Anti-pattern #8 carve-out language parallels Protocol B v1.0.1 Anti-pattern #7) — downgraded to 'reviewer-verified by PR #12 reviewer Item H: wording parallels Protocol B v1.0.1 AP#7; Example 2 exercises the carve-out as designed (composition-derived equity 0.40 from beatable-slice 0.59)'."
+    not_addressed:
+      - "Tag #1 (raise sizings 2.5×/3× vs solver pot-relative) — RESOLVED by this fix-forward; tag removed."
+      - "Tags #2, #4, #5, #7 — retained as-is; reviewer/owner verification pending."
 ---
 
 # Stage 4 Protocol C — Adversarial-Elimination Labelling Prompt
 
-**Status:** v1.0 (initial fill — pending reviewer pass)
+**Status:** v1.0.1 (APPROVE-WITH-NITS fix-forward on v1.0 — MEDIUM #1 raise-sizing taxonomy resolved; pending v1.0.1 reviewer pass)
 **Date:** 2026-04-26
 **Authored by:** Orchestrator skeleton (v0.1) + general-purpose subagent
-acting under gto-expert + ml-architect personas (v1.0 fill)
+acting under gto-expert + ml-architect personas (v1.0 fill + v1.0.1 fix-forward)
 **Pairs with:** Protocol A (KB-first / current v3.1 lineage), Protocol B
 (composition-first, v1.0.1)
 **Stage 4 plan reference:** `MAIN_TERMINAL_STAGE4_STRATEGY_PROPOSAL_2026-04-25.md`
 (`ee3d9f5`)
+**Fix-forward references:** reviewer verdict at `7d56b09`; orchestrator
+directive at `31aa43c`. See frontmatter `changelog:` block for full
+v1.0.1 disposition.
 
 ---
 
@@ -139,14 +163,15 @@ the wrong survivor among a complete enumeration).
   per-street table below. CHECK is always a feasible candidate when
   hero faces no bet.
 - **Facing a bet:** `FOLD`, `CALL`, `RAISE (size 1)`, `RAISE (size 2)`.
-  Raise sizings 2.5× and 3× the facing bet are the canonical solver-
-  aligned options for 3-way postflop raises (per the 3-way solver
-  raise tree); enumerate both unless one is precluded by stack depth
-  (e.g. all-in size with SPR < 2 collapses to a single RAISE_AI).
-- **Facing a check-raise:** `FOLD`, `CALL`, `RAISE (3-bet, ~2.5×)`.
-  3-bet sizings on check-raise lines are typically a single option
-  (tree depth limits, all-in pressure); enumerate FOLD/CALL/RAISE
-  and let the case-against eliminate.
+  Raise sizings are pot-relative — 33% pot and 66% pot — per
+  `feedback_solver_aligned_sizing.md` (RAISE all streets: 33% / 66%
+  pot-relative); enumerate both unless one is precluded by stack
+  depth (e.g. all-in size with SPR < 2 collapses to a single
+  `RAISE_AI`).
+- **Facing a check-raise:** `FOLD`, `CALL`, `RAISE (3-bet, pot-relative
+  ~33% pot)`. 3-bet sizings on check-raise lines are typically a
+  single pot-relative option (tree depth limits, all-in pressure);
+  enumerate FOLD/CALL/RAISE and let the case-against eliminate.
 - **Facing a 3-bet (postflop):** `FOLD`, `CALL`, `4BET_AI`. 4-bet
   sizings on already-3-bet pots typically collapse to all-in given
   SPR ~0.3-0.6 at that depth.
@@ -167,28 +192,30 @@ In the elimination trail and JSON, sizings are tagged as
 
 #### Raise sizings (postflop)
 
-When facing a bet on the flop or turn, the canonical raise sizings
-to enumerate are:
+Raise sizings are **pot-relative** per `feedback_solver_aligned_sizing.md`
+(RAISE all streets: 33% / 66% pot-relative — same canonical pair as
+the bet-sizing schema, applied to the post-raise pot baseline). When
+facing a bet on the flop or turn, the canonical raise sizings to
+enumerate are:
 
-- **2.5× the facing bet** — the "small raise" / value-and-protection
-  raise that keeps the 3-way pot manageable
-- **3× the facing bet** — the "large raise" / polarised raise that
+- **33% pot (raise-to)** — the "small raise" / value-and-protection
+  raise that keeps the 3-way pot manageable. Smaller pot-relative
+  sizing implies thinner value range and better balance with the
+  CALL line.
+- **66% pot (raise-to)** — the "large raise" / polarised raise that
   builds pot for nut hands and applies fold equity to the second
-  villain in 3-way pots
+  villain in 3-way pots. Larger pot-relative sizing implies more
+  polarised range (nut-density + bluffs) and applies more pressure
+  on draws + medium-made hands behind.
 
-For check-raises specifically, 2.5× is the dominant solver size in
-3-way pots (per OPTION_A_CAPPED_GATE flop check-raise frequencies);
-3× appears in nut-bias spots only. Enumerate both unless SPR
-truncates one.
+For check-raises specifically, the 33% pot sizing is the dominant
+solver size in 3-way pots (per OPTION_A_CAPPED_GATE flop check-raise
+frequencies); 66% pot appears in nut-bias spots only. Enumerate
+both unless SPR truncates one.
 
-[UNCERTAIN: the 2.5×/3× raise sizing pair is a poker-theoretic
-abstraction of the GTO Wizard solver tree's typical 3-way raise
-sizings. The solver tree uses pot-relative raise sizings (raise to
-~50% pot, raise to ~75% pot, etc.) more than facing-bet multiples.
-Reviewer should solver-verify whether to enumerate as facing-bet-
-multiple (2.5×/3×) OR as pot-relative (raise-to-X%-of-pot) — the
-current draft uses facing-bet multiples for labeller readability,
-but a solver pass may prefer pot-relative.]
+In the elimination trail and JSON, raise sizings are tagged as
+`RAISE_33`, `RAISE_66`, and `RAISE_AI` (all-in raise when SPR < 2)
+— see Output Schema §"Sizing tags" below.
 
 #### 3-way-specific enumeration considerations
 
@@ -224,10 +251,11 @@ not have. Apply these rules at Step 1:
   CHECK in this position must address that checking back surrenders
   fold-equity AND surrenders thin-value extraction.
 - **Facing a bet with a second villain still to act behind.** Enumerate
-  FOLD, CALL, RAISE (small 2.5×), RAISE (large 3×). The case-against
-  CALL must explicitly address the squeeze risk from behind-villain
-  raise frequency. The case-against RAISE must address blocker /
-  unblocker effects (if hero has the relevant nut blockers).
+  FOLD, CALL, RAISE_33 (small, 33% pot-relative), RAISE_66 (large,
+  66% pot-relative). The case-against CALL must explicitly address
+  the squeeze risk from behind-villain raise frequency. The
+  case-against RAISE must address blocker / unblocker effects (if
+  hero has the relevant nut blockers).
 
 #### Enumeration completeness check
 
@@ -313,15 +341,21 @@ to the specific spot, not regurgitate templates):**
   (fold-equity from villain's weak-call range + value from villain's
   worse-made hands). If E < P, FOLD captures more EV (immediate-
   value-preservation)."
-- **Against RAISE (small, 2.5×):** "Small raise doesn't apply
-  enough fold equity to justify the equity-realisation cost.
-  Villain's continuing range to a small raise is heavy-TP+ (T% of
-  villain's range continues), so hero is mostly raising for value
-  with insufficient nut-density. CALL preserves SPR for turn/river."
-- **Against RAISE (large, 3×):** "Large raise commits stack with
-  insufficient equity to handle reraise. SPR after raise drops to
-  ~0.5 — hero is effectively all-in on next street. Pot-control
-  via CALL preserves optionality."
+- **Against RAISE_33 (small, 33% pot-relative):** "Small pot-relative
+  raise doesn't apply enough fold equity to justify the equity-
+  realisation cost. Villain's continuing range to a 33% pot raise
+  is heavy-TP+ (T% of villain's range continues at this thinner
+  sizing), so hero is mostly raising for value with insufficient
+  nut-density to support even the thin-value range that 33% sizing
+  implies. CALL preserves SPR for turn/river."
+- **Against RAISE_66 (large, 66% pot-relative):** "Large pot-relative
+  raise commits more stack with insufficient equity to handle reraise
+  AND polarises hero's range to nuts + bluffs — the composition
+  doesn't support a 66% pot polarised raise (nut-density too thin).
+  SPR after raise drops sharply (hero is effectively committed on
+  next street given 3-way SPR). Pot-control via CALL preserves
+  optionality, and RAISE_33 captures fold equity from the same air
+  slice with less variance if a raise is warranted at all."
 
 The labeller adapts these templates to the specific spot using the
 composition pcts, hand class, position, and action history of the
@@ -618,8 +652,10 @@ Bet sizings in the JSON use these canonical tags (per
 - `BET_75` — 75% pot (turn / river)
 - `BET_150` — 150% pot overbet (river only)
 
-Raise sizings: `RAISE_2_5X` (2.5× facing bet), `RAISE_3X` (3× facing
-bet), `RAISE_AI` (all-in raise when SPR < 2).
+Raise sizings (pot-relative per `feedback_solver_aligned_sizing.md`):
+`RAISE_33` (33% pot-relative — small / value-and-protection),
+`RAISE_66` (66% pot-relative — large / polarised), `RAISE_AI`
+(all-in raise when SPR < 2).
 
 ### JSON schema additions
 
@@ -627,22 +663,22 @@ bet), `RAISE_AI` (all-in raise when SPR < 2).
 {
   "... (all v3.1 fields verbatim) ...": "...",
   "protocol": "C",
-  "candidate_actions": ["FOLD", "CALL", "RAISE_2_5X", "RAISE_3X"],
+  "candidate_actions": ["FOLD", "CALL", "RAISE_33", "RAISE_66"],
   "case_against": {
     "FOLD": {"argument": "...", "tier": 3},
     "CALL": {"argument": "...", "tier": 1},
-    "RAISE_2_5X": {"argument": "...", "tier": 2},
-    "RAISE_3X": {"argument": "...", "tier": 0}
+    "RAISE_33": {"argument": "...", "tier": 2},
+    "RAISE_66": {"argument": "...", "tier": 0}
   },
   "elimination_trail": [
     "STRIKE FOLD: STRONG case-against (composition-derived equity 0.62 vs pot odds 0.25, surplus 0.37 × pot)",
-    "MODERATE case-against RAISE_2_5X (insufficient fold equity 3-way at 2.5x)",
+    "MODERATE case-against RAISE_33 (insufficient fold equity 3-way at small pot-relative sizing)",
     "WEAK case-against CALL (pot control suboptimal vs draw-heavy turn)",
-    "STRAWMAN case-against RAISE_3X (no genuine objection — suggests answer)",
-    "Surviving: CALL (WEAK), RAISE_3X (STRAWMAN)",
-    "Choosing RAISE_3X per Step 5 — STRAWMAN < WEAK (no objection survives)"
+    "STRAWMAN case-against RAISE_66 (no genuine objection — suggests answer)",
+    "Surviving: CALL (WEAK), RAISE_66 (STRAWMAN)",
+    "Choosing RAISE_66 per Step 5 — STRAWMAN < WEAK (no objection survives)"
   ],
-  "final_action": "RAISE_3X",
+  "final_action": "RAISE_66",
   "case_against_strawman_count": 1,
   "case_against_strong_count": 1,
   "case_against_moderate_count": 1,
@@ -650,7 +686,7 @@ bet), `RAISE_AI` (all-in raise when SPR < 2).
   "mixed_action_pair": null,
   "mixed_confidence_band": null,
   "mixed_strategy_acknowledged": false,
-  "primary_action": "RAISE_3X",
+  "primary_action": "RAISE_66",
   "escalate_to_adjudicator": false
 }
 ```
@@ -687,14 +723,17 @@ The `action`, `confidence`, `difficulty`, `reasoning`,
 `feature_attention`, `tier1_removals`, `proposed_tags`,
 `alternatives_considered` fields are inherited verbatim from v3.1.
 
-[UNCERTAIN: schema-compatibility verification against
+[UNCERTAIN — REVIEWER-VERIFIED in PR #12 review (Items G + J at
+`7d56b09`): schema-compatibility verification against
 `river-rats-core/feature_keys.py`, `gto_model.py`, and
-`assemble_pilot_data.py` — Protocol B v1.0.1 verified these for its
-own additions and confirmed JSONL-only metadata is non-disruptive.
-Protocol C's additions follow the same pattern (label-side metadata
-only, no FEATURE_COLUMNS modification) so the same compatibility
-should hold. Reviewer should re-run the verification with Protocol C's
-specific field names to confirm no name collisions.]
+`assemble_pilot_data.py`. Reviewer re-ran the verification with
+Protocol C's specific field names by direct enumeration vs
+`FEATURE_COLUMNS` and confirmed NO name collisions; Protocol C
+metadata is JSONL-only, additive, and compatible with the v2.4
+ship with no trainer-side changes required. Forward-looking risk
+only when v2.5+ wants to train on `case_against_*_count` as
+features — `feedback_attention_flags_when_features_change.md`
+4-stream protocol applies at that point.]
 
 ---
 
@@ -949,8 +988,8 @@ B Example 2 convention): pot facing hero = preflop pot 30 + CO bet
 **0.25**.
 
 **Step 1 — Enumerate:**
-Facing a bet+call on flop. Candidates: `["FOLD", "CALL", "RAISE_2_5X",
-"RAISE_3X"]`. Bucket-aligned action (likely FOLD per default for
+Facing a bet+call on flop. Candidates: `["FOLD", "CALL", "RAISE_33",
+"RAISE_66"]`. Bucket-aligned action (likely FOLD per default for
 weak_made facing bet+call) is included; opposite-direction (RAISE)
 is included. Completeness check passes.
 
@@ -974,16 +1013,26 @@ is included. Completeness check passes.
   already accounts for fold-out risk on bad runouts; the surplus
   is positive even after realisation discount."
 
-- **Against RAISE_2_5X:** "Raise commits stack with insufficient
-  equity to handle 4-bet from villain's TP+ slice (0.41 of
-  villain's range — too thick to fold-equity-bluff). 3-way
-  squeeze raise on flop with weak-made (TT vs Kxx) is
-  catastrophically -EV: hero is raising for value with NO value
-  (TT loses to all of villain's TP+ continuing range)."
+- **Against RAISE_33:** "Small pot-relative raise (33% pot) is
+  thin-value-and-protection sizing — but hero TT vs the 0.41 TP+
+  continuing slice has NO value (TT loses to all of villain's TP+
+  continuing range). The thin-value range that 33% sizing implies
+  requires hero to beat a meaningful slice of villain's calling
+  range, which TT does not on Ks 8d 4c against a bet+call line.
+  3-way squeeze raise on flop with weak-made is catastrophically
+  -EV: villain's continuing slice (TP+) is too thick (0.41) for
+  fold-equity-bluff at any sizing, and TT has no value-equivalence
+  to support the raise."
 
-- **Against RAISE_3X:** "Same as RAISE_2_5X but worse — larger
-  raise commits more stack with the same fundamental problem
-  (no value vs continuing range). Even more dominated."
+- **Against RAISE_66:** "Larger pot-relative raise (66% pot) is
+  polarised sizing — requires hero's range to be nuts + bluffs.
+  Hero TT here is neither: not enough nut-density (TT is not the
+  top of any plausible bluff-raise range on K-high) and not enough
+  fold equity vs the 0.41 TP+ slice (which continues at 66% pot
+  too — heavier sizing doesn't fold TP+ on a low-SPR Kxx flop).
+  Same fundamental problem as RAISE_33 (no value vs continuing
+  range) AMPLIFIED by larger pot-commitment and the polarisation
+  mismatch. Even more dominated."
 
 **Step 3 — Tier ratings:**
 
@@ -993,15 +1042,21 @@ is included. Completeness check passes.
 - CALL: **WEAK (1)** — identifies real concern (realisation
   haircut) but quantifies as already-accounted-for; magnitude
   small after correction.
-- RAISE_2_5X: **STRONG (3)** — quantifies the bluff-equity
-  problem (0.41 TP+ continuing is too thick), feature-grounded.
-- RAISE_3X: **STRONG (3)** — same logic as RAISE_2_5X, even
-  worse magnitude.
+- RAISE_33: **STRONG (3)** — quantifies the thin-value-with-no-value
+  problem (TT beats 0 of TP+ continuing slice 0.41), feature-
+  grounded; sizing-implication mismatch (33% pot implies
+  thin-value range, hero has none).
+- RAISE_66: **STRONG (3)** — same no-value-vs-continuing-range
+  logic as RAISE_33 PLUS polarisation mismatch (66% pot implies
+  nut+bluff range, hero is neither); larger commit magnifies the
+  cost.
 
 **Step 4 — Eliminate STRONG cases-against:**
 STRIKE FOLD (STRONG: composition-derived equity surplus 0.15).
-STRIKE RAISE_2_5X (STRONG: 0.41 TP+ continuing too thick).
-STRIKE RAISE_3X (STRONG: same logic, larger commit).
+STRIKE RAISE_33 (STRONG: TT has no value vs 0.41 TP+ continuing
+slice; thin-value sizing requires value hero doesn't have).
+STRIKE RAISE_66 (STRONG: same no-value problem PLUS polarisation
+mismatch; larger commit, even more dominated).
 Surviving: CALL (WEAK case-against).
 
 **Step 5 — Single survivor:**
@@ -1393,12 +1448,16 @@ corrective action.
       bucket names are PERMITTED as confirmation but not as the
       primary feature-grounded argument.
 
-[UNCERTAIN: anti-pattern #8's carve-out parallels Protocol B
-v1.0.1's Anti-pattern #7 carve-out; reviewer should confirm the
-carve-out language is consistent across protocols. The intent is
-that composition-derived equity reasoning is valid in BOTH protocols
-because it IS the composition derivation; what's forbidden is
-tracker-style raw `equity_vs_range` as the primary driver.]
+[UNCERTAIN — REVIEWER-VERIFIED in PR #12 review (Item H at
+`7d56b09`): anti-pattern #8's carve-out parallels Protocol B v1.0.1's
+Anti-pattern #7 carve-out. Reviewer confirmed wording consistency
+across protocols. Forbidden in BOTH: pre-computed `equity_vs_range`
+feature read OR tracker-style raw equity-vs-pot-odds as primary
+driver. Allowed in BOTH: equity derived FROM composition slices in
+the same trace; `equity_vs_range` cited as confirmation in a separate
+sentence. Example 2 exercises the carve-out exactly as designed
+(composition-derived equity 0.40 from beatable-slice 0.59 — same
+structure as Protocol B v1.0.1 Example 2).]
 
 ---
 
@@ -1472,24 +1531,29 @@ unavailable).
 
 Remaining review chain:
 
-1. Owner review of the v1.0 framework + content
-2. Independent reviewer pass (different gto-expert dispatch) on the
-   filled-in content — focus on `[UNCERTAIN: ...]` tags, sizing
-   enumeration completeness (raise sizings 2.5×/3× as facing-bet
-   multiples vs solver pot-relative), and the 4-tier case-against
-   rubric (which is an ML-grading-consistency target and would
-   benefit from inter-grader κ verification on a small pilot)
-3. Calibration exam against the 24-hand reference set per the
+1. Owner review of the v1.0 / v1.0.1 framework + content
+2. v1.0 independent reviewer pass at `7d56b09` — APPROVE-WITH-NITS
+   (1 MEDIUM, 2 LOW, several NITs); MEDIUM #1 (raise-sizing taxonomy)
+   addressed in this v1.0.1 fix-forward
+3. v1.0.1 independent reviewer pass (different reviewer dispatch) —
+   verify MEDIUM #1 fix; verify no new MEDIUMs introduced; remaining
+   focus on `[UNCERTAIN: ...]` tags and the 4-tier case-against
+   rubric (ML-grading-consistency target; inter-grader κ verification
+   to land at pilot calibration per verdict action item #8)
+4. Calibration exam against the 24-hand reference set per the
    rubric in §"Calibration"
-4. Owner final approval before pilot uses Protocol C
+5. Owner final approval before pilot uses Protocol C
 
 Provenance discipline: every revision of this draft records its
 authoring lineage at the top of the file (see frontmatter).
 
-This is v1.0. Subsequent revisions land as
+This is v1.0.1. Subsequent revisions land as
 `protocol_c_adversarial_elimination_v1_1.md`, etc. The v0.1 DRAFT
 remains on disk in `prompts/stage4_drafts/` as a historical artifact
-per `feedback_quality_default_no_ask.md`.
+per `feedback_quality_default_no_ask.md`. The v1.0 file is preserved
+in this same path with frontmatter `version: v1.0.1` per fix-forward
+discipline (no parallel v1.0 file on disk; git history at `d77a95e`
+is the v1.0 reference).
 
 ---
 
@@ -1554,30 +1618,44 @@ Per Task 2 mandatory self-consistency pass, the author verified:
 
 **UNCERTAIN tags added:**
 
-1. Step 1 raise sizings (2.5×/3× facing-bet multiples vs solver
-   pot-relative) — reviewer should solver-verify the canonical
-   form.
+1. ~~Step 1 raise sizings (2.5×/3× facing-bet multiples vs solver
+   pot-relative)~~ — **RESOLVED in v1.0.1 fix-forward.** Replaced
+   with pot-relative `RAISE_33` / `RAISE_66` per
+   `feedback_solver_aligned_sizing.md`. Tag retired.
 2. Mixed-strategy convergence-checker scoring (MIXED includes
    single-A/B = convergent vs weakly convergent) — reviewer should
    confirm with convergence-checker design doc.
-3. Schema-compatibility verification re-run for Protocol C field
-   names — Protocol B v1.0.1 verified its own; Protocol C follows
-   same pattern but reviewer should re-run for name-collision check.
+3. ~~Schema-compatibility verification re-run for Protocol C field
+   names~~ — **REVIEWER-VERIFIED in PR #12 review (Items G + J at
+   `7d56b09`).** Direct enumeration vs `FEATURE_COLUMNS` confirmed
+   no name collisions; Protocol C metadata is JSONL-only and
+   compatible with v2.4 ship with no trainer-side changes. Tag
+   downgraded; v2.5+ training on `case_against_*_count` features
+   would re-trigger the 4-stream protocol per
+   `feedback_attention_flags_when_features_change.md`.
 4. κ ≥ 0.65 grader-consistency target — borrowed from Protocol B
-   v1.0.1, may need tightening.
+   v1.0.1, may need tightening. Reviewer Item J/K + verdict action
+   item #8: measure empirically at calibration; adjust gate in v1.1.
 5. Composition pcts in worked examples are poker-theoretic
    estimates calibrated to KB §1.x and Protocol B v1.0.1 numbers
    — solver-verification deferred.
-6. Anti-pattern #8 carve-out language parallels Protocol B v1.0.1
-   Anti-pattern #7 — reviewer should confirm cross-protocol
-   consistency.
+6. ~~Anti-pattern #8 carve-out language parallels Protocol B v1.0.1
+   Anti-pattern #7~~ — **REVIEWER-VERIFIED in PR #12 review (Item H
+   at `7d56b09`).** Wording parallels Protocol B v1.0.1 AP#7
+   (forbidden: pre-computed `equity_vs_range` OR tracker-style raw
+   equity-vs-pot-odds as primary driver; allowed: equity derived
+   FROM composition slices in same trace; allowed: `equity_vs_range`
+   as confirmation in separate sentence). Example 2 exercises the
+   carve-out exactly as designed (composition-derived equity 0.40
+   from beatable-slice 0.59). Tag downgraded.
 7. v2.4 trainer (`train_v2_4.py`) does not exist on disk yet —
    verification confirms v2.3.2 backwards-compatibility; v2.4 to
    re-verify when authored.
 
-All UNCERTAIN tags are legitimate (not defensive over-tagging) —
-each represents a real verification gap that requires reviewer
-input or future infrastructure.
+Tags 2, 4, 5, 7 remain open (real verification gaps requiring
+reviewer/owner input or future infrastructure). Tags 1, 3, 6
+resolved in v1.0.1 (1 by fix-forward; 3 + 6 by reviewer
+verification).
 
 ---
 
