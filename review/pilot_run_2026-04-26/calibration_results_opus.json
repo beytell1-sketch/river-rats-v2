@@ -1,0 +1,206 @@
+{
+  "lane": "opus",
+  "model": "claude-opus-4-7",
+  "total_labels": 33,
+  "input_tokens_estimate": 95000,
+  "labels": [
+    {
+      "ref_id": "MW-12",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand: JsTs on 852r, no pair, no draw, equity 14%. Although IP and checked to, KB §1.1 says pure bluffs 3-way are unprofitable (FE ~36%) and KB DO NOT Rule #2 prohibits barreling air into 2 opponents. With better_hand_pct=0.88 and no fold equity advantage, give up and take a free card."
+    },
+    {
+      "ref_id": "MW-13",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand OOP: KhJh on A93r, no pair, no draw, 16% equity, hero is SB OOP first to act after BTN opens. KB Example 5 / DO NOT Rule #2: do not semi-bluff (let alone pure bluff) into 2 opponents OOP. Villain TP+ 11% but air 45% is split across two opponents; FE insufficient. CHECK and give up."
+    },
+    {
+      "ref_id": "MW-14",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand: Td9d on Jd8d3h gives flush draw + open-ender = 17 outs, equity 53% vs 27% pot odds. Not the nut flush draw and no nut blocker, so KB §1.7 RAISE conditions not met. Massive equity surplus and IP-style realization on draw — pure CALL to realize equity, BTN still behind so don't blow up the pot OOP."
+    },
+    {
+      "ref_id": "MW-15",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "River air: 9s8s on QsJd5h2c6c, missed straight draw, 0% equity. KB §1.4 3-way bluff:value ratio is ~1:4 — pure bluffs essentially eliminated on the river. Villain checked twice (some weakness signal), but with 0% equity and only ~9% worse hands, betting just gets called by everything that beats hero. CHECK."
+    },
+    {
+      "ref_id": "MW-17",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "Air with hidden equity: AdKs on Jd8d4c, draw_outs=0 in pipeline but KB Worked Example 7 covers exactly this — 6 overcard outs (~24% improvement) plus backdoor flush with Ad. Equity 24% is just under 27% pot odds, but hidden overcard equity + implied odds on TPTK improvement makes it a marginal CALL per the canonical example."
+    },
+    {
+      "ref_id": "MW-18",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand: Qd3d on Jd8d4c gives Q-high flush draw (9 outs), equity 38% vs 27% pot odds. Not nut flush draw → KB §1.7 RAISE conditions not met (only Q-high FD, no overcard side equity beyond Q). Strong equity surplus = pure CALL to realize draw equity, BTN still behind."
+    },
+    {
+      "ref_id": "MW-19",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster: Tc9c on QhJs8d = made nut straight, equity 82%, IP, checked to. KB Worked Example 4 / DO NOT Rule #3: monsters must bet 3-way for protection — board has flush draws and one-card straight draws on future streets, two opponents drawing means slowplay risk is huge. BET 50-66% pot for value + protection."
+    },
+    {
+      "ref_id": "MW-23",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "TPGK in IP after both checked: QhJc on Q83r dry rainbow, equity 52%, villain TP+ 14% (<20% bucket = thin), villain air 51%, both checked = weakness. KB Worked Example 6 pattern (and d8886 anchor) — when villain composition is thin on value and board is dry and static, value bet small; IP makes this even stronger than Example 6's OOP version."
+    },
+    {
+      "ref_id": "MW-24",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "TPGK OOP first to act: QsJd on Q83r dry rainbow, equity 64%, worse_hand_pct 92%, villain TP+ 12% (<20% bucket), villain air 52%. This is the canonical KB Worked Example 6 spot — OOP value bet because composition shows villain compositionally thin on value and board is dry/static. The OOP penalty does not override the value extraction."
+    },
+    {
+      "ref_id": "MW-27",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Overpair IP, both checked: JJ on 962r dry, equity 47% (overpair held back by AA/QQ/KK in CO range), villain TP+ 20%, air 51%. Dry board, IP, two checks signal weakness. Better than top pair (overpair to whole board), worse_hand_pct 93%. Bet small for value vs middle pairs and to deny overcard equity. CHECK is defensible (pot control with ~47% equity)."
+    },
+    {
+      "ref_id": "MW-28",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Overpair OOP: JJ on 962r dry, equity 61%, worse_hand_pct 94%, villain TP+ 16%, air 56%. Dry static board, JJ is near-top of hero's range here. KB Example 6 generalisation: composition is thin on value, board is static, equity well above 50% — OOP penalty insufficient. BET small for value/protection."
+    },
+    {
+      "ref_id": "MW-30",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "CALIBRATION ANCHOR MW-30: KcTh on KJ6r BB facing bet+call. KB Worked Example 3 (corrected) — pure CALL despite bet-and-call signal. Equity 44.5% vs 18.4% pot odds = 26pp surplus, villain_top_pair_plus_pct=0.31 sits in <40% bucket per §1.9 (NOT 'heavy with strong hands'), and KT dominates ~80% of continuing range. Equity surplus overrides action narrowing."
+    },
+    {
+      "ref_id": "MW-33",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "CALIBRATION ANCHOR MW-33: middle set 88 on 873r facing CO bet + BTN call. KB Worked Example 4 / Calibration Notes — monster must RAISE 3-way for value extraction and protection. Equity 90%, danger_score 0.30 (straight draws live), worse_hand_pct 100%. Pot control with a set into bet+call is value cession; raise to build the pot at compressed SPR."
+    },
+    {
+      "ref_id": "MW-34",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Strong made AA overpair: AcAd on Js9c4d as PFA after BB checks, BTN behind. Equity 67%, worse_hand_pct 94%, villain TP+ 18%, air 44%. Compressed SPR 1.11 — checking gives BTN free card on a board with backdoor straight/flush threats. KB §1.3 says small (25-33%) c-bet sizing 3-way. BET for value and protection."
+    },
+    {
+      "ref_id": "MW-35",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "TPGK IP facing small bet (33% pot) at SPR 3.7: QcJd on Q72r dry. Equity 54% vs 25% pot odds, villain TP+ 30%, air 33%. KB Rule #5 — TP is medium 3-way, pot control. BB still behind, raising bloats the pot and gets called by better Qx. Pure CALL to keep villain's bluffs in and control pot."
+    },
+    {
+      "ref_id": "MW-36",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "TPGK IP facing 33% bet at compressed SPR 1.11: QcJd on Q72r dry, equity 56%, pot odds 27%, villain TP+ 30%. KB Rule #5 — top pair is medium-strength 3-way, BB still behind. CALL to realize equity and keep villain bluffs in; raising at SPR 1.11 commits stacks vs a range that has us in trouble when it continues."
+    },
+    {
+      "ref_id": "MW-37",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "TPGK IP deep at SPR 2.22 facing 33% bet: QcJd on Q72r dry, equity 55%, pot odds 25%, villain TP+ 30%. Same structure as MW-35/36 — KB Rule #5: TP 3-way is a pot control hand. BB still behind. CALL to realize equity and avoid bloating against a range that crushes us when it continues."
+    },
+    {
+      "ref_id": "MW-38",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand with §1.7 carve-out: AhJh on Kh8h3d facing BB donk 50% pot. Nut flush draw (Ah-high) + Ah blocker to villain's nut flush combos + J overcard outs + gutshot to broadway = ALL Worked Example 9 conditions met. Equity 42%, villain air 9%, TP+ 20%. RAISE per KB §1.7 — blocker raises beat fold-equity threshold even 3-way."
+    },
+    {
+      "ref_id": "MW-39",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand with §1.7 conditions: AhJh on Kh8h3d facing CO c-bet. Nut flush draw + Ah blocker + J overcard + gutshot — exact Worked Example 9 / MW-47 pattern. Equity 45%, BB still behind but Ah blocks villain's nut FD continuing combos. RAISE per KB §1.7 carve-out — blocker + side equity makes this +EV vs CALL."
+    },
+    {
+      "ref_id": "MW-41",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Medium made + draw IP: QhTc on KsQd7cJh turn (2nd pair + OESD, 8 outs). Equity 30% vs 23% pot odds. KB Worked Example 8 EXACT match — multi-street aggression narrows range but 8 clean straight outs survive narrowing, IP position, pot odds nearly met. CALL is the documented action; FOLD ignores the draw equity."
+    },
+    {
+      "ref_id": "MW-44",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made + draw IP: Th8h on Ts9h4d7c turn — top pair + open-ender (J or 6 makes straight, 8 outs). Equity 35% vs 28% pot odds. Villain TP+ 67% is heavy with value, board favours BB (board_favour -0.37). But like Example 8: draw equity survives range narrowing and pot odds nearly met. CALL with the combination of pair+draw."
+    },
+    {
+      "ref_id": "MW-48",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing/air OOP: AhTc on QJ4r — gutshot to K (4 outs) + ace overcard. Equity 29%, hero is OOP first to act, no bet faced (donk option). KB DO NOT Rule #2 / Example 5 — gutshot-only with overcard 3-way OOP into 2 opponents is check/fold territory; do not donk-bluff. CHECK and proceed cheaply."
+    },
+    {
+      "ref_id": "MW-49",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Strong made TPTK turn IP, both checked at compressed SPR 0.47: AdKd on As9c5dTc, equity 54%, worse_hand_pct 75%, villain TP+ 40% (≥40 bucket = meaningful value density). Turn brought T (gutshot complete on board now), checking gives free card to draws. KB Rule #5/Example 4 logic — at SPR 0.47 with TPTK and turn drawing texture, BET for value and to charge straight draws."
+    },
+    {
+      "ref_id": "MW-50",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "CALIBRATION ANCHOR MW-50: JcTc on J845 turn after CO bet, BTN raise flop, BB call, BTN bets again. KB DO NOT Rule #3 + Calibration Notes — flop check-raise/raise into 2 opponents 3-way is near-nuts; villain TP+ 72%, board_favour -0.43, equity 0%. Top pair weak kicker dominated by raised+bet range; range fold."
+    },
+    {
+      "ref_id": "d8886_BB_flop",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "CALIBRATION ANCHOR d8886: QcJc on 2s5dJd — top pair good kicker, equity 60%, villain TP+ 18% (<20% thin), air 59%. Compressed SPR 1.25 BB OOP. Per Calibration Notes pass condition: BET (or difficulty 3 with BET as primary alternative). KB Example 6 generalisation — composition thin on value, hero TPGK at top of own range, value bet for protection on diamond draw board."
+    },
+    {
+      "ref_id": "d2410_CO_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "CALIBRATION ANCHOR d2410: JcKs on Jd9d3h6d turn, villain checked back flop. TPGK with K-kicker, equity 45%, villain TP+ 33%, air 20%, checked-back signals weakness. Per anchor: BET. KB §1.10.4 nut_made_block reasoning — hero's Jc removes JJ trips combos; villain's checked-back range is weaker than composition suggests. BET for value at compressed SPR."
+    },
+    {
+      "ref_id": "d8963_HJ_turn",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "CALIBRATION ANCHOR d8963: JhJc on Ks4h9c3h turn, villain checked back. JJ underpair to K, equity 39%, villain TP+ 28%, air 1% (low). Solver 50/50 mixed per Calibration Notes; pass = BET. Checked-back signals weakness; JJ has good showdown but at SPR 1.25 with two hearts on turn, BET small to deny equity to overcard floats and turn flush draws. CHECK is defensible."
+    },
+    {
+      "ref_id": "d3178_CO_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "CALIBRATION ANCHOR d3178: AcAs on JhQcJcKs5h river, checked to. AA overpair on 4-card broadway+paired board, equity 60%. Per anchor: BET. Compressed SPR 1.25 — at this stack depth, AA is a pure value bet against villain's checked range that contains plenty of worse Qx, Kx, and Jx busted draws."
+    },
+    {
+      "ref_id": "d2074_BTN_turn",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong made but dominated: 7h6h on Qd8d6sQh turn = two pair (Qs and 6s on paired board). Equity only 27.5% — every Qx counterfeits hero (Q-high two pair beats 6s+Q). villain TP+ 56%, villain checked back flop. KB Rule #5 and pot control — two pair where hero is dominated by every Qx is a CHECK. Turning hand into bluff makes no sense; take showdown route."
+    },
+    {
+      "ref_id": "d3688_BB_flop",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made TP weak kicker BB OOP: 8cKc on KdTd4s, equity 54%, villain TP+ 20% (<20% thin), air 34%. Two-tone diamond board, compressed SPR 1.25. KB Rule #5 says TP is medium 3-way (lean pot control) — but with composition thin on value, donk/lead small (25-33%) for protection vs flush draws and to deny equity to overcards. CHECK is defensible. Difficulty 2-3."
+    },
+    {
+      "ref_id": "d4312_CO_turn",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made TP weak kicker CO OOP, villain checked back flop: 3sKs on 7d9h5sKc turn — top pair turned, equity 54%, villain TP+ 27%, air 28%, checked-back = weakness. Static board (no flush, marginal straight). Similar to d2410 pattern: when villain shows weakness and hero turns top pair, BET for thin value and to deny equity. CHECK is defensible at low SPR for showdown."
+    },
+    {
+      "ref_id": "d5466_CO_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made TP weak kicker OOP on wet board: 6dKd on KhQc9d. Equity 47%, danger_score 0.30 (straight + flush draws live), villain TP+ 28%, air 24%. Connected two-tone board favours BTN's range (suited connectors smash KQ9). KB Rule #5 — TP weak kicker on dynamic board OOP is a pot control hand; betting gets raised by better Kx and folds out air. CHECK to realize equity."
+    },
+    {
+      "ref_id": "d9556_BB_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster: 5h5d on 5s6d6h = fives full of sixes. Equity 90.5%, worse_hand_pct 99.6%, monster=1. KB Worked Example 4 / DO NOT Rule #3 — monsters must bet 3-way. Villain air 72% means lots of folding range, but value extraction from any 6x and overpairs is the priority. BET for value; pot control a near-nuts hand on a paired board is value cession."
+    }
+  ]
+}

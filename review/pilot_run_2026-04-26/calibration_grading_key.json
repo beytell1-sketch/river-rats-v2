@@ -1,0 +1,185 @@
+{
+  "metadata": {
+    "total_hands": 33,
+    "standard_pass_threshold": 23,
+    "reversal_hand_ids": [
+      "MW-30",
+      "MW-33",
+      "MW-50",
+      "d2074_BTN_turn",
+      "d2410_CO_turn",
+      "d3178_CO_river",
+      "d3688_BB_flop",
+      "d4312_CO_turn",
+      "d5466_CO_flop",
+      "d9556_BB_flop"
+    ]
+  },
+  "answers": {
+    "MW-12": {
+      "expert_action": "CHECK",
+      "is_reversal": false,
+      "equity": 0.126
+    },
+    "MW-13": {
+      "expert_action": "CHECK",
+      "is_reversal": false,
+      "equity": 0.124
+    },
+    "MW-14": {
+      "expert_action": "CALL",
+      "is_reversal": false,
+      "equity": 0.524
+    },
+    "MW-15": {
+      "expert_action": "CHECK",
+      "is_reversal": false,
+      "equity": 0.0
+    },
+    "MW-17": {
+      "expert_action": "CALL",
+      "is_reversal": false,
+      "equity": 0.251
+    },
+    "MW-18": {
+      "expert_action": "CALL",
+      "is_reversal": false,
+      "equity": 0.465
+    },
+    "MW-19": {
+      "expert_action": "BET",
+      "is_reversal": false,
+      "equity": 0.803
+    },
+    "MW-23": {
+      "expert_action": "BET",
+      "is_reversal": false,
+      "equity": 0.458
+    },
+    "MW-24": {
+      "expert_action": "BET",
+      "is_reversal": false,
+      "equity": 0.604
+    },
+    "MW-27": {
+      "expert_action": "BET",
+      "is_reversal": false,
+      "equity": 0.476
+    },
+    "MW-28": {
+      "expert_action": "BET",
+      "is_reversal": false,
+      "equity": 0.561
+    },
+    "MW-30": {
+      "expert_action": "CALL",
+      "is_reversal": true,
+      "equity": 0.399
+    },
+    "MW-33": {
+      "expert_action": "RAISE",
+      "is_reversal": true,
+      "equity": 0.885
+    },
+    "MW-34": {
+      "expert_action": "BET",
+      "is_reversal": false,
+      "equity": 0.666
+    },
+    "MW-35": {
+      "expert_action": "CALL",
+      "is_reversal": false,
+      "equity": 0.474
+    },
+    "MW-36": {
+      "expert_action": "CALL",
+      "is_reversal": false,
+      "equity": 0.454
+    },
+    "MW-37": {
+      "expert_action": "CALL",
+      "is_reversal": false,
+      "equity": 0.472
+    },
+    "MW-38": {
+      "expert_action": "CALL",
+      "is_reversal": false,
+      "equity": 0.422
+    },
+    "MW-39": {
+      "expert_action": "CALL",
+      "is_reversal": false,
+      "equity": 0.439
+    },
+    "MW-41": {
+      "expert_action": "CALL",
+      "is_reversal": false,
+      "equity": 0.253
+    },
+    "MW-44": {
+      "expert_action": "CALL",
+      "is_reversal": false,
+      "equity": 0.394
+    },
+    "MW-48": {
+      "expert_action": "CHECK",
+      "is_reversal": false,
+      "equity": 0.22
+    },
+    "MW-49": {
+      "expert_action": "BET",
+      "is_reversal": false,
+      "equity": 0.54
+    },
+    "MW-50": {
+      "expert_action": "FOLD",
+      "is_reversal": true,
+      "equity": 0.329
+    },
+    "d8886_BB_flop": {
+      "expert_action": "BET",
+      "is_reversal": false,
+      "equity": 0.6215
+    },
+    "d2410_CO_turn": {
+      "expert_action": "BET",
+      "is_reversal": true,
+      "equity": 0.4335
+    },
+    "d8963_HJ_turn": {
+      "expert_action": "BET",
+      "is_reversal": false,
+      "equity": 0.361
+    },
+    "d3178_CO_river": {
+      "expert_action": "BET",
+      "is_reversal": true,
+      "equity": 0.6175
+    },
+    "d2074_BTN_turn": {
+      "expert_action": "CHECK",
+      "is_reversal": true,
+      "equity": 0.2495
+    },
+    "d3688_BB_flop": {
+      "expert_action": "CHECK",
+      "is_reversal": true,
+      "equity": 0.538
+    },
+    "d4312_CO_turn": {
+      "expert_action": "BET",
+      "is_reversal": true,
+      "equity": 0.5383
+    },
+    "d5466_CO_flop": {
+      "expert_action": "CHECK",
+      "is_reversal": true,
+      "equity": 0.475
+    },
+    "d9556_BB_flop": {
+      "expert_action": "CHECK",
+      "is_reversal": true,
+      "equity": 0.912
+    }
+  }
+}

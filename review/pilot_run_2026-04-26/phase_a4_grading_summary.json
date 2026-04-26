@@ -1,0 +1,92 @@
+{
+  "phase": "A.4",
+  "option": "C (parallel Sonnet+Opus calibration)",
+  "sonnet": {
+    "total": 33,
+    "correct": 28,
+    "accuracy": 0.8484848484848485,
+    "gate_overall": "28/33 >= 23 \u2192 PASS",
+    "gate_reversals": "8/10 (100% required) \u2192 FAIL",
+    "gate_passed": false,
+    "failures": [
+      {
+        "ref_id": "MW-17",
+        "expert": "CALL",
+        "agent": "FOLD",
+        "is_reversal": false,
+        "confidence": "MEDIUM"
+      },
+      {
+        "ref_id": "MW-39",
+        "expert": "CALL",
+        "agent": "RAISE",
+        "is_reversal": false,
+        "confidence": "MEDIUM"
+      },
+      {
+        "ref_id": "MW-44",
+        "expert": "CALL",
+        "agent": "FOLD",
+        "is_reversal": false,
+        "confidence": "MEDIUM"
+      },
+      {
+        "ref_id": "d3688_BB_flop",
+        "expert": "CHECK",
+        "agent": "BET",
+        "is_reversal": true,
+        "confidence": "MEDIUM"
+      },
+      {
+        "ref_id": "d9556_BB_flop",
+        "expert": "CHECK",
+        "agent": "BET",
+        "is_reversal": true,
+        "confidence": "HIGH"
+      }
+    ]
+  },
+  "opus": {
+    "total": 33,
+    "correct": 29,
+    "accuracy": 0.8787878787878788,
+    "gate_overall": "29/33 >= 23 \u2192 PASS",
+    "gate_reversals": "8/10 (100% required) \u2192 FAIL",
+    "gate_passed": false,
+    "failures": [
+      {
+        "ref_id": "MW-38",
+        "expert": "CALL",
+        "agent": "RAISE",
+        "is_reversal": false,
+        "confidence": "HIGH"
+      },
+      {
+        "ref_id": "MW-39",
+        "expert": "CALL",
+        "agent": "RAISE",
+        "is_reversal": false,
+        "confidence": "HIGH"
+      },
+      {
+        "ref_id": "d3688_BB_flop",
+        "expert": "CHECK",
+        "agent": "BET",
+        "is_reversal": true,
+        "confidence": "MEDIUM"
+      },
+      {
+        "ref_id": "d9556_BB_flop",
+        "expert": "CHECK",
+        "agent": "BET",
+        "is_reversal": true,
+        "confidence": "HIGH"
+      }
+    ]
+  },
+  "decision": {
+    "phase_b_labeller": "**HALT** \u2014 both failed; escalate to owner per Option C decision tree",
+    "sonnet_pass": false,
+    "opus_pass": false
+  }
+}
