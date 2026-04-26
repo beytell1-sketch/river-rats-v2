@@ -2,17 +2,24 @@
 date: 2026-04-26
 author: general-purpose subagent acting as ml-architect (dedicated subagent unavailable)
 derived_from: STAGE4_PILOT_ORCHESTRATION_DRAFT_2026-04-26.md
-version: v1.0.1
+version: v1.0.2
 review_chain:
   - orchestrator structural skeleton (DRAFT v0.1, 2026-04-26)
   - v1.0 fill (general-purpose subagent acting as ml-architect, 2026-04-26)
   - v1.0 independent reviewer pass APPROVE-WITH-NITS at commit ba8d062 (2026-04-26) — REVIEW_VERDICT_PR_24_TASK_5_PILOT_ORCHESTRATION_2026-04-26.md
   - v1.0 PR #24 merged at f33e4f7 (2026-04-26) — Stage 4 prep Wave 2 COMPLETE
-  - v1.0.1 pre-dispatch fix-forward (this revision, 2026-04-26) — addresses M-1 + L-1/L-8/L-11/L-12 per MAIN_TERMINAL_PR24_MERGED_TASK5_V1_0_1_DIRECTIVE_2026-04-26.md (309ad35)
-  - v1.0.1 independent reviewer pass — REQUIRED before pilot dispatch
+  - v1.0.1 pre-dispatch fix-forward (2026-04-26) — addresses M-1 + L-1/L-8/L-11/L-12 per MAIN_TERMINAL_PR24_MERGED_TASK5_V1_0_1_DIRECTIVE_2026-04-26.md (309ad35)
+  - v1.0.1 independent reviewer pass APPROVE-WITH-NITS at commit 0f1c5c4 (2026-04-26) — REVIEW_VERDICT_PR_28_TASK_5_V1_0_1_2026-04-26.md (2 cosmetic NITs)
+  - v1.0.1 PR #28 merged at 9cf8792 (2026-04-26)
+  - v1.0.2 NIT prose-consistency pass (this revision, 2026-04-26) — addresses NIT-1 (line 884 stray '13' → '15') per MAIN_TERMINAL_PR28_MERGED_TASK5_V1_0_2_DIRECTIVE_2026-04-26.md (d41041e); NIT-2 ACCEPTED AS DESIGNED (placeholder pattern for preflight tier check)
+  - v1.0.2 independent reviewer pass — REQUIRED before pilot dispatch
   - owner pilot-dispatch authorization — REQUIRED
-status: v1.0.1 (pre-dispatch fix-forward on v1.0; M-1 terminology + L-1 cross-protocol firewall + L-8 tool restrictions + L-11 API/model prereqs + L-12 path)
+status: v1.0.2 (NIT prose-consistency pass on v1.0.1; line 884 "ALL 13" → "ALL 15" + review_chain timeline accuracy)
 changelog:
+  v1.0.2 (2026-04-26):
+    - NIT-1 (cosmetic) — Line 884 stray "ALL 13 PRE-DISPATCH PREREQUISITES" → "ALL 15 PRE-DISPATCH PREREQUISITES" (matches table size post-L-11 row addition; was missed during v1.0.1 L-11 propagation that updated the Pilot Orchestrator brief read-list at line 805 but missed this second occurrence). Production-summary paragraph rewritten to also reflect actual review_chain timeline (v1.0 reviewer pass + PR #24 merge + v1.0.1 pre-dispatch fix-forward + this v1.0.2 pass).
+    - NIT-2 (DEFERRED — accepted as designed): row #14 "Tier ≥ X" placeholder is intentional UNCERTAIN-tag pattern per orchestrator directive `MAIN_TERMINAL_PR28_MERGED_TASK5_V1_0_2_DIRECTIVE_2026-04-26.md`. Operator fills "Tier ≥ N" at preflight live-tier check time. NOT a fix.
+
   v1.0.1 (2026-04-26):
     - M-1 (MEDIUM) — Stage 5 contract terminology fix at line 586. "55-feature vector + post-commit-14 multiway promotions = 59 raw features per Stage 5 retrain v1.0.1" → "55-feature vector + 4 v2.4 blocker features = 59 raw features per Stage 5 retrain v1.0.1 §Hyperparameters point #4". Stage 5 v1.0.1 names the +4 features as v2.4 blocker features (nut_flush_block + 3 *_block_pct); "post-commit-14 multiway promotions" was wrong terminology (those are the per_villain_* fields promoted by Finding B at commit 14, not the +4 features added pre-Stage-5).
     - L-1 (LOW; pre-dispatch) — Cross-protocol output-path firewall. Each Labeller brief (A/B/C) now restricts Read/Write to `review/pilot_run_<date>/labels/protocol_<your_protocol>/agent_<your_slot>/`; cross-protocol traversal PROHIBITED to preserve protocol-diversity guarantee.
@@ -879,10 +886,11 @@ Per Task 5 lessons-applied analog:
   list explicit); failure-handling policy enumerates 5 modes with
   retry+escalate behaviour rather than open-ended "retry on error"
 
-Production: this v1.0 file goes to independent reviewer pass next
-(REQUIRED before pilot dispatch), then owner final approval. Pilot
-does NOT execute until ALL 13 PRE-DISPATCH PREREQUISITES are GREEN
-+ owner explicit greenlight.
+Production: this v1.0 file went to independent reviewer pass at
+v1.0 (ba8d062 APPROVE-WITH-NITS) → PR #24 merge (f33e4f7) → v1.0.1
+pre-dispatch fix-forward (PR #28 merge 9cf8792) → this v1.0.2 NIT
+prose-consistency pass. Pilot does NOT execute until ALL 15
+PRE-DISPATCH PREREQUISITES are GREEN + owner explicit greenlight.
 
 ---
 
