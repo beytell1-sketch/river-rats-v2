@@ -1,7 +1,8 @@
 {
   "build_directive": "review/comms/MAIN_TERMINAL_BUILD_D_DIRECTIVE_PARTIAL_FOLD_FIXTURES_2026-04-26.md",
-  "build_version": "v1.0",
-  "byte_size": 10761,
+  "build_seed": 20260426,
+  "build_version": "v1.0.1",
+  "byte_size": 10760,
   "disjointness": {
     "pilot_corpus_100_fingerprints": 100,
     "post_validation_overlap_anchor": 0,
@@ -39,17 +40,17 @@
       "turn": 2
     },
     "streets": [
-      "river",
       "turn",
+      "river",
       "flop"
     ],
     "unique_folded_positions": [
       "BB",
-      "SB",
       "CO",
-      "BTN",
+      "UTG",
       "HJ",
-      "UTG"
+      "SB",
+      "BTN"
     ]
   },
   "feat_dict_contract_source": "Stage 5 retrain v1.0.1 \u00a7Hyperparameters point #4: FEATURE_COLUMNS (length 55) + 4 v2.4 P1 blockers = 59 raw (inherited from Build C v1.0.1)",
@@ -68,8 +69,10 @@
     "review/comms/MAIN_TERMINAL_PR41_MERGE_ACK_BUILD_D_KICKOFF_2026-04-26.md (Build D kickoff post-PR-#41-merge)"
   ],
   "purpose": "Phase A.5 preflight assertion fixtures per Stage 4 pilot orchestration spec v1.0.3 \u00a7'Phase A.5' + QC HIGH-1 / S-A12 close. Each fixture exercises `_villain_pos_raw` live-vs-folded discrimination on partial-fold MW situations. Pilot Orchestrator loads these as Phase A.5 test cases; assertion HALTs Phase A if any fixture selects a folded opponent as `_villain_pos_raw`.",
-  "sha256": "c196fb82cf78b6c02660dca72051df36938ebfeca87ebd23e935ec96b510f513",
+  "sha256": "98e4309a21b464f8087d525eee0c12681d5f815a3b1b5bd7444d3f108eef4319",
   "stage6_holdout_reference_hash": "65cfbf26ad3c6b228a3462574b86c33be41397258519ffd35b1cc08037a4cba5",
+  "v1_0_sha256_predecessor": "c196fb82cf78b6c02660dca72051df36938ebfeca87ebd23e935ec96b510f513",
+  "v1_0_to_v1_0_1_change": "v1.0 omitted random.seed() before extract_all_features MC equity calls \u2192 script non-reproducible across runs (committed bytes valid + self-consistent with lock; only re-derivation broke). v1.0.1 adds random.seed(20260426) at module load (matches Build C v1.0.1 SEED) \u2192 MC equity sampling now deterministic; SHA reproducible across runs (closes V-D9 hash-lock determinism finding from PR #43 reviewer).",
   "v23_calibration_constants_reference": "river-rats-core/calibration_exam.py v2.3 \u2014 STANDARD_EXAM_SIZE=28, STANDARD_PASS_THRESHOLD=23, GTO_REVERSAL_HANDS, GROUP_D_REVERSAL_HANDS",
   "v_x2_origin": "QC PR #40 V-X2 finding; Phase A.5 fixture source"
 }

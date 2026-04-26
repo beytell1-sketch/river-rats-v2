@@ -1,5 +1,18 @@
 #!/usr/bin/env python3
-"""Build the Phase A.5 partial-fold MW fixture file (Build D).
+"""Build the Phase A.5 partial-fold MW fixture file (Build D v1.0.1).
+
+v1.0.1 fix-forward per orchestrator directive
+`MAIN_TERMINAL_PR43_DECISION_FIX_FORWARD_VD9_2026-04-26.md` (Option A
+from PR #43 reviewer MED finding): hash-lock determinism. v1.0
+omitted `random.seed()` before `extract_all_features` MC equity
+calls → script non-reproducible across runs (committed bytes valid +
+self-consistent with lock; only re-derivation broke). v1.0.1 adds
+`random.seed(SEED)` at module load (same SEED=20260426 as Build C
+v1.0.1) to make the 2000-trial MC equity sampling inside
+`feature_extractor` deterministic.
+
+Same 5 fixture specifications; new SHA256 (will differ from v1.0
+`c196fb82...`) due to MC equity now being deterministic.
 
 Per orchestrator directive `MAIN_TERMINAL_BUILD_D_DIRECTIVE_PARTIAL_FOLD_FIXTURES_2026-04-26.md`
 (commit `fa280d6`):
@@ -32,8 +45,11 @@ Disjoint from:
 
 Hash-locked (SHA256 over JSONL bytes).
 
-Determinism: synthetic fixtures (constructed, not sampled); SEED not
-needed for selection but used for tie-breaking in any future expansion.
+Determinism: synthetic fixtures (constructed, not sampled). SEED is
+needed because `feature_extractor.extract_all_features` calls
+`_true_multiway_equity_mc()` which uses unseeded `random.sample()` +
+`random.random()` for 2000-trial Monte Carlo equity estimation. v1.0.1
+seeds `random` at module load to make this deterministic.
 
 Output:
     data/phase_a5_partial_fold_fixtures_2026-04-26.jsonl
@@ -42,8 +58,15 @@ Output:
 import hashlib
 import json
 import os
+import random
 import re
 import sys
+
+# v1.0.1 — seed `random` at module load before feature_extractor's MC
+# equity sampling fires. Closes V-D9 hash-lock determinism finding from
+# PR #43 reviewer (commit 488373c).
+SEED = 20260426
+random.seed(SEED)
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(REPO, "river-rats-core"))
@@ -544,7 +567,20 @@ def main() -> int:
     # Sidecar.
     lock = {
         "fixture_count": 5,
-        "build_version": "v1.0",
+        "build_version": "v1.0.1",
+        "build_seed": SEED,
+        "v1_0_to_v1_0_1_change": (
+            "v1.0 omitted random.seed() before extract_all_features MC "
+            "equity calls → script non-reproducible across runs (committed "
+            "bytes valid + self-consistent with lock; only re-derivation "
+            "broke). v1.0.1 adds random.seed(20260426) at module load "
+            "(matches Build C v1.0.1 SEED) → MC equity sampling now "
+            "deterministic; SHA reproducible across runs (closes V-D9 "
+            "hash-lock determinism finding from PR #43 reviewer)."
+        ),
+        "v1_0_sha256_predecessor": (
+            "c196fb82cf78b6c02660dca72051df36938ebfeca87ebd23e935ec96b510f513"
+        ),
         "feat_dict_feature_count": 59,
         "feat_dict_contract_source": (
             "Stage 5 retrain v1.0.1 §Hyperparameters point #4: "
