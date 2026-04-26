@@ -261,9 +261,21 @@ consistent with the production feature pipeline.
   back / calling, or does villain prevent realisation? Read from
   hero position + villain action history.
 
-- **Range-mass axis:** what fraction of hero's own range
-  (`hero_top_pair_plus_pct` etc. if available) is in the same
-  category as villain's? Used for range-vs-range balance.
+- **Range-mass axis:** what fraction of hero's own range falls into
+  the same hand-class category (TP+/medium/draws/air) as villain's
+  modal slice? Derive from hero's current bucket assignment + the
+  preflop construction implied by `prior_actions`. Used for
+  range-vs-range balance — when hero's range AND villain's range
+  are both heavy-TP+, the balance is "value-vs-value" and pot-control
+  often dominates; when hero's range is heavy-draws against villain's
+  heavy-TP+, the balance is "draw-realisation-vs-deny" and the
+  decision flips to fold-or-bet-large.
+
+  No `hero_*_pct` feature exists in the 59-feature contract. Derive
+  the mass estimate from the bucket label of hero's actual hand +
+  whether hero's preflop range (per `prior_actions`) is wide
+  (limp / call) or tight (raise / 3bet) — wide ranges have higher
+  air/draws mass; tight ranges have higher TP+ mass.
 
 ### Step 3 — Derive candidate action(s) from composition-derived situation
 
