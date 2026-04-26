@@ -1,0 +1,609 @@
+{
+  "lane": "labeller_2",
+  "model": "claude-sonnet-4-6",
+  "protocol_version": "v3.2",
+  "protocol": "A",
+  "total_labels": 100,
+  "labels": [
+    {
+      "ref_id": "d6066_BB_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "This is a monster hand (set of 7s on 4c7d5s rainbow board). OOP at compressed SPR=1.25 with villain_air=0.572 (57% of villain range folds). DO NOT Rule 11 does not apply: board is neither paired nor 2-tone. With 83.9% equity and a monster at compressed SPR, BET extracts value from the wide air-heavy villain range before the pot becomes too small to contest. Villain has shown prior aggression (aggr=1), making c-bet value clear."
+    },
+    {
+      "ref_id": "d7296_BB_river",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "This is a medium-made hand (pair of tens on Ts7d5c2d4c board, OOP river). Villain checked back (weakness signal). Board is not paired and not 2-tone, so DO NOT Rule 11 does not apply. With 59.6% equity, 44.3% villain air, and villain_checked_back=1, this matches the d3178 river-checked-to pattern: BET for thin value extraction against the wide air-and-medium range villain checked back with. Board danger is moderate but villain showed weakness OOP."
+    },
+    {
+      "ref_id": "d5383_CO_turn",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "This is a drawing hand (nut flush draw: hero AdQd on 2h7sTd9d with 3 diamonds on board). Villain checked back (weakness signal). KB §1.7 semi-bluff conditions partially apply: nut flush draw (flush_draw_rank=14) with blocker. villain_air=0.315 exceeds the v3.2 §1.7 OVERRIDE threshold of 0.20, and fold_equity=0.408 is above 40%. OOP with checked-back villain, BET as semi-bluff with nut flush draw + two overcards (AdQd) provides both equity and fold pressure."
+    },
+    {
+      "ref_id": "d1168_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is air (9d8d, no pair on Js5d2s7dJh board). Hero has essentially zero equity (0.001) at river with no showdown value. villain_tp+=0.523 makes up over half of villain's range, and fold_equity=0.227 is insufficient to justify a bluff OOP with pure air. Villain checked back (weakness) but even with fold equity, a successful bluff requires 77%+ success rate against a range that is majority TP+. CHECK and concede."
+    },
+    {
+      "ref_id": "d0845_HJ_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "This is a strong-made hand (Jacks full of 5s: JcQs on 5hJs5s5c4h, board has three 5s + hero Jc). Villain checked back (weakness signal). Board is paired but DO NOT Rule 11 river-checked-to override applies: villain_checked_back=1. Additionally, villain_tp+=0.550 >= 0.40 AND is_strong_made=1, meeting the Rule 11 BET conditions. BET extracts value from villain's medium and TP+ range that checks back river."
+    },
+    {
+      "ref_id": "d4781_BTN_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "This is a monster hand (King-high flush: QhKh on 7hKs9h6hTd with 4 hearts on board). Hero is IP with closing action, villain checked back. DO NOT Rule 11 does not apply to IP spots. With 90.8% equity against villain's range, BET for maximum value extraction on the river. Villain range has 65.2% TP+ but most of that is dominated by hero's flush. BET against the medium-to-value villain range that checked back."
+    },
+    {
+      "ref_id": "d8002_HJ_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "This is a monster hand (set of tens on 5s3cTh rainbow dry board). OOP but DO NOT Rule 11 does not apply: board is rainbow and unpaired. danger_score=0.00 (completely dry board), villain_air=0.380. At compressed SPR=1.25, BET extracts value before the pot becomes irrelevant. With 91.1% equity on a dry board where all opponents see an unimproved flop, BET builds value against the villain's wide checking range."
+    },
+    {
+      "ref_id": "d3642_BB_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (AsJs, no pair on 3d6h5d4s connected board). Hero has no made hand and no flush draw (flush_draw_rank=0). Board is ultra-connected with 35.9% villain draws. With 23.5% equity OOP and villain_air=0.211 (below 30%), there is insufficient fold equity to justify a semi-bluff without a nut draw. DO NOT Rule 2: do not barrel draws into 2 opponents. CHECK and realize equity freely."
+    },
+    {
+      "ref_id": "d2335_SB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (KsAh) but at near-zero SPR=0.12 on a fully-played-out board (3c6s5d6d5h river). Villain checked back with 69.6% villain air — the majority of villain's range is folding. At SPR=0.12 any bet is essentially a forced commitment and with 44.8% equity plus 69.6% villain air, BET folds out all villain air and realizes equity vs the 30.4% TP+ when called. The extreme villain air fraction makes BET clearly +EV even OOP."
+    },
+    {
+      "ref_id": "d0182_CO_turn",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "This is a medium-made hand (pocket 5s, third pair on 9sAd3s4c board). Hero is OOP on an ace-high board where villain_tp+=0.283 and medium_made=0.450 fill most of the range. Villain checked back (weakness) but hero's equity is only 22.2% — predominantly behind. With two overcards (A, 9) that dominate the 5s, CHECK preserves pot control and avoids building a pot where hero is behind most of villain's continuing range."
+    },
+    {
+      "ref_id": "d8007_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (KdQd, two overcards on Ts6d8d board). Hero is OOP with no made hand. Board is 2-tone (diamonds) but DO NOT Rule 11 applies only to made hands; hero has no pair. However with 43.2% equity and villain_air=0.345, a semi-bluff is tempting. DO NOT Rule 2 applies: do not barrel draws 3-way. flush_draw_rank=13 (King) is near-nut but not the nut flush draw, so KB §1.7 full carve-out does not fire. CHECK and see a free card."
+    },
+    {
+      "ref_id": "d3409_HJ_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is a medium-made hand (QsTs, top pair on 2hQh6h4c board with 3 hearts). OOP on a 2-tone (3-heart) board. DO NOT Rule 11 applies: OOP + 2-tone board + made_hand=1. villain_tp+=0.484 >= 0.40 but is_strong_made=0 (hero is medium-made, not strong-made). The Rule 11 BET conditions require BOTH tp+=>=0.40 AND is_strong_made=1 — the second condition is not met. Additionally villain_air=0.000, meaning zero fold equity. CHECK."
+    },
+    {
+      "ref_id": "d7640_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (QcJc, no pair on 7c4d4c board). Board is paired (4s) and 2-tone (clubs), but DO NOT Rule 11 applies only to made hands; hero has no pair here (air). With no made hand and no strong draw, CHECK is the default OOP. Even with villain_air=0.675 (high fold equity), hero would be bluffing OOP with pure overcards into a 3-way pot — DO NOT Rule 2 applies. CHECK."
+    },
+    {
+      "ref_id": "d2410_BTN_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (AcQh, no pair on Jd9d3h6d9s river). Hero is IP but villain_fold_equity_estimate=0.198 (below 20%) meaning less than 1-in-5 chance all opponents fold a bet. villain_tp+=0.555 makes majority of villain's range strong. With only 9.4% equity, a bet as a bluff would lose money at a 20% fold rate. villain_checked_back=1 signals weakness but the range remains too strong for a profitable bluff. CHECK."
+    },
+    {
+      "ref_id": "d2285_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (9dQc, two overcards on Kd2s8c rainbow board). OOP with 12.5% equity. Villain showed prior aggression (aggr=1). While villain_air=0.437 and fold_equity=0.751 appear high, hero is OOP with air and must act first — betting would be a cold bluff into a villain who has already shown aggression on this board. CHECK and reevaluate facing any villain bet."
+    },
+    {
+      "ref_id": "d3456_UTG_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (KdJh, no pair on 7s2s5hAd5s paired river board). Villain checked back but villain_tp+=0.726 makes up 72.6% of villain's range — a bluff faces an enormous value-heavy calling range. fold_equity=0.075 (7.5%) means any bet succeeds only once in thirteen times. With 2.2% equity, CHECK and concede is clearly correct."
+    },
+    {
+      "ref_id": "d3409_BB_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "This is a monster hand (nut flush: Ah8h with 3 hearts on 2hQh6h4c board, is_monster=1). OOP on a 2-tone board. DO NOT Rule 11 applies: OOP + 2-tone. However the BET exception fires: villain_tp+=0.473 >= 0.40 AND is_monster=1. Both conditions are met, so BET is authorized. Villain checked back (weakness signal). BET for value extraction — villain's range has 47.3% TP+ that calls for value and 42.2% medium-made that also continues."
+    },
+    {
+      "ref_id": "d4312_CO_river",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "This is a medium-made hand (3sKs, top pair weak kicker on 7d9h5sKcTc river). Villain checked back (weakness signal). Board is not paired and not 2-tone, so Rule 11 does not apply. However villain_air=0.157 (below 20%) means almost no fold equity, and villain_tp+=0.377 with medium_made=0.465 suggests most of villain's range either beats or ties hero's pair of kings. With 49.4% equity and low air fraction, CHECK is preferred for pot control on river OOP."
+    },
+    {
+      "ref_id": "d5312_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (JsAs, no pair on 3hQc3cTh paired board). IP with villain checked back but villain_tp+=0.557 and villain_draw=0.401 dominate the range. fold_equity=0.059 (essentially zero — 6%) makes any bluff unprofitable regardless of position. With only 20.9% equity, CHECK and take the free card IP."
+    },
+    {
+      "ref_id": "d3847_HJ_turn",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "This is a strong-made hand (TdKd, top pair with K kicker on 9c2dTs2h paired board — two pair via board pair). OOP on a paired board. DO NOT Rule 11 applies: OOP + paired. Exception conditions: villain_tp+=0.638 >= 0.40 AND is_strong_made=1. Both conditions met — BET is authorized. Villain checked back on a board that pairs the 2s, signaling weakness. BET for value against villain's 63.8% TP+ range that called and checked back."
+    },
+    {
+      "ref_id": "d4211_BTN_turn",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (QsKc, no pair on 8c9s9d2d paired board) facing both a bet and a raise. DO NOT Rule 3: a check-raise into two opponents 3-way is near-exclusively the nuts. villain_tp+=0.673 with SPR=0.54 (nearly committed). With 8.9% equity facing a raise at compressed SPR, hero cannot continue with air. FOLD is clear — the check-raise range is sets, full houses, and trips on this paired board."
+    },
+    {
+      "ref_id": "d2285_CO_flop",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "This is a medium-made hand (Ks4s, top pair weak kicker on Kd2s8c dry rainbow board). OOP but board is neither paired nor 2-tone, so Rule 11 does not apply. villain_air=0.355, villain_tp+=0.220 (low TP+ density), and fold_equity=0.608. With 57.9% equity on a dry rainbow board OOP, BET for thin value: villain's range has only 22% TP+ so most of villain's continuing combos are weaker than hero's top pair. DO NOT Rule 5 cautions against overbetting but a small BET is appropriate here."
+    },
+    {
+      "ref_id": "d1562_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (Ah9d, ace-high on 5cJcJd3s6s river). Villain checked back but villain_tp+=0.494 makes up half the range and villain_air=0.506. fold_equity=0.256 (25.6%) is insufficient for a profitable river bluff OOP. With 24.4% equity this hand has marginal showdown value — CHECK and see if villain checks through, realizing the showdown equity."
+    },
+    {
+      "ref_id": "d6764_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (5h7h, pure air on 2d2c3s4cTs river with paired 2s board). Hero has zero equity (0.000). Villain checked back but with zero equity at showdown, any call or aggressive action is -EV. CHECK and concede the pot."
+    },
+    {
+      "ref_id": "d2197_HJ_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (AsKs, no pair on 2d8c4h2cTd paired river board). Villain checked back but villain_tp+=0.679 (67.9% of villain range is strong) and fold_equity=0.103 (only 10.3% chance all opponents fold). With 12.7% equity, a bluff succeeds too rarely to be profitable. CHECK."
+    },
+    {
+      "ref_id": "d3036_UTG_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "This is a strong-made hand (7h7d on JhJd9d paired board — two pair of 7s below board jacks). OOP on a paired board. DO NOT Rule 11 applies: OOP + paired (Jacks on board). villain_tp+=0.608 >= 0.40 AND is_strong_made=1 — Rule 11 BET conditions technically met. However equity=0.266 means hero is behind most of villain's range despite the formal conditions being met. CHECK for pot control: the heavy TP+ density (60.8%) means most of villain's range dominates hero's 77. Rule 11 allows BET but does not require it when equity is deeply negative."
+    },
+    {
+      "ref_id": "d7964_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is a medium-made hand (KcTd, second pair on 6cQhTh 2-tone board). OOP. DO NOT Rule 11 applies: OOP + 2-tone (hearts: Qh,Th) + made_hand=1. villain_tp+=0.265 < 0.40 — BET conditions not met. Additionally villain_air=0.035 (essentially zero fold equity), making any bet unprofitable as a bluff or semi-bluff. CHECK preserves pot control OOP with second pair on a board where villain's range has minimal air."
+    },
+    {
+      "ref_id": "d9488_CO_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (KhAc, no pair on TdQhTs9s5d paired river board). Villain checked back but villain_tp+=0.764 (76.4% strong range) and fold_equity=0.056. With 5.9% equity and near-zero fold equity, a bluff has a positive EV only if it succeeds >94% of the time — impossible facing a range that is 76.4% TP+. CHECK."
+    },
+    {
+      "ref_id": "d7516_BTN_river",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (As3s, no pair on 8hQhTsTdKs river) facing both a bet and a raise. DO NOT Rule 3: a raise into two opponents 3-way represents near-nuts. villain_tp+=0.949 (94.9% of villain range is TP+). With 6.3% equity at compressed SPR=0.75 and facing a raise, FOLD is mandatory. The nut blocker (As3s) provides some block to straight/flush draws but villain's range after bet+raise is essentially pure value."
+    },
+    {
+      "ref_id": "d6522_HJ_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (AhJc, no pair on 5cKc6c5d paired 2-tone board). DO NOT Rule 11 applies only to made hands — hero has no made hand (air). With villain_tp+=0.606 (60.6% strong range) and equity=0.223, CHECK is correct. Villain checked back (weakness signal) but hero cannot bluff profitably into a range where 60.6% is TP+. fold_equity=0.142 (14.2%) far too low to bluff. CHECK."
+    },
+    {
+      "ref_id": "d6522_HJ_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (AhJc on 5cKc6c5d6d river — double paired board). Villain checked back but villain_tp+=0.537 (majority strong) and fold_equity=0.215. With only 13.9% equity and 53.7% of villain's range dominating, a bluff succeeds too rarely to profit. CHECK and concede — river OOP with air on a double-paired board."
+    },
+    {
+      "ref_id": "d8137_CO_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (Kh8h, no pair on 9cJcQh connected 2-tone board). OOP. With no made hand and only backdoor draws, CHECK is correct. villain_air=0.236 (insufficient for profitable bluff OOP) and the connected board (9JQ) has high board danger. DO NOT Rule 2 applies: do not barrel draws into 2 opponents. CHECK and preserve equity."
+    },
+    {
+      "ref_id": "d2139_BTN_turn",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "This is a medium-made hand (QsKc, top pair Kings on Jd3hKs4h dry rainbow board). IP with villain checked back. Board is not paired and not 2-tone — Rule 11 does not apply. villain_air=0.021 (near zero fold equity) but villain_draw=0.338 (many draws). With 61.6% equity IP and villain showing weakness, BET for protection and thin value: charges draws (33.8% of villain range) and extracts from medium made hands (44.3%). BET is correct despite low air fraction."
+    },
+    {
+      "ref_id": "d9989_BTN_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "This is a strong-made hand (9cTc, flush on Kc3c7dJc — hero holds 9c,Tc on board with Kc,Jc,3c = three clubs; combined with hero's two clubs = flush). is_strong_made=1, equity=0.884. IP with villain checked back. Board is 2-tone (clubs) but Rule 11 does not apply to IP spots. With 88.4% equity, high fold equity (0.580), and villain weakness, BET for value extraction. Low villain TP+ (20.7%) and high medium_made (46.7%) means most of villain's calling range is medium hands that hero crushes."
+    },
+    {
+      "ref_id": "d2139_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is a medium-made hand (7s7h, third pair on Jd3hKs dry rainbow board). OOP with 19.9% equity. villain_tp+=0.254 and medium_made=0.429 dominate hero's pair of 7s. Board is dry and rainbow — Rule 11 does not apply — but OOP pot control is appropriate: betting with a vulnerable low pair on a high-card board (K,J high) risks facing raises from better hands. CHECK and see the turn for free."
+    },
+    {
+      "ref_id": "d3409_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is a medium-made hand (QsTs, top pair on 2hQh6h monotone board). OOP. DO NOT Rule 11 applies: OOP + monotone (all hearts) board + made_hand=1. villain_air=0.000 (zero fold equity) — no chance of folding villain out. villain_tp+=0.450 >= 0.40 but is_strong_made=0 (hero is medium-made top pair only). Rule 11 BET requires BOTH tp>=0.40 AND is_strong_made=1; second condition fails. CHECK on monotone board OOP with zero fold equity."
+    },
+    {
+      "ref_id": "d2788_UTG_river",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "This is a strong-made hand (QsAh, two pair: Qs matches Qd on board + board has two 9s = QQ99 two pair). Villain checked back on river. Board is paired (9s). DO NOT Rule 11 applies: OOP + paired. villain_tp+=0.726 >= 0.40 AND is_strong_made=1 — both BET conditions met. Additionally, Rule 11 river-checked-to override fires: villain_checked_back=1. BET for thin value extraction against villain's 27.5% air and medium hands that villain checked back."
+    },
+    {
+      "ref_id": "d5996_HJ_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (QhKs, no pair on 5c4d7d8c ultra-connected turn board). OOP with only 10.7% equity. Villain checked back but this is still a very low-equity spot. villain_air=0.484 (moderate) but with OOP air on the most connected board type (straight-heavy 5,4,7,8), CHECK is correct. No draw, no pair — any bet is a high-variance bluff with poor showdown equity."
+    },
+    {
+      "ref_id": "d5066_CO_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "This is a monster hand (KhQh, broadway straight: K-Q-J-T-9 on board Jh9c6c3hTs). Villain checked back on river. Board not paired and not 2-tone at river — Rule 11 does not apply. With 97.0% equity, BET for maximum value extraction. The river-checked-to override fires: villain_checked_back=1. villain_air=0.173 and villain_tp+=0.440 — hero beats essentially all of villain's range. BET."
+    },
+    {
+      "ref_id": "d0244_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "This is a monster hand (8h7h, full house 8s over 6s on 8c6c6d4c8s river). Villain checked back. Board is paired (8s and 6s) and 2-tone (clubs). DO NOT Rule 11 applies: OOP + paired. Rule 11 river-checked-to override fires: villain_checked_back=1. Additionally villain_tp+=0.390 approaches 0.40 and is_monster=1 — BET conditions nearly met. Combined with the river-checked-to override, BET for value. villain_air=0.572 supports fold equity if villain has air."
+    },
+    {
+      "ref_id": "d4775_BTN_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "This is a monster hand (5cAc, nut flush on monotone 8c6cKc flop). IP with villain prior aggression. DO NOT Rule 11 does not apply to IP spots. With 95.0% equity and villain_air=0.382, BET for value extraction on this monotone board. SPR=1.25 (compressed) means a bet now commits stacks — exactly right with the nut flush. villain_tp+=0.159 (low) means most of villain's range cannot continue, but some value hands will stack off."
+    },
+    {
+      "ref_id": "d3687_HJ_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "This is a monster hand (8cKc, quads: hero 8c on Jd8h8d8s board = four 8s). Villain checked back. Board is paired (three 8s). DO NOT Rule 11 applies: OOP + paired. villain_tp+=0.575 >= 0.40 AND is_monster=1 — BET conditions both met. With 99.9% equity, BET for value. villain_air=0.390 also provides fold equity for the primary villain to fold and leave hero heads-up for turn/river extraction."
+    },
+    {
+      "ref_id": "d3409_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "This is a monster hand (Ah8h, nut flush on 2hQh6h4c2d river with 3 hearts on board). Villain checked back. Board is paired (2s) and 2-tone (hearts). DO NOT Rule 11 applies: OOP + paired. Rule 11 river-checked-to override fires: villain_checked_back=1. Additionally villain_tp+=0.683 >= 0.40 AND is_monster=1 — BET conditions met. BET for maximum value extraction against villain's heavy TP+ range (68.3%) that called to river."
+    },
+    {
+      "ref_id": "d9418_UTG_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (QhTh, no pair on Ad2sJc7s8h river). Zero equity (0.000). Villain checked back but villain_air=0.078 (only 7.8% fold chance). With zero equity and 7.8% fold equity, any bet is a losing proposition. CHECK and concede."
+    },
+    {
+      "ref_id": "d7726_UTG_turn",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "This is a strong-made hand (TdKd, two pair: Kd matches Kh + Td matches Ts on JsTsKhAh board). OOP. Board is dry and rainbow — Rule 11 does not apply. However villain_tp+=0.490 (49% TP+) and villain_draw=0.137 with equity=0.353 means hero is often behind. Villain checked back (weakness) but the equity below 40% and heavy TP+ density support CHECK for pot control. Hero two pair is vulnerable to Ace-high straights (A-K-Q-J-T is possible on this board)."
+    },
+    {
+      "ref_id": "d2092_BTN_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "This is a monster hand (7h7d, set of 7s on 4d7c2s dry rainbow board). IP with villain prior aggression. DO NOT Rule 11 does not apply to IP spots. With 89.1% equity and villain_air=0.628 (63% of villain range folds), BET for value and fold equity. SPR=1.25 (compressed) — a BET now builds the pot while also folding out villain air. IP with monster on dry board."
+    },
+    {
+      "ref_id": "d0845_BTN_river",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "This is an air hand (Ac3c on 5hJs5s5c4h river) but hero is IP with villain showing weakness (checked back). villain_air=0.570 (57% of villain range is foldable) and fold_equity=0.324. Board is paired (three 5s). IP bluff: hero can represent a 5 or strong made hand. With 57% villain air and IP position, BET as a bluff with Ac blocker has positive expected value — fold equity of 32.4% means ~1-in-3 chance of success, and hero's 16.1% equity provides some backup when called."
+    },
+    {
+      "ref_id": "d1562_HJ_turn",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "This is a strong-made hand (7h7d, pair below board Jacks on 5cJcJd3s paired board). OOP. DO NOT Rule 11 applies: OOP + paired (Jacks). villain_tp+=0.568 >= 0.40 AND is_strong_made=1 — BET conditions technically met. However equity=0.350 shows hero is behind 65% of villain's range. The Rule 11 conditions allow BET but equity this low on a paired board where villain's TP+ (56.8%) dominates hero's pocket 7s suggests CHECK for pot control is more appropriate."
+    },
+    {
+      "ref_id": "d6035_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (AdJd, two overcards on Qc2d8s dry rainbow board). OOP with 21.5% equity. Board is dry and rainbow — Rule 11 does not apply — but hero has no made hand (air). With villain_air=0.369 and fold_equity=0.620 the bluff seems tempting, but OOP air bluffs with no draw are high-variance. CHECK and see if a J or A arrives on the turn before committing chips."
+    },
+    {
+      "ref_id": "d1764_BTN_flop",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "This is a strong-made hand (5s5d, middle pair on 9s4s9d paired board — pocket 5s below the nines). IP. DO NOT Rule 11 does not apply to IP spots. villain_air=0.633 (63% of villain range is air) — very high fold equity. With 32.8% equity but a massive villain air fraction, BET IP for fold equity and thin value against hands hero beats. BET sizes out villain's overcards and air that have some equity against pocket 5s."
+    },
+    {
+      "ref_id": "d6764_CO_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (9d7d, no pair on 2d2c3s4c paired connected board). OOP with 6.7% equity. Villain checked back but villain_tp+=0.487 and villain_draw=0.173 make up most of the range. With only 6.7% equity and 18.2% fold equity, CHECK is clear — air OOP on a dangerous connected board."
+    },
+    {
+      "ref_id": "d3204_CO_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is a strong-made hand (4s4h, pocket 4s on 3sKsKhJc2c paired river board — pair of 4s). OOP on a paired board (Kings). DO NOT Rule 11 applies: OOP + paired. villain_tp+=0.708 >= 0.40 AND is_strong_made=1 — BET conditions technically met. However equity=0.201 shows hero is behind 80% of villain's range. Rule 11 allows BET when conditions met, but equity this low (pair of 4s on KK-high board) means CHECK is safer — hero mainly loses to villain's TP+ (70.8%) range when bet-called."
+    },
+    {
+      "ref_id": "d3687_BB_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "This is a strong-made hand (JcTc on Jd8h8d8s — hero has full house Jacks over 8s). Villain checked back. Board is paired (three 8s). DO NOT Rule 11 applies: OOP + paired. villain_tp+=0.473 >= 0.40 AND is_strong_made=1 — BET conditions both met. Also villain showed weakness (checked back). BET for value: villain_air=0.506 (50% folds) means BET either wins the pot immediately or extracts from the 47.3% TP+ range that calls."
+    },
+    {
+      "ref_id": "d8137_BB_river",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "This is a strong-made hand (9hQd, two pair: Qd matches Qh + 9h matches 9c on 9cJcQh6dAd river). Villain checked back. Board not paired and not 2-tone — Rule 11 does not apply. OOP, river. With 64.8% equity and villain weakness (checked back), this matches the river-checked-to BET pattern. villain_medium_made=0.539 (54% medium hands in villain range) — many hands hero beats. BET for thin value extraction."
+    },
+    {
+      "ref_id": "d2092_CO_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (JdAs, no pair on 4d7c2s dry rainbow board). OOP with 23.0% equity. While villain_air=0.481 suggests fold equity, hero is OOP with pure air. CHECK allows hero to realize equity for free and reevaluate on the turn when hero may improve to top pair (with an A) or fold cleanly. Betting OOP with air and no draw on a dry board has poor EV despite apparent fold equity."
+    },
+    {
+      "ref_id": "d1119_BTN_flop",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "This is a drawing hand (TsJs, flush draw on 2h2s4s paired 2-tone board). IP with villain prior aggression. DO NOT Rule 11 does not apply to IP spots or drawing hands. villain_air=0.739 (73.9% villain air — very high). With flush draw (flush_draw_rank=11) and 38.5% equity IP, BET as semi-bluff: high villain air (73.9%) provides excellent fold equity, and hero's flush draw provides strong backup equity when called. BET IP on a paired board where villain's range is mostly air."
+    },
+    {
+      "ref_id": "d2335_SB_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (KsAh) at near-zero SPR=0.12 (essentially all-in). Board: 3c6s5d. villain_air=0.696 (69.6% villain range folds). At SPR=0.12, any bet is a forced commitment — the effective bet size is the entire remaining stack. With 37.2% equity and 69.6% villain air, BET/shove realizes immediate fold equity on a range that is mostly air. At this SPR, checking does not meaningfully reduce pot commitment; BET and realize fold equity immediately."
+    },
+    {
+      "ref_id": "d4472_CO_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (Ad9s, no pair on Qs2d3s 2-tone board). OOP with 19.1% equity. Board is 2-tone (spades: Qs,3s). Rule 11 applies only to made hands; hero has no pair. With air OOP on a 2-tone board, CHECK is correct. DO NOT Rule 2 cautions against barreling draws 3-way, and hero has no nut draw here. CHECK."
+    },
+    {
+      "ref_id": "d5181_CO_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (QhAs, no pair on Kh5d8dTh7c river). Villain checked back but equity=0.029 (2.9%) and villain_tp+=0.330 with medium_made=0.456. With near-zero equity OOP at river, CHECK concedes the pot. No profitable bluffing line exists."
+    },
+    {
+      "ref_id": "d8411_BB_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is a medium-made hand (Ac8h, pair of 8s on 6c8c2d3c 3-club board). OOP. DO NOT Rule 11 applies: OOP + 2-tone (3 clubs on board) + made_hand=1. villain_tp+=0.211 < 0.40 — BET conditions not met per Rule 11. Despite nut_flush_block=1 (Ac on club board) and villain_air=0.570 (high fold equity), Rule 11 mandates CHECK for medium-made OOP on 2-tone boards when tp+ < 0.40. CHECK preserves pot control and avoids committing to larger pots with second pair."
+    },
+    {
+      "ref_id": "d6522_BB_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (8d7d, no pair on 5cKc6c5d paired 3-club board). OOP. Rule 11 applies to made hands — hero has no made hand (air). villain_tp+=0.536 (majority strong) and fold_equity=0.206. With 15.8% equity and 53.6% TP+, CHECK is clear. Even with villain checked back, bluffing OOP into a range with majority TP+ has poor EV."
+    },
+    {
+      "ref_id": "d5046_CO_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "This is a monster hand (Kd6d, trips: hero 6d + board 6h6s = three 6s with K kicker). OOP on a paired board (6s). DO NOT Rule 11 applies: OOP + paired. villain_tp+=0.513 >= 0.40 AND is_monster=1 — both BET conditions met. With 85.5% equity and villain_air=0.456 (46% folds), BET for value. The compressed SPR=1.25 means a BET now commits stacks, ideal with trips."
+    },
+    {
+      "ref_id": "d9617_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is a monster hand (7s7h, set of 7s on KhTd7d 2-tone board). OOP. DO NOT Rule 11 applies: OOP + 2-tone (diamonds: Td,7d). villain_tp+=0.243 < 0.40 — BET condition (a) not met. Rule 11 mandates CHECK when tp+ < 0.40. CHECK traps villain's wider continuing range and avoids folding out villain's medium hands (40.4%) and draws (6.1%) that would call a small bet but then fold to future bets. CHECK-trap on this 2-tone board with monster."
+    },
+    {
+      "ref_id": "d9418_UTG_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (QhTh, no pair on Ad2sJc7s turn). OOP, villain checked back. equity=0.102 and villain_air=0.118 (12% air — low fold equity). With 10.2% equity and minimal fold equity, CHECK is correct. Air OOP on an ace-high board where villain's range is mostly medium-made (60.8%) and has little air."
+    },
+    {
+      "ref_id": "d9759_BTN_turn",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "This is a strong-made hand (Th9h, two pair: 9h matches 9d + board has 8s pair — hero has two pair 99+88? Actually hero Th,9h on 8d8c2d9d: hero has pair of 9s + board 8s = two pair). IP. DO NOT Rule 11 does not apply to IP spots. With 29.4% equity, villain draw=0.207 (draws threatening), and villain checked back, BET for protection and thin value IP. villain_air=0.342 and fold_equity=0.198. BET charges draws (20.7% of villain range) and extracts from medium hands before draws complete."
+    },
+    {
+      "ref_id": "d2139_BTN_river",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "This is a strong-made hand (QsKc, two pair K+J on Jd3hKs4hJh river). IP. DO NOT Rule 11 does not apply to IP spots. villain_air=0.063 (minimal fold equity) and villain_tp+=0.683 (68.3% TP+ in villain range). With 52.0% equity but facing a range where 68.3% is TP+, many of those hands beat hero's two pair (e.g., A-J, trips with Jack). Betting into a range where most of villain's TP+ beats hero is -EV with near-zero fold equity. CHECK IP and realize free showdown."
+    },
+    {
+      "ref_id": "d6508_BB_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "This is a monster hand (Jc9s, trips: hero 9s + board 9d9h = three nines with J kicker). OOP on paired board (9s). DO NOT Rule 11 applies: OOP + paired. villain_tp+=0.356 < 0.40 — BET condition not met. CHECK per Rule 11. Trapping with trips on a paired board extracts more value over multiple streets: villain's 64.4% air folds to a bet, while CHECK induces bluffs and value bets from villain's 35.6% TP+ range."
+    },
+    {
+      "ref_id": "d7983_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (9cAs, no pair on 3h5c6h connected 2-tone board). OOP. villain_draw=0.485 (48.5% villain range is draws), villain_air=0.190. With 24.2% equity OOP on a draw-heavy board where villain's range is nearly half draws, CHECK is correct. DO NOT Rule 2 applies — hero has no nut draw to semi-bluff with, and the board heavily favors villain's drawing range."
+    },
+    {
+      "ref_id": "d3847_BTN_flop",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "This is an air hand (AhQs, two overcards on 9c2dTs dry rainbow board). IP. Rule 11 does not apply to IP spots or air hands. villain_air=0.422 and fold_equity=0.482 (48.2% chance all opponents fold). With 22.1% equity IP and moderate fold equity, BET as a c-bet: IP with two overcards on a board that missed villain's range (42.2% air). BET at 25-33% pot folds out villain's air and retains equity via overcards against hands that call."
+    },
+    {
+      "ref_id": "d5222_CO_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "This is a monster hand (5s5d, set of 5s on 9h5h3d 2-tone board). OOP. DO NOT Rule 11 applies: OOP + 2-tone (hearts: 9h,5h). villain_tp+=0.245 < 0.40 — BET condition not met. Rule 11 mandates CHECK when tp+ < 0.40 even for monsters OOP on 2-tone boards. villain_draw=0.424 (42.4% draws) threatens the set but Rule 11 CHECK is correct here: CHECK preserves pot control and disguises the monster strength."
+    },
+    {
+      "ref_id": "d6522_BTN_river",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "This is an air hand (QdAc) but hero is IP on double-paired board (5cKc6c5d6d river) with nut_flush_block=1 (Ac on club board). Villain checked back. villain_air=0.464 (46.4% of villain range folds). fold_equity=0.223. Rule 11 does not apply to IP spots or air hands. BET as a bluff IP: Ac blocks villain's nut flush continuation range, villain showed weakness, and 46.4% villain air provides reasonable fold equity for a small IP river bet."
+    },
+    {
+      "ref_id": "d4775_BTN_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "This is a monster hand (5cAc, nut flush: hero holds Ac,5c with Kc,8c,6c on board = King-high nut flush). IP with villain checked back. Rule 11 does not apply to IP spots. With 98.0% equity, villain_air=0.366, and villain weakness, BET for maximum value. villain_tp+=0.191 (mostly weaker hands in villain's range) — hero's nut flush dominates all of villain's non-flush hands. BET at compressed SPR=1.25 to commit stacks with the nuts."
+    },
+    {
+      "ref_id": "d8427_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "This is a monster hand (KsTh, trips: hero Ks + board Kc,Kh = three Kings with T kicker). Villain checked back. Board is paired (Kings). DO NOT Rule 11 applies: OOP + paired. villain_tp+=0.658 >= 0.40 AND is_monster=1 — BET conditions met. Rule 11 river-checked-to override also fires: villain_checked_back=1. With 86.2% equity and villain's range having 34.2% air, BET for value extraction against the range that called all the way to river."
+    },
+    {
+      "ref_id": "d8427_BB_turn",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "This is a medium-made hand (KsTh, top pair K with T kicker on Kc2d8s9s turn). OOP. Board not paired, not 2-tone — Rule 11 does not apply. Villain showed prior aggression (aggr=1) but checked back this street (villain_checked_back=1). With 62.7% equity and villain_tp+=0.181 (low TP+ density), most of villain's range is medium-made (47.7%) and air (27.8%). BET for thin value against villain's wide medium-to-air range that checked back; villain's low TP+ means hero dominates the majority of calls."
+    },
+    {
+      "ref_id": "d2920_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is a medium-made hand (JhQd, top pair J on Js2sTd 2-tone board). OOP. DO NOT Rule 11 applies: OOP + 2-tone (spades: Js,2s) + made_hand=1. villain_tp+=0.213 < 0.40 — BET condition not met per Rule 11. With villain_air=0.421 and hero is medium-made (top pair J with Q kicker), CHECK per Rule 11. The 2-tone board creates flush draw danger and OOP pot control is appropriate."
+    },
+    {
+      "ref_id": "d2410_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (AcQh, no pair on Jd9d3h6d 3-diamond board). IP with villain checked back. Equity=0.095 (9.5%) — near-zero. Rule 11 does not apply to air hands. With only 9.5% equity and 8.6% fold equity... wait fold_equity=0.454 (45.4% from the features). But with 9.5% equity, even if 45% of villains fold, the remaining 55% beat hero almost every time. CHECK and realize the free card IP."
+    },
+    {
+      "ref_id": "d7640_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "This is a strong-made hand (QcJc, Queen-high flush on 7c4d4c9cTc monotone river). Villain checked back. Board is paired (4s) and monotone (clubs). DO NOT Rule 11 applies: OOP + paired + monotone. villain_tp+=0.599 >= 0.40 AND is_strong_made=1 — BET conditions met. Rule 11 river-checked-to override fires: villain_checked_back=1. With 64.8% equity and villain_air=0.401, BET for value extraction on the monotone river where villain's range includes many medium-made hands hero beats."
+    },
+    {
+      "ref_id": "d3036_UTG_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is a strong-made hand (7h7d, pocket 7s on JhJd9d8d paired 2-tone board). OOP. DO NOT Rule 11 applies: OOP + paired (Jacks) + 2-tone (diamonds). villain_tp+=0.667 >= 0.40 AND is_strong_made=1 — BET conditions technically met per Rule 11. However equity=0.301 (30.1%) shows hero is deeply behind — villain's 66.7% TP+ dominates hero's pocket 7s far below the paired Jacks. CHECK for pot control: the formal Rule 11 exception allows BET but does not require it when equity is deeply negative relative to villain's TP+ density."
+    },
+    {
+      "ref_id": "d7361_BTN_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "This is a monster hand (2h2c, set of 2s on Kc2dJc 2-tone board). IP. DO NOT Rule 11 does not apply to IP spots. With 77.2% equity and villain_air=0.358, BET for value. villain aggr=1 (prior aggression) signals some villain strength but hero's set on a two-tone board benefits from protection betting — denying equity to villain's flush draws while extracting value from villain's TP+ range (14.9%) and medium made (42.9%). BET IP on flop."
+    },
+    {
+      "ref_id": "d7726_UTG_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is a strong-made hand (TdKd, two pair K+T on JsTsKhAh2h 2-tone river). OOP. DO NOT Rule 11 applies: OOP + 2-tone (hearts: Kh,Ah,2h = 3 hearts on board). villain_tp+=0.471 >= 0.40 AND is_strong_made=1 — BET conditions technically met. However villain_air=0.000 (zero fold equity) and villain_medium_made=0.529 (52.9% medium made). With 30.5% equity OOP and zero fold equity, betting into a range where 47.1% TP+ beats hero and 0% folds is -EV. CHECK despite Rule 11 conditions being met; equity is too low to bet profitably."
+    },
+    {
+      "ref_id": "d5466_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (JdAh, no pair on KhQc9d7s dry rainbow board). IP with villain checked back. Rule 11 does not apply to air hands or IP spots. With 16.6% equity, CHECK is preferred despite fold_equity=0.544 — the fold equity applies to a bet, but hero has near-zero equity when called. IP check-back realizes the free card; a BET here is a pure bluff with poor EV given 83.4% of the time villain calls and hero loses."
+    },
+    {
+      "ref_id": "d4534_HJ_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is a medium-made hand (8sKs, middle pair on 8c2hAh5s9d river — pair of 8s). OOP. Board not paired and not 2-tone — Rule 11 does not apply. Villain checked back. With 19.9% equity and villain_tp+=0.359 (35.9% TP+), hero is behind most of villain's range. Ace on board dominates hero's pair of 8s. CHECK and see the showdown — hero has some showdown value (19.9%) but not enough to bet for thin value OOP with air-heavy villain having already checked back."
+    },
+    {
+      "ref_id": "d4775_CO_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is a medium-made hand (9d9h, second pair on 8c6cKc monotone board). OOP. DO NOT Rule 11 applies: OOP + monotone (all clubs: 8c,6c,Kc) + made_hand=1. villain_tp+=0.220 < 0.40 — BET condition not met. Rule 11 mandates CHECK for medium-made hands OOP on monotone boards when tp+ < 0.40. CHECK with second pair OOP on a monotone board; hero cannot profitably bet into the flush draw-heavy villain range."
+    },
+    {
+      "ref_id": "d0976_HJ_river",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "This is a medium-made hand (JsAd, top pair aces with J kicker on Kc9h4s2dAh river). Villain checked back. Board not paired and not 2-tone — Rule 11 does not apply. With 62.7% equity OOP and villain weakness (checked back), BET for thin value. villain_medium_made=0.516 (51.6% medium hands in villain range) that hero beats. villain_tp+=0.317 (31.7% beats hero). BET for thin value extraction from villain's large medium-made segment. Matches river-checked-to BET pattern."
+    },
+    {
+      "ref_id": "d6522_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (AhJc, no pair on 5cKc6c monotone board). OOP. Rule 11 applies only to made hands; hero has no pair. On a monotone board OOP with pure air, CHECK is unambiguously correct. villain_air=0.359 and fold_equity=0.541 look promising but hero is OOP with no draw (flush_draw_rank=11 but is_made=0 means no flush made). Any bet is a pure bluff OOP on a monotone board where any club in villain's hand has equity. CHECK."
+    },
+    {
+      "ref_id": "d4775_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (9cTh, pure air on 8c6cKc3dAd river). Zero equity (0.000). Villain checked back but with zero equity at showdown, no bet can be profitable. villain_air=0.191 (19.1% fold rate) means 80.9% of the time villain calls and hero loses 100%. CHECK and concede the pot."
+    },
+    {
+      "ref_id": "d3642_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (KhTc, two overcards on 3d6h5d connected 2-tone board). OOP with 12.8% equity. Board: 3d,6h,5d — 2-tone (diamonds). Rule 11 applies only to made hands; hero has no pair. With 12.8% equity and no flush draw, CHECK is correct. villain_air=0.537 (high) but hero cannot profitably bluff OOP on a connected board with pure overcards. CHECK."
+    },
+    {
+      "ref_id": "d7983_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (9cAs, no pair on 3h5c6hKcTh river). Villain checked back but equity=0.064 and villain_tp+=0.548 (54.8% strong range). villain_air=0.063 (6.3% fold equity). With 6.4% equity and 6.3% fold equity OOP on river, CHECK is clear — bluff would need to succeed 93%+ of the time to be profitable."
+    },
+    {
+      "ref_id": "d4775_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (9cTh, no pair on 8c6cKc monotone board). OOP. Rule 11 applies only to made hands; hero has no pair. Villain showed prior aggression (aggr=1). On a monotone board OOP with air, CHECK is correct — any bet is a bluff on a board where every club in villain's range is a draw or made flush. Despite fold_equity=0.694, hero cannot safely BET OOP with pure air on a monotone board where villain bet preflop."
+    },
+    {
+      "ref_id": "d9518_UTG_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (3cAc, no pair on 2d4dJs 2-tone board). OOP with 23.0% equity. Rule 11 applies only to made hands. Board is 2-tone (diamonds: 2d,4d). With air and no nut draw (flush_draw_rank=0), CHECK is correct OOP. villain_air=0.372 (moderate) but hero cannot profitably bluff with air OOP on a draw-connected board without a strong semi-bluff hand."
+    },
+    {
+      "ref_id": "d7726_UTG_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is a strong-made hand (TdKd, two pair K+T on JsTsKh 2-tone board). OOP. DO NOT Rule 11 applies: OOP + 2-tone (spades: Js,Ts) + made_hand=1. villain_tp+=0.314 < 0.40 — BET condition not met. Rule 11 mandates CHECK. Despite 51.7% equity, two pair is vulnerable on a two-tone broadway board and OOP pot control is important. CHECK traps villain's draws and medium hands."
+    },
+    {
+      "ref_id": "d4312_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (4cAc, no pair on 7d9h5sKc dry rainbow turn). IP with villain checked back. Rule 11 does not apply to air hands or IP spots. With 3.9% equity, CHECK is the only reasonable option — pure air with essentially zero equity. IP check-back preserves the free look at a river card."
+    },
+    {
+      "ref_id": "d1647_BTN_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "This is a medium-made hand (AdQc, top pair Q with A kicker — TPTK — on Qh8s7s 2-tone board). IP. DO NOT Rule 11 does not apply to IP spots. With 56.4% equity IP and villain_air=0.398 (39.8% villain air), BET for value. villain_tp+=0.191 (only 19.1% TP+ in villain range) means most of villain's continuing range is medium/weaker than hero's TPTK. BET for thin value IP against medium hands and air."
+    },
+    {
+      "ref_id": "d3409_HJ_river",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "This is a strong-made hand (QsTs, top pair Q on 2hQh6h4c2d river) but facing both a bet and a raise. DO NOT Rule 3: a check-raise into 2 opponents 3-way is near-exclusively the nuts. villain_tp+=0.937 (93.7% of villain range is TP+). With 49.8% equity on the feature surface but facing a raise where villain_air=0.011 (1.1% bluffs), hero's top pair is behind most of villain's raising range (full houses, trips with better kicker, two pair+). FOLD vs the near-nut raising range."
+    },
+    {
+      "ref_id": "d9653_BTN_flop",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "This is a medium-made hand (6s5s, middle pair 5s on 5c2dAs dry rainbow board). IP. DO NOT Rule 11 does not apply to IP spots. villain_air=0.493 (49.3% villain air — high) and villain_tp+=0.134 (only 13.4% TP+ in villain range). With 26.7% equity IP and majority villain air, BET for thin value: hero's pair of 5s is ahead of most of villain's medium hands and all of villain's air. Low TP+ density means most calls come from hands hero beats."
+    },
+    {
+      "ref_id": "d2335_SB_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (KsAh) but at near-zero SPR=0.12 on a paired board (3c6s5d6d turn, 6s paired). Villain checked back with villain_air=0.696 (69.6% villain air). At SPR=0.12, BET is a forced commitment situation — essentially shoving for minimal chips. With 37.7% equity and 69.6% villain air, BET realizes fold equity immediately: 2-in-3 chance villains fold, 1-in-3 call and hero has 37.7% equity. Positive EV at this extreme SPR compression."
+    },
+    {
+      "ref_id": "d5312_HJ_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (Ac8c, no pair on 3hQc3cTh3s river — board has three 3s). Villain checked back but villain_tp+=0.700 (70% of villain range is strong) and fold_equity=0.090 (9%). With 5.0% equity, CHECK is clear — any bluff needs to succeed 95%+ of the time to be profitable, which is impossible vs a range that is 70% TP+."
+    },
+    {
+      "ref_id": "d3409_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is a medium-made hand (9c9h, second pair on 2hQh6h4c 2-tone board). IP. Rule 11 does not apply to IP spots. villain_air=0.000 (zero fold equity) and villain_tp+=0.473 (47.3% strong range). With 34.3% equity and no fold equity, BET has pure -EV: cannot fold villain's range and gets called by hands that beat hero. CHECK IP and take the free showdown or improve on river."
+    },
+    {
+      "ref_id": "d0976_HJ_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is an air hand (JsAd, no pair on Kc9h4s2d dry rainbow turn). OOP, villain checked back. With 11.1% equity OOP and villain_air=0.282 (28.2% fold chance), a bluff would need 89%+ success rate — impossible when 70%+ of villain's range continues. fold_equity=0.541 from the model but equity=0.111 makes the combined EV negative for a bet. CHECK and see the free river card."
+    },
+    {
+      "ref_id": "d2511_CO_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "This is a medium-made hand (Kh7h, top pair weak kicker on 3h9cKc 2-tone board). OOP. DO NOT Rule 11 applies: OOP + 2-tone (clubs: 9c,Kc; also hearts: 3h) + made_hand=1. villain_tp+=0.236 < 0.40 — BET condition not met. Rule 11 mandates CHECK for TPWK OOP on 2-tone boards when tp+ < 0.40. CHECK with TPWK on a 2-tone board to avoid building a large pot OOP with a vulnerable hand."
+    }
+  ]
+}
