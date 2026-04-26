@@ -12,7 +12,7 @@
 - **KB §1.7 carve-out tightened** with `villain_air_pct >= 0.20` threshold. Empirically motivated by A.4 (`b2de857`): both Sonnet AND Opus on v3.1 incorrectly raised MW-39 (AhJh on Kh8h3d; expert CALL) by invoking KB §1.7 (nut FD + Ah blocker → RAISE) on a spot with `villain_air_pct = 0.05` (effectively zero fold equity). The 0.20 threshold matches `feedback_solver_findings.md` solver-corrected MW-30 CALL anchor. v3.2 adds an OVERRIDE section in Calibration Notes that supplements (does not edit) the standalone KB file `knowledge/three_way_gto.md` §1.7. Labellers reading v3.2 must apply the v3.2 threshold over the unmodified KB §1.7 carve-out. Tag: `[v3.2 addition Fix 2]`.
 
 **What's preserved from v3.1:**
-- All v3.1 features, KB references, DO NOT Rules 1-11, output schema, Calibration Notes for v2 + v2.3 anchors. v3.2 is purely additive — no content removed from v3.1.
+- All v3.1 features, KB references, DO NOT Rules 1-10 (the full v3.1 set), output schema, Calibration Notes for v2 + v2.3 anchors. v3.2 is purely additive — no content removed from v3.1; only DO NOT Rule 11 (Fix 1) and the KB §1.7 OVERRIDE section (Fix 2) added.
 
 **Bundled cross-protocol fix (Protocol B only — applied at the protocol pilot artifact, not in this file):**
 - F-S5 phantom feature patch: `prompts/protocol_b_composition_first_v1_0_pilot.md` L283-285 + `prompts/protocol_b_composition_first_v1_0.md` L264-266. Range-mass axis no longer references the phantom `hero_top_pair_plus_pct` feature; replaced with hand-class proxy derivation per `MAIN_TERMINAL_PHASE_A8_SYNTHESIS_FS5_PATCH_DIRECTIVE_2026-04-26.md` (master `947f176`) and bundled per `MAIN_TERMINAL_PATH_A_V32_PROTOCOL_REVISION_DIRECTIVE_2026-04-26.md` (master `24494eb`). This fix is Protocol-B-specific; Protocol C did not have the phantom feature per A.8 static audit.
@@ -666,56 +666,90 @@ CHECK signal in isolation. Reason from the hand itself and the
 composition quad. A stamped HRP of 0.00 alongside an obviously
 strong hand is a data quality flag, not a poker signal.
 
-**11. DO NOT auto-bet strong-made hands on paired or 2-tone-flush
-boards OOP with multiple live villains.** `[v3.2 addition Fix 1]`
-Empirically motivated by A.4 Option C calibration HALT (master
-`b2de857`): both Sonnet 4.6 AND Opus 4.7 incorrectly bet
-`d3688_BB_flop` (8cKc on KdTd4s; expert CHECK) and `d9556_BB_flop`
-(5h5d on 5s6d6h flopped fives full; expert CHECK) by invoking the
-implicit "monsters/strong-made must bet 3-way for protection or
-value" reasoning (which appears in Worked Example 4 as a default
-for nut-strength multiway and in DO NOT Rule 5's discussion of TP
-pot-control). That reasoning has two narrow exceptions in multiway
-that v3.1 did not codify explicitly:
+**11. DO NOT auto-bet made hands (top pair and stronger) on paired
+or 2-tone-flush boards OOP with multiple live villains.**
+`[v3.2 addition Fix 1; rev 2 per PR #47 reviewer]` Empirically
+motivated by A.4 Option C calibration HALT (master `b2de857`): both
+Sonnet 4.6 AND Opus 4.7 incorrectly bet `d3688_BB_flop` (8cKc on
+KdTd4s top pair weak kicker on 2-tone-diamond board; expert CHECK)
+and `d9556_BB_flop` (5h5d on 5s6d6h flopped fives full on paired
+board; expert CHECK) by invoking the implicit "made hands must bet
+3-way for protection or value" reasoning (which appears in Worked
+Example 4 as a default for nut-strength multiway and in KB Example
+6 as "low villain TP+ + high air → bet"). That reasoning has two
+narrow exceptions in multiway that v3.1 did not codify explicitly,
+covering BOTH medium-made (TPWK / second pair) AND strong-made
+hands (set+, two pair):
 
 EXCEPT on **paired boards** where villain range is heavily capped
 (no trips combos in opener range AND no overpair combos that beat
-hero's monster), CHECK is preferred to extract by inducing
-later-street bluff-catches. The paired-board structure caps villain
-to mostly-air or mostly-bluff-catcher continuing range; betting
-folds out the bluff-catchers and isolates against the few hands
-that beat us. CHECK keeps villain's bluff-catching range in.
+hero's strong-made / monster hand), CHECK is preferred to extract
+by inducing later-street bluff-catches. The paired-board structure
+caps villain to mostly-air or mostly-bluff-catcher continuing
+range; betting folds out the bluff-catchers and isolates against
+the few hands that beat us. CHECK keeps villain's bluff-catching
+range in. (Anchor: `d9556_BB_flop` — flopped fives full on
+5s6d6h paired board.)
 
 ALSO EXCEPT on **2-tone-flush boards where hero is OOP and 2nd
 villain remains live** (e.g. multi-way flop with one fold + two
-live villains): CHECK is preferred to control pot size and avoid
-isolating into the live villain's flush draws / better TP+
-continues. Betting OOP into multiple live villains on a 2-tone
-board commits hero to bigger pots when called, where the 2nd
-villain's continuing range skews to the parts of villain's range
-that beat hero (made flushes, two pair+, draws with strong combos).
+live villains, OR pure 3-way flop), particularly when hero is
+medium-made (TPWK / second pair / pair below top): CHECK is
+preferred to control pot size and avoid isolating into the live
+villain's flush draws / better TP+ continues. Betting OOP into
+multiple live villains on a 2-tone board commits hero to bigger
+pots when called, where the 2nd villain's continuing range skews
+to the parts of villain's range that beat hero (made flushes,
+two pair+, draws with strong combos). The "low villain TP+ + high
+air → bet for protection" reasoning from KB Example 6 is HU-leaning
+and over-fires in 2-tone OOP multiway. (Anchor: `d3688_BB_flop` —
+8cKc TPWK on KdTd4s 2-tone-diamond board with 2nd live villain.)
 
 **Decision rule (when in doubt):**
-- Hero hand class is `is_strong_made = 1` OR `is_monster = 1`
-  (set+, two pair, overpair, top pair top kicker on dry board)?
+- Hero hand class is `is_made_hand = 1` (top pair or stronger —
+  covers BOTH medium-made TPWK / second pair AND strong-made
+  two-pair+ AND monsters set+)?
 - AND hero is OOP (`is_ip = 0`)?
-- AND board is paired (any rank duplicated) OR 2-tone-flush
-  (3+ cards of one suit on flop) OR 3-tone-flush (any suit)?
-- AND `num_opponents >= 2` (multi-way still live, not heads-up)?
-- → Default to CHECK with confidence MEDIUM; only BET if (a) `villain_top_pair_plus_pct >= 0.40` (villain range skews TO worse value we can extract from), OR (b) explicit calibration anchor pattern (e.g. d3178 AA-on-paired-river checked-to spot which DOES BET — see Calibration Notes for the river-checked-to override).
+- AND board is paired (any rank duplicated on any street so far)
+  OR has 2-tone-flush structure (3+ cards of one suit on flop, or
+  flush completing on turn/river)?
+- AND `num_opponents >= 2` (multi-way still live; not heads-up)?
+- → Default to CHECK with confidence MEDIUM; only BET if BOTH:
+    (a) `villain_top_pair_plus_pct >= 0.40` (villain range skews
+        heavily TO worse value hero can extract from)
+    AND (b) hero is `is_strong_made = 1` OR `is_monster = 1` (hero
+        actually has the strength to value-bet into a value-heavy
+        villain range; medium-made TPWK CANNOT extract from a
+        value-heavy villain range — TPWK is dominated by villain's
+        TP+ continues)
+  OR if (c) river-checked-to override fires (see Calibration Notes
+  for d3178-pattern: AA on JhQcJc+Ks+5h checked-to → BET).
 
 This rule does NOT apply to:
-- Heads-up spots (`num_opponents = 1`) — bet for value/protection per existing v3.1 rules
-- IP spots (`is_ip = 1`) — position confers pot-control on later streets via check-back, less need for OOP CHECK trap
-- Dry boards (no pair, no flush draw) — bet for value per existing v3.1 rules
-- River checked-to spots with checked-by-villain action history (e.g. d3178 AA on JhQcJc+Ks+5h checked-to → BET per Calibration Notes; this is the "checked-to-monster-river" override)
+- Heads-up spots (`num_opponents = 1`) — bet for value/protection
+  per existing v3.1 rules
+- IP spots (`is_ip = 1`) — position confers pot-control on later
+  streets via check-back, less need for OOP CHECK trap
+- Pure dry boards (no pair, no 2-tone-flush, no obvious draw) —
+  bet for value per existing v3.1 rules
+- River checked-to spots with `villain_checked_back = 1` action
+  history (e.g. d3178 AA on JhQcJc+Ks+5h checked-to → BET per
+  Calibration Notes for the river-checked-to override)
+- Drawing hands (`is_made_hand = 0`) — semi-bluff decisions are
+  governed by KB §1.7 + v3.2 KB §1.7 OVERRIDE (Fix 2), not by this
+  rule
 
 **Cross-reference:** This rule supplements (does not contradict)
 DO NOT Rule 5 (TP is medium-strength 3-way). Rule 5 says don't
-*overbet* TP; Rule 11 says don't *auto-bet* strong-made-OR-better
-on paired/2-tone OOP multiway. Both rules push toward pot-control
-in 3-way contexts where villain range structure has hidden value
-density that betting isolates into.
+*overbet* TP in general; Rule 11 says don't *auto-bet* any made
+hand (TPWK and stronger) on paired/2-tone OOP multiway. Both rules
+push toward pot-control in 3-way contexts where villain range
+structure has hidden value density that betting isolates into.
+
+**Affected calibration anchors:** `d3688_BB_flop` (TPWK on 2-tone
+flop OOP multiway), `d9556_BB_flop` (monster on paired flop OOP
+multiway). Both are reversal hands that v3.1 BET; v3.2 routes both
+to CHECK via the unified predicate.
 
 ---
 
@@ -782,7 +816,12 @@ calling range that doesn't fold. Above 0.20 air, the raise's fold
 equity component clears the EV threshold per solver simulations.
 
 **Decision rule (Fix 2):**
-- Hero has nut flush draw (`has_flush_draw = 1` AND `nut_flush_block = 1`) OR nut straight draw?
+- Hero has nut flush draw (`has_flush_draw = 1` AND hero holds the
+  Ace of the suit on the board — i.e., hero has the nut blocker;
+  closest 59-feature contract feature is `flush_block_pct >= ~0.40`,
+  but the canonical predicate is hero literally holding A♠/A♥/A♦/A♣
+  matching the flush suit on the board) OR nut straight draw (with
+  the corresponding straight blocker)?
 - AND hero has aggressor-side blocker to villain's nut continuing combo?
 - AND `villain_air_pct >= 0.20`?
 - → KB §1.7 RAISE applies (per existing carve-out); proceed with semi-bluff raise
