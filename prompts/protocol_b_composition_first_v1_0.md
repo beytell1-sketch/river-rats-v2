@@ -1,26 +1,117 @@
 ---
 author: general-purpose subagent acting as gto-expert + ml-architect (dedicated subagents unavailable)
 date: 2026-04-26
+version: v1.0.1
 derived_from: protocol_b_composition_first_v0_1_DRAFT.md
-status: v1.0 (content fill of v0.1 DRAFT skeleton)
+status: v1.0.1 (APPROVE-WITH-NITS fix-forward on v1.0)
 review_chain:
   - orchestrator structural skeleton (v0.1 DRAFT)
-  - this fill (gto-expert + ml-architect persona pass)
-  - independent reviewer pass — REQUIRED before pilot use
+  - v1.0 fill (gto-expert + ml-architect persona pass)
+  - v1.0 independent reviewer pass — APPROVE-WITH-NITS verdict at `aa1c2f7`
+  - v1.0.1 fix-forward (this revision) — addresses 3 MEDIUM + 2 NIT findings
+  - v1.0.1 independent reviewer pass — REQUIRED before pilot use
   - calibration exam against 24-hand reference set — REQUIRED before pilot
   - owner final approval — REQUIRED before pilot
+changelog:
+  v1.0.1:
+    date: 2026-04-26
+    addresses:
+      - source: review/comms/REVIEW_VERDICT_PR_10_PROTOCOL_B_2026-04-26.md (`aa1c2f7`)
+      - source: review/comms/MAIN_TERMINAL_PR_10_FIX_FORWARD_REQUIRED_2026-04-26.md (`099c9de`)
+    fixes:
+      - "MEDIUM #1 — Example 1 re-authored with internally-consistent
+        100bb pot/SPR math (preflop ~3bb open + 2 calls = ~9bb pot;
+        flop checks through; turn pot ~9bb, half-pot turn bet sizing).
+        All 'wait... actually' editorial drift fragments stripped.
+        Final example reads as completed worked-trace."
+      - "MEDIUM #2 — Carve-out added to Anti-pattern #7: equity-derived-
+        from-composition pot-odds math IS allowed in Step 3 for MW-30-
+        style anchor cases where the equity is derived from the
+        composition slices themselves (not from pre-computed
+        equity_vs_range or tracker-style raw values). Example 2
+        retains its Step 3 pot-odds math under this carve-out.
+        Example 2 arithmetic also corrected: pot odds 30/(30+90) =
+        0.25 (was 0.18); equity surplus 0.40 - 0.25 = 0.15 (was 0.22).
+        MW-30 anchor justification preserved (surplus 0.15 still
+        positive, beatable medium+draw+air slice still 0.59)."
+      - "MEDIUM #3 — Pre-pilot build requirement section added (top
+        of file). Explicitly names the inlining requirement: build
+        step MUST inline §Bucket taxonomy (v3.1 lines 170-204),
+        §Features (v3.1 lines 439-496), §DO NOT Rules (v3.1 lines
+        595-647) verbatim before dispatch to a labeller agent.
+        Output artifact: prompts/protocol_b_composition_first_v1_0_pilot.md
+        (or equivalent build target). The current v1.0.1 file is the
+        design artifact; the labeller-facing artifact MUST be self-
+        contained."
+      - "NIT — Line 551 typo 'per village' → 'per villain' fixed."
+      - "NIT — Threshold table row for `villain_medium_made_pct ≥ 0.40`
+        softened: 'pot control often dominates with weak/medium hero
+        hands; thin-value-bet remains valid with strong-made hero
+        hands (see Example 1)' (was: 'pot-controlling sizing typically
+        dominates'). Reviewer flagged that Example 1 itself shows
+        thin-value-bet works at heavy-medium."
+    out_of_scope_for_v1_0_1:
+      - "Solver-verification of 0.35 TP+ and 0.40 medium thresholds
+        against d-series anchors (Item B / LOW author-flagged) —
+        deferred to pre-pilot solver pass."
+      - "Anti-pattern #11 (action-history-blindness, per-villain vs
+        merged composition naming) — NIT-level, deferred to v1.1."
+      - "4B-rate floor as pilot design parameter — NIT-level, naturally
+        belongs in Task 5 (pilot orchestration) scope."
+      - "Production of `prompts/protocol_b_composition_first_v1_0_pilot.md`
+        with verbatim-inlined sections — explicit build pipeline step,
+        owner-gated; v1.0.1 only makes the requirement explicit."
 ---
 
 # Stage 4 Protocol B — Composition-First Labelling Prompt
 
-**Status:** v1.0 (filled from DRAFT v0.1 — pending reviewer pass)
+**Status:** v1.0.1 (APPROVE-WITH-NITS fix-forward on v1.0 — pending reviewer pass)
 **Date:** 2026-04-26
 **Authored by:** Orchestrator skeleton (v0.1) + general-purpose subagent
-acting under gto-expert + ml-architect personas (this fill)
+acting under gto-expert + ml-architect personas (v1.0 fill + v1.0.1 fix-forward)
 **Pairs with:** Protocol A (KB-first / current v3.1 lineage), Protocol C
 (adversarial elimination)
 **Stage 4 plan reference:** `MAIN_TERMINAL_STAGE4_STRATEGY_PROPOSAL_2026-04-25.md`
 (`ee3d9f5`)
+
+---
+
+## PRE-PILOT BUILD REQUIREMENT (v1.0.1 addition)
+
+**THIS FILE IS A DESIGN ARTIFACT, NOT A LABELLER-FACING PROMPT.**
+
+Before this prompt is dispatched to a labeller agent, a build step
+MUST inline the following sections verbatim from `prompts/gto_labeller_v3.1.md`:
+
+- §"Bucket taxonomy" (v3.1 lines 170-204)
+- §"Features" (v3.1 lines 439-496)
+- §"DO NOT Rules" (v3.1 lines 595-647)
+
+The build step produces `prompts/protocol_b_composition_first_v1_0_pilot.md`
+(or equivalent labeller-facing artifact) with these sections expanded
+in-place — replacing the inheritance-by-reference paragraphs in
+§"Buckets", §"Features", and §"DO NOT Rules" of THIS file.
+
+**Why this matters:** The current file uses inheritance-by-reference
+for human-readable maintenance and diff-clarity. The labeller-facing
+artifact MUST be self-contained because:
+
+- A labeller agent operating on a hand cannot stop mid-session to
+  chase v3.1 line ranges in a separate file.
+- v3.x content can evolve; inlining at build time pins the labeller
+  to the v3.1 snapshot the build was authorised against.
+- The pilot needs reproducibility: the labelling artifact must
+  embed every rule the labeller is judged on, with no external
+  dependencies.
+
+**Failure mode this prevents:** labeller agent chases v3.1 references
+mid-labelling, drifts away from the prompt, OR operates on stale v3.1
+content if v3.x has evolved between v1.0.1 authoring and pilot
+dispatch.
+
+**Build step ownership:** owner-gated. v1.0.1 makes the requirement
+explicit; the actual `_pilot.md` build is a separate pipeline step
+performed at pilot-dispatch time.
 
 ---
 
@@ -117,7 +208,10 @@ axes:
   - vs heavy-TP+ composition (`villain_top_pair_plus_pct ≥ 0.35`):
     hero needs strong made hand or strong draw to continue
   - vs heavy-medium composition (`villain_medium_made_pct ≥ 0.40`):
-    pot-controlling sizing typically dominates
+    pot control often dominates with weak/medium hero hands;
+    thin-value-bet remains valid with strong-made hero hands
+    (see Example 1 — adjacent mixed-medium-skewed regime
+    illustrates the same principle)
 
 **Threshold provenance and reasoning** (replaces v0.1's
 GTO-EXPERT-REVIEW-NEEDED placeholders):
@@ -135,7 +229,7 @@ change the canonical 3-way action.
 | `villain_air_pct ≥ 0.55` | heavy-air | A range that is majority air with no second-largest slice exceeding ~0.20 is a fold-equity-dominated shape. | 3-way fold equity per opponent need ~0.70 to clear the 0.49 joint-fold barrier (KB §"Fold Equity"). Composition with ≥55% air per villain corresponds to ~70%+ fold-to-bet on small sizing on disconnected boards (solver-grounded estimate from CO-vs-air-heavy spots in the d-series). Below 55%, the second-largest slice (TP+ or medium) starts to bind: villain has too many continuing hands for fold equity to dominate. |
 | `villain_draw_pct ≥ 0.40` | heavy-draws | A range where draws are the modal slice — bet-sizing decisions become draw-denial-driven. | Per KB §"Bluff-to-Value Ratio" + KB §1.7 (semi-bluff RAISE conditions), once draws exceed ~40% of villain's range, the calling-versus-raising mass shifts: draw-heavy ranges fold a high % to large sizing (denial), while small sizing lets draws realise free equity. The 0.40 cutoff matches the empirical 3-way two-tone-flop draw frequency observed in OPTION_A_CAPPED_GATE rows where BTN was the draw-receiver. |
 | `villain_top_pair_plus_pct ≥ 0.35` | heavy-TP+ | A range that is ≥35% TP+ is a "continuing range" — defensive hands dominate. | The 0.35 cutoff comes from the calibration anchor d2410_CO_turn (TPGK on J-high turn): villain composition there is 0.30-ish TP+ + 0.16 draws + 0.22 air, and the solver still says BET because TP+ is below the 0.35 line. By contrast, the bet-and-call hands in MW-30 / MW-46 push TP+ ≥ 0.40, where the action history narrows villain into a continuing range — still small enough that hero's TPGK has equity but large enough that hero's weak made hands cannot continue. The 0.35 line splits these two regimes. [UNCERTAIN: the exact line between 0.30 and 0.40 is solver-bin-sensitive; reviewer/owner should solver-verify against d-series before pilot.] |
-| `villain_medium_made_pct ≥ 0.40` | heavy-medium | A range that is ≥40% medium-made is dominated by 2nd-pair / weak-pair / pocket-pair-below-top — these neither fold nor raise, they call. | Solver-aligned 3-way river-betting frequencies for `medium_made` are ~0.15 (per `RIVER_BETTING_FREQUENCIES` in `range_narrowing.py` — see Stage 3.5 MUST #50 atomic-coherence set: medium-made bets 15%, checks 85%). When villain's range exceeds ~40% medium-made, hero's value-bet equity is "thin": worse hands call, better hands rarely fold. Pot control is the canonical response. The 0.40 cutoff is empirical — below it, hero's TP+ has clear value; above it, the value-vs-pot-control trade-off flips. [UNCERTAIN: solver verification on a 3-way medium-heavy river spot would tighten this; current value is poker-theoretic estimate from KB §1.11 + Stage 3.5 frequency tables.] |
+| `villain_medium_made_pct ≥ 0.40` | heavy-medium | A range that is ≥40% medium-made is dominated by 2nd-pair / weak-pair / pocket-pair-below-top — these neither fold nor raise, they call. | Solver-aligned 3-way river-betting frequencies for `medium_made` are ~0.15 (per `RIVER_BETTING_FREQUENCIES` in `range_narrowing.py` — see Stage 3.5 MUST #50 atomic-coherence set: medium-made bets 15%, checks 85%). When villain's range exceeds ~40% medium-made, the value-vs-pot-control trade-off becomes hero-hand-class-dependent: with weak/medium hero hands, pot control often dominates (worse hands call, better hands rarely fold); with strong-made hero hands, thin-value-bet remains valid because the medium-slice calls give thin value (Example 1 demonstrates the principle in the adjacent mixed-medium-skewed regime at medium=0.32, where TPGK takes thin value against a 0.62 made-hand-but-worse mass). The 0.40 cutoff bins the composition shape; the action still derives from the shape × hero hand-class × position × SPR. [UNCERTAIN: solver verification on a 3-way medium-heavy river spot would tighten this; current value is poker-theoretic estimate from KB §1.11 + Stage 3.5 frequency tables.] |
 
 **Threshold semantics (Stage 3.5 chain-narrowing alignment):**
 
@@ -542,13 +636,15 @@ qualitative shapes (heavy-air / heavy-draws / etc.) and the action
 derivation chains are the load-bearing parts and are robust to
 modest pct shifts.]
 
-### Example 1 — Heavy-air villain, hero weak-made (anchor: d2410_CO_turn shape)
+### Example 1 — Mixed-medium-skewed villain, hero strong-medium TPGK on rainbow turn (thin value)
 
-**Spot:** 3-way 100bb. Hero CO with `Jc Ks` on `Jd 9d 3h | 6d`
-(turn). Action: CO opened preflop, BTN call, BB call. Flop checks
-through. Turn: BB checks. Hero (CO) acts. Pot 80, SPR ~1.25.
+**Spot:** 3-way 100bb. Hero CO with `Jc Ks` on `Jd 9c 3h | 6s`
+(turn — rainbow, no flush draw completed). Action: CO opens 3bb,
+BTN call 3bb, BB call 2bb additional. Preflop pot ≈ 9.5bb. Flop
+checks through. Turn: BB checks. Hero (CO) acts.
+Pot ≈ 9.5bb, effective stacks ≈ 97bb behind, **SPR ≈ 10** (deep).
 
-**Step 1 — composition (chain-narrowed per village):**
+**Step 1 — composition (chain-narrowed per villain):**
 Aggregated composition:
 `villain_top_pair_plus_pct = 0.30, villain_medium_made_pct = 0.32,
 villain_draw_pct = 0.16, villain_air_pct = 0.22`. (Per-villain:
@@ -558,48 +654,64 @@ BB more air-heavy after preflop call + flop check.)
 
 **Step 2 — situation:** No slice exceeds the heavy-* threshold
 (TP+ at 0.30 < 0.35; medium at 0.32 < 0.40; air at 0.22 < 0.55).
-This is **mixed composition skewed toward medium-made + TP+**.
-Hero is weak-made (TPGK on a turn that completed a flush draw —
-wait, hero is TPGK against a turned flush; actually on a J-high
-board with the diamond-flush turn the situation is more complex,
-but hero's TPGK class is a strong-medium relative to villain's
-modal medium-made + air). Hero IP (closing CO position relative
-to BB; BTN already-checked-back via the flop check-through, so
-hero's relative IP is high). Equity ~0.43 vs aggregated range,
-worse_hand_pct ~0.82.
+This is **mixed composition skewed toward medium-made + TP+**
+(medium 0.32 + TP+ 0.30 = 0.62 of villain's range is some flavour
+of made hand). Rainbow turn brings no new draw completions, so
+the 0.16 draw slice is unchanged from flop and remains live as
+gutshots / backdoor-flush-equity hands. Hero `Jc Ks` is TPGK
+(top pair, strong K kicker) — a strong-medium hand class against
+this composition: hero beats the 0.32 medium slice and most of
+the 0.16 draw slice, loses to the top of the 0.30 TP+ slice
+(JT-suited / KJ / J9 two-pair / sets). Hero IP (closing CO
+position relative to BB; BTN already checked-back via the flop
+check-through, so hero's effective position vs BB is in-position).
+Equity ~0.58 vs aggregated range, worse_hand_pct ~0.66.
 
-**Step 3 — composition-derived candidates:** Mixed composition
-with high worse_hand_pct → BET small for value extraction from
-medium + air slice. CHECK is alternative to pot-control on a
-turn that brought a flush card. Composition-derived candidates:
-`["BET", "CHECK"]` with BET primary because medium + air sum to
-0.54 of villain's range — half-pot or smaller bet folds out air,
-gets called by medium-made worse, denies the implied 16% draw
-slice.
+**Step 3 — composition-derived candidates:** Mixed-medium-skewed
+composition + hero strong-medium TPGK on a dry rainbow turn →
+BET small for thin value extraction from the 0.32 medium slice +
+fold equity from the 0.22 air slice + denial against the 0.16
+gutshot/backdoor-equity slice. Sizing should be small (~33-50%
+pot, i.e. ~3-5bb into 9.5bb) because (a) the medium slice calls
+small but folds large, and (b) deep SPR ~10 means a large turn
+bet over-builds the river and loses the medium-slice value.
+Composition-derived candidates: `["BET"]` with sizing ~33% pot;
+CHECK is rejected because checking surrenders the thin-value
+opportunity against the 0.62 made-hand-but-worse-than-TPGK slice
+of villain's range (medium + lower TP).
 
 **Step 4 — bucket cross-check:** Bucket = medium_made (TPGK on
-turn with flush completing is borderline strong/medium; classify
-medium given the flush-completing card). Bucket-3W-MEDIUM with
-checked-to + compressed SPR + worse_hand_pct ≥ 0.80 →
-BET-small per KB §1.11 thin-value. **Outcome 4A** — composition
-and bucket converge on BET.
+J-high rainbow turn with no flush threats is borderline
+strong/medium; classify medium because hero's K kicker doesn't
+clear the 0.30 TP+ slice). Bucket-3W-MEDIUM with checked-to-hero
+on a dry turn + worse_hand_pct ≥ 0.65 → BET-small per KB §1.11
+thin-value. **Outcome 4A** — composition and bucket converge on
+BET small.
 
-**Action:** BET. **Confidence:** HIGH. **Outcome:** 4A.
-**Composition-rule-conflict:** false.
+**Action:** BET (~33% pot, ~3bb into 9.5bb). **Confidence:**
+HIGH. **Outcome:** 4A. **Composition-rule-conflict:** false.
 
 **Trace:** "Villain composition aggregated: 0.30 TP+ / 0.32
-medium / 0.16 draws / 0.22 air — mixed shape with medium + air
-dominant (0.54). Hero TPGK is strong-versus-medium-and-air, and
-worse_hand_pct 0.82 says villain has a wide thin-value bet
-target. Composition → situation: mixed-medium-skewed → action:
-BET small for thin value. Bucket cross-check: medium_made + KB
-§1.11 also says BET small. 4A."
+medium / 0.16 draws / 0.22 air — mixed shape with medium + TP+
+dominant (0.62 made-hand mass). Rainbow turn = no draw
+completions; draw slice still live as gutshots / backdoors.
+Hero TPGK is strong-medium (beats 0.32 medium + most of draws;
+loses to top of 0.30 TP+); worse_hand_pct 0.66, equity 0.58.
+Composition → situation: mixed-medium-skewed + dry turn + IP →
+action: BET ~33% for thin value (small sizing keeps medium
+slice in, builds river manageably at SPR ~10). Bucket
+cross-check: medium_made + KB §1.11 thin-value confirms. 4A."
 
 ### Example 2 — Heavy-TP+ villain (action-history-narrowed), hero weak-made (anchor: MW-30 shape, CALL)
 
 **Spot:** 3-way 100bb. Hero BB with `Tc Th` on `Ks 8d 4c` (flop).
 Action: CO open, BTN call, BB call (preflop). Flop: CO bets
-half-pot, BTN calls, BB to act. Pot 60, to_call 30, pot_odds 0.18.
+half-pot, BTN calls, BB to act. Working in chip units (not bb):
+pot 90 facing hero (preflop pot ~30 + CO bet 30 + BTN call 30),
+to_call 30, pot_odds = 30 / (30 + 90) = **0.25**. Equivalent at
+100bb stack depth would be smaller absolute numbers (preflop pot
+~9.5bb, CO half-pot bet ~5bb, etc.); the 30/90 chip-unit form is
+used throughout this example for readability.
 
 **Step 1 — composition (chain-narrowed by bet+call sequence):**
 Per-villain (CO bettor): 0.42 TP+ / 0.18 medium / 0.20 draws /
@@ -611,40 +723,60 @@ villain_draw_pct = 0.20, villain_air_pct = 0.15`.
 
 **Step 2 — situation:** TP+ slice 0.41 ≥ 0.35 → **heavy-TP+
 composition**. Hero pocket-tens is weak-made vs Kxx (second pair,
-unimproved overpair-below-top); equity 0.40 vs the bet+call range,
-pot_odds 0.18 → equity surplus 0.22 → calling is profitable
-despite "facing bet+call" action history.
+unimproved overpair-below-top). Equity 0.40 vs the bet+call range
+is composition-derived: hero's TT beats the medium slice (0.24,
+8x / 4x / weak-pair holdings), beats the draw slice (0.20, no
+showdown value), beats the air slice (0.15) — sum 0.59 of villain's
+range loses to a pocket pair on a Kxx board. The 0.41 TP+ slice
+beats hero. Realised equity ≈ 0.40 after subtracting fold-out
+risk from the few overcards in TT's path.
 
 **Step 3 — composition-derived candidates:** Heavy-TP+ + hero
-weak-made → naively FOLD. BUT — equity surplus 0.22 is large
-because the medium + draw slice (0.44) of villain's range is
-beatable by hero's pocket-pair, and hero closes action (no
+weak-made → naively FOLD. BUT — composition-derived equity 0.40
+clears the composition-derived pot-odds threshold (pot_odds 0.25
+→ equity surplus 0.40 - 0.25 = **0.15**), and the surplus is
+positive because hero's pocket pair beats the medium + draw + air
+slices (0.59) of villain's range. Hero also closes action (no
 3-bet-to-FOLD risk). Composition-derived candidates: `["CALL",
-"FOLD"]` with CALL primary when equity surplus > 0.15. The
-heavy-TP+ shape pushes toward FOLD on its own, but the equity
-math wins because pocket pair beats the medium + draw + air
-slices.
+"FOLD"]` with CALL primary when composition-derived equity surplus
+is positive AND the beatable-slice fraction (0.59) exceeds the
+losing-slice fraction (0.41). The heavy-TP+ shape pushes toward
+FOLD on its own, but the composition arithmetic wins because the
+slices hero beats outnumber the slices that beat hero.
+
+(NOTE on Anti-pattern #7 carve-out: the pot_odds and equity-surplus
+math here is composition-derived — the 0.40 equity comes from
+summing the slices hero beats, not from a pre-computed
+`equity_vs_range` feature or a tracker-style raw equity number.
+Anti-pattern #7 explicitly permits this composition-derived
+pot-odds reasoning in Step 3 for MW-30-style anchor cases. See
+Anti-pattern #7 below for the carve-out specification.)
 
 **Step 4 — bucket cross-check:** Bucket = weak_made (pocket
 pair below top card). Bucket-3W-WEAK-FACING-BET-AND-CALL default
 is FOLD per DO NOT Rule 5 + KB §"bet+call narrowing". But
-calibration anchor MW-30 specifies CALL despite bet-and-call
-when equity > pot odds + ≥0.20 surplus. **Outcome 4B —
-composition + anchor pattern wins.**
+calibration anchor MW-30 specifies CALL when composition-derived
+equity surplus is positive AND the beatable-slice fraction
+exceeds the losing-slice fraction (the MW-30 condition matches
+exactly: surplus 0.15 > 0, beatable slice 0.59 > losing slice
+0.41). **Outcome 4B — composition + anchor pattern wins.**
 
 **Action:** CALL. **Confidence:** HIGH. **Outcome:**
 `4B_anchor_match_override`. **Composition-rule-conflict:** true.
-**override_kb_justification:** "MW-30 anchor pattern — equity
-surplus 0.22 + heavy-TP+ composition where medium+draw+air slice
-(0.59) is beatable by pocket pair."
+**override_kb_justification:** "MW-30 anchor pattern —
+composition-derived equity surplus 0.15 (positive) + heavy-TP+
+composition where medium+draw+air slice (0.59) is beatable by
+pocket pair (exceeds the 0.41 losing TP+ slice)."
 
 **Trace:** "Villain composition aggregated 0.41 TP+ / 0.24
 medium / 0.20 draws / 0.15 air — heavy-TP+ shape after bet-and-
-call narrowing. Hero TT is weak-made vs Kxx but equity 0.40 vs
-pot odds 0.18 = surplus 0.22, large because pocket pair beats
-the medium + draw + air slices (0.59). Composition + equity →
-CALL despite heavy-TP+. Bucket says FOLD per default; MW-30
-anchor pattern overrides — CALL. 4B_anchor_match_override."
+call narrowing. Hero TT is weak-made vs Kxx; composition-derived
+equity 0.40 (sums slices TT beats: medium 0.24 + draws 0.20 +
+air 0.15 = 0.59) vs pot odds 30/(30+90) = 0.25 → surplus 0.15.
+Composition + composition-derived equity → CALL despite
+heavy-TP+. Bucket says FOLD per default; MW-30 anchor pattern
+overrides (positive surplus + beatable-slice 0.59 > losing-slice
+0.41) — CALL. 4B_anchor_match_override."
 
 ### Example 3 — Heavy-draws villain, hero strong-made (LITMUS_KQ shape, BET large)
 
@@ -886,18 +1018,47 @@ and the corrective action.
      equity, not pure air").
 
 7. **Equity-vs-pot-odds conflation with composition.** Citing
-   `equity_vs_range = 0.43` AND composition pcts in the same
-   sentence as the action choice — the trace cannot be graded
-   composition-first because the equity number may have been the
-   real driver.
-   - *Example of disguise:* "Equity 0.43 + heavy-TP+ → FOLD."
-     The 0.43 came first in your reasoning; composition was
-     post-hoc.
-   - *Corrective:* in Step 1-3, do NOT cite equity_vs_range or
-     pot_odds. Cite them in Step 4 as part of the bucket cross-
-     check or as part of the override justification (e.g. MW-30
-     anchor cites equity surplus). The composition derivation
-     must stand on its own.
+   `equity_vs_range = 0.43` (the pre-computed feature) AND
+   composition pcts in the same sentence as the action choice —
+   the trace cannot be graded composition-first because the
+   pre-computed equity number may have been the real driver.
+   - *Example of disguise:* "Equity_vs_range 0.43 + heavy-TP+ →
+     FOLD." The 0.43 came first in your reasoning; composition
+     was post-hoc.
+   - *Corrective:* in Step 1-3, do NOT cite the `equity_vs_range`
+     feature or any tracker-style pre-computed raw equity number.
+     Cite them in Step 4 as part of the bucket cross-check or as
+     part of the override justification.
+
+   **Carve-out (v1.0.1):** equity-derived-from-composition pot-odds
+   math IS allowed in Step 3 for MW-30-style anchor cases where
+   the equity is derived FROM the composition slices themselves
+   (not from `equity_vs_range` or tracker-style raw values).
+   Concretely:
+
+   - **Allowed in Step 3:** "Hero beats medium 0.24 + draws 0.20 +
+     air 0.15 = 0.59 of villain's range; equity ≈ 0.40 (composition-
+     derived from beatable-slice mass); pot_odds 0.25; surplus
+     0.15." The 0.40 equity here is a derivation of the composition
+     pcts, not an external feature read.
+   - **NOT allowed in Step 3:** "equity_vs_range = 0.43 (feature
+     read) + heavy-TP+ → CALL." The 0.43 is a pre-computed feature
+     that bypasses the composition derivation.
+
+   The carve-out exists because MW-30-anchor reasoning IS the
+   composition-derivation: hero's equity comes from summing the
+   composition slices hero beats. Forbidding this in Step 3 would
+   force MW-30 reasoning into Step 4, which destroys the
+   composition-first chain. The disguised-rule-first failure mode
+   (`equity_vs_range` from a tracker) remains forbidden — that's
+   what the corrective addresses.
+
+   - *Grading rule:* in Step 3, citing pot-odds / equity surplus
+     is OK iff the equity number is explicitly derived from the
+     composition slices in the same trace. Citing `equity_vs_range`,
+     `pot_odds`, or any feature-vector raw equity field as an input
+     to the action choice in Step 3 (without the composition
+     derivation) is the failure mode.
 
 8. **Composition-first failure on capped or near-capped ranges.**
    Composition reasoning assumes the range is well-distributed
