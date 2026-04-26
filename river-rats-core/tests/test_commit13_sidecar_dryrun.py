@@ -286,6 +286,86 @@ def test_commit13_3_5_villain_pos_map_covers_calibration_entries():
     )
 
 
+def test_commit15_folded_mw_split_offvillain_routes_correctly():
+    """Commit 15 (per PR #2 verdict §D fix-spec): when a non-primary
+    villain folds postflop but the primary villain is still live, the
+    classifier routes to `folded_mw_offvillain` (not the old promiscuous
+    `folded_mw` bucket which conflated this with true sentinel shapes).
+
+    Test case: FB-21 — primary villain CO is live throughout; BTN folds
+    on the turn after CO's delayed c-bet. Classifier should route to
+    `folded_mw_offvillain` since CO is not in the fold positions."""
+    from tests.solver_verify_sidecars import _classify_shape
+    from _reference_action_history_sidecar import (
+        _REFERENCE_ACTION_HISTORY,
+        _REFERENCE_VILLAIN_POS,
+    )
+    ah = _REFERENCE_ACTION_HISTORY['FB-21']
+    villain_pos = _REFERENCE_VILLAIN_POS['FB-21']  # 'CO'
+    shape = _classify_shape(ah, villain_pos)
+    # FB-21 is a 3-way (>=3 positions in AH) with BTN-fold-turn but
+    # primary villain CO is still live.
+    assert shape == 'folded_mw_offvillain', (
+        f'FB-21 expected folded_mw_offvillain bucket (BTN folded, '
+        f'primary villain CO still live); got {shape!r}'
+    )
+
+
+def test_commit15_folded_mw_split_primary_routes_correctly():
+    """Commit 15: when the primary villain itself folds postflop, the
+    classifier routes to `folded_mw_primary` — this IS the true HIGH #4
+    sentinel territory.
+
+    Test case: synthetic 3-way AH where primary villain BB folds on
+    the flop. Hero faces BTN+CO live but CO is the primary villain
+    designation; we test the case where villain_pos points to the
+    folded position."""
+    from tests.solver_verify_sidecars import _classify_shape
+    # 3-way CO-open: CO/BTN/BB postflop. Primary villain = BB. BB
+    # folds on flop. Construct AH:
+    primary_fold_ah = [
+        ('preflop', 'CO', 'RAISE'),
+        ('preflop', 'BTN', 'CALL'),
+        ('preflop', 'BB', 'CALL'),
+        ('flop', 'BB', 'FOLD'),  # primary villain folds
+        ('flop', 'CO', 'BET'),
+        ('flop', 'BTN', 'CALL'),
+    ]
+    shape = _classify_shape(primary_fold_ah, villain_pos='BB')
+    assert shape == 'folded_mw_primary', (
+        f'Primary villain BB folded on flop in 3-way → expect '
+        f'folded_mw_primary; got {shape!r}'
+    )
+
+
+def test_commit15_folded_mw_legacy_label_retired():
+    """Commit 15: the old promiscuous `folded_mw` bucket label is
+    retired. Verify no entry classifies to `folded_mw` anymore — every
+    fold case should route to one of `folded_hu`, `folded_mw_primary`,
+    or `folded_mw_offvillain`."""
+    from tests.solver_verify_sidecars import _classify_shape, _SHAPE_PATTERNS
+    from _reference_action_history_sidecar import (
+        _REFERENCE_ACTION_HISTORY,
+        _REFERENCE_VILLAIN_POS,
+    )
+    # Iterate the full corpus; assert no entry returns 'folded_mw'.
+    for ref_id, ah in _REFERENCE_ACTION_HISTORY.items():
+        villain_pos = _REFERENCE_VILLAIN_POS[ref_id]
+        shape = _classify_shape(ah, villain_pos)
+        assert shape != 'folded_mw', (
+            f'{ref_id}: legacy folded_mw label leaked through — '
+            f'should now be folded_mw_primary or folded_mw_offvillain. '
+            f'villain_pos={villain_pos!r}, ah head={ah[:3]!r}'
+        )
+    # And the bucket label is retired from _SHAPE_PATTERNS.
+    bucket_labels = {label for label, _ in _SHAPE_PATTERNS}
+    assert 'folded_mw' not in bucket_labels, (
+        f'`folded_mw` label still present in _SHAPE_PATTERNS: {bucket_labels}'
+    )
+    assert 'folded_mw_primary' in bucket_labels
+    assert 'folded_mw_offvillain' in bucket_labels
+
+
 def test_commit13_2_5_fixture_meta_boards_list_of_strings():
     """FIX #5 (commit 13.2.5): validator extension catches fixture_meta
     board-format drift. Every fixture_meta board must be List[str]

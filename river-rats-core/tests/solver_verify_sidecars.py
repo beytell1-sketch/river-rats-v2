@@ -34,19 +34,28 @@ if _CORE not in sys.path:
     sys.path.insert(0, _CORE)
 
 
-# Shape categories per MUST #49 (8 buckets); assigned via action_history
-# pattern matching.
+# Shape categories per MUST #49; assigned via action_history pattern
+# matching.
+# Commit 15: split `folded_mw` into two buckets to address the
+# pre-existing classifier promiscuity flagged across PR #2-#6 verdicts.
+# `folded_mw_primary` = primary villain (the one we're chain-narrowing
+# against) folded postflop — true HIGH #4 sentinel territory.
+# `folded_mw_offvillain` = a non-primary position folded postflop but
+# the primary villain is still live — chain narrowing operates normally.
+# Splitting clarifies which entries actually exercise the sentinel
+# rendering pathway vs which are HU-after-fold shapes.
 _SHAPE_PATTERNS = (
-    ('hu_donk_x_bet',      'HU donk-flop + turn-check-through + river-bet'),
-    ('hu_bet_x_call_bet',  'HU bet-check-call-bet four-class'),
-    ('hu_bet_raise_call',  'HU BET-RAISE-CALL same-street'),
-    ('folded_hu',          'HU folded-villain sentinel (HIGH #4)'),
-    ('folded_mw',          'Folded-villain multiway sentinel'),
-    ('over_narrow',        'Synthetic over-narrow (MUST #15)'),
-    ('mass_truncation',    'Mass-floor truncation (MUST #28)'),
-    ('delayed_probe',      'HU delayed-probe large turn bet'),
-    ('mw_per_villain',     'Multiway per-villain chain 3-way'),
-    ('other',              'Unclassified (baseline / catch-all)'),
+    ('hu_donk_x_bet',          'HU donk-flop + turn-check-through + river-bet'),
+    ('hu_bet_x_call_bet',      'HU bet-check-call-bet four-class'),
+    ('hu_bet_raise_call',      'HU BET-RAISE-CALL same-street'),
+    ('folded_hu',              'HU folded-villain sentinel (HIGH #4)'),
+    ('folded_mw_primary',      'MW: primary villain folded postflop (HIGH #4 sentinel)'),
+    ('folded_mw_offvillain',   'MW: non-primary villain folded; primary still live (HU-after-fold shape)'),
+    ('over_narrow',            'Synthetic over-narrow (MUST #15)'),
+    ('mass_truncation',        'Mass-floor truncation (MUST #28)'),
+    ('delayed_probe',          'HU delayed-probe large turn bet'),
+    ('mw_per_villain',         'Multiway per-villain chain 3-way'),
+    ('other',                  'Unclassified (baseline / catch-all)'),
 )
 
 
@@ -106,14 +115,29 @@ def _classify_shape(
 
     # PRIORITY 1: folded-villain sentinel shapes (MUST #49 cat 4)
     # HU-folded: any FOLD from the sole non-hero villain on a prior
-    # postflop street (trigger of HIGH #4 sentinel)
+    # postflop street (trigger of HIGH #4 sentinel).
+    # Commit 15 (per PR #2 verdict §D fix-spec): MW-folded is split
+    # by which position folded — primary villain (true sentinel) vs
+    # non-primary (HU-after-fold shape; chain still operates normally
+    # against the still-live primary).
     if has_fold:
         fold_streets = {
             e[0] for e in action_history if e[2] == 'FOLD'
         }
         fold_on_postflop = bool(fold_streets & {'flop', 'turn', 'river'})
         if fold_on_postflop:
-            return 'folded_mw' if is_mw else 'folded_hu'
+            if not is_mw:
+                return 'folded_hu'
+            # MW: position-aware split. Collect positions that folded
+            # on any postflop street; check whether primary villain is
+            # among them.
+            fold_positions = {
+                e[1] for e in action_history
+                if e[2] == 'FOLD' and e[0] in {'flop', 'turn', 'river'}
+            }
+            if villain_pos in fold_positions:
+                return 'folded_mw_primary'
+            return 'folded_mw_offvillain'
 
     # PRIORITY 2: structural shapes per MUST #49
     if flop_bet_count >= 1 and flop_has_raise:
