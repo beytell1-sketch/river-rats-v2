@@ -1,26 +1,36 @@
 #!/usr/bin/env python3
-"""Build the Stage 4 pilot 100-hand stratified corpus (Build C).
+"""Build the Stage 4 pilot 100-hand stratified corpus (Build C v1.0.1).
 
-Per orchestrator directive `MAIN_TERMINAL_PR37_MERGE_ACK_BUILD_C_KICKOFF_2026-04-26.md`:
+v1.0.1 fix-forward per orchestrator directive
+`MAIN_TERMINAL_PR39_DECISION_FIX_FORWARD_VC13_2026-04-26.md`
+addressing QC V-C13 (PR #40 audit): pilot v1.0 inherited 45-feature
+`feat_dict` from source pool; Stage 5 retrain v1.0.1 §Hyperparameters
+point #4 contract requires 59 features (54 v3.1 + 1 board_adjusted_hrp
++ 4 v2.4 P1 blockers `nut_flush_block` / `flush_draw_block_pct` /
+`straight_draw_block_pct` / `nut_made_block_pct`). v1.0.1 calls
+`river-rats-core/feature_extractor.py` `extract_all_features` per
+record at corpus-build time → embeds full 59-feature `feat_dict`.
+
+Same SEED=20260426 → same 100-hand selection (stratification +
+disjointness preserved); only `feat_dict` content changes (45→59
+features). New SHA256 (will differ from v1.0 `492154...4b`).
+
+Per orchestrator predecessor directives `3f9564e` (Builds A/B/C) +
+`MAIN_TERMINAL_PR37_MERGE_ACK_BUILD_C_KICKOFF_2026-04-26.md`:
 
 - 100 hands sampled from `training-data/3way_situations_10k.jsonl`
-- Stratified across 5 dimensions:
-    1. street (preflop / flop / turn / river)
-    2. hero_position (BTN / CO / HJ / BB / SB)
-    3. opponent_count (HU / 3-way / 4-way) — encoded num_opponents
-    4. board_texture (dry / wet / paired / 3-flush / etc.)
-    5. hero_range_placement (premium / value / draw / bluff)
-- Disjoint from:
-    * Stage 6 50-hand holdout (hash 65cfbf26... over 47652 bytes)
-    * v2.3 calibration manifest (28 standard + 10 reversal = 38 hands)
-- Hash-locked (SHA256 over the JSONL bytes)
+- Stratified across 5 dimensions
+- Disjoint from Stage 6 50-hand holdout + v2.3 calibration manifest
+- Hash-locked (SHA256 over JSONL bytes)
 
-Closes PRE-DISPATCH PREREQUISITES rows #2 + #3.
+Closes PRE-DISPATCH PREREQUISITES rows #2 + #3 (v1.0.1 supersedes
+v1.0; PR #39 closes as superseded after PR #41 merges).
 
 Output:
     data/pilot_corpus_100_hand_2026-04-26.jsonl
     data/pilot_corpus_100_hand_2026-04-26.lock.json
-        (sidecar with hash + stratification report + disjointness report)
+        (sidecar with hash + stratification report + disjointness report
+         + 59-feature attestation)
 
 Determinism: SEED = 20260426 fixed.
 """
@@ -32,6 +42,28 @@ import re
 import sys
 from collections import Counter, defaultdict
 from typing import Iterator
+
+# v1.0.1 — feature_extractor for 59-feature embedding per V-C13 close.
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                  "..", "river-rats-core"))
+from feature_extractor import extract_all_features  # noqa: E402
+from gto_model import FEATURE_COLUMNS  # noqa: E402
+
+# v2.4 P1 blocker features per Stage 5 retrain v1.0.1 §Hyperparameters
+# point #4 + `feedback_attention_flags_when_features_change.md`.
+V24_P1_BLOCKER_FEATURES = (
+    "nut_flush_block",
+    "flush_draw_block_pct",
+    "straight_draw_block_pct",
+    "nut_made_block_pct",
+)
+# Total 59-feature contract = FEATURE_COLUMNS (length 55) + 4 v2.4 P1.
+EXPECTED_FEAT_DICT_KEYS = list(FEATURE_COLUMNS) + list(V24_P1_BLOCKER_FEATURES)
+assert len(EXPECTED_FEAT_DICT_KEYS) == 59, (
+    f"Expected 59-feature contract, got {len(EXPECTED_FEAT_DICT_KEYS)} "
+    f"(FEATURE_COLUMNS={len(FEATURE_COLUMNS)} + v2.4 P1 blockers="
+    f"{len(V24_P1_BLOCKER_FEATURES)}). Check feature_keys / Stage 5 v1.0.1 contract."
+)
 
 # Determinism. Date-stamped seed; will not change between reruns of this build.
 SEED = 20260426
@@ -372,9 +404,74 @@ def main() -> int:
     print("[disjoint] within-pilot uniqueness PASS — 100 unique fingerprints",
           file=sys.stderr)
 
+    # v1.0.1 — re-extract features per record using feature_extractor.py
+    # to embed full 59-feature `feat_dict` (closes QC V-C13 from PR #40).
+    print("[reextract] re-running feature_extractor.py per record for "
+          "59-feature contract", file=sys.stderr)
+
     # Re-tag + serialise.
     output_records = []
     for i, s in enumerate(selected):
+        # Build the feature_extractor-compatible hand dict from the source
+        # pool record. ACTION_ENCODING expects single-letter codes (F/X/C/B/R);
+        # we use 'X' (CHECK) as a placeholder since `action` is a downstream
+        # label, not used by extract_all_features for feature derivation.
+        src_feat = s.get("feat_dict", {})
+        villain_positions = s.get("villain_positions", []) or ["BB"]
+        hand_dict = {
+            "pos": s["hero_position"],
+            "fb": int(s.get("facing_bet", False)),
+            "pot": float(s.get("pot", 0)),
+            "tc": float(s.get("to_call", 0)),
+            "st": s["street"][0],   # 'f' / 't' / 'r'
+            "vp": villain_positions[0],
+            "h": s["hero_cards"],
+            "b": s["board"],
+            "exp": "X",             # placeholder; not consumed downstream
+            "id": s.get("situation_id", "unknown"),
+            "_num_opponents": s.get("num_opponents", 1),
+            "_villain_aggression_count":
+                src_feat.get("villain_aggression_count", 0),
+            "_villain_checked_back": src_feat.get("villain_checked_back", 0),
+            "_villain_call_count": src_feat.get("villain_call_count", 0),
+            "_num_callers_to_bet": src_feat.get("num_callers_to_bet", 0),
+            "_facing_raise": src_feat.get("facing_raise", 0),
+            "_is_3bet_pot": src_feat.get("is_3bet_pot", 0),
+        }
+
+        try:
+            full_feats = extract_all_features(hand_dict)
+        except Exception as exc:
+            print(f"[ERROR] extract_all_features failed for "
+                  f"{s.get('situation_id')}: {exc}", file=sys.stderr)
+            return 1
+
+        # Filter to the 59-feature contract; coerce numerics for JSON.
+        feat_dict_59 = {}
+        missing_keys = []
+        for k in EXPECTED_FEAT_DICT_KEYS:
+            if k in full_feats:
+                v = full_feats[k]
+                if isinstance(v, float):
+                    feat_dict_59[k] = round(v, 6)
+                elif isinstance(v, bool):
+                    feat_dict_59[k] = int(v)
+                elif isinstance(v, (int, str)):
+                    feat_dict_59[k] = v
+                else:
+                    feat_dict_59[k] = float(v)
+            else:
+                missing_keys.append(k)
+
+        if missing_keys:
+            print(f"[ERROR] missing 59-contract keys for "
+                  f"{s.get('situation_id')}: {missing_keys}", file=sys.stderr)
+            return 1
+        assert len(feat_dict_59) == 59, (
+            f"Expected 59 features, got {len(feat_dict_59)} for "
+            f"{s.get('situation_id')}"
+        )
+
         rec = {
             "pilot_hand_id": f"PILOT_{i + 1:03d}",
             "source_situation_id": s.get("situation_id"),
@@ -389,9 +486,12 @@ def main() -> int:
             "facing_bet": s.get("facing_bet"),
             "num_opponents": s.get("num_opponents"),
             "prior_actions": s.get("prior_actions"),
-            "feat_dict": s.get("feat_dict"),
+            "feat_dict": feat_dict_59,
         }
         output_records.append(rec)
+
+    print(f"[reextract] completed 59-feature embedding for "
+          f"{len(output_records)} records", file=sys.stderr)
 
     # Write JSONL.
     os.makedirs(os.path.dirname(OUTPUT_JSONL), exist_ok=True)
@@ -410,6 +510,23 @@ def main() -> int:
     # Sidecar.
     lock = {
         "pilot_hand_count": 100,
+        "pilot_corpus_version": "v1.0.1",
+        "feat_dict_feature_count": 59,
+        "feat_dict_contract_source": (
+            "Stage 5 retrain v1.0.1 §Hyperparameters point #4: "
+            "FEATURE_COLUMNS (length 55) + 4 v2.4 P1 blockers "
+            "(nut_flush_block, flush_draw_block_pct, "
+            "straight_draw_block_pct, nut_made_block_pct) = 59 raw"
+        ),
+        "v1_0_to_v1_0_1_change": (
+            "v1.0 inherited 45-feature feat_dict from source pool; "
+            "v1.0.1 calls feature_extractor.extract_all_features per "
+            "record at corpus-build time → 59-feature feat_dict matching "
+            "Stage 5 retrain v1.0.1 contract (closes QC V-C13 from PR #40)"
+        ),
+        "v1_0_sha256_predecessor": (
+            "492154529eb70f07bb5e082a55765c0626b948b72fc48d8aa4a86c424928ef4b"
+        ),
         "sha256": sha,
         "byte_size": file_size,
         "build_seed": SEED,
@@ -444,8 +561,11 @@ def main() -> int:
             "hero_range_placement",
         ],
         "stratification_report": _stratification_report(output_records),
-        "build_directive": "review/comms/MAIN_TERMINAL_PR37_MERGE_ACK_BUILD_C_KICKOFF_2026-04-26.md",
-        "predecessor_directive": "review/comms/MAIN_TERMINAL_PILOT_HALT_ACK_BUILDS_ABC_DIRECTIVE_2026-04-26.md (3f9564e)",
+        "build_directive": "review/comms/MAIN_TERMINAL_PR39_DECISION_FIX_FORWARD_VC13_2026-04-26.md",
+        "predecessor_directives": [
+            "review/comms/MAIN_TERMINAL_PR37_MERGE_ACK_BUILD_C_KICKOFF_2026-04-26.md (Build C original)",
+            "review/comms/MAIN_TERMINAL_PILOT_HALT_ACK_BUILDS_ABC_DIRECTIVE_2026-04-26.md (3f9564e — Builds A/B/C)",
+        ],
         "stage6_holdout_reference_hash": "65cfbf26ad3c6b228a3462574b86c33be41397258519ffd35b1cc08037a4cba5",
         "v23_calibration_constants_reference": "river-rats-core/calibration_exam.py v2.3 — STANDARD_EXAM_SIZE=28, STANDARD_PASS_THRESHOLD=23, GTO_REVERSAL_HANDS, GROUP_D_REVERSAL_HANDS",
         "fingerprint_method": "(sorted(hero_cards), sorted(board_cards)) per Stage 6 v1.0 spec §Non-overlap verification (notes feature: card-class equivalence not enforced — see Stage 6 v1.0 reviewer flag)",

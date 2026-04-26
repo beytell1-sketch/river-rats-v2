@@ -1,7 +1,7 @@
 {
-  "build_directive": "review/comms/MAIN_TERMINAL_PR37_MERGE_ACK_BUILD_C_KICKOFF_2026-04-26.md",
+  "build_directive": "review/comms/MAIN_TERMINAL_PR39_DECISION_FIX_FORWARD_VC13_2026-04-26.md",
   "build_seed": 20260426,
-  "byte_size": 131835,
+  "byte_size": 173079,
   "candidate_pool_size_post_disjointness": 953,
   "disjointness": {
     "post_sample_overlap_anchor": 0,
@@ -13,10 +13,16 @@
     "v23_calibration_24hand_legacy_fingerprints": 21,
     "within_pilot_unique_fingerprints": 100
   },
+  "feat_dict_contract_source": "Stage 5 retrain v1.0.1 \u00a7Hyperparameters point #4: FEATURE_COLUMNS (length 55) + 4 v2.4 P1 blockers (nut_flush_block, flush_draw_block_pct, straight_draw_block_pct, nut_made_block_pct) = 59 raw",
+  "feat_dict_feature_count": 59,
   "fingerprint_method": "(sorted(hero_cards), sorted(board_cards)) per Stage 6 v1.0 spec \u00a7Non-overlap verification (notes feature: card-class equivalence not enforced \u2014 see Stage 6 v1.0 reviewer flag)",
+  "pilot_corpus_version": "v1.0.1",
   "pilot_hand_count": 100,
-  "predecessor_directive": "review/comms/MAIN_TERMINAL_PILOT_HALT_ACK_BUILDS_ABC_DIRECTIVE_2026-04-26.md (3f9564e)",
-  "sha256": "492154529eb70f07bb5e082a55765c0626b948b72fc48d8aa4a86c424928ef4b",
+  "predecessor_directives": [
+    "review/comms/MAIN_TERMINAL_PR37_MERGE_ACK_BUILD_C_KICKOFF_2026-04-26.md (Build C original)",
+    "review/comms/MAIN_TERMINAL_PILOT_HALT_ACK_BUILDS_ABC_DIRECTIVE_2026-04-26.md (3f9564e \u2014 Builds A/B/C)"
+  ],
+  "sha256": "c93a41c4f0d2c7ceb85d753852f7a5d1cfbaed65d3bdc5a7d6abfdcb57f45e40",
   "source_pool": "training-data/3way_situations_10k.jsonl",
   "source_pool_size": 962,
   "stage6_holdout_reference_hash": "65cfbf26ad3c6b228a3462574b86c33be41397258519ffd35b1cc08037a4cba5",
@@ -57,5 +63,7 @@
       "turn": 30
     }
   },
+  "v1_0_sha256_predecessor": "492154529eb70f07bb5e082a55765c0626b948b72fc48d8aa4a86c424928ef4b",
+  "v1_0_to_v1_0_1_change": "v1.0 inherited 45-feature feat_dict from source pool; v1.0.1 calls feature_extractor.extract_all_features per record at corpus-build time \u2192 59-feature feat_dict matching Stage 5 retrain v1.0.1 contract (closes QC V-C13 from PR #40)",
   "v23_calibration_constants_reference": "river-rats-core/calibration_exam.py v2.3 \u2014 STANDARD_EXAM_SIZE=28, STANDARD_PASS_THRESHOLD=23, GTO_REVERSAL_HANDS, GROUP_D_REVERSAL_HANDS"
 }
