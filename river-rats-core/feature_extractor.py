@@ -2409,6 +2409,28 @@ def extract_all_features(hand: Dict) -> Dict:
         features['_per_villain_composition'] = _mw_meta.get('per_villain_composition', {})
         features['_per_villain_overflowed'] = _mw_meta.get('per_villain_overflowed', {})
 
+    # HIGH-4 (Phase 3) cross-stream coordination — Option B per
+    # MAIN_TERMINAL_HIGH_4_CROSS_STREAM_COORDINATION_2026-04-26.md.
+    # Honor CONTENT_API.md:230 / Stage 3.5 v2.2 amendment §3.7:
+    # aggregate `_villain_chain_overflowed` is True when ANY opponent
+    # is overflowed; aggregate `_villain_folded` is True when ALL
+    # opponents are folded (HU sentinel was already correct).
+    # Without this, on a 3-way+ hand where a non-primary opponent is
+    # overflowed, `range_rendering_mode` reads "normal" while one
+    # per-villain entry is overflowed (mode label drift).
+    # HU path unchanged (per_villain_* dicts are empty → any/all on
+    # empty preserves the prior aggregate value).
+    if features.get('_per_villain_overflowed'):
+        features['_villain_chain_overflowed'] = (
+            bool(features.get('_villain_chain_overflowed', False))
+            or any(features['_per_villain_overflowed'].values())
+        )
+    if features.get('_per_villain_folded'):
+        features['_villain_folded'] = (
+            bool(features.get('_villain_folded', False))
+            or all(features['_per_villain_folded'].values())
+        )
+
     # Step 11: Current-street action features (new for v9)
     features[F.NUM_CALLERS_TO_BET] = hand.get('_num_callers_to_bet', 0)
     features[F.FACING_RAISE] = hand.get('_facing_raise', 0)
