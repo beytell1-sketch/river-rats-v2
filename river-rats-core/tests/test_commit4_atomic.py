@@ -380,9 +380,20 @@ def test_must46_cache_hit_via_hand_dict():
     # Second call returns cached tuple — identity, not recomputation
     assert range1 is range2
     assert meta1 is meta2
-    # Cache key present on hand dict
+    # Cache key present on hand dict.
+    # Phase 3 HIGH-3 fix (Task 4.5): cache key now includes the
+    # action_history hash as a 3rd tuple element to prevent stale-cache
+    # hits when callers mutate `_action_history` across street decisions.
+    # Match by (kind, position) prefix instead of exact tuple identity.
     assert '_chain_cache' in hand
-    assert ('hu', 'BB') in hand['_chain_cache']
+    cache_keys = list(hand['_chain_cache'].keys())
+    assert any(
+        isinstance(k, tuple) and len(k) >= 2 and k[0] == 'hu' and k[1] == 'BB'
+        for k in cache_keys
+    ), (
+        f'expected cache key starting with (\"hu\", \"BB\", ...); '
+        f'got {cache_keys!r}'
+    )
 
 
 def test_c1_board_favour_zero_when_folded():

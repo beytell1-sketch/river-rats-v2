@@ -13,11 +13,16 @@ Per spec lock:
 
 Both outcomes inform Stage 4 scope. Cheap, fast diagnostic.
 
-Writes report to review/comms/BUILDER_V24_STAGE35_M5_DIAGNOSTIC_2026-04-20.md
+Phase 1 HIGH fix (Task 4.5): default output path is now timestamped
+(`review/comms/RERUN_run_v231_anchor_recheck_stage35_<UTC-iso>.md`)
+so re-running the script does NOT overwrite the committed 2026-04-20
+baseline. Pass `--out <path>` to choose an explicit destination.
 """
 from __future__ import annotations
 
+import argparse
 import csv
+import datetime as _dt
 import json
 import os
 import sys
@@ -165,7 +170,37 @@ def _predict(model, X, facing_bet):
     return legal_best, action_probs
 
 
-def main():
+def _default_report_path():
+    """Phase 1 HIGH fix (Task 4.5): timestamped default so re-runs
+    don't overwrite the immutable 2026-04-20 baseline."""
+    ts = _dt.datetime.now(_dt.timezone.utc).strftime('%Y-%m-%dT%H-%M-%SZ')
+    return os.path.join(
+        _REPO, 'review', 'comms',
+        f'RERUN_run_v231_anchor_recheck_stage35_{ts}.md',
+    )
+
+
+def _parse_args(argv=None):
+    parser = argparse.ArgumentParser(
+        description='Stage 3.5 M5 anchor recheck (v2.3.1 model).',
+    )
+    parser.add_argument(
+        '--out',
+        default=None,
+        help=(
+            'Output report path. Defaults to a timestamped path under '
+            'review/comms/ so re-runs preserve prior outputs (Phase 1 '
+            'HIGH fix; the original 2026-04-20 file is no longer '
+            'overwritten by default).'
+        ),
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv=None):
+    args = _parse_args(argv)
+    report_path = args.out or _default_report_path()
+
     print('=' * 72)
     print('Stage 3.5 M5 — v2.3.1 model re-inference on 3 β-panel anchors')
     print('=' * 72)
@@ -222,10 +257,8 @@ def main():
     # Write report
     passed = sum(1 for r in results if r.get('passed'))
     total = len(results)
-    report_path = os.path.join(
-        _REPO, 'review', 'comms',
-        'BUILDER_V24_STAGE35_M5_DIAGNOSTIC_2026-04-20.md',
-    )
+    # Phase 1 HIGH fix (Task 4.5): `report_path` from `--out` flag with
+    # timestamped default; original 04-20 baseline preserved on disk.
     with open(report_path, 'w') as f:
         f.write(f"""---
 date: 2026-04-20

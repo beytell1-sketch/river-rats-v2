@@ -594,7 +594,7 @@ def extract_partition_features(hero_cards: List[str],
     else:
         v_range = get_villain_range(hero_pos, villain_pos)
         if facing_bet:
-            street_name = STREET_NAME_MAP.get(street_raw, 'flop')
+            street_name = _normalise_street(street_raw)
             v_range, _ = narrow_to_betting_range(v_range, board_cards, street_name)
 
     return partition_range(hero_cards, board_cards, v_range)
@@ -613,7 +613,73 @@ STREET_NAME_MAP = {
     'f': 'flop',
     't': 'turn',
     'r': 'river',
+    # Phase 3 HIGH-1 fix (Task 4.5): full-word + uppercase variants. Pilot
+    # agents and Stage 5 retrain feature regeneration may pass mixed
+    # conventions; logic's internal callers used single-char only and the
+    # prior `.get(street_raw, 'flop')` silently coerced everything else to
+    # 'flop' (river-reclass step then silently skipped). Whitelist now
+    # covers both encodings explicitly; unknown values raise via
+    # `_normalise_street` below.
+    'flop': 'flop',
+    'turn': 'turn',
+    'river': 'river',
 }
+
+
+def _action_history_cache_key(action_history):
+    """Build a stable, hashable cache-key fragment from action_history.
+
+    Phase 3 HIGH-3 fix (Task 4.5): the `_chain_cache` key previously
+    omitted action_history, so two consecutive calls on the same `hand`
+    dict with mutated `_action_history` returned identical (stale)
+    cached results. Pilot agents extracting features across multiple
+    street decisions on a shared hand object would have hit this.
+
+    Each entry in action_history may be a tuple
+    `(street, position, action[, amount])` OR a dict
+    `{'street': ..., 'position': ..., 'action': ...}`. We canonicalise
+    to a flat tuple-of-tuples so equivalent histories under different
+    encodings produce equivalent keys, and any in-place mutation
+    (append, replace, reorder) yields a different key.
+    """
+    if not action_history:
+        return ()
+    out = []
+    for entry in action_history:
+        if isinstance(entry, dict):
+            out.append((
+                str(entry.get('street', '')).lower(),
+                str(entry.get('position', '')).upper(),
+                str(entry.get('action', '')).upper(),
+                entry.get('amount'),
+            ))
+        elif isinstance(entry, (tuple, list)):
+            # (street, position, action[, amount])
+            out.append(tuple(entry))
+        else:
+            # Fallback — stringify so unknown encodings still hash.
+            out.append((str(entry),))
+    return tuple(out)
+
+
+def _normalise_street(street_raw):
+    """Whitelist-or-raise normaliser for street_raw values.
+
+    Phase 3 HIGH-1 fix (Task 4.5): replaces silent-default
+    `.get(street_raw, 'flop')` callsites. Accepts single-char ('f','t','r')
+    and full-word ('flop','turn','river') case-insensitively. Anything
+    else (including 'preflop', '', None, or any unknown token) raises
+    `ValueError` so callers fail loudly instead of silently treating
+    every malformed input as 'flop'.
+    """
+    if street_raw is None:
+        raise ValueError(f"Unrecognised street: {street_raw!r}")
+    if not isinstance(street_raw, str):
+        raise ValueError(f"Unrecognised street: {street_raw!r}")
+    key = street_raw.strip().lower()
+    if key not in STREET_NAME_MAP:
+        raise ValueError(f"Unrecognised street: {street_raw!r}")
+    return STREET_NAME_MAP[key]
 
 # Priority order: who is most likely still in a multiway pot
 POSITION_PRIORITY = ['BB', 'BTN', 'SB', 'CO', 'HJ', 'UTG']
@@ -724,17 +790,27 @@ def _get_chain_narrowed_villain_range(
     # hand['_chain_cache'] so composition + equity + partition share one
     # chain computation per hand. Key includes (num_opponents, tuple of
     # opponent_positions or villain_pos) so HU and MW caches don't collide.
+    #
+    # Phase 3 HIGH-3 fix (Task 4.5): cache key now includes a hash of
+    # `action_history`. The previous key was (mw|hu, n_opps, positions)
+    # only — two consecutive calls on the same `hand` dict with mutated
+    # `_action_history` returned identical (stale) cached results. Pilot
+    # agents extracting features for multiple street decisions on a
+    # shared hand object would have hit this cache-poisoning bug.
+    # `_action_history_cache_key(action_history)` builds an order-
+    # preserving tuple-of-tuples hash that detects in-place mutation.
     _cache_key = None
     if hand is not None and action_history:
+        _ah_key = _action_history_cache_key(action_history)
         if num_opponents >= 2 and opponent_positions:
-            _cache_key = ('mw', num_opponents, tuple(opponent_positions))
+            _cache_key = ('mw', num_opponents, tuple(opponent_positions), _ah_key)
         else:
-            _cache_key = ('hu', villain_pos)
+            _cache_key = ('hu', villain_pos, _ah_key)
         _cache = hand.get('_chain_cache', None)
         if _cache is not None and _cache_key in _cache:
             return _cache[_cache_key]
 
-    street_name = STREET_NAME_MAP.get(street_raw, 'flop')
+    street_name = _normalise_street(street_raw)
 
     # HU path
     if num_opponents < 2 or not opponent_positions:
@@ -910,9 +986,21 @@ def _get_chain_narrowed_villain_range(
             for hand_notation, freq in opp_range.items():
                 if freq <= 0:
                     continue
+                # Phase 3 HIGH-2 fix (Task 4.5): classify_hand now raises
+                # ValueError on unrecognised notation. Audit/pilot scripts
+                # loading from disk may carry corrupted range keys; log
+                # + skip rather than abort the whole feature extraction.
+                # Production callers (logic team's own internal range
+                # builders) emit only valid notation and never trip this.
                 try:
                     classification = classify_hand(hand_notation, board_cards)
-                except Exception:
+                except ValueError as exc:
+                    import logging
+                    logging.getLogger(__name__).warning(
+                        'classify_hand rejected range key %r in opp %r '
+                        'composition derivation: %s; skipping combo.',
+                        hand_notation, opp_pos, exc,
+                    )
                     continue
                 cat = classification.category
                 # River: draws are dead — reclassify as air (parity with
@@ -1007,7 +1095,7 @@ def get_multiway_villain_range(
             and opp_pos.upper() == bettor_pos.upper()
         )
         if facing_bet and is_bettor:
-            street_name = STREET_NAME_MAP.get(street_raw, 'flop')
+            street_name = _normalise_street(street_raw)
             v_range, _ = narrow_to_betting_range(v_range, board_cards, street_name)
         for hand, freq in v_range.items():
             merged[hand] = max(merged.get(hand, 0.0), freq)
@@ -1260,7 +1348,7 @@ def extract_equity_features(hero_cards: List[str],
                 and opp_pos.upper() == bettor_pos.upper()
             )
             if facing_bet and is_bettor:
-                street_name = STREET_NAME_MAP.get(street_raw, 'flop')
+                street_name = _normalise_street(street_raw)
                 v_range, _ = narrow_to_betting_range(v_range, board_cards, street_name)
             opponent_ranges.append(v_range)
 
@@ -1283,7 +1371,7 @@ def extract_equity_features(hero_cards: List[str],
         # Heads-up: existing behavior unchanged
         v_range = get_villain_range(hero_pos, villain_pos)
         if facing_bet:
-            street_name = STREET_NAME_MAP.get(street_raw, 'flop')
+            street_name = _normalise_street(street_raw)
             v_range, _ = narrow_to_betting_range(v_range, board_cards, street_name)
 
     # 3. Calculate equity against the correct range (HU path only reaches here)
@@ -1634,7 +1722,7 @@ def extract_range_composition(
             '_board_favour': 0.0,
         }
 
-    street_name = STREET_NAME_MAP.get(street_raw, 'flop')
+    street_name = _normalise_street(street_raw)
 
     # CRIT #2 — loud surfacing when _action_history is missing on hand payload.
     # Env-gated so read-only display paths (live oracle display, calibration
@@ -1680,7 +1768,10 @@ def extract_range_composition(
         # partition typically run before composition in extract_features_
         # step1_through_5; if they populated the HU cache for this
         # (villain_pos, action_history) tuple, reuse it here.
-        _hu_cache_key = ('hu', villain_pos)
+        # Phase 3 HIGH-3 fix (Task 4.5): include action_history hash in
+        # cache key to prevent stale-cache hits when caller mutates
+        # hand['_action_history'] across street decisions.
+        _hu_cache_key = ('hu', villain_pos, _action_history_cache_key(action_history))
         _hand_cache = hand.get('_chain_cache', {}) if hand is not None else {}
         if _hu_cache_key in _hand_cache:
             # Cache hit — consume result (narrow_by_action_history already ran)
@@ -1773,9 +1864,12 @@ def extract_range_composition(
             'chain_overflowed': chain_overflowed,
             '_chain_method': 'hu',
         }
-        hand.setdefault('_chain_cache', {})[('hu', villain_pos)] = (
-            v_range, _composed_meta,
-        )
+        # Phase 3 HIGH-3 fix (Task 4.5): cache key now includes
+        # action_history hash to prevent stale-cache hits across street
+        # decisions on the same hand object.
+        hand.setdefault('_chain_cache', {})[
+            ('hu', villain_pos, _action_history_cache_key(action_history))
+        ] = (v_range, _composed_meta)
 
     # Classify each hand in villain's range
     total_weight = 0.0
@@ -1788,9 +1882,22 @@ def extract_range_composition(
         if freq <= 0:
             continue
 
+        # Phase 3 HIGH-2 fix (Task 4.5): classify_hand now raises
+        # ValueError on unrecognised notation (was silently classifying
+        # malformed input as 'air'/'weak_made'). Audit/pilot scripts
+        # loading from disk may carry corrupted range keys; log + skip
+        # rather than abort the whole composition extraction. Production
+        # callers (logic team's own range builders) emit only valid
+        # notation and never trip this branch.
         try:
             classification = classify_hand(hand_notation, board_cards)
-        except Exception:
+        except ValueError as exc:
+            import logging
+            logging.getLogger(__name__).warning(
+                'classify_hand rejected range key %r in HU composition '
+                'extraction: %s; skipping combo.',
+                hand_notation, exc,
+            )
             continue
 
         category = classification.category
