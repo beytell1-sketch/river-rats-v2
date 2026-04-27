@@ -134,6 +134,160 @@ _BAC_TEMPLATES: List[dict] = [
          ('flop', 'SB', 'check'),
          ('flop', 'CO', 'bet'), ('flop', 'BTN', 'call'),
      ]},
+
+    # ─────────────────────────────────────────────────────────────────
+    # BAC-4 (Phase 6 expansion v3.5): CO bets, BTN calls, hero (BB) faces.
+    # villain_positions=['BTN', 'CO'] — CO is last (bettor), BTN is caller.
+    # SB folds preflop (3-way: CO, BTN, BB).
+    # ─────────────────────────────────────────────────────────────────
+    # BAC-4a
+    {'hero_pos': 'BB', 'villain_positions': ['BTN', 'CO'],
+     'opener_position': 'CO',
+     'board': ['7d', '4h', '2c'],
+     'hero_cards': ['Qh', 'Jd'],  # air
+     'pot': 18.0, 'to_call': 5.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'),
+         ('preflop', 'SB', 'fold'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'),
+         ('flop', 'CO', 'bet'), ('flop', 'BTN', 'call'),
+     ]},
+    # BAC-4b
+    {'hero_pos': 'BB', 'villain_positions': ['BTN', 'CO'],
+     'opener_position': 'CO',
+     'board': ['9s', '5d', '3c'],
+     'hero_cards': ['Kc', 'Qh'],  # overcards
+     'pot': 18.0, 'to_call': 5.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'),
+         ('preflop', 'SB', 'fold'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'),
+         ('flop', 'CO', 'bet'), ('flop', 'BTN', 'call'),
+     ]},
+    # BAC-4c
+    {'hero_pos': 'BB', 'villain_positions': ['BTN', 'CO'],
+     'opener_position': 'CO',
+     'board': ['Ah', '8s', '3d'],
+     'hero_cards': ['Tc', '9h'],  # air
+     'pot': 18.0, 'to_call': 5.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'),
+         ('preflop', 'SB', 'fold'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'),
+         ('flop', 'CO', 'bet'), ('flop', 'BTN', 'call'),
+     ]},
+    # BAC-4d
+    {'hero_pos': 'BB', 'villain_positions': ['BTN', 'CO'],
+     'opener_position': 'CO',
+     'board': ['Jd', '5h', '2s'],
+     'hero_cards': ['Ac', '7d'],  # air
+     'pot': 18.0, 'to_call': 5.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'),
+         ('preflop', 'SB', 'fold'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'),
+         ('flop', 'CO', 'bet'), ('flop', 'BTN', 'call'),
+     ]},
+
+    # ─────────────────────────────────────────────────────────────────
+    # BAC-5 (Phase 6): HJ bets, CO calls, hero (BTN) faces sandwich.
+    # villain_positions=['CO', 'HJ'] — HJ is last (bettor), CO is caller.
+    # SB+BB fold preflop.
+    # ─────────────────────────────────────────────────────────────────
+    # BAC-5a
+    {'hero_pos': 'BTN', 'villain_positions': ['CO', 'HJ'],
+     'opener_position': 'HJ',
+     'board': ['Kh', '6s', '3d'],
+     'hero_cards': ['Jc', 'Jh'],  # underpair
+     'pot': 16.0, 'to_call': 5.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'HJ', 'raise'), ('preflop', 'CO', 'call'),
+         ('preflop', 'BTN', 'call'), ('preflop', 'SB', 'fold'),
+         ('preflop', 'BB', 'fold'),
+         ('flop', 'HJ', 'bet'), ('flop', 'CO', 'call'),
+     ]},
+    # BAC-5b
+    {'hero_pos': 'BTN', 'villain_positions': ['CO', 'HJ'],
+     'opener_position': 'HJ',
+     'board': ['Qd', '8c', '2h'],
+     'hero_cards': ['Kh', 'Jd'],  # overcards
+     'pot': 16.0, 'to_call': 5.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'HJ', 'raise'), ('preflop', 'CO', 'call'),
+         ('preflop', 'BTN', 'call'), ('preflop', 'SB', 'fold'),
+         ('preflop', 'BB', 'fold'),
+         ('flop', 'HJ', 'bet'), ('flop', 'CO', 'call'),
+     ]},
+    # BAC-5c
+    {'hero_pos': 'BTN', 'villain_positions': ['CO', 'HJ'],
+     'opener_position': 'HJ',
+     'board': ['Th', '7s', '4d'],
+     'hero_cards': ['As', 'Kc'],  # overcards
+     'pot': 16.0, 'to_call': 5.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'HJ', 'raise'), ('preflop', 'CO', 'call'),
+         ('preflop', 'BTN', 'call'), ('preflop', 'SB', 'fold'),
+         ('preflop', 'BB', 'fold'),
+         ('flop', 'HJ', 'bet'), ('flop', 'CO', 'call'),
+     ]},
+
+    # ─────────────────────────────────────────────────────────────────
+    # BAC-6 (Phase 6): Turn decisions with bet-and-call structure.
+    # ─────────────────────────────────────────────────────────────────
+    # BAC-6a: SB hero, CO bets, BTN calls (turn). 3-way after BB folds preflop.
+    # villain_positions=['BTN', 'CO'] — CO is last (bettor), BTN is caller.
+    # Postflop order SB→CO→BTN; after CO bets, response is BTN→SB so BTN calls
+    # first, then SB (hero) faces bet+call.
+    {'hero_pos': 'SB', 'villain_positions': ['BTN', 'CO'],
+     'opener_position': 'CO',
+     'board': ['Ks', '9h', '3d', '7c'],
+     'hero_cards': ['Jd', 'Td'],
+     'pot': 22.0, 'to_call': 7.0, 'street': 'turn',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'),
+         ('preflop', 'SB', 'call'), ('preflop', 'BB', 'fold'),
+         ('flop', 'SB', 'check'), ('flop', 'CO', 'check'), ('flop', 'BTN', 'check'),
+         ('turn', 'SB', 'check'),
+         ('turn', 'CO', 'bet'), ('turn', 'BTN', 'call'),
+     ]},
+    # BAC-6b: BB hero, BTN bets, SB calls (turn)
+    {'hero_pos': 'BB', 'villain_positions': ['SB', 'BTN'],
+     'opener_position': 'BTN',
+     'board': ['Ah', '7c', '4d', '2s'],
+     'hero_cards': ['Qd', 'Js'],
+     'pot': 24.0, 'to_call': 7.0, 'street': 'turn',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'SB', 'call'), ('preflop', 'BB', 'call'),
+         ('flop', 'SB', 'check'), ('flop', 'BB', 'check'), ('flop', 'BTN', 'check'),
+         ('turn', 'SB', 'check'), ('turn', 'BB', 'check'),
+         ('turn', 'BTN', 'bet'), ('turn', 'SB', 'call'),
+     ]},
+    # BAC-6c: BB hero, CO bets, BTN calls (turn)
+    {'hero_pos': 'BB', 'villain_positions': ['BTN', 'CO'],
+     'opener_position': 'CO',
+     'board': ['Qh', '5s', '3d', '9c'],
+     'hero_cards': ['Kd', 'Th'],
+     'pot': 22.0, 'to_call': 7.0, 'street': 'turn',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'),
+         ('preflop', 'SB', 'fold'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'CO', 'check'), ('flop', 'BTN', 'check'),
+         ('turn', 'BB', 'check'),
+         ('turn', 'CO', 'bet'), ('turn', 'BTN', 'call'),
+     ]},
+    # BAC-6d: SB hero, CO bets, BTN calls (turn)
+    {'hero_pos': 'SB', 'villain_positions': ['BTN', 'CO'],
+     'opener_position': 'CO',
+     'board': ['Jc', '8h', '4s', '6d'],
+     'hero_cards': ['Tc', '9s'],
+     'pot': 24.0, 'to_call': 7.0, 'street': 'turn',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'),
+         ('preflop', 'SB', 'call'), ('preflop', 'BB', 'fold'),
+         ('flop', 'SB', 'check'), ('flop', 'CO', 'check'), ('flop', 'BTN', 'check'),
+         ('turn', 'SB', 'check'),
+         ('turn', 'CO', 'bet'), ('turn', 'BTN', 'call'),
+     ]},
 ]
 
 
@@ -180,5 +334,10 @@ def generate_scenarios(forbidden_fingerprints: Set[Tuple[str, str]]) -> List[dic
 
         records.append(record)
         forbidden_fingerprints.add(fp)
+
+    # Phase 6 v3.5.1 silent-failure assertion: every BAC record must have
+    # num_callers_to_bet >= 1 (catches malformed templates that mis-classify).
+    assert all(r['feat_dict'].get('num_callers_to_bet', 0) >= 1 for r in records), \
+        "BAC module produced records without num_callers_to_bet >= 1"
 
     return records

@@ -204,6 +204,126 @@ _DONK_TEMPLATES: List[dict] = [
          ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
          ('flop', 'BB', 'bet'),
      ]},
+
+    # ─────────────────────────────────────────────────────────────────
+    # DK-N (Phase 6 expansion v3.5): 10 new templates.
+    # 6 sub-8c/8d (hero=PFA, donk+pfa overlap) + 4 pure donk (8a/8b).
+    # ─────────────────────────────────────────────────────────────────
+    # DK-N-01: 8c CO PFA, BB donks, BTN behind
+    {'sub_scenario': '8c',
+     'hero_pos': 'CO', 'villain_positions': ['BB', 'BTN'],
+     'opener_position': 'CO',
+     'board': ['Kd', '5d', '2h'],
+     'hero_cards': ['Ac', 'Kh'],  # top pair top kicker
+     'pot': 18.0, 'to_call': 6.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'),
+     ]},
+    # DK-N-02: 8c CO PFA on low connected board
+    {'sub_scenario': '8c',
+     'hero_pos': 'CO', 'villain_positions': ['BB', 'BTN'],
+     'opener_position': 'CO',
+     'board': ['7h', '5s', '3d'],
+     'hero_cards': ['Kh', 'Kd'],  # overpair
+     'pot': 18.0, 'to_call': 6.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'),
+     ]},
+    # DK-N-03: 8d BTN PFA HU vs BB after SB fold
+    {'sub_scenario': '8d',
+     'hero_pos': 'BTN', 'villain_positions': ['BB'],
+     'opener_position': 'BTN',
+     'board': ['Ah', '6c', '3s'],
+     'hero_cards': ['Kd', 'Kh'],  # overpair
+     'pot': 15.0, 'to_call': 5.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'SB', 'fold'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'),
+     ]},
+    # DK-N-04: 8d BTN PFA HU
+    {'sub_scenario': '8d',
+     'hero_pos': 'BTN', 'villain_positions': ['BB'],
+     'opener_position': 'BTN',
+     'board': ['Qs', '4h', '2d'],
+     'hero_cards': ['Jd', 'Jh'],  # overpair to board
+     'pot': 15.0, 'to_call': 5.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'SB', 'fold'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'),
+     ]},
+    # DK-N-05: 8c CO PFA on J-high
+    {'sub_scenario': '8c',
+     'hero_pos': 'CO', 'villain_positions': ['BB', 'BTN'],
+     'opener_position': 'CO',
+     'board': ['Jd', '4s', '2c'],
+     'hero_cards': ['Ah', 'Qd'],  # overcards facing donk
+     'pot': 18.0, 'to_call': 6.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'),
+     ]},
+    # DK-N-06: 8a CO (PFA=HJ), BB donks, BTN behind.
+    # CORRECTION 4 (v3.5.1): action_history must include BTN preflop call between
+    # CO call and BB call so that villain_positions=['BB','BTN'] is consistent
+    # with active postflop player set.
+    {'sub_scenario': '8a',
+     'hero_pos': 'CO', 'villain_positions': ['BB', 'BTN'],
+     'opener_position': 'HJ',
+     'board': ['Th', '8s', '5d'],
+     'hero_cards': ['Kc', 'Qs'],  # air on connected mid board
+     'pot': 18.0, 'to_call': 6.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'HJ', 'raise'), ('preflop', 'CO', 'call'),
+         ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'),
+     ]},
+    # DK-N-07: 8a CO (PFA=HJ). CORRECTION 4 applied (BTN call inserted).
+    {'sub_scenario': '8a',
+     'hero_pos': 'CO', 'villain_positions': ['BB', 'BTN'],
+     'opener_position': 'HJ',
+     'board': ['6d', '4c', '2h'],
+     'hero_cards': ['Ac', '8d'],  # air-ish
+     'pot': 18.0, 'to_call': 6.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'HJ', 'raise'), ('preflop', 'CO', 'call'),
+         ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'),
+     ]},
+    # DK-N-08: 8b_co_calls BTN, PFA=CO, CO calls donk first
+    {'sub_scenario': '8b_co_calls',
+     'hero_pos': 'BTN', 'villain_positions': ['BB', 'CO'],
+     'opener_position': 'CO',
+     'board': ['Ks', '7d', '3h'],
+     'hero_cards': ['Qd', 'Jc'],  # air
+     'pot': 30.0, 'to_call': 6.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'CO', 'call'),
+     ]},
+    # DK-N-09: 8b_co_calls BTN, PFA=CO
+    {'sub_scenario': '8b_co_calls',
+     'hero_pos': 'BTN', 'villain_positions': ['BB', 'CO'],
+     'opener_position': 'CO',
+     'board': ['Ah', '5c', '4d'],
+     'hero_cards': ['Tc', '8s'],  # air
+     'pot': 30.0, 'to_call': 6.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'CO', 'call'),
+     ]},
+    # DK-N-10: 8e CO PFA, BTN behind
+    {'sub_scenario': '8e',
+     'hero_pos': 'CO', 'villain_positions': ['BB', 'BTN'],
+     'opener_position': 'CO',
+     'board': ['Jh', '7c', '4d'],
+     'hero_cards': ['Ac', 'Qh'],  # overcards
+     'pot': 18.0, 'to_call': 6.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'),
+     ]},
 ]
 
 
@@ -262,5 +382,11 @@ def generate_scenarios(forbidden_fingerprints: Set[Tuple[str, str]]) -> List[dic
 
         records.append(record)
         forbidden_fingerprints.add(fp)
+
+    # Phase 6 v3.5.1 silent-failure assertion: every DONK record must have
+    # facing_bet=1 (BB donk lead). Catches malformed templates that skip the
+    # donk action history step.
+    assert all(r['feat_dict'].get('facing_bet', 0) == 1 for r in records), \
+        "DONK module produced records without facing_bet=1"
 
     return records

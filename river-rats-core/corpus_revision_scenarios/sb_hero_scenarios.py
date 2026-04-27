@@ -159,6 +159,92 @@ _SB_HERO_TEMPLATES: List[dict] = [
          ('flop', 'SB', 'check'), ('flop', 'CO', 'check'),
          ('turn', 'SB', 'check'), ('turn', 'CO', 'bet'),
      ]},
+
+    # ─────────────────────────────────────────────────────────────────
+    # SB-N (Phase 6 expansion v3.5): 7 new templates.
+    # 4 flop (pot 18-20 BB, spr_std) + 3 turn (pot 32-36 BB, spr_med).
+    # All hero=SB, BB folded preflop → BB NOT in villain_positions.
+    # ─────────────────────────────────────────────────────────────────
+    # SB-N-01: 3-way sandwich, CO+BTN villains
+    {'hero_pos': 'SB', 'villain_positions': ['CO', 'BTN'],
+     'opener_position': 'CO',
+     'board': ['6d', '4s', '2h'],
+     'hero_cards': ['Kh', 'Qc'],  # air
+     'pot': 20.0, 'to_call': 6.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'),
+         ('preflop', 'SB', 'call'), ('preflop', 'BB', 'fold'),
+         ('flop', 'SB', 'check'), ('flop', 'CO', 'bet'),
+     ]},
+    # SB-N-02: 3-way sandwich
+    {'hero_pos': 'SB', 'villain_positions': ['CO', 'BTN'],
+     'opener_position': 'CO',
+     'board': ['Qd', '5h', '3s'],
+     'hero_cards': ['Jd', 'Tc'],  # air
+     'pot': 20.0, 'to_call': 6.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'),
+         ('preflop', 'SB', 'call'), ('preflop', 'BB', 'fold'),
+         ('flop', 'SB', 'check'), ('flop', 'CO', 'bet'),
+     ]},
+    # SB-N-03: 2-way (BTN villain only, BB folded)
+    {'hero_pos': 'SB', 'villain_positions': ['BTN'],
+     'opener_position': 'BTN',
+     'board': ['9h', '6d', '3c'],
+     'hero_cards': ['Ah', '8d'],  # air
+     'pot': 18.0, 'to_call': 6.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'SB', 'call'),
+         ('preflop', 'BB', 'fold'),
+         ('flop', 'SB', 'check'), ('flop', 'BTN', 'bet'),
+     ]},
+    # SB-N-04: 3-way sandwich
+    {'hero_pos': 'SB', 'villain_positions': ['CO', 'BTN'],
+     'opener_position': 'CO',
+     'board': ['Kc', '8d', '4h'],
+     'hero_cards': ['Qd', 'Jh'],  # air
+     'pot': 20.0, 'to_call': 6.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'),
+         ('preflop', 'SB', 'call'), ('preflop', 'BB', 'fold'),
+         ('flop', 'SB', 'check'), ('flop', 'CO', 'bet'),
+     ]},
+    # SB-N-05: TURN spr_med (pot 34 → SPR 2.94)
+    {'hero_pos': 'SB', 'villain_positions': ['CO'],
+     'opener_position': 'CO',
+     'board': ['Th', '7c', '2s', '6d'],
+     'hero_cards': ['Kd', 'Qh'],  # air
+     'pot': 34.0, 'to_call': 10.0, 'street': 'turn',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'SB', 'call'),
+         ('preflop', 'BB', 'fold'),
+         ('flop', 'SB', 'check'), ('flop', 'CO', 'check'),
+         ('turn', 'SB', 'check'), ('turn', 'CO', 'bet'),
+     ]},
+    # SB-N-06: TURN spr_med (pot 36 → SPR 2.78)
+    {'hero_pos': 'SB', 'villain_positions': ['CO'],
+     'opener_position': 'CO',
+     'board': ['As', '4d', '2c', '8h'],
+     'hero_cards': ['Jh', 'Td'],  # air
+     'pot': 36.0, 'to_call': 12.0, 'street': 'turn',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'SB', 'call'),
+         ('preflop', 'BB', 'fold'),
+         ('flop', 'SB', 'check'), ('flop', 'CO', 'check'),
+         ('turn', 'SB', 'check'), ('turn', 'CO', 'bet'),
+     ]},
+    # SB-N-07: TURN spr_med (pot 32 → SPR 3.13)
+    {'hero_pos': 'SB', 'villain_positions': ['BTN'],
+     'opener_position': 'BTN',
+     'board': ['Jd', '9s', '5h', '3c'],
+     'hero_cards': ['Kc', 'Qd'],  # air
+     'pot': 32.0, 'to_call': 10.0, 'street': 'turn',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'SB', 'call'),
+         ('preflop', 'BB', 'fold'),
+         ('flop', 'SB', 'check'), ('flop', 'BTN', 'check'),
+         ('turn', 'SB', 'check'), ('turn', 'BTN', 'bet'),
+     ]},
 ]
 
 

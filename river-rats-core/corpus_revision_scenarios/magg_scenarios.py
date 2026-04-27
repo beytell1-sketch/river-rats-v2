@@ -156,6 +156,611 @@ _MAGG_TEMPLATES: List[dict] = [
          ('turn', 'BB', 'bet'), ('turn', 'BTN', 'call'),
          ('river', 'BB', 'bet'),
      ]},
+
+    # ─────────────────────────────────────────────────────────────────
+    # MAGG-A Group (Phase 6 expansion v3.5): pot 50-75 BB, fills magg quota.
+    # All match {magg, pfa}; assigned to magg (scarcity higher).
+    # 30 templates: BB bets flop+turn (some + river), or BB check-raise + turn bet.
+    # Hero=CO or BTN opener; villain=BB caller (Bug 1 compliant).
+    # ─────────────────────────────────────────────────────────────────
+    # MAGG-A-01: BB bets flop+turn; hero CO checks river
+    {'hero_pos': 'CO', 'villain_positions': ['BB'],
+     'opener_position': 'CO',
+     'board': ['7c', '4h', '2s', '9d', 'Jc'],
+     'hero_cards': ['Ah', 'Qd'],  # air missed
+     'pot': 55.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'CO', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'CO', 'call'),
+     ]},
+    # MAGG-A-02
+    {'hero_pos': 'BTN', 'villain_positions': ['BB'],
+     'opener_position': 'BTN',
+     'board': ['6s', '3d', '2h', '8s', 'Kd'],
+     'hero_cards': ['Jc', 'Tc'],  # busted
+     'pot': 52.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'BTN', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'BTN', 'call'),
+     ]},
+    # MAGG-A-03
+    {'hero_pos': 'CO', 'villain_positions': ['BB'],
+     'opener_position': 'CO',
+     'board': ['Qc', '5d', '3h', '7c', '2s'],
+     'hero_cards': ['Kd', 'Jh'],  # air
+     'pot': 58.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'CO', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'CO', 'call'),
+     ]},
+    # MAGG-A-04
+    {'hero_pos': 'BTN', 'villain_positions': ['BB'],
+     'opener_position': 'BTN',
+     'board': ['Th', '4d', '2c', '6h', 'Ac'],
+     'hero_cards': ['9s', '8d'],  # busted
+     'pot': 50.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'BTN', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'BTN', 'call'),
+     ]},
+    # MAGG-A-05
+    {'hero_pos': 'CO', 'villain_positions': ['BB'],
+     'opener_position': 'CO',
+     'board': ['Jd', '8c', '3s', '5h', '2d'],
+     'hero_cards': ['Kh', 'Qc'],  # air
+     'pot': 60.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'CO', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'CO', 'call'),
+     ]},
+    # MAGG-A-06: faces river bet
+    {'hero_pos': 'BTN', 'villain_positions': ['BB'],
+     'opener_position': 'BTN',
+     'board': ['9c', '6h', '2d', 'Ks', 'Ts'],
+     'hero_cards': ['Ad', '7c'],  # air
+     'pot': 55.0, 'to_call': 18.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'BTN', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'BTN', 'call'),
+         ('river', 'BB', 'bet'),
+     ]},
+    # MAGG-A-07
+    {'hero_pos': 'CO', 'villain_positions': ['BB'],
+     'opener_position': 'CO',
+     'board': ['As', '7d', '3c', 'Jh', '5s'],
+     'hero_cards': ['Qh', 'Tc'],  # air
+     'pot': 62.0, 'to_call': 20.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'CO', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'CO', 'call'),
+         ('river', 'BB', 'bet'),
+     ]},
+    # MAGG-A-08: BB check-raises flop, bets turn
+    {'hero_pos': 'BTN', 'villain_positions': ['BB'],
+     'opener_position': 'BTN',
+     'board': ['Kh', '5c', '2d', '8h', '4s'],
+     'hero_cards': ['Jd', '9s'],  # air
+     'pot': 58.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'BTN', 'bet'),
+         ('flop', 'BB', 'raise'), ('flop', 'BTN', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'BTN', 'call'),
+     ]},
+    # MAGG-A-09
+    {'hero_pos': 'CO', 'villain_positions': ['BB'],
+     'opener_position': 'CO',
+     'board': ['8d', '6s', '3h', 'Qc', 'Th'],
+     'hero_cards': ['Ah', '7d'],  # air
+     'pot': 65.0, 'to_call': 22.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'CO', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'CO', 'call'),
+         ('river', 'BB', 'bet'),
+     ]},
+    # MAGG-A-10
+    {'hero_pos': 'BTN', 'villain_positions': ['BB'],
+     'opener_position': 'BTN',
+     'board': ['Td', '9c', '5h', '3s', '7d'],
+     'hero_cards': ['Ks', 'Qh'],  # air
+     'pot': 54.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'BTN', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'BTN', 'call'),
+     ]},
+    # MAGG-A-11
+    {'hero_pos': 'CO', 'villain_positions': ['BB'],
+     'opener_position': 'CO',
+     'board': ['Jh', '6d', '4c', '2h', '9s'],
+     'hero_cards': ['Ac', '8s'],  # air
+     'pot': 60.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'CO', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'CO', 'call'),
+     ]},
+    # MAGG-A-12
+    {'hero_pos': 'BTN', 'villain_positions': ['BB'],
+     'opener_position': 'BTN',
+     'board': ['Qh', '4s', '2d', '6c', 'Kh'],
+     'hero_cards': ['Tc', '8d'],  # air
+     'pot': 57.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'BTN', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'BTN', 'call'),
+     ]},
+    # MAGG-A-13
+    {'hero_pos': 'CO', 'villain_positions': ['BB'],
+     'opener_position': 'CO',
+     'board': ['7s', '5h', '2c', 'Ah', '3d'],
+     'hero_cards': ['Kd', 'Jc'],  # air
+     'pot': 63.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'CO', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'CO', 'call'),
+     ]},
+    # MAGG-A-14: faces river bet
+    {'hero_pos': 'BTN', 'villain_positions': ['BB'],
+     'opener_position': 'BTN',
+     'board': ['Kc', '8h', '4d', '2s', 'Qd'],
+     'hero_cards': ['Jh', '9s'],  # air
+     'pot': 50.0, 'to_call': 17.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'BTN', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'BTN', 'call'),
+         ('river', 'BB', 'bet'),
+     ]},
+    # MAGG-A-15: BB check-raises flop
+    {'hero_pos': 'CO', 'villain_positions': ['BB'],
+     'opener_position': 'CO',
+     'board': ['Ac', '6h', '3s', '9d', '5h'],
+     'hero_cards': ['Ks', 'Qd'],  # air
+     'pot': 68.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'CO', 'bet'),
+         ('flop', 'BB', 'raise'), ('flop', 'CO', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'CO', 'call'),
+     ]},
+    # MAGG-A-16
+    {'hero_pos': 'BTN', 'villain_positions': ['BB'],
+     'opener_position': 'BTN',
+     'board': ['Js', '9d', '4c', '2h', '6s'],
+     'hero_cards': ['Ah', 'Kc'],  # air
+     'pot': 55.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'BTN', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'BTN', 'call'),
+     ]},
+    # MAGG-A-17: faces river bet, two pair
+    {'hero_pos': 'CO', 'villain_positions': ['BB'],
+     'opener_position': 'CO',
+     'board': ['5d', '3h', '2c', 'Jc', '8h'],
+     'hero_cards': ['Qd', 'Qh'],  # overpair
+     'pot': 70.0, 'to_call': 23.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'CO', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'CO', 'call'),
+         ('river', 'BB', 'bet'),
+     ]},
+    # MAGG-A-18
+    {'hero_pos': 'BTN', 'villain_positions': ['BB'],
+     'opener_position': 'BTN',
+     'board': ['Th', '7s', '3d', 'Qc', '2h'],
+     'hero_cards': ['Kd', '9c'],  # air
+     'pot': 52.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'BTN', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'BTN', 'call'),
+     ]},
+    # MAGG-A-19
+    {'hero_pos': 'CO', 'villain_positions': ['BB'],
+     'opener_position': 'CO',
+     'board': ['9s', '6d', '2h', '4c', 'Ks'],
+     'hero_cards': ['Jh', 'Td'],  # air
+     'pot': 60.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'CO', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'CO', 'call'),
+     ]},
+    # MAGG-A-20
+    {'hero_pos': 'BTN', 'villain_positions': ['BB'],
+     'opener_position': 'BTN',
+     'board': ['As', '3c', '2d', '7h', 'Jd'],
+     'hero_cards': ['9h', '8c'],  # air
+     'pot': 53.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'BTN', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'BTN', 'call'),
+     ]},
+    # MAGG-A-21: faces river bet
+    {'hero_pos': 'CO', 'villain_positions': ['BB'],
+     'opener_position': 'CO',
+     'board': ['Qd', '8h', '5s', '3d', 'Ah'],
+     'hero_cards': ['Kc', 'Jd'],  # air
+     'pot': 56.0, 'to_call': 19.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'CO', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'CO', 'call'),
+         ('river', 'BB', 'bet'),
+     ]},
+    # MAGG-A-22: BB check-raises flop
+    {'hero_pos': 'BTN', 'villain_positions': ['BB'],
+     'opener_position': 'BTN',
+     'board': ['6h', '4d', '3s', 'Tc', '9h'],
+     'hero_cards': ['Ad', 'Ks'],  # air
+     'pot': 65.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'BTN', 'bet'),
+         ('flop', 'BB', 'raise'), ('flop', 'BTN', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'BTN', 'call'),
+     ]},
+    # MAGG-A-23
+    {'hero_pos': 'CO', 'villain_positions': ['BB'],
+     'opener_position': 'CO',
+     'board': ['Kh', '7c', '4d', '2s', '8d'],
+     'hero_cards': ['Qs', 'Jh'],  # air
+     'pot': 58.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'CO', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'CO', 'call'),
+     ]},
+    # MAGG-A-24
+    {'hero_pos': 'BTN', 'villain_positions': ['BB'],
+     'opener_position': 'BTN',
+     'board': ['Jc', '5h', '2d', '9s', 'Kd'],
+     'hero_cards': ['Ac', 'Td'],  # air
+     'pot': 55.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'BTN', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'BTN', 'call'),
+     ]},
+    # MAGG-A-25
+    {'hero_pos': 'CO', 'villain_positions': ['BB'],
+     'opener_position': 'CO',
+     'board': ['8h', '5d', '3c', '6s', 'Qs'],
+     'hero_cards': ['Ah', '7s'],  # air
+     'pot': 62.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'CO', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'CO', 'call'),
+     ]},
+    # MAGG-A-26
+    {'hero_pos': 'BTN', 'villain_positions': ['BB'],
+     'opener_position': 'BTN',
+     'board': ['Qc', '9h', '6d', '3s', 'Td'],
+     'hero_cards': ['Kh', 'Jd'],  # air
+     'pot': 50.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'BTN', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'BTN', 'call'),
+     ]},
+    # MAGG-A-27: faces river bet
+    {'hero_pos': 'CO', 'villain_positions': ['BB'],
+     'opener_position': 'CO',
+     'board': ['7h', '4s', '2d', '5c', 'Jh'],
+     'hero_cards': ['Kc', 'Qs'],  # air
+     'pot': 60.0, 'to_call': 20.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'CO', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'CO', 'call'),
+         ('river', 'BB', 'bet'),
+     ]},
+    # MAGG-A-28
+    {'hero_pos': 'BTN', 'villain_positions': ['BB'],
+     'opener_position': 'BTN',
+     'board': ['Ah', '8d', '3s', '6c', '2h'],
+     'hero_cards': ['Js', '9d'],  # air
+     'pot': 54.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'BTN', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'BTN', 'call'),
+     ]},
+    # MAGG-A-29
+    {'hero_pos': 'CO', 'villain_positions': ['BB'],
+     'opener_position': 'CO',
+     'board': ['Th', '6c', '3d', '4h', 'Qs'],
+     'hero_cards': ['Kd', 'Jh'],  # air
+     'pot': 57.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'CO', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'CO', 'call'),
+     ]},
+    # MAGG-A-30: faces river bet
+    {'hero_pos': 'BTN', 'villain_positions': ['BB'],
+     'opener_position': 'BTN',
+     'board': ['9d', '5s', '2c', '8h', 'Kc'],
+     'hero_cards': ['Ah', 'Qd'],  # air
+     'pot': 63.0, 'to_call': 21.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'BTN', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'BTN', 'call'),
+         ('river', 'BB', 'bet'),
+     ]},
+
+    # ─────────────────────────────────────────────────────────────────
+    # MAGG-B Group (Phase 6 expansion v3.5): pot 26-45 BB → SPR 2.22-3.85.
+    # Overflow to spr_med after magg fills (40/40).
+    # 22 templates with same structural patterns.
+    # ─────────────────────────────────────────────────────────────────
+    # MAGG-B-01
+    {'hero_pos': 'CO', 'villain_positions': ['BB'],
+     'opener_position': 'CO',
+     'board': ['7d', '3h', '2c', '5s', 'Tc'],
+     'hero_cards': ['Ah', 'Kd'],  # air
+     'pot': 32.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'CO', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'CO', 'call'),
+     ]},
+    # MAGG-B-02
+    {'hero_pos': 'BTN', 'villain_positions': ['BB'],
+     'opener_position': 'BTN',
+     'board': ['6c', '4s', '2d', '8h', 'Js'],
+     'hero_cards': ['Kd', 'Qh'],  # air
+     'pot': 28.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'BTN', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'BTN', 'call'),
+     ]},
+    # MAGG-B-03: faces river bet
+    {'hero_pos': 'CO', 'villain_positions': ['BB'],
+     'opener_position': 'CO',
+     'board': ['Jd', '7c', '3s', '5h', 'Ah'],
+     'hero_cards': ['Qs', 'Td'],  # air
+     'pot': 35.0, 'to_call': 12.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'CO', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'CO', 'call'),
+         ('river', 'BB', 'bet'),
+     ]},
+    # MAGG-B-04
+    {'hero_pos': 'BTN', 'villain_positions': ['BB'],
+     'opener_position': 'BTN',
+     'board': ['Tc', '8s', '2h', '4d', '6c'],
+     'hero_cards': ['Kh', 'Jd'],  # air
+     'pot': 30.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'BTN', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'BTN', 'call'),
+     ]},
+    # MAGG-B-05
+    {'hero_pos': 'CO', 'villain_positions': ['BB'],
+     'opener_position': 'CO',
+     'board': ['9s', '5d', '2c', '7h', 'Kd'],
+     'hero_cards': ['Ac', 'Jh'],  # air
+     'pot': 40.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'CO', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'CO', 'call'),
+     ]},
+    # MAGG-B-06: BB check-raises flop
+    {'hero_pos': 'BTN', 'villain_positions': ['BB'],
+     'opener_position': 'BTN',
+     'board': ['Qs', '6h', '3d', '2c', '8s'],
+     'hero_cards': ['Th', '9c'],  # air
+     'pot': 33.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'BTN', 'bet'),
+         ('flop', 'BB', 'raise'), ('flop', 'BTN', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'BTN', 'call'),
+     ]},
+    # MAGG-B-07
+    {'hero_pos': 'CO', 'villain_positions': ['BB'],
+     'opener_position': 'CO',
+     'board': ['8c', '4h', '2s', '6d', 'Jc'],
+     'hero_cards': ['Kd', 'Qs'],  # air
+     'pot': 27.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'CO', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'CO', 'call'),
+     ]},
+    # MAGG-B-08: faces river bet
+    {'hero_pos': 'BTN', 'villain_positions': ['BB'],
+     'opener_position': 'BTN',
+     'board': ['Kd', '5s', '3h', '9c', '2d'],
+     'hero_cards': ['Ah', 'Jc'],  # air
+     'pot': 38.0, 'to_call': 13.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'BTN', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'BTN', 'call'),
+         ('river', 'BB', 'bet'),
+     ]},
+    # MAGG-B-09
+    {'hero_pos': 'CO', 'villain_positions': ['BB'],
+     'opener_position': 'CO',
+     'board': ['Ts', '7h', '4c', '2d', '8s'],
+     'hero_cards': ['Qd', 'Jh'],  # air
+     'pot': 32.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'CO', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'CO', 'call'),
+     ]},
+    # MAGG-B-10: faces river bet
+    {'hero_pos': 'BTN', 'villain_positions': ['BB'],
+     'opener_position': 'BTN',
+     'board': ['5c', '3s', '2h', '9d', 'Ks'],
+     'hero_cards': ['Ad', 'Tc'],  # air
+     'pot': 45.0, 'to_call': 15.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'BTN', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'BTN', 'call'),
+         ('river', 'BB', 'bet'),
+     ]},
+    # MAGG-B-11
+    {'hero_pos': 'CO', 'villain_positions': ['BB'],
+     'opener_position': 'CO',
+     'board': ['Jh', '8d', '5s', '3c', 'Qs'],
+     'hero_cards': ['Kc', '9h'],  # air
+     'pot': 30.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'CO', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'CO', 'call'),
+     ]},
+    # MAGG-B-12: BB check-raises flop
+    {'hero_pos': 'BTN', 'villain_positions': ['BB'],
+     'opener_position': 'BTN',
+     'board': ['Ac', '7s', '4h', '2d', '6c'],
+     'hero_cards': ['Kd', 'Jh'],  # air
+     'pot': 35.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'BTN', 'bet'),
+         ('flop', 'BB', 'raise'), ('flop', 'BTN', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'BTN', 'call'),
+     ]},
+    # MAGG-B-13
+    {'hero_pos': 'CO', 'villain_positions': ['BB'],
+     'opener_position': 'CO',
+     'board': ['9h', '6c', '3d', '5s', 'Td'],
+     'hero_cards': ['Qs', 'Jc'],  # air
+     'pot': 28.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'CO', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'CO', 'call'),
+     ]},
+    # MAGG-B-14: faces river bet
+    {'hero_pos': 'BTN', 'villain_positions': ['BB'],
+     'opener_position': 'BTN',
+     'board': ['Kh', '4d', '2c', '7s', 'Jh'],
+     'hero_cards': ['Ah', 'Qc'],  # air
+     'pot': 40.0, 'to_call': 14.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'BTN', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'BTN', 'call'),
+         ('river', 'BB', 'bet'),
+     ]},
+    # MAGG-B-15
+    {'hero_pos': 'CO', 'villain_positions': ['BB'],
+     'opener_position': 'CO',
+     'board': ['7s', '5c', '2h', '4d', 'Qs'],
+     'hero_cards': ['Kh', 'Jd'],  # air
+     'pot': 32.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'CO', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'CO', 'call'),
+     ]},
+    # MAGG-B-16
+    {'hero_pos': 'BTN', 'villain_positions': ['BB'],
+     'opener_position': 'BTN',
+     'board': ['Qd', '8c', '3s', '6h', '2d'],
+     'hero_cards': ['Ac', 'Td'],  # air
+     'pot': 27.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'BTN', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'BTN', 'call'),
+     ]},
+    # MAGG-B-17
+    {'hero_pos': 'CO', 'villain_positions': ['BB'],
+     'opener_position': 'CO',
+     'board': ['8s', '6d', '3h', '5c', 'Kc'],
+     'hero_cards': ['Jd', '9h'],  # air
+     'pot': 36.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'CO', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'CO', 'call'),
+     ]},
+    # MAGG-B-18: faces river bet
+    {'hero_pos': 'BTN', 'villain_positions': ['BB'],
+     'opener_position': 'BTN',
+     'board': ['As', '5h', '3d', '7c', '2s'],
+     'hero_cards': ['Ks', 'Jd'],  # air
+     'pot': 42.0, 'to_call': 14.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'BTN', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'BTN', 'call'),
+         ('river', 'BB', 'bet'),
+     ]},
+    # MAGG-B-19
+    {'hero_pos': 'CO', 'villain_positions': ['BB'],
+     'opener_position': 'CO',
+     'board': ['Jc', '7d', '4s', '2h', 'Qs'],
+     'hero_cards': ['Kh', 'Td'],  # air
+     'pot': 30.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'CO', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'CO', 'call'),
+     ]},
+    # MAGG-B-20: BB check-raises flop
+    {'hero_pos': 'BTN', 'villain_positions': ['BB'],
+     'opener_position': 'BTN',
+     'board': ['9c', '4h', '2s', '6d', 'Ah'],
+     'hero_cards': ['Ks', 'Qd'],  # air
+     'pot': 34.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'BTN', 'bet'),
+         ('flop', 'BB', 'raise'), ('flop', 'BTN', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'BTN', 'call'),
+     ]},
+    # MAGG-B-21
+    {'hero_pos': 'CO', 'villain_positions': ['BB'],
+     'opener_position': 'CO',
+     'board': ['Th', '8s', '3c', '5d', 'Kd'],
+     'hero_cards': ['Ac', 'Jh'],  # air
+     'pot': 38.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'CO', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'CO', 'call'),
+     ]},
+    # MAGG-B-22: faces river bet
+    {'hero_pos': 'BTN', 'villain_positions': ['BB'],
+     'opener_position': 'BTN',
+     'board': ['Qs', '6s', '4d', '2c', '7h'],
+     'hero_cards': ['Kd', 'Jc'],  # air
+     'pot': 44.0, 'to_call': 15.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'BTN', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'BTN', 'call'),
+         ('river', 'BB', 'bet'),
+     ]},
 ]
 
 
