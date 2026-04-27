@@ -124,21 +124,28 @@ def _generate_mode_a(
             for prev in decisions[:i]:
                 prior.append(f"{prev.street}: {pos} {prev.action}")
 
-            # Build hand dict for 59-feature re-extraction with corrected inputs
+            # Build hand dict for 59-feature re-extraction with corrected inputs.
+            # Keys must match what extract_all_features() expects (short-form schema).
+            # See feature_extractor.py extract_zero_compute_features() ~line 234:
+            #   'pos', 'h', 'b', 'st', 'fb', 'pot', 'tc', 'vp', 'exp', 'id'
+            # and extract_features_step1_through_5() ~line 1513:
+            #   '_num_opponents', '_opener_position', '_action_history'
             hand_dict = {
-                'hero_cards': dec.hero_cards,
-                'board': dec.board,
-                'street': dec.street,
-                'hero_position': pos,
-                'villain_positions': dec.villain_positions,
-                'pot': pot_bb,           # BB units — fixes SPR bug
-                'to_call': to_call_bb,
-                'facing_bet': dec.facing_bet,
-                'num_opponents': dec.num_opponents,
-                'prior_actions': prior,
-                '_opener_position': opener_pos,  # fixes IS_PFA bug
+                'pos': pos,                              # hero position (short key)
+                'h': ''.join(dec.hero_cards),            # hero cards as string
+                'b': ''.join(dec.board),                 # board as string
+                'st': dec.street[0],                     # 'f', 't', 'r' (short key)
+                'fb': int(dec.facing_bet),               # facing_bet as int (short key)
+                'pot': pot_bb,                           # BB units — fixes SPR bug
+                'tc': to_call_bb,                        # to_call (short key)
+                'vp': (dec.villain_positions[0]          # villain position (short key)
+                       if dec.villain_positions else 'BB'),
+                'exp': 'X',                              # placeholder label (unused)
+                'id': sit_id,                            # hand id for tracing
+                '_num_opponents': dec.num_opponents,     # multiway context
+                '_opener_position': opener_pos,          # fixes IS_PFA bug
                 '_is_3bet_pot': int(dec.feat_dict.get('is_3bet_pot', 0)),
-                'action_history': [],    # not available in this path
+                '_action_history': None,                 # not available in self-play path
             }
 
             try:

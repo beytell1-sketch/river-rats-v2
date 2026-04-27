@@ -111,10 +111,7 @@ _DONK_TEMPLATES: List[dict] = [
      'hero_pos': 'CO', 'villain_positions': ['BB', 'BTN'],
      'opener_position': 'CO',
      'board': ['Qd', '7s', '3h'],
-     'hero_cards': ['Ks', 'Ks'],  # set of Kings... wait, Ks Ks would be same card
-     # Use a realistic set: hero has pocket Ks, board has no K. Use QQ + Q on board
-     # Actually let's do: hero has Kc Kh, board Qd 7s 3h — overpair facing donk
-     'hero_cards': ['Kc', 'Kh'],
+     'hero_cards': ['Kc', 'Kh'],  # overpair (KK) facing donk on Qd-7s-3h board
      'pot': 18.0, 'to_call': 6.0, 'street': 'flop',
      'action_history': [
          ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),

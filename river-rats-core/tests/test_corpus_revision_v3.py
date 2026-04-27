@@ -252,7 +252,7 @@ class TestN1SprRegressionAssertion:
 
         violations = [
             r for r in records
-            if r['feat_dict']['spr'] < 2.0 and r.get('pot_bb', 0) > 6.0
+            if r['feat_dict']['spr'] < 2.0 and r.get('pot', 0) > 6.0
         ]
         assert not violations, (
             f"N1 FAIL: {len(violations)} Mode A records with spr < 2.0 AND pot_bb > 6.0. "
@@ -998,3 +998,353 @@ class TestScenarioGeneratorContracts:
             f"Cross-scenario fingerprint collision: {len(conflicts)} MAGG records "
             f"have the same fingerprint as PFA records. N3 (incremental threading) failed."
         )
+
+
+# ===========================================================================
+# Phase 2 F1: Mode A SPR key-name fix regression test
+# ===========================================================================
+
+class TestModeASprKeyNameFix:
+    """F1 regression: extract_all_features() must use short-form key schema.
+
+    Before F1 fix, hand_dict used long-form keys ('hero_cards', 'board', etc.)
+    that don't match extract_all_features() expectations ('h', 'b', etc.).
+    This caused a silent KeyError caught by the except clause, falling back
+    to chip-unit feat_dict with spr ≈ 1.25 regardless of pot size.
+
+    After F1 fix, short-form keys are used, and SPR is correctly computed
+    as stack_bb / pot_bb (BB-unit scale).
+    """
+
+    def test_short_form_keys_accepted_by_extract_all_features(self):
+        """F1: extract_all_features() correctly processes short-form key dict.
+
+        This verifies the F1 fix directly: short-form keys produce correct SPR.
+        pot=12.0 (BB units) → spr = 100/12 ≈ 8.33 (not 1.25 chip-unit value).
+        """
+        from feature_extractor import extract_all_features
+
+        hand_dict = {
+            'pos': 'BB',
+            'h': 'AhJh',
+            'b': '7h4h2d',
+            'st': 'f',
+            'fb': 1,
+            'pot': 12.0,   # BB units — should produce spr ≈ 8.33
+            'tc': 4.0,
+            'vp': 'BTN',
+            'exp': 'X',
+            'id': 'f1_test_001',
+            '_num_opponents': 2,
+            '_opener_position': 'BTN',
+            '_is_3bet_pot': 0,
+            '_action_history': None,
+        }
+        feat = extract_all_features(hand_dict)
+        spr = feat.get('spr')
+        assert spr is not None, "extract_all_features() returned no spr"
+        # With 100BB stack and 12BB pot: spr = 100/12 ≈ 8.33 (BB-unit)
+        assert spr > 2.0, (
+            f"F1 FAIL: spr={spr:.4f} with pot=12.0 BB. "
+            f"Expected spr > 2.0. Unit-mismatch bug present — "
+            f"short-form keys may not be passing to extract_all_features."
+        )
+        # More precisely: spr should be approximately 8.33 (100/12)
+        assert 7.0 <= spr <= 10.0, (
+            f"F1 FAIL: spr={spr:.4f} with pot=12.0 BB. "
+            f"Expected spr ≈ 8.33 (100/12 BB-unit). "
+            f"Chip-unit SPR would be ≈1.25 (100/80 chips)."
+        )
+
+    def test_long_form_keys_cause_keyerror(self):
+        """F1 regression: OLD long-form keys cause KeyError (confirms bug was present)."""
+        from feature_extractor import extract_all_features
+
+        old_style_dict = {
+            'hero_cards': ['Ah', 'Jh'],    # wrong key — should be 'h'
+            'board': ['7h', '4h', '2d'],    # wrong key — should be 'b'
+            'street': 'flop',               # wrong key — should be 'st'
+            'hero_position': 'BB',          # wrong key — should be 'pos'
+            'pot': 12.0,
+            'facing_bet': True,             # wrong key — should be 'fb'
+        }
+        try:
+            extract_all_features(old_style_dict)
+            # If no error, the function changed behaviour — flag it
+            pytest.fail(
+                "F1 regression: long-form keys should cause KeyError but did not. "
+                "extract_all_features() may have changed its schema."
+            )
+        except KeyError:
+            pass  # Expected — confirms old keys are rejected
+
+    def test_mode_a_spr_after_keyname_fix(self):
+        """N1 integration: synthetic Mode A records with short-form keys get spr >= 2.0.
+
+        Generates 3 synthetic Mode A records directly via extract_all_features()
+        using the short-form key schema (as applied by _generate_mode_a() after F1).
+        All records must have spr >= 2.0 — the pre-F1 chip-unit bug produced spr ≈ 1.25.
+        """
+        from feature_extractor import extract_all_features
+
+        # Synthetic situations: pot in BB units (12-22 BB), stack 100 BB
+        synthetic_hands = [
+            {'pos': 'BB', 'h': 'AhJh', 'b': '7h4h2d', 'st': 'f',
+             'fb': 1, 'pot': 12.0, 'tc': 4.0, 'vp': 'BTN', 'exp': 'X',
+             'id': 'syn_001', '_num_opponents': 2, '_opener_position': 'BTN',
+             '_is_3bet_pot': 0, '_action_history': None},
+            {'pos': 'CO', 'h': 'KdQd', 'b': 'Kh7d2c', 'st': 'f',
+             'fb': 0, 'pot': 15.0, 'tc': 0.0, 'vp': 'BB', 'exp': 'X',
+             'id': 'syn_002', '_num_opponents': 2, '_opener_position': 'CO',
+             '_is_3bet_pot': 0, '_action_history': None},
+            {'pos': 'BTN', 'h': 'AsTs', 'b': 'Ks8s3hQd', 'st': 't',
+             'fb': 1, 'pot': 22.0, 'tc': 7.0, 'vp': 'BB', 'exp': 'X',
+             'id': 'syn_003', '_num_opponents': 2, '_opener_position': 'BTN',
+             '_is_3bet_pot': 0, '_action_history': None},
+        ]
+
+        violations = []
+        for hand in synthetic_hands:
+            feat = extract_all_features(hand)
+            spr = feat.get('spr', 0.0)
+            pot = hand['pot']
+            # N1 regression: spr < 2.0 with pot_bb > 6.0 indicates chip-unit bug
+            if spr < 2.0 and pot > 6.0:
+                violations.append(
+                    f"id={hand['id']}: spr={spr:.4f}, pot_bb={pot:.1f}. "
+                    f"Unit-mismatch bug (chip-unit SPR)."
+                )
+
+        assert not violations, (
+            f"F1 regression: {len(violations)} Mode A records have "
+            f"spr < 2.0 with pot_bb > 6.0 (unit-mismatch):\n"
+            + "\n".join(violations)
+        )
+
+
+# ===========================================================================
+# Phase 2 F3: OOP/IP verification gate bounds test
+# ===========================================================================
+
+class TestVerifyCorpusOopBoundsStrict:
+    """F3 regression: _verify_corpus() must enforce spec bounds 0.55-0.65 OOP.
+
+    Before F3, the gate used 0.40-0.75 which allowed 42% OOP corpora to pass.
+    After F3, only corpora with 55-65% OOP pass; 42% OOP must FAIL.
+    """
+
+    def _make_synthetic_corpus(self, n: int, oop_fraction: float) -> list:
+        """Build a minimal synthetic corpus with given OOP fraction."""
+        records = []
+        n_oop = int(n * oop_fraction)
+        for i in range(n):
+            is_ip = 0 if i < n_oop else 1
+            records.append({
+                'situation_id': f'syn_{i:04d}',
+                'hero_cards': 'AhKh',
+                'board': '7d4c2s',
+                'street': 'flop',
+                'hero_position': 'BTN' if is_ip else 'BB',
+                'feat_dict': {
+                    'is_ip': is_ip,
+                    'facing_bet': 1,
+                    'is_preflop_aggressor': 0,
+                    'spr': 6.0,
+                    'villain_aggression_count': 0,
+                },
+                'generation_source': 'synthetic_test',
+            })
+        return records
+
+    def test_oop_42pct_fails_strict_gate(self):
+        """F3: corpus with 42% OOP should FAIL the strict gate (was passing before F3)."""
+        import io
+        from contextlib import redirect_stdout
+
+        # Import the verify function from scripts directory
+        import importlib.util
+        scripts_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'scripts')
+        spec_path = os.path.join(scripts_dir, 'build_corpus_revision_500_hand.py')
+        if not os.path.exists(spec_path):
+            pytest.skip(f"build_corpus_revision_500_hand.py not found at {spec_path}")
+
+        spec = importlib.util.spec_from_file_location('build_corpus', spec_path)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+
+        corpus_42pct_oop = self._make_synthetic_corpus(100, 0.42)
+
+        # Suppress stdout during verification
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            result = mod._verify_corpus(corpus_42pct_oop)
+
+        assert not result, (
+            "F3 FAIL: corpus with 42% OOP should fail the strict gate "
+            "(spec requires 55-65% OOP), but _verify_corpus() returned True. "
+            "OOP gate bounds not tightened correctly."
+        )
+
+    def test_oop_60pct_passes_strict_gate(self):
+        """F3: corpus with 60% OOP should still PASS the strict gate."""
+        import io
+        from contextlib import redirect_stdout
+
+        import importlib.util
+        scripts_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'scripts')
+        spec_path = os.path.join(scripts_dir, 'build_corpus_revision_500_hand.py')
+        if not os.path.exists(spec_path):
+            pytest.skip(f"build_corpus_revision_500_hand.py not found at {spec_path}")
+
+        spec = importlib.util.spec_from_file_location('build_corpus', spec_path)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+
+        corpus_60pct_oop = self._make_synthetic_corpus(100, 0.60)
+
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            result = mod._verify_corpus(corpus_60pct_oop)
+
+        # Note: may still fail other checks (facing_bet count, etc.) — only check
+        # that oop_pct check doesn't CAUSE a failure at 60% OOP
+        output = buf.getvalue()
+        assert 'WARN: oop_pct 0.55-0.65' not in output, (
+            "F3 FAIL: corpus with 60% OOP should pass the OOP gate "
+            "(within 55-65%), but gate reported WARN. "
+            f"verify output:\n{output}"
+        )
+
+
+# ===========================================================================
+# Phase 2 F4: NFD boundary turn-decision template validation
+# ===========================================================================
+
+class TestNfdBoundaryTurnDecisionTemplates:
+    """F4: Redesigned NFD boundary templates must use turn decisions and pass R4.
+
+    After F4 redesign, the 5 boundary templates use:
+    - street='turn' (not 'flop')
+    - 4-card boards (flop 2-flush + turn adds 3rd flush card)
+    - hero has Ace of flush suit + off-suit kicker
+    - full two-barrel action history
+
+    R4 gate: at least 3 of 5 templates must pass |actual - target| <= 0.03.
+    """
+
+    def test_nfd_boundary_templates_use_turn_street(self):
+        """F4: All 5 redesigned boundary templates must have street='turn'."""
+        from corpus_revision_scenarios.nfd_scenarios import _NFD_TEMPLATES
+
+        boundary_templates = [t for t in _NFD_TEMPLATES if t.get('is_boundary')]
+        assert len(boundary_templates) == 5, (
+            f"Expected 5 boundary templates, got {len(boundary_templates)}"
+        )
+        for i, tmpl in enumerate(boundary_templates):
+            assert tmpl['street'] == 'turn', (
+                f"F4: boundary template {i+1} has street={tmpl['street']!r}, "
+                f"expected 'turn' (turn-decision redesign)"
+            )
+
+    def test_nfd_boundary_templates_have_4card_boards(self):
+        """F4: All 5 redesigned boundary templates must have 4-card boards."""
+        from corpus_revision_scenarios.nfd_scenarios import _NFD_TEMPLATES
+
+        boundary_templates = [t for t in _NFD_TEMPLATES if t.get('is_boundary')]
+        for i, tmpl in enumerate(boundary_templates):
+            board = tmpl['board']
+            assert len(board) == 4, (
+                f"F4: boundary template {i+1} has {len(board)}-card board "
+                f"{board}, expected 4-card board for turn decision"
+            )
+
+    def test_nfd_boundary_templates_have_two_barrel_action_history(self):
+        """F4: All 5 redesigned boundary templates must have two-barrel action history."""
+        from corpus_revision_scenarios.nfd_scenarios import _NFD_TEMPLATES
+
+        boundary_templates = [t for t in _NFD_TEMPLATES if t.get('is_boundary')]
+        for i, tmpl in enumerate(boundary_templates):
+            ah = tmpl['action_history']
+            # Must include both flop bet and turn bet by villain
+            flop_bets = [(s, p, a) for s, p, a in ah if s == 'flop' and a == 'bet']
+            turn_bets = [(s, p, a) for s, p, a in ah if s == 'turn' and a == 'bet']
+            flop_calls = [(s, p, a) for s, p, a in ah if s == 'flop' and a == 'call']
+            assert flop_bets, (
+                f"F4: boundary template {i+1} missing flop bet in action_history"
+            )
+            assert flop_calls, (
+                f"F4: boundary template {i+1} missing flop call (hero) in action_history"
+            )
+            assert turn_bets, (
+                f"F4: boundary template {i+1} missing turn bet in action_history"
+            )
+
+    def test_nfd_boundary_r4_gate_at_least_3_of_5_pass(self):
+        """F4 (HARD GATE): At least 3 of 5 redesigned boundary templates pass R4.
+
+        Runs the feature extractor on all 5 boundary templates and checks that
+        |actual_villain_air_pct - target| <= 0.03 for at least 3 of 5.
+        """
+        from situation_factory import SituationSpec, build_situation
+        from corpus_revision_scenarios.nfd_scenarios import (
+            _NFD_TEMPLATES, NFD_BOUNDARY_TOLERANCE, validate_nfd_boundary)
+
+        boundary_templates = [t for t in _NFD_TEMPLATES if t.get('is_boundary')]
+        assert len(boundary_templates) == 5, (
+            f"Expected 5 boundary templates for R4 gate check, got {len(boundary_templates)}"
+        )
+
+        results = []
+        for i, tmpl in enumerate(boundary_templates):
+            spec = SituationSpec(
+                hero_cards=tmpl['hero_cards'],
+                board_cards=tmpl['board'],
+                hero_pos=tmpl['hero_pos'],
+                villain_positions=tmpl['villain_positions'],
+                pot=tmpl['pot'],
+                to_call=tmpl['to_call'],
+                street=tmpl['street'],
+                action_history=tmpl['action_history'],
+                opener_position=tmpl.get('opener_position'),
+            )
+            feat_dict = build_situation(spec)
+            record = {'feat_dict': feat_dict}
+            target = tmpl['target_villain_air']
+            actual = feat_dict.get('villain_air_pct', 0.0)
+            diff = abs(actual - target)
+            passes = diff <= NFD_BOUNDARY_TOLERANCE
+            results.append({
+                'template': i + 1,
+                'target': target,
+                'actual': actual,
+                'diff': diff,
+                'passes': passes,
+                'has_flush_draw': feat_dict.get('has_flush_draw'),
+                'nut_flush_block': feat_dict.get('nut_flush_block'),
+            })
+
+        pass_count = sum(1 for r in results if r['passes'])
+        result_lines = [
+            f"  T{r['template']}: actual={r['actual']:.4f}, target={r['target']}, "
+            f"diff={r['diff']:.4f}, "
+            f"{'PASS' if r['passes'] else 'FAIL'}, "
+            f"fd={r['has_flush_draw']}, nfb={r['nut_flush_block']}"
+            for r in results
+        ]
+
+        assert pass_count >= 3, (
+            f"F4 HARD GATE: only {pass_count}/5 NFD boundary templates pass R4 "
+            f"(|actual - target| <= {NFD_BOUNDARY_TOLERANCE}). Need >= 3.\n"
+            + "\n".join(result_lines)
+        )
+
+        # Also verify all templates have the required NFD features
+        for r in results:
+            assert r['has_flush_draw'] == 1, (
+                f"F4: boundary template {r['template']} has has_flush_draw=0. "
+                f"Hero must have flush draw on the redesigned boards."
+            )
+            assert r['nut_flush_block'] == 1, (
+                f"F4: boundary template {r['template']} has nut_flush_block=0. "
+                f"Hero must hold Ace of flush suit for nut_flush_block=1."
+            )

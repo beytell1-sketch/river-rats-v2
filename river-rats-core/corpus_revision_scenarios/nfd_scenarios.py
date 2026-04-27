@@ -1,11 +1,23 @@
 """Nut-FD (flush draw) facing-bet scenario specs (KB §1.7 pattern).
 
-Hero holds the Ace of the flush suit + another card, on a board with 2 cards
-of the same suit. Villain bets. Generates both RAISE-eligible (villain_air >= 0.20)
-and CALL-eligible (villain_air < 0.20) variants, plus 5 boundary cases.
+Hero holds the Ace of the flush suit, on a board with flush draw available.
+Villain bets. Generates both RAISE-eligible (villain_air >= 0.20) and
+CALL-eligible (villain_air < 0.20) variants, plus 5 boundary cases.
+
+FLOP TEMPLATES (RAISE/CALL scenarios):
+  Hero has BOTH cards in flush suit (2 hero + 2 board = 4 total flush draw).
+  On a 3-card board, nut_flush_block threshold = 2 board cards of same suit.
+  These use standard flop-decision structure with villain c-bet facing hero.
+
+BOUNDARY TEMPLATES (redesigned as TURN decisions per Phase 2 F4 fix):
+  Hero has Ace of flush suit + off-suit card (1 hero + 3 board = 4 total flush draw).
+  On a 4-card board, nut_flush_block threshold = 3 board cards of same suit.
+  Villain has bet BOTH flop and turn (two-barrel), narrowing range to reduce air.
+  This range self-filtering brings villain_air_pct to the 0.15-0.25 boundary zone.
 
 Blueprint Q2 Gap 5 / Q6 NFD scenarios.
 R4 boundary validation: |actual_villain_air_pct - target| <= 0.03
+See REVIEW_GTO_EXPERT_PR60_PROGRAMMER_IMPL_2026-04-27.md for boundary redesign rationale.
 """
 from __future__ import annotations
 
@@ -121,63 +133,113 @@ _NFD_TEMPLATES: List[dict] = [
      'target_villain_air': 0.12},
 
     # ─── BOUNDARY cases (target villain_air_pct around 0.20 threshold) ───
-    # 5 hands straddling the 0.15-0.25 range (R4 validation gate applies)
-    {'hero_pos': 'BB', 'villain_positions': ['BTN'],
-     'opener_position': 'BTN',
-     'board': ['8d', '5d', '3h'],
-     'hero_cards': ['Ad', 'Td'],  # nut flush draw (Ad+Td+8d+5d = 4 diamonds)
-     'pot': 12.0, 'to_call': 4.0, 'street': 'flop',
+    # 5 TURN-DECISION hands straddling the 0.15-0.25 range (R4 validation gate applies).
+    #
+    # Redesigned per gto-expert review (REVIEW_GTO_EXPERT_PR60_PROGRAMMER_IMPL_2026-04-27.md)
+    # and ml-architect BUG 5 root-cause analysis.
+    #
+    # WHY TURN DECISIONS:
+    # Flop-decision boundary templates (old design) produced villain_air_pct=0.37-0.42
+    # because BTN/CO c-bet on a low board naturally has high air (broadways completely miss
+    # a 7-4-2 / 8-5-3 board). That is far above the 0.15-0.25 target window.
+    # On the TURN, after villain has bet both flop and turn (two-barrel), villain's range
+    # has self-filtered: air hands that c-bet the flop but have zero equity tend to give
+    # up or polarise. This range filtering naturally reduces villain_air_pct to the
+    # 0.15-0.25 boundary zone.
+    #
+    # WHY 3-FLUSH BOARD CARDS:
+    # nut_flush_block=1 on a 4-card (turn) board requires:
+    #   - board has >= 3 cards of the flush suit (blocker_features.py threshold=3 for n_board>=4)
+    #   - hero holds the Ace of that suit
+    #   - hero + board total < 5 of suit (to avoid made-flush M3 exclusion)
+    # This requires: 3 flush-suit cards on the 4-card board + hero with Ax (single suit card).
+    # has_flush_draw=1 requires exactly 4 of same suit across (hero + board):
+    #   3 board + 1 hero Ace = 4 total → flush draw live.
+    #
+    # CARD PATTERN: flop has 2 flush-suit cards + turn card IS the 3rd flush-suit card.
+    # Hero holds Ace of flush suit + one off-suit card (Kx/Jx).
+    # This satisfies both nut_flush_block=1 (board >= 3 flush) and has_flush_draw=1 (4 total).
+    #
+    # ACTION HISTORY (all 5 templates):
+    #   preflop: villain raises, BB (hero) calls
+    #   flop: hero checks, villain bets, hero calls  (first barrel)
+    #   turn: hero checks, villain bets              (second barrel, hero faces decision)
+    #
+    # POT MATH: flop pot ≈ 12 (standard 3-way single-raised), villain bets 4 (33%),
+    # hero calls → turn pot ≈ 20. Use pot=20.0 with to_call=7.0 (35% bet into 20).
+    #
+    # EMPIRICAL VERIFICATION (tested against feature extractor before commit):
+    # T1: Tc4c2d-8c, Ac-Ks, CO → villain_air_pct=0.1580, target=0.15 → diff=0.008 ✓ PASS
+    # T2: 7c4c2h-Kc, Ac-Js, CO → villain_air_pct=0.1568, target=0.17 → diff=0.013 ✓ PASS
+    # T3: 7c4c2d-9c, Ac-Ks, CO → villain_air_pct=0.2017, target=0.20 → diff=0.002 ✓ PASS
+    # T4: 6s3s2c-9s, As-Kh, CO → villain_air_pct=0.2115, target=0.22 → diff=0.009 ✓ PASS
+    # T5: 6c3c2h-9c, Ac-Ks, CO → villain_air_pct=0.2115, target=0.25 → diff=0.039 ✗ FAIL
+    # R4 gate: 4/5 pass (>= 3 required). T5 is the closest achievable with this constraint.
+    # Root cause for T5: range_analyzer caps two-barrel villain_air_pct at ~0.21 for all
+    # 3-flush-card board configurations tested. Flagged as known shortfall for v2.3+.
+    {'hero_pos': 'BB', 'villain_positions': ['CO'],
+     'opener_position': 'CO',
+     'board': ['Tc', '4c', '2d', '8c'],  # flop Tc-4c-2d, turn 8c (3 clubs on 4-card board)
+     'hero_cards': ['Ac', 'Ks'],  # Ac + Ks: 1 club (hero) + 3 clubs (board) = 4 total FD
+     'pot': 20.0, 'to_call': 7.0, 'street': 'turn',
      'action_history': [
-         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
-         ('flop', 'BB', 'check'), ('flop', 'BTN', 'bet'),
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'CO', 'bet'), ('flop', 'BB', 'call'),
+         ('turn', 'BB', 'check'), ('turn', 'CO', 'bet'),
      ],
      'target_villain_air': 0.15,
      'is_boundary': True},
 
-    {'hero_pos': 'BB', 'villain_positions': ['BTN'],
-     'opener_position': 'BTN',
-     'board': ['9s', '5s', '2d'],
-     'hero_cards': ['As', 'Qs'],  # nut flush draw (As+Qs+9s+5s = 4 spades)
-     'pot': 12.0, 'to_call': 4.0, 'street': 'flop',
+    {'hero_pos': 'BB', 'villain_positions': ['CO'],
+     'opener_position': 'CO',
+     'board': ['7c', '4c', '2h', 'Kc'],  # flop 7c-4c-2h, turn Kc (3 clubs on 4-card board)
+     'hero_cards': ['Ac', 'Js'],  # Ac + Js: 1 club (hero) + 3 clubs (board) = 4 total FD
+     'pot': 20.0, 'to_call': 7.0, 'street': 'turn',
      'action_history': [
-         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
-         ('flop', 'BB', 'check'), ('flop', 'BTN', 'bet'),
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'CO', 'bet'), ('flop', 'BB', 'call'),
+         ('turn', 'BB', 'check'), ('turn', 'CO', 'bet'),
      ],
      'target_villain_air': 0.17,
      'is_boundary': True},
 
     {'hero_pos': 'BB', 'villain_positions': ['CO'],
      'opener_position': 'CO',
-     'board': ['8c', '5c', '3h'],
-     'hero_cards': ['Ac', 'Jc'],  # nut flush draw (Ac+Jc+8c+5c = 4 clubs)
-     'pot': 12.0, 'to_call': 4.0, 'street': 'flop',
+     'board': ['7c', '4c', '2d', '9c'],  # flop 7c-4c-2d, turn 9c (3 clubs on 4-card board)
+     'hero_cards': ['Ac', 'Ks'],  # Ac + Ks: 1 club (hero) + 3 clubs (board) = 4 total FD
+     'pot': 20.0, 'to_call': 7.0, 'street': 'turn',
      'action_history': [
          ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
-         ('flop', 'BB', 'check'), ('flop', 'CO', 'bet'),
+         ('flop', 'BB', 'check'), ('flop', 'CO', 'bet'), ('flop', 'BB', 'call'),
+         ('turn', 'BB', 'check'), ('turn', 'CO', 'bet'),
      ],
      'target_villain_air': 0.20,
      'is_boundary': True},
 
-    {'hero_pos': 'BB', 'villain_positions': ['BTN'],
-     'opener_position': 'BTN',
-     'board': ['Ts', '6s', '2c'],
-     'hero_cards': ['As', 'Ks'],  # nut flush draw (As+Ks+Ts+6s = 4 spades)
-     'pot': 12.0, 'to_call': 4.0, 'street': 'flop',
+    {'hero_pos': 'BB', 'villain_positions': ['CO'],
+     'opener_position': 'CO',
+     'board': ['6s', '3s', '2c', '9s'],  # flop 6s-3s-2c, turn 9s (3 spades on 4-card board)
+     'hero_cards': ['As', 'Kh'],  # As + Kh: 1 spade (hero) + 3 spades (board) = 4 total FD
+     'pot': 20.0, 'to_call': 7.0, 'street': 'turn',
      'action_history': [
-         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
-         ('flop', 'BB', 'check'), ('flop', 'BTN', 'bet'),
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'CO', 'bet'), ('flop', 'BB', 'call'),
+         ('turn', 'BB', 'check'), ('turn', 'CO', 'bet'),
      ],
      'target_villain_air': 0.22,
      'is_boundary': True},
 
-    {'hero_pos': 'BB', 'villain_positions': ['BTN'],
-     'opener_position': 'BTN',
-     'board': ['7c', '4c', '2s'],
-     'hero_cards': ['Ac', 'Qc'],  # nut flush draw (Ac+Qc+7c+4c = 4 clubs)
-     'pot': 12.0, 'to_call': 4.0, 'street': 'flop',
+    {'hero_pos': 'BB', 'villain_positions': ['CO'],
+     'opener_position': 'CO',
+     'board': ['6c', '3c', '2h', '9c'],  # flop 6c-3c-2h, turn 9c (3 clubs on 4-card board)
+     'hero_cards': ['Ac', 'Kd'],  # Ac + Kd: 1 club (hero) + 3 clubs (board) = 4 total FD
+     # Note: villain_air_pct ≈ 0.21 (best achievable); target 0.25 will fail R4 filter.
+     # This template will be filtered by generate_scenarios(). Flagged for v2.3+ calibration.
+     'pot': 20.0, 'to_call': 7.0, 'street': 'turn',
      'action_history': [
-         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
-         ('flop', 'BB', 'check'), ('flop', 'BTN', 'bet'),
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'CO', 'bet'), ('flop', 'BB', 'call'),
+         ('turn', 'BB', 'check'), ('turn', 'CO', 'bet'),
      ],
      'target_villain_air': 0.25,
      'is_boundary': True},
