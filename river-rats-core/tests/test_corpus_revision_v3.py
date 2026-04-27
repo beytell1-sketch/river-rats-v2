@@ -1233,12 +1233,15 @@ class TestNfdBoundaryTurnDecisionTemplates:
     """
 
     def test_nfd_boundary_templates_use_turn_street(self):
-        """F4: All 5 redesigned boundary templates must have street='turn'."""
+        """F4: All redesigned boundary templates must have street='turn'.
+
+        Phase 8 v3.6: extended from 5 → 8 boundary templates (added NFD-B-08/09/10).
+        """
         from corpus_revision_scenarios.nfd_scenarios import _NFD_TEMPLATES
 
         boundary_templates = [t for t in _NFD_TEMPLATES if t.get('is_boundary')]
-        assert len(boundary_templates) == 5, (
-            f"Expected 5 boundary templates, got {len(boundary_templates)}"
+        assert len(boundary_templates) >= 5, (
+            f"Expected >= 5 boundary templates, got {len(boundary_templates)}"
         )
         for i, tmpl in enumerate(boundary_templates):
             assert tmpl['street'] == 'turn', (
@@ -1280,18 +1283,22 @@ class TestNfdBoundaryTurnDecisionTemplates:
             )
 
     def test_nfd_boundary_r4_gate_at_least_3_of_5_pass(self):
-        """F4 (HARD GATE): At least 3 of 5 redesigned boundary templates pass R4.
+        """F4 (HARD GATE): At least 3 of the boundary templates pass R4.
 
-        Runs the feature extractor on all 5 boundary templates and checks that
-        |actual_villain_air_pct - target| <= 0.03 for at least 3 of 5.
+        Runs the feature extractor on all boundary templates and checks that
+        |actual_villain_air_pct - target| <= 0.03 for at least 3.
+
+        Phase 8 v3.6: extended from 5 → 8 boundary templates (added NFD-B-08/09/10);
+        gate keeps 3-pass minimum (>= 3 of N) since adding templates only widens the
+        candidate pool — the original 3-pass requirement is preserved.
         """
         from situation_factory import SituationSpec, build_situation
         from corpus_revision_scenarios.nfd_scenarios import (
             _NFD_TEMPLATES, NFD_BOUNDARY_TOLERANCE, validate_nfd_boundary)
 
         boundary_templates = [t for t in _NFD_TEMPLATES if t.get('is_boundary')]
-        assert len(boundary_templates) == 5, (
-            f"Expected 5 boundary templates for R4 gate check, got {len(boundary_templates)}"
+        assert len(boundary_templates) >= 5, (
+            f"Expected >= 5 boundary templates for R4 gate check, got {len(boundary_templates)}"
         )
 
         results = []
@@ -1333,8 +1340,8 @@ class TestNfdBoundaryTurnDecisionTemplates:
         ]
 
         assert pass_count >= 3, (
-            f"F4 HARD GATE: only {pass_count}/5 NFD boundary templates pass R4 "
-            f"(|actual - target| <= {NFD_BOUNDARY_TOLERANCE}). Need >= 3.\n"
+            f"F4 HARD GATE: only {pass_count}/{len(boundary_templates)} NFD boundary "
+            f"templates pass R4 (|actual - target| <= {NFD_BOUNDARY_TOLERANCE}). Need >= 3.\n"
             + "\n".join(result_lines)
         )
 

@@ -196,12 +196,12 @@ _MAGG_TEMPLATES: List[dict] = [
          ('flop', 'BB', 'bet'), ('flop', 'CO', 'call'),
          ('turn', 'BB', 'bet'), ('turn', 'CO', 'call'),
      ]},
-    # MAGG-A-04
+    # MAGG-A-04 (Phase 8 v3.6: pot 50→52 to remove spr_med eligibility; SPR 1.923)
     {'hero_pos': 'BTN', 'villain_positions': ['BB'],
      'opener_position': 'BTN',
      'board': ['Th', '4d', '2c', '6h', 'Ac'],
      'hero_cards': ['9s', '8d'],  # busted
-     'pot': 50.0, 'to_call': 0.0, 'street': 'river',
+     'pot': 52.0, 'to_call': 0.0, 'street': 'river',
      'action_history': [
          ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
          ('flop', 'BB', 'bet'), ('flop', 'BTN', 'call'),
@@ -310,12 +310,12 @@ _MAGG_TEMPLATES: List[dict] = [
          ('flop', 'BB', 'bet'), ('flop', 'CO', 'call'),
          ('turn', 'BB', 'bet'), ('turn', 'CO', 'call'),
      ]},
-    # MAGG-A-14: faces river bet
+    # MAGG-A-14: faces river bet (Phase 8 v3.6: pot 50→52 to remove spr_med eligibility; SPR 1.923)
     {'hero_pos': 'BTN', 'villain_positions': ['BB'],
      'opener_position': 'BTN',
      'board': ['Kc', '8h', '4d', '2s', 'Qd'],
      'hero_cards': ['Jh', '9s'],  # air
-     'pot': 50.0, 'to_call': 17.0, 'street': 'river',
+     'pot': 52.0, 'to_call': 17.0, 'street': 'river',
      'action_history': [
          ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
          ('flop', 'BB', 'bet'), ('flop', 'BTN', 'call'),
@@ -447,12 +447,12 @@ _MAGG_TEMPLATES: List[dict] = [
          ('flop', 'BB', 'bet'), ('flop', 'CO', 'call'),
          ('turn', 'BB', 'bet'), ('turn', 'CO', 'call'),
      ]},
-    # MAGG-A-26
+    # MAGG-A-26 (Phase 8 v3.6: pot 50→53 to remove spr_med eligibility; SPR 1.887)
     {'hero_pos': 'BTN', 'villain_positions': ['BB'],
      'opener_position': 'BTN',
      'board': ['Qc', '9h', '6d', '3s', 'Td'],
      'hero_cards': ['Kh', 'Jd'],  # air
-     'pot': 50.0, 'to_call': 0.0, 'street': 'river',
+     'pot': 53.0, 'to_call': 0.0, 'street': 'river',
      'action_history': [
          ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
          ('flop', 'BB', 'bet'), ('flop', 'BTN', 'call'),
@@ -760,6 +760,33 @@ _MAGG_TEMPLATES: List[dict] = [
          ('flop', 'BB', 'bet'), ('flop', 'BTN', 'call'),
          ('turn', 'BB', 'bet'), ('turn', 'BTN', 'call'),
          ('river', 'BB', 'bet'),
+     ]},
+
+    # ─────────────────────────────────────────────────────────────────
+    # MAGG-NEW Group (Phase 8 v3.6): 2 pure-magg templates with pot > 50.
+    # SPR < 2.0 → no spr_med eligibility. {magg, pfa} routing → magg.
+    # ─────────────────────────────────────────────────────────────────
+    # MAGG-NEW-01: CO opener, pot 54 → SPR 1.852
+    {'hero_pos': 'CO', 'villain_positions': ['BB'],
+     'opener_position': 'CO',
+     'board': ['3c', '2h', '7d', 'Ks', 'Td'],
+     'hero_cards': ['Ac', 'Jh'],  # air on river
+     'pot': 54.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'CO', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'CO', 'call'),
+     ]},
+    # MAGG-NEW-02: BTN opener, pot 56 → SPR 1.786
+    {'hero_pos': 'BTN', 'villain_positions': ['BB'],
+     'opener_position': 'BTN',
+     'board': ['5h', '2c', '9s', 'Qd', '4h'],
+     'hero_cards': ['Kd', '8c'],  # air on river
+     'pot': 56.0, 'to_call': 0.0, 'street': 'river',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'bet'), ('flop', 'BTN', 'call'),
+         ('turn', 'BB', 'bet'), ('turn', 'BTN', 'call'),
      ]},
 ]
 
