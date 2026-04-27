@@ -299,84 +299,180 @@ def _is_sb_hero_hand(rec: Dict) -> bool:
             or rec.get('hero_position', '') == 'SB')
 
 
+# Phase A targets — single source of truth. Tests assert this matches.
+PHASE_A_QUOTAS = {
+    'pfa': 80,
+    'nfd_raise': 20,
+    'nfd_call': 20,
+    'nfd_boundary': 10,
+    'bac': 20,
+    'monster': 20,
+    'magg': 40,
+    'spr_std': 50,
+    'spr_med': 40,
+    'rule11': 10,
+    'donk': 25,
+    'sb': 20,
+}
+
+# Human-readable labels (display-only)
+_PHASE_A_LABELS = {
+    'pfa': 'PFA c-bet (Rule 4)',
+    'nfd_raise': 'NFD RAISE (air >= 0.20)',
+    'nfd_call': 'NFD CALL (air < 0.20)',
+    'nfd_boundary': 'NFD boundary cases',
+    'bac': 'BAC (MW-30 callers >= 1)',
+    'monster': 'Monster facing bet (MW-33)',
+    'magg': 'MAGG river (villain_agg >= 2)',
+    'spr_std': 'Standard SPR (4-8)',
+    'spr_med': 'Medium SPR (2-4)',
+    'rule11': 'Rule 11 boundary',
+    'donk': 'Donk-bet defence (Module 8)',
+    'sb': 'SB-hero sandwich (Module 9)',
+}
+
+
+def _classify_record(rec: Dict) -> Set[str]:
+    """Return the set of Phase A categories a record satisfies.
+
+    A record may belong to multiple categories. The rare-category-first
+    allocator uses this membership set to decide which category to assign
+    each record to.
+    """
+    cats: Set[str] = set()
+    if _is_pfa_hand(rec):
+        cats.add('pfa')
+    if _is_magg_hand(rec):
+        cats.add('magg')
+    if _is_bac_hand(rec):
+        cats.add('bac')
+    if _is_monster_hand(rec):
+        cats.add('monster')
+    if _is_nfd_hand(rec):
+        if _validate_nfd_boundary(rec):
+            cats.add('nfd_boundary')
+        elif rec.get('feat_dict', {}).get('villain_air_pct', 0) >= 0.20:
+            cats.add('nfd_raise')
+        else:
+            cats.add('nfd_call')
+    if _is_rule11_hand(rec):
+        cats.add('rule11')
+    if _is_donk_hand(rec):
+        cats.add('donk')
+    if _is_sb_hero_hand(rec):
+        cats.add('sb')
+    spr = rec.get('feat_dict', {}).get('spr', 0)
+    if spr >= 4.0:
+        cats.add('spr_std')
+    elif 2.0 <= spr < 4.0:
+        cats.add('spr_med')
+    return cats
+
+
 def _phase_a_select(
     pool: List[Dict],
     forbidden_fps: Set[Tuple[str, str]],
     rng,
 ) -> Tuple[List[Dict], Set[Tuple[str, str]]]:
-    """Phase A: fill mandatory quotas (355 hands total).
+    """Phase A: rare-category-first allocator (Phase 4 / F5 fix per directive
+    `MAIN_TERMINAL_BUILD_EXECUTE_PHASE4_DIRECTIVE_2026-04-27.md` master `43a80bb`).
 
-    Quotas:
-      - PFA c-bet: 80
-      - NFD RAISE (villain_air >= 0.20): 20
-      - NFD CALL (villain_air < 0.20): 20
-      - NFD boundary cases: 10
-      - BAC (num_callers_to_bet >= 1): 20
-      - Monster facing bet (is_monster=1): 20
-      - MAGG river (villain_aggression_count >= 2): 40
-      - Standard SPR (4-8): 50
-      - Medium SPR (2-4): 40
-      - Rule 11 boundary: 10
-      - Donk-bet defence: 25
-      - SB-hero sandwich: 20
-      Total: 355
+    Quotas (PHASE_A_QUOTAS): 12 categories summing to 355 target hands.
+
+    Algorithm (replaces prior greedy first-come-first-served allocator that
+    consumed MAGG records via earlier PFA quota since MAGG records also
+    satisfy PFA criteria — root cause of MAGG=0/40 on Phase 3 v2 run):
+
+      1. Classify each pool record into ALL categories it satisfies
+         (a record may belong to multiple — e.g., a MAGG record that is also
+         PFA + standard-SPR belongs to {magg, pfa, spr_std}).
+      2. Compute scarcity[cat] = target / max(1, yield) per category.
+         Higher scarcity = rarer category, prioritise.
+      3. Sort records descending by their max-scarcity matching category
+         (records that fit only rare categories get assigned first).
+      4. For each record, assign to its highest-scarcity category that
+         still has unfilled target.
+      5. Report per-category status (FULL or UNDER with yield count).
+
+    Each record assigned to AT MOST ONE category. Records that match no
+    category (empty membership set) are skipped (they'll be picked up by
+    Phase B 8D stratification).
+
+    Returns (selected_records, updated_forbidden_fps).
     """
     used_fps = set(forbidden_fps)
-    selected: List[Dict] = []
 
-    def _pick(candidates, n, label):
-        nonlocal selected
-        rng.shuffle(candidates)
-        picked = []
-        for rec in candidates:
-            if len(picked) >= n:
-                break
-            fp = _fingerprint_record(rec)
-            if fp in used_fps:
-                continue
-            picked.append(rec)
-            used_fps.add(fp)
-        selected.extend(picked)
-        print(f"[Phase A] {label}: {len(picked)}/{n} filled")
-        return picked
+    # Pre-shuffle pool deterministically per RNG (so same seed → same outcome
+    # while still randomising tie-breaks within scarcity sort).
+    pool_shuffled = list(pool)
+    rng.shuffle(pool_shuffled)
 
-    # Pool partitions
-    nfd_pool = [r for r in pool if _is_nfd_hand(r)]
-    nfd_boundary = [r for r in nfd_pool if _validate_nfd_boundary(r)]
-    nfd_raise = [r for r in nfd_pool
-                 if r.get('feat_dict', {}).get('villain_air_pct', 0) >= 0.20
-                 and not _validate_nfd_boundary(r)]
-    nfd_call = [r for r in nfd_pool
-                if r.get('feat_dict', {}).get('villain_air_pct', 0) < 0.20
-                and not _validate_nfd_boundary(r)]
+    # Step 1: classify each record into its category membership set
+    membership = []  # parallel list to pool_shuffled
+    for rec in pool_shuffled:
+        membership.append(_classify_record(rec))
 
-    pfa_pool = [r for r in pool if _is_pfa_hand(r)]
-    bac_pool = [r for r in pool if _is_bac_hand(r)]
-    magg_pool = [r for r in pool if _is_magg_hand(r)]
-    monster_pool = [r for r in pool if _is_monster_hand(r)]
-    rule11_pool = [r for r in pool if _is_rule11_hand(r)]
-    donk_pool = [r for r in pool if _is_donk_hand(r)]
-    sb_pool = [r for r in pool if _is_sb_hero_hand(r)]
-    spr_standard = [r for r in pool
-                    if r.get('feat_dict', {}).get('spr', 0) >= 4.0]
-    spr_medium = [r for r in pool
-                  if 2.0 <= r.get('feat_dict', {}).get('spr', 0) < 4.0]
+    # Step 2: count yield per category (records that satisfy each category,
+    # including multi-membership records — for scarcity calculation we want
+    # the maximum POSSIBLE yield per category, not unique-assignment yield)
+    yield_per_cat: Dict[str, int] = {cat: 0 for cat in PHASE_A_QUOTAS}
+    for cats in membership:
+        for c in cats:
+            yield_per_cat[c] += 1
 
-    # Fill quotas
-    _pick(pfa_pool, 80, 'PFA c-bet (Rule 4)')
-    _pick(nfd_raise, 20, 'NFD RAISE (air >= 0.20)')
-    _pick(nfd_call, 20, 'NFD CALL (air < 0.20)')
-    _pick(nfd_boundary, 10, 'NFD boundary cases')
-    _pick(bac_pool, 20, 'BAC (MW-30 callers >= 1)')
-    _pick(monster_pool, 20, 'Monster facing bet (MW-33)')
-    _pick(magg_pool, 40, 'MAGG river (villain_agg >= 2)')
-    _pick(spr_standard, 50, 'Standard SPR (4-8)')
-    _pick(spr_medium, 40, 'Medium SPR (2-4)')
-    _pick(rule11_pool, 10, 'Rule 11 boundary')
-    _pick(donk_pool, 25, 'Donk-bet defence (Module 8)')
-    _pick(sb_pool, 20, 'SB-hero sandwich (Module 9)')
+    # Step 3: scarcity[cat] = target / yield (higher = harder to fill)
+    scarcity: Dict[str, float] = {
+        cat: PHASE_A_QUOTAS[cat] / max(1, yield_per_cat[cat])
+        for cat in PHASE_A_QUOTAS
+    }
 
-    print(f"[Phase A] Total selected: {len(selected)}/355")
+    # Step 4: sort records descending by max-scarcity matching category
+    # (records whose only matching categories are rare get assigned first;
+    # records that fit only abundant categories get assigned last)
+    indexed = list(enumerate(pool_shuffled))
+
+    def _record_priority(idx_rec):
+        idx, _ = idx_rec
+        cats = membership[idx]
+        if not cats:
+            return -float('inf')  # records with no matching category go last
+        return -max(scarcity[c] for c in cats)  # negative for descending sort
+
+    indexed.sort(key=_record_priority)
+
+    # Step 5: assign each record to one category (rarest still-open)
+    selected_per_cat: Dict[str, List[Dict]] = {cat: [] for cat in PHASE_A_QUOTAS}
+
+    for idx, rec in indexed:
+        fp = _fingerprint_record(rec)
+        if fp in used_fps:
+            continue
+        cats = membership[idx]
+        if not cats:
+            continue
+
+        # Find highest-scarcity category that still has unfilled target
+        eligible = [c for c in cats if len(selected_per_cat[c]) < PHASE_A_QUOTAS[c]]
+        if not eligible:
+            continue
+        best_cat = max(eligible, key=lambda c: scarcity[c])
+        selected_per_cat[best_cat].append(rec)
+        used_fps.add(fp)
+
+    # Step 6: flatten + report per-category status
+    selected = [r for cat in PHASE_A_QUOTAS for r in selected_per_cat[cat]]
+    for cat in PHASE_A_QUOTAS:
+        n_filled = len(selected_per_cat[cat])
+        n_target = PHASE_A_QUOTAS[cat]
+        n_yield = yield_per_cat[cat]
+        if n_filled >= n_target:
+            status = 'FULL'
+        else:
+            status = f'UNDER (yield {n_yield})'
+        label = _PHASE_A_LABELS[cat]
+        print(f"[Phase A] {label}: {n_filled}/{n_target} {status}")
+
+    print(f"[Phase A] Total selected: {len(selected)}/{sum(PHASE_A_QUOTAS.values())}")
     return selected, used_fps
 
 
