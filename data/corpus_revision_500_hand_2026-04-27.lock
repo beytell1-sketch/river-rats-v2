@@ -1,23 +1,23 @@
 {
   "corpus_revision_version": "v2.0",
-  "new_hand_count": 213,
-  "combined_corpus_count": 313,
-  "sha256_new": "129bd23ed2e5ed9499bdbed31dda6d86b0a89e7660550c00d91611367b284850",
-  "sha256_combined": "3f0ed144a7a79c53d3c095e905be7aad94e864e04f77c64a16f1d678da0bdec6",
+  "new_hand_count": 394,
+  "combined_corpus_count": 494,
+  "sha256_new": "019f4922620cf83da358d2d20710745f91b51fcc347626a4df3ab0622c0d3048",
+  "sha256_combined": "eefabbc40f67d2069f9e471a13aef301d2ec08575a87027f675d8cc8a1eb91c0",
   "build_seed": 20260427,
   "pool_path": "data/corpus_revision_pool_combined_2026-04-27.jsonl",
   "existing_corpus_path": "data/pilot_corpus_100_hand_2026-04-26_v2.jsonl",
-  "phase_a_count": 168,
+  "phase_a_count": 349,
   "phase_b_count": 45,
   "disjointness": {
     "within_batch_duplicates": 0,
     "total_forbidden_fingerprints": 170
   },
   "structural_verification": {
-    "facing_bet_count": 84,
-    "pfa_count": 94,
-    "magg_villain_aggression_2_count": 10,
-    "donk_bet_defence_count": 15,
-    "sb_hero_count": 12
+    "facing_bet_count": 163,
+    "pfa_count": 217,
+    "magg_villain_aggression_2_count": 64,
+    "donk_bet_defence_count": 25,
+    "sb_hero_count": 20
   }
 }
