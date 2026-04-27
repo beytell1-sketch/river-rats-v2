@@ -65,5 +65,8 @@
   },
   "v1_0_sha256_predecessor": "492154529eb70f07bb5e082a55765c0626b948b72fc48d8aa4a86c424928ef4b",
   "v1_0_to_v1_0_1_change": "v1.0 inherited 45-feature feat_dict from source pool; v1.0.1 calls feature_extractor.extract_all_features per record at corpus-build time \u2192 59-feature feat_dict matching Stage 5 retrain v1.0.1 contract (closes QC V-C13 from PR #40)",
-  "v23_calibration_constants_reference": "river-rats-core/calibration_exam.py v2.3 \u2014 STANDARD_EXAM_SIZE=28, STANDARD_PASS_THRESHOLD=23, GTO_REVERSAL_HANDS, GROUP_D_REVERSAL_HANDS"
+  "v23_calibration_constants_reference": "river-rats-core/calibration_exam.py v2.3 \u2014 STANDARD_EXAM_SIZE=28, STANDARD_PASS_THRESHOLD=23, GTO_REVERSAL_HANDS, GROUP_D_REVERSAL_HANDS",
+  "reextracted_v2_path": "data/pilot_corpus_100_hand_2026-04-26_v2.jsonl",
+  "reextracted_v2_sha256": "1afe69e7fbfa7bebfa319595a121115da68c3dbac369bb8b12edbe5e5184e9af",
+  "reextracted_v2_bb_chip_size": 10
 }
