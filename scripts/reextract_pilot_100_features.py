@@ -50,6 +50,24 @@ assert len(EXPECTED_FEAT_KEYS) == 59, (
 )
 
 
+def _dedupe_prior_actions(prior_actions: List[str]) -> List[str]:
+    """Collapse consecutive identical entries in prior_actions.
+
+    Source self-play emits the same action string multiple times in a row for
+    some hands (e.g., 'preflop: SB raise' x3 for a single open raise). This
+    confuses labellers, who read the duplicates as a multi-bet sequence.
+    Collapsing consecutive duplicates removes the artefact while preserving
+    legitimate non-adjacent repeats (e.g., raise -> call -> raise).
+    """
+    if not prior_actions:
+        return prior_actions
+    deduped = [prior_actions[0]]
+    for entry in prior_actions[1:]:
+        if entry != deduped[-1]:
+            deduped.append(entry)
+    return deduped
+
+
 def _reconstruct_opener_position(
     hand: Dict[str, Any],
     hero_position: str,
@@ -141,6 +159,7 @@ def reextract_record(
     # Overwrite pot fields with BB-unit values
     updated['pot'] = pot_bb
     updated['to_call'] = to_call_bb
+    updated['prior_actions'] = _dedupe_prior_actions(hand.get('prior_actions') or [])
     return updated
 
 
@@ -152,11 +171,12 @@ def _sha256_file(path: str) -> str:
 
 
 def _verify(records: List[Dict[str, Any]]) -> bool:
-    """Post-extraction verification per Blueprint v3 Q6.
+    """Post-extraction verification per Blueprint v3 Q6 + Phase 10 dedup gate.
 
     Asserts:
     - >= 30/100 records have is_preflop_aggressor=1 (opener reconstruction worked)
     - mean(spr) between 5.0 and 15.0 (SPR fix applied)
+    - no record has consecutive identical prior_actions entries
     """
     pfa_count = sum(
         1 for r in records
@@ -165,8 +185,15 @@ def _verify(records: List[Dict[str, Any]]) -> bool:
     spr_values = [r['feat_dict'].get('spr', 0.0) for r in records]
     mean_spr = sum(spr_values) / len(spr_values) if spr_values else 0.0
 
+    dup_records = []
+    for r in records:
+        pa = r.get('prior_actions') or []
+        if any(pa[i] == pa[i - 1] for i in range(1, len(pa))):
+            dup_records.append(r.get('pilot_hand_id', '?'))
+
     print(f"[verify] is_preflop_aggressor=1: {pfa_count}/{len(records)}")
     print(f"[verify] mean(spr): {mean_spr:.3f}")
+    print(f"[verify] consecutive prior_actions dups: {len(dup_records)}/{len(records)}")
 
     ok = True
     if pfa_count < 30:
@@ -182,6 +209,14 @@ def _verify(records: List[Dict[str, Any]]) -> bool:
         ok = False
     else:
         print(f"[verify] PASS: mean(spr)={mean_spr:.3f} in [5.0, 15.0]")
+
+    if dup_records:
+        print(f"[verify] FAIL: {len(dup_records)} records have consecutive "
+              f"duplicate prior_actions entries: {dup_records[:5]}",
+              file=sys.stderr)
+        ok = False
+    else:
+        print("[verify] PASS: no consecutive prior_actions duplicates")
 
     return ok
 

@@ -67,6 +67,6 @@
   "v1_0_to_v1_0_1_change": "v1.0 inherited 45-feature feat_dict from source pool; v1.0.1 calls feature_extractor.extract_all_features per record at corpus-build time \u2192 59-feature feat_dict matching Stage 5 retrain v1.0.1 contract (closes QC V-C13 from PR #40)",
   "v23_calibration_constants_reference": "river-rats-core/calibration_exam.py v2.3 \u2014 STANDARD_EXAM_SIZE=28, STANDARD_PASS_THRESHOLD=23, GTO_REVERSAL_HANDS, GROUP_D_REVERSAL_HANDS",
   "reextracted_v2_path": "data/pilot_corpus_100_hand_2026-04-26_v2.jsonl",
-  "reextracted_v2_sha256": "e66139aea77f0b6142e237aebd912c514807c5688e75ed4c24698cae10912f46",
+  "reextracted_v2_sha256": "bd951cf9f27c7f85e9e7468de462db35eb1f398d0288c2b9be3ff0181b9f3dfb",
   "reextracted_v2_bb_chip_size": 10
 }

@@ -714,14 +714,24 @@ def build_corpus(
             'pfa_count': sum(
                 1 for r in combined
                 if r.get('feat_dict', {}).get('is_preflop_aggressor', 0) == 1),
+            # Whole-corpus count of records with villain_aggression_count == 2,
+            # any street. Matches ml-architect TC-26 audit semantics.
             'magg_villain_aggression_2_count': sum(
                 1 for r in combined
-                if (r.get('feat_dict', {}).get('villain_aggression_count', 0) >= 2
-                    and r.get('street', '') == 'river')),
+                if r.get('feat_dict', {}).get('villain_aggression_count', 0) == 2),
+            # MAGG-template provenance count (from magg_scenarios.py generator).
+            'magg_template_count': sum(
+                1 for r in combined
+                if r.get('generation_source', '') == 'magg_scenarios'),
             'donk_bet_defence_count': sum(
                 1 for r in combined
                 if r.get('generation_source', '') == 'donk_bet_defence_scenarios'),
+            # Whole-corpus count of records with hero_position == 'SB', any source.
             'sb_hero_count': sum(
+                1 for r in combined
+                if r.get('hero_position', '') == 'SB'),
+            # SB-template provenance count (from sb_hero_scenarios.py generator).
+            'sb_hero_template_count': sum(
                 1 for r in combined
                 if r.get('generation_source', '') == 'sb_hero_scenarios'),
         },
