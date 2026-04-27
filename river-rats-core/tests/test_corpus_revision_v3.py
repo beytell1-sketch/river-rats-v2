@@ -191,6 +191,80 @@ class TestR1ReExtractionSmoke:
 
 
 # ===========================================================================
+# Phase 10 Re-extract Dedup Regression
+# ===========================================================================
+
+def _load_dedupe_helper():
+    """Import _dedupe_prior_actions from scripts/reextract_pilot_100_features.py."""
+    import importlib.util
+    path = os.path.join(REPO, 'scripts', 'reextract_pilot_100_features.py')
+    spec = importlib.util.spec_from_file_location('reextract_pilot_100_features', path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module._dedupe_prior_actions
+
+
+class TestPhase10ReExtractDedup:
+    """Phase 10: re-extract collapses consecutive duplicate prior_actions.
+
+    PR #70 round-3 NIT-3: source pilot file emits 'preflop: SB raise' three
+    times in a row for some records (PILOT_009, PILOT_057, PILOT_096) due to
+    a self-play logging artefact. Labellers misread these as multi-bet
+    sequences. Re-extract must collapse them.
+    """
+
+    def test_dedupe_helper_collapses_consecutive_duplicates(self):
+        _dedupe_prior_actions = _load_dedupe_helper()
+        assert _dedupe_prior_actions([
+            'preflop: SB raise', 'preflop: SB raise', 'preflop: SB raise',
+            'flop: SB check', 'turn: SB check',
+        ]) == ['preflop: SB raise', 'flop: SB check', 'turn: SB check']
+
+    def test_dedupe_helper_preserves_non_adjacent_repeats(self):
+        _dedupe_prior_actions = _load_dedupe_helper()
+        assert _dedupe_prior_actions([
+            'preflop: BTN raise', 'preflop: SB call', 'preflop: BTN raise',
+        ]) == ['preflop: BTN raise', 'preflop: SB call', 'preflop: BTN raise']
+
+    def test_dedupe_helper_handles_empty(self):
+        _dedupe_prior_actions = _load_dedupe_helper()
+        assert _dedupe_prior_actions([]) == []
+        assert _dedupe_prior_actions(None or []) == []
+
+    @pytest.mark.skipif(
+        not os.path.exists(PILOT_CORPUS_V2_PATH),
+        reason="Re-extracted corpus v2 not yet generated"
+    )
+    def test_pilot_009_no_consecutive_duplicates(self):
+        """Regression: PILOT_009 prior_actions has no consecutive duplicates."""
+        with open(PILOT_CORPUS_V2_PATH) as f:
+            hands = [json.loads(line) for line in f if line.strip()]
+        target = next((h for h in hands if h.get('pilot_hand_id') == 'PILOT_009'), None)
+        assert target is not None, "PILOT_009 missing from re-extracted corpus"
+        pa = target.get('prior_actions') or []
+        dups = [(i, pa[i]) for i in range(1, len(pa)) if pa[i] == pa[i - 1]]
+        assert not dups, f"PILOT_009 still has consecutive dups: {dups}"
+
+    @pytest.mark.skipif(
+        not os.path.exists(PILOT_CORPUS_V2_PATH),
+        reason="Re-extracted corpus v2 not yet generated"
+    )
+    def test_no_record_has_consecutive_duplicates(self):
+        """All re-extracted records: no consecutive identical prior_actions."""
+        with open(PILOT_CORPUS_V2_PATH) as f:
+            hands = [json.loads(line) for line in f if line.strip()]
+        offenders = []
+        for h in hands:
+            pa = h.get('prior_actions') or []
+            if any(pa[i] == pa[i - 1] for i in range(1, len(pa))):
+                offenders.append(h.get('pilot_hand_id'))
+        assert not offenders, (
+            f"{len(offenders)} records still have consecutive duplicates: "
+            f"{offenders[:5]}"
+        )
+
+
+# ===========================================================================
 # N1 SPR Regression Assertion (Mode A pool)
 # ===========================================================================
 
