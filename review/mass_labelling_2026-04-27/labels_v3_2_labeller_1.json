@@ -1,0 +1,2973 @@
+{
+  "lane": "labeller_1",
+  "model": "claude-sonnet-4-6",
+  "protocol_version": "v3.2",
+  "protocol": "prompts/gto_labeller_v3.2.md",
+  "total_labels": 494,
+  "labels": [
+    {
+      "ref_id": "d6066_BB_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Monster hand on the flop, OOP. Low villain TP+ (0.21) means fewer value targets, many air hands would fold. CHECK to trap and induce bluffs; villain_air_pct=0.57."
+    },
+    {
+      "ref_id": "d7296_BB_river",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the river, villain checked back. 78.57% villain range behind with 61.58% equity. BET for thin value (d2410-pattern: villain passive, checked to)."
+    },
+    {
+      "ref_id": "d5383_CO_turn",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand (nut flush draw) on the turn 3-way. nut_flush_block=0, flush_block_pct=0.18, villain_air_pct=0.31 >= 0.20 (KB \u00a71.7 OVERRIDE threshold satisfied). BET as semi-bluff with nut draw + blocker."
+    },
+    {
+      "ref_id": "d1168_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 0.00% with 95.94% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "d0845_HJ_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Strong_made hand on the river, checked to. 80.39% villain range behind with 72.00% equity. BET for value."
+    },
+    {
+      "ref_id": "d4781_BTN_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand on the river, checked to (villain_checked_back=1). River checked-to override applies per calibration note d3178: BET for value. villain_top_pair_plus_pct=0.65, villain_air_pct=0.03, 97.89% villain range behind."
+    },
+    {
+      "ref_id": "d8002_HJ_flop",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Monster hand on the flop, OOP, dry board (danger_score=0.00). BET for value and protection; low danger means no strong draw threats."
+    },
+    {
+      "ref_id": "d3642_BB_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the turn 3-way. DO NOT Rule 2: 3-way fold equity ~36%, semi-bluff without nut draw+blocker is unprofitable. villain_air_pct=0.21, draw_outs=4. CHECK to realize equity passively."
+    },
+    {
+      "ref_id": "d2335_SB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 47.20% with 20.71% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "d0182_CO_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Weak_made hand on the turn. 59.31% villain range ahead, equity 19.75%. CHECK for pot control per DO NOT Rule 5."
+    },
+    {
+      "ref_id": "d8007_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the flop 3-way. DO NOT Rule 2: 3-way fold equity ~36%, semi-bluff without nut draw+blocker is unprofitable. villain_air_pct=0.34, draw_outs=9. CHECK to realize equity passively."
+    },
+    {
+      "ref_id": "d3409_HJ_turn",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the turn, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. villain_air_pct=0.00, danger_score=0.60. TPWK/medium made on paired/2-tone OOP multiway: CHECK to avoid committing to bigger pot when called; continuing villain range skews to hands that beat medium made."
+    },
+    {
+      "ref_id": "d7640_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the flop 3-way. DO NOT Rule 2: 3-way fold equity ~36%, semi-bluff without nut draw+blocker is unprofitable. villain_air_pct=0.68, draw_outs=9. CHECK to realize equity passively."
+    },
+    {
+      "ref_id": "d2410_BTN_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 9.53% with 60.05% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "d2285_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.44, equity 15.37%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "d3456_UTG_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 1.95% with 79.39% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "d3409_BB_turn",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Monster hand on the turn, OOP. villain_top_pair_plus_pct=0.47 provides value-betting targets. BET for value with 98.50% equity."
+    },
+    {
+      "ref_id": "d4312_CO_river",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the river, villain checked back. 71.47% villain range behind with 47.30% equity. BET for thin value (d2410-pattern: villain passive, checked to)."
+    },
+    {
+      "ref_id": "d5312_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the turn 3-way. DO NOT Rule 2: 3-way fold equity ~36%, semi-bluff without nut draw+blocker is unprofitable. villain_air_pct=0.04, draw_outs=4. CHECK to realize equity passively."
+    },
+    {
+      "ref_id": "d3847_HJ_turn",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong_made hand on the turn, OOP. Villain checked back (weakness signal), 53.80% equity. BET for value."
+    },
+    {
+      "ref_id": "d4211_BTN_turn",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "air hand facing raise 3-way. Check-raise 3-way is near-nuts signal per DO NOT Rule 3; equity 8.62% with 65.21% villain range ahead and pot_odds 22.18%. FOLD as range narrowing puts hero well behind."
+    },
+    {
+      "ref_id": "d2285_CO_flop",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, OOP, dry board (danger_score=0.00). BET for value/protection."
+    },
+    {
+      "ref_id": "d1562_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 25.02% with 47.63% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "d6764_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 0.03% with 99.41% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "d2197_HJ_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 12.40% with 49.58% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "d3036_UTG_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong_made hand on the flop, OOP. villain_top_pair_plus_pct=0.61, danger_score=0.40. CHECK per DO NOT Rule 5 (TP is medium strength 3-way, check-back candidate OOP on dynamic boards)."
+    },
+    {
+      "ref_id": "d7964_HJ_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. villain_air_pct=0.03, danger_score=0.25. TPWK/medium made on paired/2-tone OOP multiway: CHECK to avoid committing to bigger pot when called; continuing villain range skews to hands that beat medium made."
+    },
+    {
+      "ref_id": "d9488_CO_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 5.63% with 70.55% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "d7516_BTN_river",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "drawing hand facing raise 3-way. Check-raise 3-way is near-nuts signal per DO NOT Rule 3; equity 6.70% with 63.94% villain range ahead and pot_odds 28.49%. FOLD as range narrowing puts hero well behind."
+    },
+    {
+      "ref_id": "d6522_HJ_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the turn 3-way. DO NOT Rule 2: 3-way fold equity ~36%, semi-bluff without nut draw+blocker is unprofitable. villain_air_pct=0.36, draw_outs=9. CHECK to realize equity passively."
+    },
+    {
+      "ref_id": "d6522_HJ_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 13.08% with 47.46% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "d8137_CO_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the flop 3-way. DO NOT Rule 2: 3-way fold equity ~36%, semi-bluff without nut draw+blocker is unprofitable. villain_air_pct=0.24, draw_outs=4. CHECK to realize equity passively."
+    },
+    {
+      "ref_id": "d2139_BTN_turn",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the turn, IP. 91.43% villain range behind; BET for value with positional advantage."
+    },
+    {
+      "ref_id": "d9989_BTN_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Strong_made hand on the turn, IP. BET for value; villain_top_pair_plus_pct=0.21, 97.59% villain range behind, 89.30% equity."
+    },
+    {
+      "ref_id": "d2139_HJ_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop. CHECK for pot control; DO NOT Rule 5 (TP is medium strength 3-way; TPTK is check-back candidate OOP). villain_top_pair_plus_pct=0.25."
+    },
+    {
+      "ref_id": "d3409_HJ_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. villain_air_pct=0.00, danger_score=0.58. TPWK/medium made on paired/2-tone OOP multiway: CHECK to avoid committing to bigger pot when called; continuing villain range skews to hands that beat medium made."
+    },
+    {
+      "ref_id": "d2788_UTG_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Strong_made hand on the river, checked to. 76.88% villain range behind with 58.45% equity. BET for value."
+    },
+    {
+      "ref_id": "d5996_HJ_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the turn 3-way. DO NOT Rule 2: 3-way fold equity ~36%, semi-bluff without nut draw+blocker is unprofitable. villain_air_pct=0.48, draw_outs=4. CHECK to realize equity passively."
+    },
+    {
+      "ref_id": "d5066_CO_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand on the river, checked to (villain_checked_back=1). River checked-to override applies per calibration note d3178: BET for value. villain_top_pair_plus_pct=0.44, villain_air_pct=0.17, 97.35% villain range behind."
+    },
+    {
+      "ref_id": "d0244_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand on the river, checked to (villain_checked_back=1). River checked-to override applies per calibration note d3178: BET for value. villain_top_pair_plus_pct=0.39, villain_air_pct=0.57, 95.45% villain range behind."
+    },
+    {
+      "ref_id": "d4775_BTN_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand on the flop, IP. BET for value with 93.90% equity; 100.00% villain range behind. villain_air_pct=0.38 provides fold equity on draws."
+    },
+    {
+      "ref_id": "d3687_HJ_turn",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Monster hand on the turn, OOP. villain_top_pair_plus_pct=0.57 provides value-betting targets. BET for value with 99.85% equity."
+    },
+    {
+      "ref_id": "d3409_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand on the river, checked to (villain_checked_back=1). River checked-to override applies per calibration note d3178: BET for value. villain_top_pair_plus_pct=0.68, villain_air_pct=0.11, 97.88% villain range behind."
+    },
+    {
+      "ref_id": "d9418_UTG_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 0.03% with 96.51% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "d7726_UTG_turn",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong_made hand on the turn, OOP. villain_top_pair_plus_pct=0.49, danger_score=0.58. CHECK per DO NOT Rule 5 (TP is medium strength 3-way, check-back candidate OOP on dynamic boards)."
+    },
+    {
+      "ref_id": "d2092_BTN_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand on the flop, IP. BET for value with 88.65% equity; 100.00% villain range behind. villain_air_pct=0.63 provides fold equity on draws."
+    },
+    {
+      "ref_id": "d0845_BTN_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 17.60% with 38.41% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "d1562_HJ_turn",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong_made hand on the turn, OOP. villain_top_pair_plus_pct=0.57, danger_score=0.23. CHECK per DO NOT Rule 5 (TP is medium strength 3-way, check-back candidate OOP on dynamic boards)."
+    },
+    {
+      "ref_id": "d6035_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.37, equity 23.62%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "d1764_BTN_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Strong_made hand on the flop, IP. 78.53% villain range behind. BET for value with position advantage."
+    },
+    {
+      "ref_id": "d6764_CO_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the turn 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.34, equity 7.90%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "d3204_CO_river",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong_made hand on the river. 40.79% villain range ahead. CHECK to showdown; insufficient value targets."
+    },
+    {
+      "ref_id": "d3687_BB_turn",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong_made hand on the turn, OOP. villain_top_pair_plus_pct=0.47 sufficient for value bet override. BET with 66.43% equity."
+    },
+    {
+      "ref_id": "d8137_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Strong_made hand on the river, checked to. 80.05% villain range behind with 66.77% equity. BET for value."
+    },
+    {
+      "ref_id": "d2092_CO_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.48, equity 25.60%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "d1119_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the flop 3-way. DO NOT Rule 2: 3-way fold equity ~36%, semi-bluff without nut draw+blocker is unprofitable. villain_air_pct=0.74, draw_outs=9. CHECK to realize equity passively."
+    },
+    {
+      "ref_id": "d2335_SB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.70, equity 35.73%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "d4472_CO_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.39, equity 18.60%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "d5181_CO_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 3.57% with 75.93% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "d8411_BB_turn",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the turn, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. villain_air_pct=0.57, danger_score=0.75. TPWK/medium made on paired/2-tone OOP multiway: CHECK to avoid committing to bigger pot when called; continuing villain range skews to hands that beat medium made."
+    },
+    {
+      "ref_id": "d6522_BB_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the turn 3-way. DO NOT Rule 2: 3-way fold equity ~36%, semi-bluff without nut draw+blocker is unprofitable. villain_air_pct=0.44, draw_outs=8. CHECK to realize equity passively."
+    },
+    {
+      "ref_id": "d5046_CO_flop",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Monster hand on the flop, OOP, dry board (danger_score=0.15). BET for value and protection; low danger means no strong draw threats."
+    },
+    {
+      "ref_id": "d9617_BB_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Monster hand on the flop, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. villain_top_pair_plus_pct=0.24 < 0.40 and conditions for BET not met. CHECK to trap; betting folds bluff-catchers and isolates against the few hands that beat us."
+    },
+    {
+      "ref_id": "d9418_UTG_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the turn 3-way. DO NOT Rule 2: 3-way fold equity ~36%, semi-bluff without nut draw+blocker is unprofitable. villain_air_pct=0.12, draw_outs=4. CHECK to realize equity passively."
+    },
+    {
+      "ref_id": "d9759_BTN_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Strong_made hand on the turn, IP. BET for value; villain_top_pair_plus_pct=0.45, 71.40% villain range behind, 32.85% equity."
+    },
+    {
+      "ref_id": "d2139_BTN_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Strong_made hand on the river, checked to. 78.12% villain range behind with 52.85% equity. BET for value."
+    },
+    {
+      "ref_id": "d6508_BB_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Monster hand on the flop, OOP. DO NOT Rule 11 applies: paired board OOP multiway. villain_top_pair_plus_pct=0.36 < 0.40 and conditions for BET not met. CHECK to trap; betting folds bluff-catchers and isolates against the few hands that beat us."
+    },
+    {
+      "ref_id": "d7983_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.19, equity 25.20%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "d3847_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.42, equity 24.00%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "d5222_CO_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Monster hand on the flop, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. villain_top_pair_plus_pct=0.25 < 0.40 and conditions for BET not met. CHECK to trap; betting folds bluff-catchers and isolates against the few hands that beat us."
+    },
+    {
+      "ref_id": "d6522_BTN_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 13.88% with 40.24% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "d4775_BTN_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand on the turn, IP. BET for value with 97.60% equity; 100.00% villain range behind. villain_air_pct=0.37 provides fold equity on draws."
+    },
+    {
+      "ref_id": "d8427_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand on the river, checked to (villain_checked_back=1). River checked-to override applies per calibration note d3178: BET for value. villain_top_pair_plus_pct=0.66, villain_air_pct=0.34, 92.97% villain range behind."
+    },
+    {
+      "ref_id": "d8427_BB_turn",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the turn, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. villain_air_pct=0.28, danger_score=0.38. TPWK/medium made on paired/2-tone OOP multiway: CHECK to avoid committing to bigger pot when called; continuing villain range skews to hands that beat medium made."
+    },
+    {
+      "ref_id": "d2920_BB_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. villain_air_pct=0.42, danger_score=0.45. TPWK/medium made on paired/2-tone OOP multiway: CHECK to avoid committing to bigger pot when called; continuing villain range skews to hands that beat medium made."
+    },
+    {
+      "ref_id": "d2410_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the turn 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.29, equity 9.32%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "d7640_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Strong_made hand on the river, checked to. 81.97% villain range behind with 66.20% equity. BET for value."
+    },
+    {
+      "ref_id": "d3036_UTG_turn",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong_made hand on the turn, OOP. villain_top_pair_plus_pct=0.67, danger_score=0.90. CHECK per DO NOT Rule 5 (TP is medium strength 3-way, check-back candidate OOP on dynamic boards)."
+    },
+    {
+      "ref_id": "d7361_BTN_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand on the flop, IP. BET for value with 77.48% equity; 98.84% villain range behind. villain_air_pct=0.36 provides fold equity on draws."
+    },
+    {
+      "ref_id": "d7726_UTG_river",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong_made hand on the river. 52.62% villain range ahead. CHECK to showdown; insufficient value targets."
+    },
+    {
+      "ref_id": "d5466_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the turn 3-way. DO NOT Rule 2: 3-way fold equity ~36%, semi-bluff without nut draw+blocker is unprofitable. villain_air_pct=0.20, draw_outs=4. CHECK to realize equity passively."
+    },
+    {
+      "ref_id": "d4534_HJ_river",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the river, villain checked back. 54.04% villain range ahead, 45.11% range behind. CHECK for showdown value."
+    },
+    {
+      "ref_id": "d4775_CO_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. villain_air_pct=0.34, danger_score=0.58. TPWK/medium made on paired/2-tone OOP multiway: CHECK to avoid committing to bigger pot when called; continuing villain range skews to hands that beat medium made."
+    },
+    {
+      "ref_id": "d0976_HJ_river",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the river, villain checked back. 78.74% villain range behind with 63.28% equity. BET for thin value (d2410-pattern: villain passive, checked to)."
+    },
+    {
+      "ref_id": "d6522_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the flop 3-way. DO NOT Rule 2: 3-way fold equity ~36%, semi-bluff without nut draw+blocker is unprofitable. villain_air_pct=0.36, draw_outs=9. CHECK to realize equity passively."
+    },
+    {
+      "ref_id": "d4775_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 0.18% with 95.35% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "d3642_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.54, equity 13.38%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "d7983_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 7.05% with 71.72% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "d4775_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the flop 3-way. DO NOT Rule 2: 3-way fold equity ~36%, semi-bluff without nut draw+blocker is unprofitable. villain_air_pct=0.38, draw_outs=13. CHECK to realize equity passively."
+    },
+    {
+      "ref_id": "d9518_UTG_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the flop 3-way. DO NOT Rule 2: 3-way fold equity ~36%, semi-bluff without nut draw+blocker is unprofitable. villain_air_pct=0.37, draw_outs=8. CHECK to realize equity passively."
+    },
+    {
+      "ref_id": "d7726_UTG_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong_made hand on the flop, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. villain_top_pair_plus_pct=0.31 < 0.40; betting OOP on 2-tone/paired board isolates into villain's flush draws/better TP continues. CHECK per Rule 11."
+    },
+    {
+      "ref_id": "d4312_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the turn 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.35, equity 3.85%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "d1647_BTN_flop",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, IP. 92.67% villain range behind; BET for value with positional advantage."
+    },
+    {
+      "ref_id": "d3409_HJ_river",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong strong_made hand facing raise 3-way. equity 49.23% > pot_odds 28.49% with 74.03% villain range behind. CALL given equity surplus despite 3-way raise being near-nuts signal."
+    },
+    {
+      "ref_id": "d9653_BTN_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop. CHECK for pot control; DO NOT Rule 5 (TP is medium strength 3-way; TPTK is check-back candidate OOP). villain_top_pair_plus_pct=0.13."
+    },
+    {
+      "ref_id": "d2335_SB_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the turn 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.70, equity 39.65%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "d5312_HJ_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 4.67% with 61.73% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "d3409_BTN_turn",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the turn, IP. 72.13% villain range behind; BET for value with positional advantage."
+    },
+    {
+      "ref_id": "d0976_HJ_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the turn 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.28, equity 11.55%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "d2511_CO_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. villain_air_pct=0.35, danger_score=0.25. TPWK/medium made on paired/2-tone OOP multiway: CHECK to avoid committing to bigger pot when called; continuing villain range skews to hands that beat medium made."
+    },
+    {
+      "ref_id": "PILOT_101",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand facing a bet. 95.17% equity with only 0.00% villain range ahead. CALL to keep villain in and build the pot; raising risks folding out worse hands. villain_top_pair_plus_pct=0.37, villain_air_pct=0.32."
+    },
+    {
+      "ref_id": "PILOT_102",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.38, equity 14.45%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_103",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.31, equity 15.70%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_104",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.45, equity 24.65%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_105",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong_made hand on the flop, OOP, dry board (danger_score=0.15). BET for value on safe board."
+    },
+    {
+      "ref_id": "PILOT_106",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the flop 3-way. DO NOT Rule 2: 3-way fold equity ~36%, semi-bluff without nut draw+blocker is unprofitable. villain_air_pct=0.22, draw_outs=8. CHECK to realize equity passively."
+    },
+    {
+      "ref_id": "PILOT_107",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the turn, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. villain_air_pct=0.49, danger_score=0.38. TPWK/medium made on paired/2-tone OOP multiway: CHECK to avoid committing to bigger pot when called; continuing villain range skews to hands that beat medium made."
+    },
+    {
+      "ref_id": "PILOT_108",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop. CHECK for pot control; DO NOT Rule 5 (TP is medium strength 3-way; TPTK is check-back candidate OOP). villain_top_pair_plus_pct=0.45."
+    },
+    {
+      "ref_id": "PILOT_109",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.36, equity 15.65%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_110",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, IP. 93.93% villain range behind; BET for value with positional advantage."
+    },
+    {
+      "ref_id": "PILOT_111",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the turn 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.24, equity 10.67%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_112",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the turn, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. villain_air_pct=0.49, danger_score=0.08. TPWK/medium made on paired/2-tone OOP multiway: CHECK to avoid committing to bigger pot when called; continuing villain range skews to hands that beat medium made."
+    },
+    {
+      "ref_id": "PILOT_113",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.44, equity 27.17%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_114",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop. CHECK for pot control; DO NOT Rule 5 (TP is medium strength 3-way; TPTK is check-back candidate OOP). villain_top_pair_plus_pct=0.43."
+    },
+    {
+      "ref_id": "PILOT_115",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, OOP, dry board (danger_score=0.00). BET for value/protection."
+    },
+    {
+      "ref_id": "PILOT_116",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop. CHECK for pot control; DO NOT Rule 5 (TP is medium strength 3-way; TPTK is check-back candidate OOP). villain_top_pair_plus_pct=0.31."
+    },
+    {
+      "ref_id": "PILOT_117",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.34, equity 17.50%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_118",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.00, equity 11.85%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_119",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.40, equity 21.20%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_120",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, IP. 92.35% villain range behind; BET for value with positional advantage."
+    },
+    {
+      "ref_id": "PILOT_121",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the turn, IP. 88.10% villain range behind; BET for value with positional advantage."
+    },
+    {
+      "ref_id": "PILOT_122",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the turn, IP. 82.98% villain range behind; BET for value with positional advantage."
+    },
+    {
+      "ref_id": "PILOT_123",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, OOP, dry board (danger_score=0.00). BET for value/protection."
+    },
+    {
+      "ref_id": "PILOT_124",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.56, equity 31.40%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_125",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, OOP, dry board (danger_score=0.00). BET for value/protection."
+    },
+    {
+      "ref_id": "PILOT_126",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.45, equity 12.80%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_127",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop. CHECK for pot control; DO NOT Rule 5 (TP is medium strength 3-way; TPTK is check-back candidate OOP). villain_top_pair_plus_pct=0.22."
+    },
+    {
+      "ref_id": "PILOT_128",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.47, equity 26.52%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_129",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.36, equity 22.88%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_130",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.39, equity 26.57%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_131",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.57, equity 30.60%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_132",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.50, equity 20.10%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_133",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the turn, villain checked back. d2410-calibration anchor pattern: villain passive (villain_checked_back=1), 74.90% equity, SPR=5.0. BET for value at compressed SPR."
+    },
+    {
+      "ref_id": "PILOT_134",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the turn 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.00, equity 9.53%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_135",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, IP. 90.19% villain range behind; BET for value with positional advantage."
+    },
+    {
+      "ref_id": "PILOT_136",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop. CHECK for pot control; DO NOT Rule 5 (TP is medium strength 3-way; TPTK is check-back candidate OOP). villain_top_pair_plus_pct=0.43."
+    },
+    {
+      "ref_id": "PILOT_137",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, IP. 88.09% villain range behind; BET for value with positional advantage."
+    },
+    {
+      "ref_id": "PILOT_138",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, IP. 92.32% villain range behind; BET for value with positional advantage."
+    },
+    {
+      "ref_id": "PILOT_139",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the turn, villain checked back. d2410-calibration anchor pattern: villain passive (villain_checked_back=1), 67.00% equity, SPR=4.8. BET for value at compressed SPR."
+    },
+    {
+      "ref_id": "PILOT_140",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop. CHECK for pot control; DO NOT Rule 5 (TP is medium strength 3-way; TPTK is check-back candidate OOP). villain_top_pair_plus_pct=0.57."
+    },
+    {
+      "ref_id": "PILOT_141",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.42, equity 25.87%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_142",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.02, equity 13.50%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_143",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.00, equity 19.18%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_144",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, IP. 82.37% villain range behind; BET for value with positional advantage."
+    },
+    {
+      "ref_id": "PILOT_145",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the turn 3-way. DO NOT Rule 2: 3-way fold equity ~36%, semi-bluff without nut draw+blocker is unprofitable. villain_air_pct=0.34, draw_outs=8. CHECK to realize equity passively."
+    },
+    {
+      "ref_id": "PILOT_146",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, IP. 95.79% villain range behind; BET for value with positional advantage."
+    },
+    {
+      "ref_id": "PILOT_147",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop. CHECK for pot control; DO NOT Rule 5 (TP is medium strength 3-way; TPTK is check-back candidate OOP). villain_top_pair_plus_pct=0.43."
+    },
+    {
+      "ref_id": "PILOT_148",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.56, equity 24.90%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_149",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the turn, villain checked back. d2410-calibration anchor pattern: villain passive (villain_checked_back=1), 79.53% equity, SPR=4.5. BET for value at compressed SPR."
+    },
+    {
+      "ref_id": "PILOT_150",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the flop 3-way. DO NOT Rule 2: 3-way fold equity ~36%, semi-bluff without nut draw+blocker is unprofitable. villain_air_pct=0.45, draw_outs=4. CHECK to realize equity passively."
+    },
+    {
+      "ref_id": "PILOT_151",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.41, equity 19.38%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_152",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.33, equity 15.20%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_153",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the turn, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. villain_air_pct=0.32, danger_score=0.38. TPWK/medium made on paired/2-tone OOP multiway: CHECK to avoid committing to bigger pot when called; continuing villain range skews to hands that beat medium made."
+    },
+    {
+      "ref_id": "PILOT_154",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.62, equity 16.75%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_155",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.34, equity 12.50%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_156",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.47, equity 29.95%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_157",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.47, equity 21.77%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_158",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.39, equity 23.67%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_159",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.44, equity 22.23%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_160",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 42.47% with 58.52% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_161",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.38, equity 18.40%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_162",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong_made hand on the flop, OOP, dry board (danger_score=0.15). BET for value on safe board."
+    },
+    {
+      "ref_id": "PILOT_163",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.53, equity 18.22%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_164",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.50, equity 17.22%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_165",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop. CHECK for pot control; DO NOT Rule 5 (TP is medium strength 3-way; TPTK is check-back candidate OOP). villain_top_pair_plus_pct=0.27."
+    },
+    {
+      "ref_id": "PILOT_166",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, IP. 97.25% villain range behind; BET for value with positional advantage."
+    },
+    {
+      "ref_id": "PILOT_167",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.19, equity 9.90%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_168",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 22.43% with 91.78% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_169",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop. CHECK for pot control; DO NOT Rule 5 (TP is medium strength 3-way; TPTK is check-back candidate OOP). villain_top_pair_plus_pct=0.41."
+    },
+    {
+      "ref_id": "PILOT_170",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop. CHECK for pot control; DO NOT Rule 5 (TP is medium strength 3-way; TPTK is check-back candidate OOP). villain_top_pair_plus_pct=0.27."
+    },
+    {
+      "ref_id": "PILOT_171",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Medium_made hand facing a bet. equity 60.37% > pot_odds 26.32% (margin=0.34), 71.88% villain range behind. CALL is profitable."
+    },
+    {
+      "ref_id": "PILOT_172",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the turn 3-way. DO NOT Rule 2: 3-way fold equity ~36%, semi-bluff without nut draw+blocker is unprofitable. villain_air_pct=0.08, draw_outs=4. CHECK to realize equity passively."
+    },
+    {
+      "ref_id": "PILOT_173",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the flop 3-way. DO NOT Rule 2: 3-way fold equity ~36%, semi-bluff without nut draw+blocker is unprofitable. villain_air_pct=0.44, draw_outs=4. CHECK to realize equity passively."
+    },
+    {
+      "ref_id": "PILOT_174",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the turn 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.44, equity 13.98%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_175",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.45, equity 20.50%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_176",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop. CHECK for pot control; DO NOT Rule 5 (TP is medium strength 3-way; TPTK is check-back candidate OOP). villain_top_pair_plus_pct=0.28."
+    },
+    {
+      "ref_id": "PILOT_177",
+      "action": "RAISE",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand (nut flush draw) facing a bet. Has nut flush draw blocker (flush_block_pct=0.18), villain_air_pct=0.39 >= 0.20 (KB \u00a71.7 OVERRIDE threshold satisfied). RAISE as semi-bluff per KB \u00a71.7; fold equity is sufficient with nut draw + blocker 3-way."
+    },
+    {
+      "ref_id": "PILOT_178",
+      "action": "RAISE",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand (nut flush draw) facing a bet. Has nut flush draw blocker (flush_block_pct=0.22), villain_air_pct=0.42 >= 0.20 (KB \u00a71.7 OVERRIDE threshold satisfied). RAISE as semi-bluff per KB \u00a71.7; fold equity is sufficient with nut draw + blocker 3-way."
+    },
+    {
+      "ref_id": "PILOT_179",
+      "action": "RAISE",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand (nut flush draw) facing a bet. Has nut flush draw blocker (flush_block_pct=0.19), villain_air_pct=0.40 >= 0.20 (KB \u00a71.7 OVERRIDE threshold satisfied). RAISE as semi-bluff per KB \u00a71.7; fold equity is sufficient with nut draw + blocker 3-way."
+    },
+    {
+      "ref_id": "PILOT_180",
+      "action": "RAISE",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand (nut flush draw) facing a bet. Has nut flush draw blocker (flush_block_pct=0.23), villain_air_pct=0.42 >= 0.20 (KB \u00a71.7 OVERRIDE threshold satisfied). RAISE as semi-bluff per KB \u00a71.7; fold equity is sufficient with nut draw + blocker 3-way."
+    },
+    {
+      "ref_id": "PILOT_181",
+      "action": "RAISE",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand (nut flush draw) facing a bet. Has nut flush draw blocker (flush_block_pct=0.21), villain_air_pct=0.39 >= 0.20 (KB \u00a71.7 OVERRIDE threshold satisfied). RAISE as semi-bluff per KB \u00a71.7; fold equity is sufficient with nut draw + blocker 3-way."
+    },
+    {
+      "ref_id": "PILOT_182",
+      "action": "RAISE",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand (nut flush draw) facing a bet. Has nut flush draw blocker (flush_block_pct=0.23), villain_air_pct=0.42 >= 0.20 (KB \u00a71.7 OVERRIDE threshold satisfied). RAISE as semi-bluff per KB \u00a71.7; fold equity is sufficient with nut draw + blocker 3-way."
+    },
+    {
+      "ref_id": "PILOT_183",
+      "action": "RAISE",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand (nut flush draw) facing a bet. Has nut flush draw blocker (flush_block_pct=0.20), villain_air_pct=0.38 >= 0.20 (KB \u00a71.7 OVERRIDE threshold satisfied). RAISE as semi-bluff per KB \u00a71.7; fold equity is sufficient with nut draw + blocker 3-way."
+    },
+    {
+      "ref_id": "PILOT_184",
+      "action": "RAISE",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand (nut flush draw) facing a bet. Has nut flush draw blocker (flush_block_pct=0.23), villain_air_pct=0.40 >= 0.20 (KB \u00a71.7 OVERRIDE threshold satisfied). RAISE as semi-bluff per KB \u00a71.7; fold equity is sufficient with nut draw + blocker 3-way."
+    },
+    {
+      "ref_id": "PILOT_185",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 58.65% >= pot_odds 25.00% (draw_outs=13). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "d521_BB_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. villain_air_pct=0.39, danger_score=0.45. TPWK/medium made on paired/2-tone OOP multiway: CHECK to avoid committing to bigger pot when called; continuing villain range skews to hands that beat medium made."
+    },
+    {
+      "ref_id": "PILOT_187",
+      "action": "RAISE",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand (nut flush draw) facing a bet. Has nut flush draw blocker (flush_block_pct=0.23), villain_air_pct=0.40 >= 0.20 (KB \u00a71.7 OVERRIDE threshold satisfied). RAISE as semi-bluff per KB \u00a71.7; fold equity is sufficient with nut draw + blocker 3-way."
+    },
+    {
+      "ref_id": "PILOT_188",
+      "action": "RAISE",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand (nut flush draw) facing a bet. Has nut flush draw blocker (flush_block_pct=0.19), villain_air_pct=0.39 >= 0.20 (KB \u00a71.7 OVERRIDE threshold satisfied). RAISE as semi-bluff per KB \u00a71.7; fold equity is sufficient with nut draw + blocker 3-way."
+    },
+    {
+      "ref_id": "PILOT_189",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 71.34% >= pot_odds 25.00% (draw_outs=13). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_190",
+      "action": "RAISE",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand (nut flush draw) facing a bet. Has nut flush draw blocker (flush_block_pct=0.21), villain_air_pct=0.44 >= 0.20 (KB \u00a71.7 OVERRIDE threshold satisfied). RAISE as semi-bluff per KB \u00a71.7; fold equity is sufficient with nut draw + blocker 3-way."
+    },
+    {
+      "ref_id": "PILOT_191",
+      "action": "RAISE",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand (nut flush draw) facing a bet. Has nut flush draw blocker (flush_block_pct=0.24), villain_air_pct=0.35 >= 0.20 (KB \u00a71.7 OVERRIDE threshold satisfied). RAISE as semi-bluff per KB \u00a71.7; fold equity is sufficient with nut draw + blocker 3-way."
+    },
+    {
+      "ref_id": "PILOT_192",
+      "action": "RAISE",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand (nut flush draw) facing a bet. Has nut flush draw blocker (flush_block_pct=0.20), villain_air_pct=0.38 >= 0.20 (KB \u00a71.7 OVERRIDE threshold satisfied). RAISE as semi-bluff per KB \u00a71.7; fold equity is sufficient with nut draw + blocker 3-way."
+    },
+    {
+      "ref_id": "PILOT_193",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 53.13% >= pot_odds 25.00% (draw_outs=9). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_194",
+      "action": "RAISE",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand (nut flush draw) facing a bet. Has nut flush draw blocker (flush_block_pct=0.22), villain_air_pct=0.43 >= 0.20 (KB \u00a71.7 OVERRIDE threshold satisfied). RAISE as semi-bluff per KB \u00a71.7; fold equity is sufficient with nut draw + blocker 3-way."
+    },
+    {
+      "ref_id": "PILOT_195",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 57.15% >= pot_odds 25.00% (draw_outs=9). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_196",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 56.07% >= pot_odds 25.00% (draw_outs=9). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_197",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 52.39% >= pot_odds 23.53% (draw_outs=9). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_198",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 61.17% >= pot_odds 23.53% (draw_outs=9). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_199",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 61.23% >= pot_odds 23.53% (draw_outs=9). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_200",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 70.75% >= pot_odds 25.00% (draw_outs=9). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_201",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 62.33% >= pot_odds 23.53% (draw_outs=9). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_202",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 53.70% >= pot_odds 23.53% (draw_outs=9). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_203",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 63.08% >= pot_odds 23.53% (draw_outs=9). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_204",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 52.71% >= pot_odds 23.53% (draw_outs=9). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_205",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 67.83% >= pot_odds 25.00% (draw_outs=9). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_206",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 66.99% >= pot_odds 23.53% (draw_outs=17). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_207",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 64.06% >= pot_odds 23.53% (draw_outs=9). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_208",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 57.97% >= pot_odds 23.53% (draw_outs=9). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_209",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 58.72% >= pot_odds 23.53% (draw_outs=9). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_210",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 70.96% >= pot_odds 23.53% (draw_outs=13). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_211",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 59.10% >= pot_odds 23.53% (draw_outs=9). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_212",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 65.44% >= pot_odds 23.53% (draw_outs=9). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_213",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 56.39% >= pot_odds 23.53% (draw_outs=9). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_214",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 50.14% >= pot_odds 23.53% (draw_outs=9). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "d587_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the flop 3-way. DO NOT Rule 2: 3-way fold equity ~36%, semi-bluff without nut draw+blocker is unprofitable. villain_air_pct=0.26, draw_outs=13. CHECK to realize equity passively."
+    },
+    {
+      "ref_id": "PILOT_216",
+      "action": "RAISE",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand (nut flush draw) facing a bet. Has nut flush draw blocker (flush_block_pct=0.25), villain_air_pct=0.23 >= 0.20 (KB \u00a71.7 OVERRIDE threshold satisfied). RAISE as semi-bluff per KB \u00a71.7; fold equity is sufficient with nut draw + blocker 3-way."
+    },
+    {
+      "ref_id": "PILOT_217",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 37.40% >= pot_odds 25.93% (draw_outs=9). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "d719_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the flop 3-way. DO NOT Rule 2: 3-way fold equity ~36%, semi-bluff without nut draw+blocker is unprofitable. villain_air_pct=0.19, draw_outs=9. CHECK to realize equity passively."
+    },
+    {
+      "ref_id": "PILOT_219",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 43.67% >= pot_odds 25.93% (draw_outs=9). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_220",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 36.89% >= pot_odds 25.93% (draw_outs=9). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_221",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 39.65% >= pot_odds 25.93% (draw_outs=9). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_222",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 38.72% >= pot_odds 25.93% (draw_outs=9). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_223",
+      "action": "RAISE",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand (nut flush draw) facing a bet. Has nut flush draw blocker (flush_block_pct=0.20), villain_air_pct=0.24 >= 0.20 (KB \u00a71.7 OVERRIDE threshold satisfied). RAISE as semi-bluff per KB \u00a71.7; fold equity is sufficient with nut draw + blocker 3-way."
+    },
+    {
+      "ref_id": "PILOT_224",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 44.25% >= pot_odds 25.93% (draw_outs=9). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_225",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 6.12% with 73.10% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_226",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 13.15% with 77.56% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_227",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Medium_made hand facing a bet. equity 48.23% > pot_odds 23.08% (margin=0.25), 67.34% villain range behind. CALL is profitable."
+    },
+    {
+      "ref_id": "PILOT_228",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 21.90% with 45.90% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_229",
+      "action": "FOLD",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand facing a bet. equity 18.98% < pot_odds 21.74%; not getting correct price with 8 outs. FOLD."
+    },
+    {
+      "ref_id": "PILOT_230",
+      "action": "CALL",
+      "confidence": "LOW",
+      "reasoning": "Medium_made hand facing a bet. equity 24.00% barely covers pot_odds 23.81%, 72.16% villain range behind. CALL is marginal."
+    },
+    {
+      "ref_id": "PILOT_231",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 10.62% with 79.37% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_232",
+      "action": "FOLD",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand facing a bet. equity 21.82% < pot_odds 22.58%; not getting correct price with 4 outs. FOLD."
+    },
+    {
+      "ref_id": "PILOT_233",
+      "action": "FOLD",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand facing a bet. equity 7.80% < pot_odds 23.73%; not getting correct price with 4 outs. FOLD."
+    },
+    {
+      "ref_id": "PILOT_234",
+      "action": "FOLD",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand facing a bet. equity 12.60% < pot_odds 24.14%; not getting correct price with 4 outs. FOLD."
+    },
+    {
+      "ref_id": "PILOT_235",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 9.75% with 86.73% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_236",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand facing a bet. equity 22.63% >= pot_odds 22.22% (draw_outs=8). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_237",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 10.17% with 72.42% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_238",
+      "action": "FOLD",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand facing a bet. equity 20.92% < pot_odds 24.14%; not getting correct price with 4 outs. FOLD."
+    },
+    {
+      "ref_id": "PILOT_239",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand facing a bet. equity 23.77% >= pot_odds 22.58% (draw_outs=4). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_240",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 5.45% with 94.05% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_241",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 8.00% with 74.43% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_242",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 16.80% with 76.85% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_243",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 35.70% >= pot_odds 23.08% (draw_outs=8). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_244",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 12.05% with 79.14% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "d308_HJ_turn",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Monster hand on the turn, OOP. villain_top_pair_plus_pct=0.61 provides value-betting targets. BET for value with 84.80% equity."
+    },
+    {
+      "ref_id": "PILOT_246",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand facing a bet. 91.36% equity with only 2.36% villain range ahead. CALL to keep villain in and build the pot; raising risks folding out worse hands. villain_top_pair_plus_pct=0.64, villain_air_pct=0.36."
+    },
+    {
+      "ref_id": "PILOT_247",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand facing a bet. 94.94% equity with only 0.00% villain range ahead. CALL to keep villain in and build the pot; raising risks folding out worse hands. villain_top_pair_plus_pct=0.25, villain_air_pct=0.40."
+    },
+    {
+      "ref_id": "d521_BTN_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand on the turn, IP. BET for value with 86.90% equity; 97.87% villain range behind. villain_air_pct=0.39 provides fold equity on draws."
+    },
+    {
+      "ref_id": "d282_BTN_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand on the turn, IP. BET for value with 78.20% equity; 88.99% villain range behind. villain_air_pct=0.02 provides fold equity on draws."
+    },
+    {
+      "ref_id": "d588_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand on the river. villain_top_pair_plus_pct=0.75 provides strong value-betting targets. BET for value with 44.30% equity."
+    },
+    {
+      "ref_id": "d249_BB_flop",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Monster hand on the flop, OOP. villain_top_pair_plus_pct=0.44 provides value-betting targets. BET for value with 81.13% equity."
+    },
+    {
+      "ref_id": "d576_BTN_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand on the turn, IP. BET for value with 91.70% equity; 98.51% villain range behind. villain_air_pct=0.33 provides fold equity on draws."
+    },
+    {
+      "ref_id": "PILOT_253",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand facing a bet. 97.27% equity with only 0.00% villain range ahead. CALL to keep villain in and build the pot; raising risks folding out worse hands. villain_top_pair_plus_pct=0.23, villain_air_pct=0.36."
+    },
+    {
+      "ref_id": "d588_HJ_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand on the river. villain_top_pair_plus_pct=0.68 provides strong value-betting targets. BET for value with 56.93% equity."
+    },
+    {
+      "ref_id": "d153_BTN_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand on the river. 88.84% villain range behind, villain_top_pair_plus_pct=0.25. BET for maximum value extraction."
+    },
+    {
+      "ref_id": "PILOT_256",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Monster hand on the flop, OOP, dry board (danger_score=0.15). BET for value and protection; low danger means no strong draw threats."
+    },
+    {
+      "ref_id": "d249_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand on the river. 89.51% villain range behind, villain_top_pair_plus_pct=0.62. BET for maximum value extraction."
+    },
+    {
+      "ref_id": "d588_BB_turn",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Monster hand on the turn, OOP. villain_top_pair_plus_pct=0.61 provides value-betting targets. BET for value with 38.95% equity."
+    },
+    {
+      "ref_id": "PILOT_259",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Monster hand on the flop, OOP. villain_top_pair_plus_pct=0.41 provides value-betting targets. BET for value with 80.00% equity."
+    },
+    {
+      "ref_id": "d576_BTN_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand on the river. 98.45% villain range behind, villain_top_pair_plus_pct=0.27. BET for maximum value extraction."
+    },
+    {
+      "ref_id": "PILOT_261",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand facing a bet. 90.15% equity with only 0.00% villain range ahead. CALL to keep villain in and build the pot; raising risks folding out worse hands. villain_top_pair_plus_pct=0.26, villain_air_pct=0.26."
+    },
+    {
+      "ref_id": "d588_HJ_turn",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Monster hand on the turn, OOP. villain_top_pair_plus_pct=0.64 provides value-betting targets. BET for value with 58.13% equity."
+    },
+    {
+      "ref_id": "d622_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand on the river. 96.40% villain range behind, villain_top_pair_plus_pct=0.66. BET for maximum value extraction."
+    },
+    {
+      "ref_id": "PILOT_264",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand facing a bet. 73.22% equity with only 9.60% villain range ahead. CALL to keep villain in and build the pot; raising risks folding out worse hands. villain_top_pair_plus_pct=0.46, villain_air_pct=0.14."
+    },
+    {
+      "ref_id": "PILOT_265",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 12.79% with 86.58% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_266",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 5.21% with 94.45% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "PILOT_267",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 2.47% with 97.25% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_268",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 9.46% with 90.41% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "PILOT_269",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 7.40% with 92.24% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_270",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 2.92% with 97.08% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "PILOT_271",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 3.55% with 95.98% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_272",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand on the river. 96.46% villain range behind, villain_top_pair_plus_pct=0.59. BET for maximum value extraction."
+    },
+    {
+      "ref_id": "PILOT_273",
+      "action": "FOLD",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand facing a bet. equity 5.78% < pot_odds 25.29%; not getting correct price with 4 outs. FOLD."
+    },
+    {
+      "ref_id": "PILOT_274",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 4.21% with 95.39% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "PILOT_275",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 10.50% with 88.99% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "PILOT_276",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 3.23% with 96.77% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "PILOT_277",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 25.18% with 74.28% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "PILOT_278",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 1.78% with 98.12% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_279",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 2.08% with 96.82% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_280",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 0.70% with 99.30% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_281",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 23.47% with 75.70% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_282",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 8.77% with 90.56% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "PILOT_283",
+      "action": "FOLD",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand facing a bet. equity 0.00% < pot_odds 24.39%; not getting correct price with 4 outs. FOLD."
+    },
+    {
+      "ref_id": "PILOT_284",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 2.77% with 96.87% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_285",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 2.38% with 97.43% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_286",
+      "action": "FOLD",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand facing a bet. equity 2.98% < pot_odds 24.64%; not getting correct price with 4 outs. FOLD."
+    },
+    {
+      "ref_id": "PILOT_287",
+      "action": "FOLD",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand facing a bet. equity 3.91% < pot_odds 24.66%; not getting correct price with 4 outs. FOLD."
+    },
+    {
+      "ref_id": "PILOT_288",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand on the river. 99.24% villain range behind, villain_top_pair_plus_pct=0.61. BET for maximum value extraction."
+    },
+    {
+      "ref_id": "PILOT_289",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 11.20% with 88.37% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_290",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 3.13% with 96.81% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "PILOT_291",
+      "action": "FOLD",
+      "confidence": "MEDIUM",
+      "reasoning": "Weak_made hand facing a bet. 77.24% villain range ahead, equity 22.12% vs pot_odds 24.73%. FOLD per range-fold-priced-out; weak made cannot call profitably against villain's betting range."
+    },
+    {
+      "ref_id": "PILOT_292",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 25.32% with 74.18% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_293",
+      "action": "FOLD",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand facing a bet. equity 8.63% < pot_odds 25.33%; not getting correct price with 8 outs. FOLD."
+    },
+    {
+      "ref_id": "PILOT_294",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 17.56% with 81.87% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_295",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 20.52% with 78.78% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "PILOT_296",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 18.27% with 81.16% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "PILOT_297",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 27.48% with 72.02% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "PILOT_298",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 14.80% with 84.65% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_299",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 4.47% with 95.53% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_300",
+      "action": "FOLD",
+      "confidence": "MEDIUM",
+      "reasoning": "Weak_made hand facing a bet. 91.87% villain range ahead, equity 7.79% vs pot_odds 25.29%. FOLD per range-fold-priced-out; weak made cannot call profitably against villain's betting range."
+    },
+    {
+      "ref_id": "PILOT_301",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand facing a bet. 98.70% equity with only 0.00% villain range ahead. CALL to keep villain in and build the pot; raising risks folding out worse hands. villain_top_pair_plus_pct=0.93, villain_air_pct=0.04."
+    },
+    {
+      "ref_id": "PILOT_302",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 22.01% with 77.41% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_303",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Strong_made hand facing a bet. equity 56.85% > pot_odds 24.39% (margin=0.32), 56.61% villain range behind. CALL is clearly profitable."
+    },
+    {
+      "ref_id": "PILOT_304",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 19.23% with 80.06% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "d622_BB_flop",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand (nut flush draw) on the flop 3-way. nut_flush_block=1, flush_block_pct=0.17, villain_air_pct=0.63 >= 0.20 (KB \u00a71.7 OVERRIDE threshold satisfied). BET as semi-bluff with nut draw + blocker."
+    },
+    {
+      "ref_id": "PILOT_306",
+      "action": "RAISE",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand (nut flush draw) facing a bet. Has nut flush draw blocker (flush_block_pct=0.20), villain_air_pct=0.28 >= 0.20 (KB \u00a71.7 OVERRIDE threshold satisfied). RAISE as semi-bluff per KB \u00a71.7; fold equity is sufficient with nut draw + blocker 3-way."
+    },
+    {
+      "ref_id": "PILOT_307",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 49.68% >= pot_odds 25.93% (draw_outs=9). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_308",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 57.85% >= pot_odds 23.53% (draw_outs=13). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "d521_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand on the river. 92.35% villain range behind, villain_top_pair_plus_pct=0.80. BET for maximum value extraction."
+    },
+    {
+      "ref_id": "d249_BB_turn",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Monster hand on the turn, OOP. villain_top_pair_plus_pct=0.59 provides value-betting targets. BET for value with 69.05% equity."
+    },
+    {
+      "ref_id": "d719_BTN_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand on the river. 97.30% villain range behind, villain_top_pair_plus_pct=0.73. BET for maximum value extraction."
+    },
+    {
+      "ref_id": "d308_BTN_turn",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand facing a bet. 88.78% equity with only 2.78% villain range ahead. CALL to keep villain in and build the pot; raising risks folding out worse hands. villain_top_pair_plus_pct=0.76, villain_air_pct=0.24."
+    },
+    {
+      "ref_id": "d521_BB_turn",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Monster hand on the turn, OOP. villain_top_pair_plus_pct=0.61 provides value-betting targets. BET for value with 86.22% equity."
+    },
+    {
+      "ref_id": "d282_BB_turn",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Monster hand on the turn, OOP. villain_top_pair_plus_pct=0.43 provides value-betting targets. BET for value with 70.30% equity."
+    },
+    {
+      "ref_id": "PILOT_315",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand facing a bet. 93.76% equity with only 0.00% villain range ahead. CALL to keep villain in and build the pot; raising risks folding out worse hands. villain_top_pair_plus_pct=0.38, villain_air_pct=0.29."
+    },
+    {
+      "ref_id": "PILOT_316",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand facing a bet. 88.07% equity with only 10.82% villain range ahead. CALL to keep villain in and build the pot; raising risks folding out worse hands. villain_top_pair_plus_pct=0.66, villain_air_pct=0.34."
+    },
+    {
+      "ref_id": "d622_BB_turn",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Monster hand on the turn, OOP. villain_top_pair_plus_pct=0.54 provides value-betting targets. BET for value with 87.75% equity."
+    },
+    {
+      "ref_id": "PILOT_318",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand facing a bet. 96.55% equity with only 0.00% villain range ahead. CALL to keep villain in and build the pot; raising risks folding out worse hands. villain_top_pair_plus_pct=0.31, villain_air_pct=0.31."
+    },
+    {
+      "ref_id": "d107_BB_turn",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Monster hand on the turn, OOP. villain_top_pair_plus_pct=0.43 provides value-betting targets. BET for value with 89.28% equity."
+    },
+    {
+      "ref_id": "d521_BTN_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand on the flop, IP. BET for value with 80.80% equity; 99.36% villain range behind. villain_air_pct=0.39 provides fold equity on draws."
+    },
+    {
+      "ref_id": "d576_BB_turn",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the turn, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. villain_air_pct=0.33, danger_score=0.75. TPWK/medium made on paired/2-tone OOP multiway: CHECK to avoid committing to bigger pot when called; continuing villain range skews to hands that beat medium made."
+    },
+    {
+      "ref_id": "d237_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.52, equity 17.90%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "d923_BTN_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Strong_made hand on the flop, IP. 85.28% villain range behind. BET for value with position advantage."
+    },
+    {
+      "ref_id": "d986_CO_river",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the river, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. CHECK."
+    },
+    {
+      "ref_id": "d587_HJ_turn",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the turn, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. villain_air_pct=0.06, danger_score=0.38. TPWK/medium made on paired/2-tone OOP multiway: CHECK to avoid committing to bigger pot when called; continuing villain range skews to hands that beat medium made."
+    },
+    {
+      "ref_id": "d530_HJ_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 0.83% with 89.27% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "d530_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.32, equity 8.30%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "d677_HJ_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Strong_made hand on the river. 77.61% villain range behind with 61.30% equity. BET for value."
+    },
+    {
+      "ref_id": "d639_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the flop 3-way. DO NOT Rule 2: 3-way fold equity ~36%, semi-bluff without nut draw+blocker is unprofitable. villain_air_pct=0.26, draw_outs=4. CHECK to realize equity passively."
+    },
+    {
+      "ref_id": "d237_BB_turn",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the turn, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. villain_air_pct=0.28, danger_score=0.75. TPWK/medium made on paired/2-tone OOP multiway: CHECK to avoid committing to bigger pot when called; continuing villain range skews to hands that beat medium made."
+    },
+    {
+      "ref_id": "d282_BB_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. villain_air_pct=0.03, danger_score=0.65. TPWK/medium made on paired/2-tone OOP multiway: CHECK to avoid committing to bigger pot when called; continuing villain range skews to hands that beat medium made."
+    },
+    {
+      "ref_id": "d750_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the turn 3-way. DO NOT Rule 2: 3-way fold equity ~36%, semi-bluff without nut draw+blocker is unprofitable. villain_air_pct=0.29, draw_outs=4. CHECK to realize equity passively."
+    },
+    {
+      "ref_id": "d750_BB_turn",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the turn, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. villain_air_pct=0.29, danger_score=0.38. TPWK/medium made on paired/2-tone OOP multiway: CHECK to avoid committing to bigger pot when called; continuing villain range skews to hands that beat medium made."
+    },
+    {
+      "ref_id": "d370_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.48, equity 15.02%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "d622_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the turn 3-way. DO NOT Rule 2: 3-way fold equity ~36%, semi-bluff without nut draw+blocker is unprofitable. villain_air_pct=0.46, draw_outs=4. CHECK to realize equity passively."
+    },
+    {
+      "ref_id": "d575_CO_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. villain_air_pct=0.25, danger_score=0.45. TPWK/medium made on paired/2-tone OOP multiway: CHECK to avoid committing to bigger pot when called; continuing villain range skews to hands that beat medium made."
+    },
+    {
+      "ref_id": "d915_BTN_flop",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, IP. 69.81% villain range behind; BET for value with positional advantage."
+    },
+    {
+      "ref_id": "d719_BB_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the turn 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.13, equity 7.60%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "d169_BB_river",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong_made hand on the river. 53.41% villain range ahead. CHECK for showdown value."
+    },
+    {
+      "ref_id": "d972_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.54, equity 24.05%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "d959_BTN_flop",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, IP. 67.27% villain range behind; BET for value with positional advantage."
+    },
+    {
+      "ref_id": "d986_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Weak_made hand on the turn. 64.02% villain range ahead, equity 14.70%. CHECK for pot control per DO NOT Rule 5."
+    },
+    {
+      "ref_id": "d750_CO_river",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the river, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. CHECK."
+    },
+    {
+      "ref_id": "d237_BTN_turn",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the turn. CHECK for pot control; DO NOT Rule 5 (TP is medium strength 3-way; TPTK is check-back candidate OOP). villain_top_pair_plus_pct=0.21."
+    },
+    {
+      "ref_id": "d575_CO_turn",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the turn, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. villain_air_pct=0.25, danger_score=0.88. TPWK/medium made on paired/2-tone OOP multiway: CHECK to avoid committing to bigger pot when called; continuing villain range skews to hands that beat medium made."
+    },
+    {
+      "ref_id": "d169_BB_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. villain_air_pct=0.61, danger_score=0.45. TPWK/medium made on paired/2-tone OOP multiway: CHECK to avoid committing to bigger pot when called; continuing villain range skews to hands that beat medium made."
+    },
+    {
+      "ref_id": "d677_BTN_river",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong_made hand on the river. 61.47% villain range ahead. CHECK for showdown value."
+    },
+    {
+      "ref_id": "d923_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.59, equity 15.20%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "d3_HJ_turn",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the turn, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. villain_air_pct=0.00, danger_score=0.88. TPWK/medium made on paired/2-tone OOP multiway: CHECK to avoid committing to bigger pot when called; continuing villain range skews to hands that beat medium made."
+    },
+    {
+      "ref_id": "d854_CO_turn",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the turn, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. villain_air_pct=0.23, danger_score=0.08. TPWK/medium made on paired/2-tone OOP multiway: CHECK to avoid committing to bigger pot when called; continuing villain range skews to hands that beat medium made."
+    },
+    {
+      "ref_id": "d587_BB_turn",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the turn, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. villain_air_pct=0.13, danger_score=0.38. TPWK/medium made on paired/2-tone OOP multiway: CHECK to avoid committing to bigger pot when called; continuing villain range skews to hands that beat medium made."
+    },
+    {
+      "ref_id": "PILOT_352",
+      "action": "FOLD",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand facing a bet. equity 20.32% < pot_odds 26.32%; not getting correct price with 4 outs. FOLD."
+    },
+    {
+      "ref_id": "d153_CO_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Weak_made hand on the river. 66.01% villain range ahead, equity 8.40%. CHECK to showdown; no value in betting when villain range heavily ahead."
+    },
+    {
+      "ref_id": "d796_BTN_river",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong_made hand on the river. 52.45% villain range ahead. CHECK for showdown value."
+    },
+    {
+      "ref_id": "PILOT_355",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 2.43% with 97.34% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_356",
+      "action": "FOLD",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand facing a bet. equity 4.59% < pot_odds 25.49%; not getting correct price with 4 outs. FOLD."
+    },
+    {
+      "ref_id": "PILOT_357",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 9.84% with 89.52% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_358",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 5.25% with 94.33% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "PILOT_359",
+      "action": "FOLD",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand facing a bet. equity 1.73% < pot_odds 25.00%; not getting correct price with 4 outs. FOLD."
+    },
+    {
+      "ref_id": "PILOT_360",
+      "action": "FOLD",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand facing a bet. equity 10.05% < pot_odds 25.93%; not getting correct price with 8 outs. FOLD."
+    },
+    {
+      "ref_id": "PILOT_361",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.40, equity 25.97%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_362",
+      "action": "FOLD",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand facing a bet. equity 3.07% < pot_odds 25.53%; not getting correct price with 4 outs. FOLD."
+    },
+    {
+      "ref_id": "PILOT_363",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand facing a bet. 95.10% equity with only 3.75% villain range ahead. CALL to keep villain in and build the pot; raising risks folding out worse hands. villain_top_pair_plus_pct=0.78, villain_air_pct=0.22."
+    },
+    {
+      "ref_id": "PILOT_364",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 19.94% with 79.48% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_365",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 10.90% with 88.51% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "PILOT_366",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.39, equity 24.42%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_367",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, IP. 93.44% villain range behind; BET for value with positional advantage."
+    },
+    {
+      "ref_id": "PILOT_368",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, IP. 95.78% villain range behind; BET for value with positional advantage."
+    },
+    {
+      "ref_id": "PILOT_369",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 1.17% with 98.56% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_370",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 7.23% with 92.36% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "PILOT_371",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 11.65% with 87.99% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "PILOT_372",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 7.57% with 92.02% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "PILOT_373",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Medium_made hand facing a bet. equity 75.26% > pot_odds 23.08% (margin=0.52), 74.67% villain range behind. CALL is profitable."
+    },
+    {
+      "ref_id": "PILOT_374",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 4.06% with 95.35% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_375",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, IP. 97.22% villain range behind; BET for value with positional advantage."
+    },
+    {
+      "ref_id": "PILOT_376",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.40, equity 18.20%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_377",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Monster hand facing a bet. 87.18% equity with only 11.45% villain range ahead. CALL to keep villain in and build the pot; raising risks folding out worse hands. villain_top_pair_plus_pct=0.68, villain_air_pct=0.32."
+    },
+    {
+      "ref_id": "PILOT_378",
+      "action": "FOLD",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand facing a bet. equity 0.41% < pot_odds 24.00%; not getting correct price with 4 outs. FOLD."
+    },
+    {
+      "ref_id": "PILOT_379",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 1.02% with 98.98% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_380",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 8.26% with 95.07% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_381",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 3.13% with 96.87% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "PILOT_382",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 15.73% with 83.51% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_383",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.36, equity 19.20%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_384",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, OOP, dry board (danger_score=0.00). BET for value/protection."
+    },
+    {
+      "ref_id": "PILOT_385",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, OOP, dry board (danger_score=0.00). BET for value/protection."
+    },
+    {
+      "ref_id": "PILOT_386",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 2.13% with 97.37% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_387",
+      "action": "FOLD",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand facing a bet. equity 4.36% < pot_odds 25.00%; not getting correct price with 4 outs. FOLD."
+    },
+    {
+      "ref_id": "PILOT_388",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop. CHECK for pot control; DO NOT Rule 5 (TP is medium strength 3-way; TPTK is check-back candidate OOP). villain_top_pair_plus_pct=0.22."
+    },
+    {
+      "ref_id": "PILOT_389",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.56, equity 29.08%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "PILOT_390",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 0.97% with 98.77% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_391",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 21.67% with 77.73% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "PILOT_392",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 8.91% with 90.47% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "PILOT_393",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 9.68% with 89.87% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "PILOT_394",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 20.61% with 78.76% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_395",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong_made hand on the flop, OOP. villain_top_pair_plus_pct=0.42 sufficient for value bet override. BET with 64.33% equity."
+    },
+    {
+      "ref_id": "PILOT_396",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop. CHECK for pot control; DO NOT Rule 5 (TP is medium strength 3-way; TPTK is check-back candidate OOP). villain_top_pair_plus_pct=0.12."
+    },
+    {
+      "ref_id": "PILOT_397",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop. CHECK for pot control; DO NOT Rule 5 (TP is medium strength 3-way; TPTK is check-back candidate OOP). villain_top_pair_plus_pct=0.17."
+    },
+    {
+      "ref_id": "PILOT_398",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop. CHECK for pot control; DO NOT Rule 5 (TP is medium strength 3-way; TPTK is check-back candidate OOP). villain_top_pair_plus_pct=0.17."
+    },
+    {
+      "ref_id": "PILOT_399",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong_made hand on the flop, OOP, dry board (danger_score=0.15). BET for value on safe board."
+    },
+    {
+      "ref_id": "PILOT_400",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop. CHECK for pot control; DO NOT Rule 5 (TP is medium strength 3-way; TPTK is check-back candidate OOP). villain_top_pair_plus_pct=0.12."
+    },
+    {
+      "ref_id": "PILOT_401",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong_made hand on the flop, OOP, dry board (danger_score=0.15). BET for value on safe board."
+    },
+    {
+      "ref_id": "PILOT_402",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Monster hand on the flop, OOP. villain_top_pair_plus_pct=0.42 provides value-betting targets. BET for value with 93.02% equity."
+    },
+    {
+      "ref_id": "PILOT_403",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong_made hand on the flop, OOP, dry board (danger_score=0.15). BET for value on safe board."
+    },
+    {
+      "ref_id": "PILOT_404",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Monster hand on the flop, OOP, dry board (danger_score=0.15). BET for value and protection; low danger means no strong draw threats."
+    },
+    {
+      "ref_id": "PILOT_405",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Medium_made hand facing a bet. equity 74.18% > pot_odds 25.00% (margin=0.49), 89.80% villain range behind. CALL is profitable."
+    },
+    {
+      "ref_id": "PILOT_406",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Medium_made hand facing a bet. equity 58.67% > pot_odds 25.00% (margin=0.34), 95.25% villain range behind. CALL is profitable."
+    },
+    {
+      "ref_id": "PILOT_407",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 12.95% with 81.42% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_408",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 47.36% with 54.83% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_409",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 13.60% with 55.19% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_410",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 11.63% with 83.46% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_411",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 4.50% with 92.49% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_412",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 21.02% with 35.70% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_413",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 20.65% with 37.27% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_414",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 16.78% with 51.13% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_415",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Medium_made hand facing a bet. equity 50.85% > pot_odds 16.67% (margin=0.34), 88.48% villain range behind. CALL is profitable."
+    },
+    {
+      "ref_id": "PILOT_416",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 17.95% with 44.66% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_417",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 55.03% with 45.16% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_418",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Medium_made hand facing a bet. equity 61.05% > pot_odds 25.00% (margin=0.36), 95.08% villain range behind. CALL is profitable."
+    },
+    {
+      "ref_id": "PILOT_419",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Medium_made hand facing a bet. equity 58.35% > pot_odds 16.67% (margin=0.42), 92.65% villain range behind. CALL is profitable."
+    },
+    {
+      "ref_id": "PILOT_420",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Medium_made hand facing a bet. equity 51.30% > pot_odds 25.00% (margin=0.26), 50.46% villain range behind. CALL is profitable."
+    },
+    {
+      "ref_id": "PILOT_421",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Medium_made hand facing a bet. equity 37.75% > pot_odds 25.00% (margin=0.13), 87.31% villain range behind. CALL is profitable."
+    },
+    {
+      "ref_id": "PILOT_422",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Medium_made hand facing a bet. equity 47.88% > pot_odds 25.00% (margin=0.23), 90.71% villain range behind. CALL is profitable."
+    },
+    {
+      "ref_id": "PILOT_423",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 45.60% with 58.66% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_424",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 23.35% with 33.16% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_425",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 14.50% with 71.54% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_426",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Medium_made hand facing a bet. equity 58.80% > pot_odds 25.00% (margin=0.34), 94.39% villain range behind. CALL is profitable."
+    },
+    {
+      "ref_id": "PILOT_427",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Medium_made hand facing a bet. equity 61.03% > pot_odds 25.00% (margin=0.36), 69.77% villain range behind. CALL is profitable."
+    },
+    {
+      "ref_id": "PILOT_428",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 10.05% with 69.97% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_429",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 20.18% with 51.00% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_430",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 11.05% with 75.60% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_431",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 37.22% with 64.58% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_432",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 14.17% with 97.55% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_433",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 25.26% with 78.78% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_434",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 7.68% with 95.44% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_435",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 12.70% with 49.45% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_436",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 11.85% with 80.57% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_437",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 37.26% >= pot_odds 23.81% (draw_outs=4). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_438",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 15.73% with 55.53% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_439",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand facing a bet. equity 21.72% >= pot_odds 15.79% (draw_outs=4). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_440",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand facing a bet. equity 28.96% >= pot_odds 22.22% (draw_outs=4). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_441",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 12.37% with 69.82% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_442",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Medium_made hand facing a bet. equity 36.05% > pot_odds 23.08% (margin=0.13), 81.61% villain range behind. CALL is profitable."
+    },
+    {
+      "ref_id": "PILOT_443",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 11.48% with 81.51% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_444",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand facing a bet. equity 31.57% >= pot_odds 23.08% (draw_outs=8). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_445",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Medium_made hand facing a bet. equity 41.88% > pot_odds 23.08% (margin=0.19), 83.63% villain range behind. CALL is profitable."
+    },
+    {
+      "ref_id": "PILOT_446",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 26.98% with 78.63% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_447",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand facing a bet. equity 30.95% >= pot_odds 22.73% (draw_outs=4). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_448",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 11.41% with 92.02% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_449",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand facing a bet. equity 34.63% >= pot_odds 23.08% (draw_outs=8). CALL to realize draw equity; not a nut FD+blocker situation so RAISE unwarranted per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "PILOT_450",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 9.80% with 98.23% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_451",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 28.06% with 77.50% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "PILOT_452",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Medium_made hand facing a bet. equity 57.37% > pot_odds 25.00% (margin=0.32), 68.18% villain range behind. CALL is profitable."
+    },
+    {
+      "ref_id": "d639_BTN_river",
+      "action": "FOLD",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand facing a bet. equity 2.78% < pot_odds 28.49%; not getting correct price with 4 outs. FOLD."
+    },
+    {
+      "ref_id": "d622_HJ_river",
+      "action": "FOLD",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand facing a bet. equity 3.35% < pot_odds 28.49%; not getting correct price with 4 outs. FOLD."
+    },
+    {
+      "ref_id": "d521_UTG_river",
+      "action": "FOLD",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing hand facing a bet. equity 3.18% < pot_odds 28.49%; not getting correct price with 8 outs. FOLD."
+    },
+    {
+      "ref_id": "d336_BTN_turn",
+      "action": "FOLD",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand facing a bet. equity 27.47% vs pot_odds 28.49%, 27.72% villain range ahead. Villain betting range skews to stronger hands. FOLD."
+    },
+    {
+      "ref_id": "d959_UTG_turn",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air hand facing a bet. equity 6.17% with 93.77% villain range ahead. FOLD - no made hand, minimal draw, cannot continue profitably."
+    },
+    {
+      "ref_id": "d107_CO_turn",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand facing a bet. equity 32.95% vs pot_odds 28.49%, 67.06% villain range behind. CALL with modest equity advantage."
+    },
+    {
+      "ref_id": "PILOT_459",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Medium_made hand facing a bet. equity 76.63% > pot_odds 24.24% (margin=0.52), 80.62% villain range behind. CALL is profitable."
+    },
+    {
+      "ref_id": "d622_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.63, equity 14.00%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "d639_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.26, equity 14.95%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "d3_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.44, equity 9.20%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "d249_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the flop 3-way. DO NOT Rule 2: 3-way fold equity ~36%, semi-bluff without nut draw+blocker is unprofitable. villain_air_pct=0.56, draw_outs=9. CHECK to realize equity passively."
+    },
+    {
+      "ref_id": "d576_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the flop 3-way. DO NOT Rule 2: 3-way fold equity ~36%, semi-bluff without nut draw+blocker is unprofitable. villain_air_pct=0.51, draw_outs=9. CHECK to realize equity passively."
+    },
+    {
+      "ref_id": "d986_BTN_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop. CHECK for pot control; DO NOT Rule 5 (TP is medium strength 3-way; TPTK is check-back candidate OOP). villain_top_pair_plus_pct=0.16."
+    },
+    {
+      "ref_id": "d796_BTN_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop. CHECK for pot control; DO NOT Rule 5 (TP is medium strength 3-way; TPTK is check-back candidate OOP). villain_top_pair_plus_pct=0.22."
+    },
+    {
+      "ref_id": "d575_BTN_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop. CHECK for pot control; DO NOT Rule 5 (TP is medium strength 3-way; TPTK is check-back candidate OOP). villain_top_pair_plus_pct=0.16."
+    },
+    {
+      "ref_id": "d107_BTN_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Strong_made hand on the flop, IP. BET for value; villain_top_pair_plus_pct=0.24, 94.65% villain range behind, 69.50% equity."
+    },
+    {
+      "ref_id": "d719_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.19, equity 18.78%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "d750_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.54, equity 21.32%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "d3_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the flop 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.44, equity 24.52%. CHECK - no equity, fold equity insufficient."
+    },
+    {
+      "ref_id": "d986_CO_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the flop 3-way. DO NOT Rule 2: 3-way fold equity ~36%, semi-bluff without nut draw+blocker is unprofitable. villain_air_pct=0.17, draw_outs=4. CHECK to realize equity passively."
+    },
+    {
+      "ref_id": "d107_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the flop 3-way. DO NOT Rule 2: 3-way fold equity ~36%, semi-bluff without nut draw+blocker is unprofitable. villain_air_pct=0.40, draw_outs=8. CHECK to realize equity passively."
+    },
+    {
+      "ref_id": "d282_CO_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the flop 3-way. DO NOT Rule 2: 3-way fold equity ~36%, semi-bluff without nut draw+blocker is unprofitable. villain_air_pct=0.03, draw_outs=4. CHECK to realize equity passively."
+    },
+    {
+      "ref_id": "d986_BB_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. villain_air_pct=0.23, danger_score=0.58. TPWK/medium made on paired/2-tone OOP multiway: CHECK to avoid committing to bigger pot when called; continuing villain range skews to hands that beat medium made."
+    },
+    {
+      "ref_id": "d796_UTG_flop",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, OOP, dry board (danger_score=0.00). BET for value/protection."
+    },
+    {
+      "ref_id": "d959_BB_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the flop, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. villain_air_pct=0.11, danger_score=0.25. TPWK/medium made on paired/2-tone OOP multiway: CHECK to avoid committing to bigger pot when called; continuing villain range skews to hands that beat medium made."
+    },
+    {
+      "ref_id": "d719_HJ_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong_made hand on the flop, OOP. villain_top_pair_plus_pct=0.45, danger_score=0.40. CHECK per DO NOT Rule 5 (TP is medium strength 3-way, check-back candidate OOP on dynamic boards)."
+    },
+    {
+      "ref_id": "d750_BTN_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 9.32% with 66.67% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "d3_BTN_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 0.15% with 94.09% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "d986_BTN_river",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the river. 12.62% villain range ahead. CHECK for pot control and showdown value."
+    },
+    {
+      "ref_id": "d249_BTN_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Strong_made hand on the river. 95.45% villain range behind with 84.35% equity. BET for value."
+    },
+    {
+      "ref_id": "d530_BTN_river",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong_made hand on the river. 52.82% villain range ahead. CHECK for showdown value."
+    },
+    {
+      "ref_id": "d915_CO_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the river. equity 4.37% with 69.06% villain range ahead. CHECK - no made hand, missed draws; bluffing river OOP/3-way with air is -EV."
+    },
+    {
+      "ref_id": "d923_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 0.03% with 99.35% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "d639_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 0.15% with 91.33% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "d3_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing hand on the river (draw missed/resolved). equity 13.68% with 60.22% villain range ahead. CHECK - bluffing river OOP with missed draw is unprofitable 3-way per DO NOT Rule 2."
+    },
+    {
+      "ref_id": "d986_BB_river",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the river, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. CHECK."
+    },
+    {
+      "ref_id": "d750_BB_river",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the river, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. CHECK."
+    },
+    {
+      "ref_id": "d153_BB_river",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium_made hand on the river, OOP. DO NOT Rule 11 applies: 2-tone board OOP multiway. CHECK."
+    },
+    {
+      "ref_id": "d719_HJ_river",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong_made hand on the river. 31.69% villain range ahead. CHECK for showdown value."
+    },
+    {
+      "ref_id": "d677_BB_river",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong_made hand on the river. 60.00% villain range ahead. CHECK for showdown value."
+    },
+    {
+      "ref_id": "d587_BB_river",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong_made hand on the river. 46.96% villain range ahead. CHECK for showdown value."
+    },
+    {
+      "ref_id": "d972_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air hand on the turn 3-way. Pure bluffs unprofitable 3-way per fold equity math (~36%); villain_air_pct=0.54, equity 21.02%. CHECK - no equity, fold equity insufficient."
+    }
+  ]
+}

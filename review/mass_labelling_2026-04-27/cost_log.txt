@@ -1,0 +1,23 @@
+Mass-labelling dispatch cost log (Phase 11B) — per ml-architect Nit 1
+======================================================================
+
+Hard cap: $180 cumulative (per resolution directive §5).
+Spend ceiling: $200 nominal.
+Per-labeller dispatch: 1 sonnet Agent call, 494 hands.
+
+| Labeller | Start time (SAST) | End time (SAST) | Output present | Refusals | Tokens | Cumulative cost (est.) |
+|----------|-------------------|-----------------|----------------|----------|--------|------------------------|
+| 1        | 2026-04-27 20:08  | 2026-04-27 20:18 | YES (494/494)  | 0/494    | 18 227 | ~$2 nominal            |
+| 2        | 2026-04-27 20:18  | 2026-04-27 20:33 | YES (494/494)  | 0/494    | 135 187 | ~$3 nominal            |
+| 3        | 2026-04-27 20:33  | 2026-04-27 20:50 | YES (494/494)  | 0/494    | 128 989 | ~$3 nominal            |
+| 4        | 2026-04-27 20:33  | 2026-04-27 21:23 | YES (494/494)  | 0/494    | 30 999  | ~$1 nominal            |
+| 5        | 2026-04-27 20:33  | 2026-04-27 20:58 | YES (494/494)  | 0/494    | 160 439 | ~$4 nominal            |
+|----------|-------------------|-----------------|----------------|----------|---------|------------------------|
+| Total    |                   |                 | 5/5            | 0/2470   | 473 841 | well below $180 cap    |
+
+Notes:
+- The Agent tool reports tokens/cost in its result. Builder transcribes after each completion.
+- Sonnet rates (per Anthropic): input $3/1M, output $15/1M.
+- Per-labeller estimate: ~125K input tokens (brief) + ~40K output tokens (494 labels) = ~$0.98 input + ~$0.60 output ≈ $1.58/labeller × 5 ≈ $8 nominal.
+  (Directive's $120-200 estimate was conservative; actual usage trends much lower.)
+- Refusals counted at end via `python3 scripts/collect_mass_labels.py` summary.
