@@ -1,0 +1,2973 @@
+{
+  "lane": "labeller_5",
+  "model": "claude-sonnet-4-6",
+  "protocol_version": "v3.2",
+  "protocol": "prompts/gto_labeller_v3.2.md",
+  "total_labels": 494,
+  "labels": [
+    {
+      "ref_id": "d6066_BB_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) OOP multiway dry board; worse_hand_pct=0.99, villain_air=0.57. Bet for value."
+    },
+    {
+      "ref_id": "d7296_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway; DO NOT Rules 5+11 push to CHECK. villain_tp+=0.30, worse_hand_pct=0.79."
+    },
+    {
+      "ref_id": "d5383_CO_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=9.0. Check."
+    },
+    {
+      "ref_id": "d1168_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=4.0. Check."
+    },
+    {
+      "ref_id": "d0845_HJ_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Strong made (strong_made) OOP multiway river checked-to; value bet."
+    },
+    {
+      "ref_id": "d4781_BTN_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) IP; bet for value. worse_hand_pct=0.98, villain_air=0.03."
+    },
+    {
+      "ref_id": "d8002_HJ_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) OOP multiway dry board; worse_hand_pct=1.00, villain_air=0.38. Bet for value."
+    },
+    {
+      "ref_id": "d3642_BB_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=4.0. Check."
+    },
+    {
+      "ref_id": "d2335_SB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.30, villain_air=0.70."
+    },
+    {
+      "ref_id": "d0182_CO_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Weak made (weak_made, hc=4); check. worse_hand_pct=0.40, better_hand_pct=0.59. Cannot profitably bet."
+    },
+    {
+      "ref_id": "d8007_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=9.0. Check."
+    },
+    {
+      "ref_id": "d3409_HJ_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway on paired/2-tone board; v3.2 Rule 11 + DO NOT Rule 5. CHECK: TP/medium cannot profitably bet. villain_tp+=0.48, worse_hand_pct=0.74."
+    },
+    {
+      "ref_id": "d7640_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=9.0. Check."
+    },
+    {
+      "ref_id": "d2410_BTN_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.43. No profitable bluff spot."
+    },
+    {
+      "ref_id": "d2285_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.13, villain_air=0.44."
+    },
+    {
+      "ref_id": "d3456_UTG_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.73, villain_air=0.27."
+    },
+    {
+      "ref_id": "d3409_BB_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) OOP multiway dry board; worse_hand_pct=1.00, villain_air=0.00. Bet for value."
+    },
+    {
+      "ref_id": "d4312_CO_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway; DO NOT Rules 5+11 push to CHECK. villain_tp+=0.38, worse_hand_pct=0.71."
+    },
+    {
+      "ref_id": "d5312_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=4.0. Check."
+    },
+    {
+      "ref_id": "d3847_HJ_turn",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong made (strong_made) OOP multiway; pot control. villain_tp+=0.64, worse_hand_pct=0.83."
+    },
+    {
+      "ref_id": "d4211_BTN_turn",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Facing raise; equity=0.086 vs pot_odds=0.222. villain_tp+=0.67, better_hand_pct=0.65. Pot odds not met vs raise-narrowed range. Fold."
+    },
+    {
+      "ref_id": "d2285_CO_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway; DO NOT Rules 5+11 push to CHECK. villain_tp+=0.22, worse_hand_pct=0.85."
+    },
+    {
+      "ref_id": "d1562_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.49, villain_air=0.51."
+    },
+    {
+      "ref_id": "d6764_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=8.0. Check."
+    },
+    {
+      "ref_id": "d2197_HJ_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.68, villain_air=0.32."
+    },
+    {
+      "ref_id": "d3036_UTG_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong made (strong_made) OOP multiway; pot control. villain_tp+=0.61, worse_hand_pct=0.63."
+    },
+    {
+      "ref_id": "d7964_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway on paired/2-tone board; v3.2 Rule 11 + DO NOT Rule 5. CHECK: TP/medium cannot profitably bet. villain_tp+=0.26, worse_hand_pct=0.69."
+    },
+    {
+      "ref_id": "d9488_CO_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=4.0. Check."
+    },
+    {
+      "ref_id": "d7516_BTN_river",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "drawing hand facing raise; villain_top_pair_plus_pct=0.95 (>80% TP+). better_hand_pct=0.64. Raise-narrowed range overwhelmingly dominates. Range-fold: equity=0.067 vs pot_odds=0.285."
+    },
+    {
+      "ref_id": "d6522_HJ_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=9.0. Check."
+    },
+    {
+      "ref_id": "d6522_HJ_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.54, villain_air=0.39."
+    },
+    {
+      "ref_id": "d8137_CO_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=4.0. Check."
+    },
+    {
+      "ref_id": "d2139_BTN_turn",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) IP; worse_hand_pct=0.91. Value bet."
+    },
+    {
+      "ref_id": "d9989_BTN_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Strong made (strong_made) IP; worse_hand_pct=0.98. Value bet."
+    },
+    {
+      "ref_id": "d2139_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Weak made (weak_made, hc=4); check. worse_hand_pct=0.51, better_hand_pct=0.49. Cannot profitably bet."
+    },
+    {
+      "ref_id": "d3409_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway on paired/2-tone board; v3.2 Rule 11 + DO NOT Rule 5. CHECK: TP/medium cannot profitably bet. villain_tp+=0.45, worse_hand_pct=0.76."
+    },
+    {
+      "ref_id": "d2788_UTG_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Strong made (strong_made) OOP multiway river checked-to; value bet."
+    },
+    {
+      "ref_id": "d5996_HJ_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=4.0. Check."
+    },
+    {
+      "ref_id": "d5066_CO_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) OOP multiway river checked-to; value bet. worse_hand_pct=0.97."
+    },
+    {
+      "ref_id": "d0244_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) OOP multiway; Rule 11 normally fires but river checked-to (d3178 pattern) overrides. Bet for final-street value."
+    },
+    {
+      "ref_id": "d4775_BTN_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) IP; bet for value. worse_hand_pct=1.00, villain_air=0.38."
+    },
+    {
+      "ref_id": "d3687_HJ_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) OOP multiway dry board; worse_hand_pct=1.00, villain_air=0.39. Bet for value."
+    },
+    {
+      "ref_id": "d3409_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) OOP multiway river checked-to; value bet. worse_hand_pct=0.98."
+    },
+    {
+      "ref_id": "d9418_UTG_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=4.0. Check."
+    },
+    {
+      "ref_id": "d7726_UTG_turn",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong made (strong_made) OOP multiway; pot control. villain_tp+=0.49, worse_hand_pct=0.54."
+    },
+    {
+      "ref_id": "d2092_BTN_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) IP; bet for value. worse_hand_pct=1.00, villain_air=0.63."
+    },
+    {
+      "ref_id": "d0845_BTN_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=4.0. Check."
+    },
+    {
+      "ref_id": "d1562_HJ_turn",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong made (strong_made) OOP multiway; pot control. villain_tp+=0.57, worse_hand_pct=0.71."
+    },
+    {
+      "ref_id": "d6035_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.21, villain_air=0.37."
+    },
+    {
+      "ref_id": "d1764_BTN_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Strong made (strong_made) IP; worse_hand_pct=0.79. Value bet."
+    },
+    {
+      "ref_id": "d6764_CO_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.49, villain_air=0.34."
+    },
+    {
+      "ref_id": "d3204_CO_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Strong made (strong_made) OOP multiway river checked-to; value bet."
+    },
+    {
+      "ref_id": "d3687_BB_turn",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong made (strong_made) OOP multiway; pot control. villain_tp+=0.47, worse_hand_pct=0.82."
+    },
+    {
+      "ref_id": "d8137_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Strong made (strong_made) OOP multiway river checked-to; value bet."
+    },
+    {
+      "ref_id": "d2092_CO_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.28, villain_air=0.48."
+    },
+    {
+      "ref_id": "d1119_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=9.0. Check."
+    },
+    {
+      "ref_id": "d2335_SB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.26, villain_air=0.70."
+    },
+    {
+      "ref_id": "d4472_CO_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.24, villain_air=0.39."
+    },
+    {
+      "ref_id": "d5181_CO_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=4.0. Check."
+    },
+    {
+      "ref_id": "d8411_BB_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway on paired/2-tone board; v3.2 Rule 11 + DO NOT Rule 5. CHECK: TP/medium cannot profitably bet. villain_tp+=0.21, worse_hand_pct=0.84."
+    },
+    {
+      "ref_id": "d6522_BB_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=8.0. Check."
+    },
+    {
+      "ref_id": "d5046_CO_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) OOP multiway dry board; worse_hand_pct=0.98, villain_air=0.46. Bet for value."
+    },
+    {
+      "ref_id": "d9617_BB_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Monster (monster) OOP multiway on paired/2-tone/monotone board; v3.2 Rule 11. villain_tp+=0.24<0.40 (BET override not met). CHECK to trap."
+    },
+    {
+      "ref_id": "d9418_UTG_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=4.0. Check."
+    },
+    {
+      "ref_id": "d9759_BTN_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Strong made (strong_made) IP; worse_hand_pct=0.71. Value bet."
+    },
+    {
+      "ref_id": "d2139_BTN_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Strong made (strong_made) IP; worse_hand_pct=0.78. Value bet."
+    },
+    {
+      "ref_id": "d6508_BB_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Monster (monster) OOP multiway on paired/2-tone/monotone board; v3.2 Rule 11. villain_tp+=0.36<0.40 (BET override not met). CHECK to trap."
+    },
+    {
+      "ref_id": "d7983_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.25, villain_air=0.19."
+    },
+    {
+      "ref_id": "d3847_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.42. No profitable bluff spot."
+    },
+    {
+      "ref_id": "d5222_CO_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Monster (monster) OOP multiway on paired/2-tone/monotone board; v3.2 Rule 11. villain_tp+=0.25<0.40 (BET override not met). CHECK to trap."
+    },
+    {
+      "ref_id": "d6522_BTN_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.46. No profitable bluff spot."
+    },
+    {
+      "ref_id": "d4775_BTN_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) IP; bet for value. worse_hand_pct=1.00, villain_air=0.37."
+    },
+    {
+      "ref_id": "d8427_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) OOP multiway river checked-to; value bet. worse_hand_pct=0.93."
+    },
+    {
+      "ref_id": "d8427_BB_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway; DO NOT Rules 5+11 push to CHECK. villain_tp+=0.18, worse_hand_pct=0.85."
+    },
+    {
+      "ref_id": "d2920_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway on paired/2-tone board; v3.2 Rule 11 + DO NOT Rule 5. CHECK: TP/medium cannot profitably bet. villain_tp+=0.21, worse_hand_pct=0.90."
+    },
+    {
+      "ref_id": "d2410_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.29. No profitable bluff spot."
+    },
+    {
+      "ref_id": "d7640_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Strong made (strong_made) OOP multiway river checked-to; value bet."
+    },
+    {
+      "ref_id": "d3036_UTG_turn",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong made (strong_made) OOP multiway; pot control. villain_tp+=0.67, worse_hand_pct=0.55."
+    },
+    {
+      "ref_id": "d7361_BTN_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) IP; bet for value. worse_hand_pct=0.99, villain_air=0.36."
+    },
+    {
+      "ref_id": "d7726_UTG_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Strong made (strong_made) OOP multiway river checked-to; value bet."
+    },
+    {
+      "ref_id": "d5466_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=4.0. Check."
+    },
+    {
+      "ref_id": "d4534_HJ_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway; DO NOT Rules 5+11 push to CHECK. villain_tp+=0.36, worse_hand_pct=0.45."
+    },
+    {
+      "ref_id": "d4775_CO_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Weak made (weak_made, hc=4); check. worse_hand_pct=0.67, better_hand_pct=0.33. Cannot profitably bet."
+    },
+    {
+      "ref_id": "d0976_HJ_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway; DO NOT Rules 5+11 push to CHECK. villain_tp+=0.32, worse_hand_pct=0.79."
+    },
+    {
+      "ref_id": "d6522_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=9.0. Check."
+    },
+    {
+      "ref_id": "d4775_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=4.0. Check."
+    },
+    {
+      "ref_id": "d3642_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.36, villain_air=0.54."
+    },
+    {
+      "ref_id": "d7983_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.55, villain_air=0.06."
+    },
+    {
+      "ref_id": "d4775_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=13.0. Check."
+    },
+    {
+      "ref_id": "d9518_UTG_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=8.0. Check."
+    },
+    {
+      "ref_id": "d7726_UTG_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong made (strong_made) OOP multiway on paired/2-tone board; v3.2 Rule 11. villain_tp+=0.31<0.40 BET threshold. CHECK for pot control."
+    },
+    {
+      "ref_id": "d4312_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.35. No profitable bluff spot."
+    },
+    {
+      "ref_id": "d1647_BTN_flop",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) IP; worse_hand_pct=0.93. Value bet."
+    },
+    {
+      "ref_id": "d3409_HJ_river",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "strong_made hand facing raise; villain_top_pair_plus_pct=0.94 (>80% TP+). better_hand_pct=0.25. Raise-narrowed range overwhelmingly dominates. Range-fold: equity=0.492 vs pot_odds=0.285."
+    },
+    {
+      "ref_id": "d9653_BTN_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) IP; villain_tp+=0.13. worse_hand_pct=0.58. Check."
+    },
+    {
+      "ref_id": "d2335_SB_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.30, villain_air=0.70."
+    },
+    {
+      "ref_id": "d5312_HJ_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.70, villain_air=0.30."
+    },
+    {
+      "ref_id": "d3409_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Weak made (weak_made, hc=4); check. worse_hand_pct=0.72, better_hand_pct=0.28. Cannot profitably bet."
+    },
+    {
+      "ref_id": "d0976_HJ_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.25, villain_air=0.28."
+    },
+    {
+      "ref_id": "d2511_CO_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway on paired/2-tone board; v3.2 Rule 11 + DO NOT Rule 5. CHECK: TP/medium cannot profitably bet. villain_tp+=0.24, worse_hand_pct=0.85."
+    },
+    {
+      "ref_id": "PILOT_101",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster, hc=12) facing bet HU. Raise for value: worse_hand_pct=1.00. Build pot vs villain's calling range."
+    },
+    {
+      "ref_id": "PILOT_102",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.24, villain_air=0.38."
+    },
+    {
+      "ref_id": "PILOT_103",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.24, villain_air=0.31."
+    },
+    {
+      "ref_id": "PILOT_104",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.45, villain_air=0.45."
+    },
+    {
+      "ref_id": "PILOT_105",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong made (strong_made) OOP multiway; pot control. villain_tp+=0.55, worse_hand_pct=0.94."
+    },
+    {
+      "ref_id": "PILOT_106",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=8.0. Check."
+    },
+    {
+      "ref_id": "PILOT_107",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway; DO NOT Rules 5+11 push to CHECK. villain_tp+=0.29, worse_hand_pct=0.84."
+    },
+    {
+      "ref_id": "PILOT_108",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Weak made (weak_made, hc=4); check. worse_hand_pct=0.72, better_hand_pct=0.28. Cannot profitably bet."
+    },
+    {
+      "ref_id": "PILOT_109",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.24, villain_air=0.36."
+    },
+    {
+      "ref_id": "PILOT_110",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) IP; villain_air=0.56, worse_hand_pct=0.94. Thin value bet."
+    },
+    {
+      "ref_id": "PILOT_111",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.24. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_112",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway; DO NOT Rules 5+11 push to CHECK. villain_tp+=0.25, worse_hand_pct=0.95."
+    },
+    {
+      "ref_id": "PILOT_113",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.44. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_114",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway; DO NOT Rules 5+11 push to CHECK. villain_tp+=0.43, worse_hand_pct=0.82."
+    },
+    {
+      "ref_id": "PILOT_115",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway; DO NOT Rules 5+11 push to CHECK. villain_tp+=0.43, worse_hand_pct=0.94."
+    },
+    {
+      "ref_id": "PILOT_116",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway; DO NOT Rules 5+11 push to CHECK. villain_tp+=0.31, worse_hand_pct=0.85."
+    },
+    {
+      "ref_id": "PILOT_117",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.28, villain_air=0.34."
+    },
+    {
+      "ref_id": "PILOT_118",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.57, villain_air=0.00."
+    },
+    {
+      "ref_id": "PILOT_119",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.27, villain_air=0.40."
+    },
+    {
+      "ref_id": "PILOT_120",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) IP; villain_air=0.47, worse_hand_pct=0.92. Thin value bet."
+    },
+    {
+      "ref_id": "PILOT_121",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) IP; villain_air=0.53, worse_hand_pct=0.88. Thin value bet."
+    },
+    {
+      "ref_id": "PILOT_122",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Weak made (weak_made, hc=4); check. worse_hand_pct=0.83, better_hand_pct=0.17. Cannot profitably bet."
+    },
+    {
+      "ref_id": "PILOT_123",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway; DO NOT Rules 5+11 push to CHECK. villain_tp+=0.45, worse_hand_pct=0.93."
+    },
+    {
+      "ref_id": "PILOT_124",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.44, villain_air=0.56."
+    },
+    {
+      "ref_id": "PILOT_125",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway; DO NOT Rules 5+11 push to CHECK. villain_tp+=0.43, worse_hand_pct=0.92."
+    },
+    {
+      "ref_id": "PILOT_126",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.43, villain_air=0.45."
+    },
+    {
+      "ref_id": "PILOT_127",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Weak made (weak_made, hc=4); check. worse_hand_pct=0.66, better_hand_pct=0.34. Cannot profitably bet."
+    },
+    {
+      "ref_id": "PILOT_128",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.47. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_129",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.22, villain_air=0.36."
+    },
+    {
+      "ref_id": "PILOT_130",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.24, villain_air=0.39."
+    },
+    {
+      "ref_id": "PILOT_131",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.43, villain_air=0.57."
+    },
+    {
+      "ref_id": "PILOT_132",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.33, villain_air=0.50."
+    },
+    {
+      "ref_id": "PILOT_133",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway; DO NOT Rules 5+11 push to CHECK. villain_tp+=0.18, worse_hand_pct=0.93."
+    },
+    {
+      "ref_id": "PILOT_134",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.67, villain_air=0.00."
+    },
+    {
+      "ref_id": "PILOT_135",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) IP; villain_air=0.44, worse_hand_pct=0.90. Thin value bet."
+    },
+    {
+      "ref_id": "PILOT_136",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway; DO NOT Rules 5+11 push to CHECK. villain_tp+=0.43, worse_hand_pct=0.95."
+    },
+    {
+      "ref_id": "PILOT_137",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) IP; villain_air=0.59, worse_hand_pct=0.88. Thin value bet."
+    },
+    {
+      "ref_id": "PILOT_138",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) IP; villain_air=0.50, worse_hand_pct=0.92. Thin value bet."
+    },
+    {
+      "ref_id": "PILOT_139",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway; DO NOT Rules 5+11 push to CHECK. villain_tp+=0.17, worse_hand_pct=0.93."
+    },
+    {
+      "ref_id": "PILOT_140",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Weak made (weak_made, hc=4); check. worse_hand_pct=0.58, better_hand_pct=0.42. Cannot profitably bet."
+    },
+    {
+      "ref_id": "PILOT_141",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.27, villain_air=0.42."
+    },
+    {
+      "ref_id": "PILOT_142",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.24, villain_air=0.02."
+    },
+    {
+      "ref_id": "PILOT_143",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.66, villain_air=0.00."
+    },
+    {
+      "ref_id": "PILOT_144",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Weak made (weak_made, hc=4); check. worse_hand_pct=0.82, better_hand_pct=0.17. Cannot profitably bet."
+    },
+    {
+      "ref_id": "PILOT_145",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=8.0. Check."
+    },
+    {
+      "ref_id": "PILOT_146",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) IP; villain_air=0.50, worse_hand_pct=0.96. Thin value bet."
+    },
+    {
+      "ref_id": "PILOT_147",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway; DO NOT Rules 5+11 push to CHECK. villain_tp+=0.43, worse_hand_pct=0.93."
+    },
+    {
+      "ref_id": "PILOT_148",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.56. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_149",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway; DO NOT Rules 5+11 push to CHECK. villain_tp+=0.14, worse_hand_pct=0.96."
+    },
+    {
+      "ref_id": "PILOT_150",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=4.0. Check."
+    },
+    {
+      "ref_id": "PILOT_151",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.41. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_152",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.33. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_153",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway; DO NOT Rules 5+11 push to CHECK. villain_tp+=0.17, worse_hand_pct=0.94."
+    },
+    {
+      "ref_id": "PILOT_154",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.62. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_155",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.66, villain_air=0.34."
+    },
+    {
+      "ref_id": "PILOT_156",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.28, villain_air=0.47."
+    },
+    {
+      "ref_id": "PILOT_157",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.47. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_158",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.22, villain_air=0.39."
+    },
+    {
+      "ref_id": "PILOT_159",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.25, villain_air=0.44."
+    },
+    {
+      "ref_id": "PILOT_160",
+      "action": "CALL",
+      "confidence": "LOW",
+      "reasoning": "Air facing bet; equity=0.425>=pot_odds=0.263. Low-confidence call."
+    },
+    {
+      "ref_id": "PILOT_161",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.24, villain_air=0.38."
+    },
+    {
+      "ref_id": "PILOT_162",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong made (strong_made) OOP multiway; pot control. villain_tp+=0.50, worse_hand_pct=0.84."
+    },
+    {
+      "ref_id": "PILOT_163",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.53. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_164",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.25, villain_air=0.50."
+    },
+    {
+      "ref_id": "PILOT_165",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Weak made (weak_made, hc=4); check. worse_hand_pct=0.79, better_hand_pct=0.21. Cannot profitably bet."
+    },
+    {
+      "ref_id": "PILOT_166",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) IP; villain_air=0.53, worse_hand_pct=0.97. Thin value bet."
+    },
+    {
+      "ref_id": "PILOT_167",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.19. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_168",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_169",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Weak made (weak_made, hc=4); check. worse_hand_pct=0.63, better_hand_pct=0.37. Cannot profitably bet."
+    },
+    {
+      "ref_id": "PILOT_170",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Weak made (weak_made, hc=4); check. worse_hand_pct=0.62, better_hand_pct=0.38. Cannot profitably bet."
+    },
+    {
+      "ref_id": "PILOT_171",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) facing bet; equity=0.604>=pot_odds=0.263. better_hand_pct=0.25. Call."
+    },
+    {
+      "ref_id": "PILOT_172",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=4.0. Check."
+    },
+    {
+      "ref_id": "PILOT_173",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=4.0. Check."
+    },
+    {
+      "ref_id": "PILOT_174",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.14, villain_air=0.44."
+    },
+    {
+      "ref_id": "PILOT_175",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.43, villain_air=0.45."
+    },
+    {
+      "ref_id": "PILOT_176",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway; DO NOT Rules 5+11 push to CHECK. villain_tp+=0.28, worse_hand_pct=0.92."
+    },
+    {
+      "ref_id": "PILOT_177",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + nut blocker facing bet HU; villain_air_pct=0.39>=0.20. v3.2 KB \u00a71.7: semi-bluff raise. draw_outs=9.0."
+    },
+    {
+      "ref_id": "PILOT_178",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + nut blocker facing bet HU; villain_air_pct=0.42>=0.20. v3.2 KB \u00a71.7: semi-bluff raise. draw_outs=9.0."
+    },
+    {
+      "ref_id": "PILOT_179",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + nut blocker facing bet HU; villain_air_pct=0.40>=0.20. v3.2 KB \u00a71.7: semi-bluff raise. draw_outs=9.0."
+    },
+    {
+      "ref_id": "PILOT_180",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + nut blocker facing bet HU; villain_air_pct=0.42>=0.20. v3.2 KB \u00a71.7: semi-bluff raise. draw_outs=9.0."
+    },
+    {
+      "ref_id": "PILOT_181",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + nut blocker facing bet HU; villain_air_pct=0.39>=0.20. v3.2 KB \u00a71.7: semi-bluff raise. draw_outs=9.0."
+    },
+    {
+      "ref_id": "PILOT_182",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + nut blocker facing bet HU; villain_air_pct=0.42>=0.20. v3.2 KB \u00a71.7: semi-bluff raise. draw_outs=9.0."
+    },
+    {
+      "ref_id": "PILOT_183",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + nut blocker facing bet HU; villain_air_pct=0.38>=0.20. v3.2 KB \u00a71.7: semi-bluff raise. draw_outs=9.0."
+    },
+    {
+      "ref_id": "PILOT_184",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + nut blocker facing bet HU; villain_air_pct=0.40>=0.20. v3.2 KB \u00a71.7: semi-bluff raise. draw_outs=13.0."
+    },
+    {
+      "ref_id": "PILOT_185",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + nut blocker facing bet HU; villain_air_pct=0.40>=0.20. v3.2 KB \u00a71.7: semi-bluff raise. draw_outs=13.0."
+    },
+    {
+      "ref_id": "d521_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway on paired/2-tone board; v3.2 Rule 11 + DO NOT Rule 5. CHECK: TP/medium cannot profitably bet. villain_tp+=0.20, worse_hand_pct=0.89."
+    },
+    {
+      "ref_id": "PILOT_187",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + nut blocker facing bet HU; villain_air_pct=0.40>=0.20. v3.2 KB \u00a71.7: semi-bluff raise. draw_outs=13.0."
+    },
+    {
+      "ref_id": "PILOT_188",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + nut blocker facing bet HU; villain_air_pct=0.39>=0.20. v3.2 KB \u00a71.7: semi-bluff raise. draw_outs=9.0."
+    },
+    {
+      "ref_id": "PILOT_189",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + nut blocker facing bet HU; villain_air_pct=0.42>=0.20. v3.2 KB \u00a71.7: semi-bluff raise. draw_outs=13.0."
+    },
+    {
+      "ref_id": "PILOT_190",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + nut blocker facing bet HU; villain_air_pct=0.44>=0.20. v3.2 KB \u00a71.7: semi-bluff raise. draw_outs=9.0."
+    },
+    {
+      "ref_id": "PILOT_191",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + nut blocker facing bet HU; villain_air_pct=0.35>=0.20. v3.2 KB \u00a71.7: semi-bluff raise. draw_outs=9.0."
+    },
+    {
+      "ref_id": "PILOT_192",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + nut blocker facing bet HU; villain_air_pct=0.38>=0.20. v3.2 KB \u00a71.7: semi-bluff raise. draw_outs=9.0."
+    },
+    {
+      "ref_id": "PILOT_193",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + nut blocker facing bet HU; villain_air_pct=0.38>=0.20. v3.2 KB \u00a71.7: semi-bluff raise. draw_outs=9.0."
+    },
+    {
+      "ref_id": "PILOT_194",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + nut blocker facing bet HU; villain_air_pct=0.43>=0.20. v3.2 KB \u00a71.7: semi-bluff raise. draw_outs=9.0."
+    },
+    {
+      "ref_id": "PILOT_195",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + nut blocker facing bet HU; villain_air_pct=0.37>=0.20. v3.2 KB \u00a71.7: semi-bluff raise. draw_outs=9.0."
+    },
+    {
+      "ref_id": "PILOT_196",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + nut blocker facing bet HU; villain_air_pct=0.41>=0.20. v3.2 KB \u00a71.7: semi-bluff raise. draw_outs=9.0."
+    },
+    {
+      "ref_id": "PILOT_197",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + blocker but villain_air_pct=0.03<0.20. v3.2 Fix 2 OVERRIDE: CALL. equity=0.524>=pot_odds=0.235."
+    },
+    {
+      "ref_id": "PILOT_198",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + blocker but villain_air_pct=0.06<0.20. v3.2 Fix 2 OVERRIDE: CALL. equity=0.612>=pot_odds=0.235."
+    },
+    {
+      "ref_id": "PILOT_199",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + blocker but villain_air_pct=0.05<0.20. v3.2 Fix 2 OVERRIDE: CALL. equity=0.612>=pot_odds=0.235."
+    },
+    {
+      "ref_id": "PILOT_200",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + blocker but villain_air_pct=0.11<0.20. v3.2 Fix 2 OVERRIDE: CALL. equity=0.708>=pot_odds=0.250."
+    },
+    {
+      "ref_id": "PILOT_201",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + blocker but villain_air_pct=0.06<0.20. v3.2 Fix 2 OVERRIDE: CALL. equity=0.623>=pot_odds=0.235."
+    },
+    {
+      "ref_id": "PILOT_202",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + blocker but villain_air_pct=0.03<0.20. v3.2 Fix 2 OVERRIDE: CALL. equity=0.537>=pot_odds=0.235."
+    },
+    {
+      "ref_id": "PILOT_203",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + blocker but villain_air_pct=0.06<0.20. v3.2 Fix 2 OVERRIDE: CALL. equity=0.631>=pot_odds=0.235."
+    },
+    {
+      "ref_id": "PILOT_204",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + blocker but villain_air_pct=0.02<0.20. v3.2 Fix 2 OVERRIDE: CALL. equity=0.527>=pot_odds=0.235."
+    },
+    {
+      "ref_id": "PILOT_205",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + blocker but villain_air_pct=0.08<0.20. v3.2 Fix 2 OVERRIDE: CALL. equity=0.678>=pot_odds=0.250."
+    },
+    {
+      "ref_id": "PILOT_206",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + blocker but villain_air_pct=0.06<0.20. v3.2 Fix 2 OVERRIDE: CALL. equity=0.670>=pot_odds=0.235."
+    },
+    {
+      "ref_id": "PILOT_207",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + blocker but villain_air_pct=0.06<0.20. v3.2 Fix 2 OVERRIDE: CALL. equity=0.641>=pot_odds=0.235."
+    },
+    {
+      "ref_id": "PILOT_208",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + blocker but villain_air_pct=0.02<0.20. v3.2 Fix 2 OVERRIDE: CALL. equity=0.580>=pot_odds=0.235."
+    },
+    {
+      "ref_id": "PILOT_209",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + blocker but villain_air_pct=0.06<0.20. v3.2 Fix 2 OVERRIDE: CALL. equity=0.587>=pot_odds=0.235."
+    },
+    {
+      "ref_id": "PILOT_210",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + blocker but villain_air_pct=0.06<0.20. v3.2 Fix 2 OVERRIDE: CALL. equity=0.710>=pot_odds=0.235."
+    },
+    {
+      "ref_id": "PILOT_211",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + blocker but villain_air_pct=0.06<0.20. v3.2 Fix 2 OVERRIDE: CALL. equity=0.591>=pot_odds=0.235."
+    },
+    {
+      "ref_id": "PILOT_212",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + blocker but villain_air_pct=0.06<0.20. v3.2 Fix 2 OVERRIDE: CALL. equity=0.654>=pot_odds=0.235."
+    },
+    {
+      "ref_id": "PILOT_213",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + blocker but villain_air_pct=0.06<0.20. v3.2 Fix 2 OVERRIDE: CALL. equity=0.564>=pot_odds=0.235."
+    },
+    {
+      "ref_id": "PILOT_214",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + blocker but villain_air_pct=0.02<0.20. v3.2 Fix 2 OVERRIDE: CALL. equity=0.501>=pot_odds=0.235."
+    },
+    {
+      "ref_id": "d587_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=13.0. Check."
+    },
+    {
+      "ref_id": "PILOT_216",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + nut blocker facing bet HU; villain_air_pct=0.23>=0.20. v3.2 KB \u00a71.7: semi-bluff raise. draw_outs=13.0."
+    },
+    {
+      "ref_id": "PILOT_217",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + blocker but villain_air_pct=0.17<0.20. v3.2 Fix 2 OVERRIDE: CALL. equity=0.374>=pot_odds=0.259."
+    },
+    {
+      "ref_id": "d719_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=9.0. Check."
+    },
+    {
+      "ref_id": "PILOT_219",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + nut blocker facing bet HU; villain_air_pct=0.20>=0.20. v3.2 KB \u00a71.7: semi-bluff raise. draw_outs=9.0."
+    },
+    {
+      "ref_id": "PILOT_220",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + blocker but villain_air_pct=0.16<0.20. v3.2 Fix 2 OVERRIDE: CALL. equity=0.369>=pot_odds=0.259."
+    },
+    {
+      "ref_id": "PILOT_221",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + blocker but villain_air_pct=0.14<0.20. v3.2 Fix 2 OVERRIDE: CALL. equity=0.397>=pot_odds=0.259."
+    },
+    {
+      "ref_id": "PILOT_222",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + blocker but villain_air_pct=0.16<0.20. v3.2 Fix 2 OVERRIDE: CALL. equity=0.387>=pot_odds=0.259."
+    },
+    {
+      "ref_id": "PILOT_223",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + nut blocker facing bet HU; villain_air_pct=0.24>=0.20. v3.2 KB \u00a71.7: semi-bluff raise. draw_outs=13.0."
+    },
+    {
+      "ref_id": "PILOT_224",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + nut blocker facing bet HU; villain_air_pct=0.21>=0.20. v3.2 KB \u00a71.7: semi-bluff raise. draw_outs=9.0."
+    },
+    {
+      "ref_id": "PILOT_225",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_226",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_227",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) facing bet; equity=0.482>=pot_odds=0.231. better_hand_pct=0.31. Call."
+    },
+    {
+      "ref_id": "PILOT_228",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_229",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Draw (8.0 outs) facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_230",
+      "action": "CALL",
+      "confidence": "LOW",
+      "reasoning": "Weak made facing bet; equity=0.240>=pot_odds=0.238. better_hand_pct=0.27. Marginal call."
+    },
+    {
+      "ref_id": "PILOT_231",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_232",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Weak draw (4.0 outs) facing bet; pot odds not met. Fold."
+    },
+    {
+      "ref_id": "PILOT_233",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Weak draw (4.0 outs) facing bet; pot odds not met. Fold."
+    },
+    {
+      "ref_id": "PILOT_234",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Weak draw (4.0 outs) facing bet; pot odds not met. Fold."
+    },
+    {
+      "ref_id": "PILOT_235",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_236",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Draw (8.0 outs) facing bet; equity=0.226>=pot_odds. Call."
+    },
+    {
+      "ref_id": "PILOT_237",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_238",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Weak draw (4.0 outs) facing bet; pot odds not met. Fold."
+    },
+    {
+      "ref_id": "PILOT_239",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Weak draw (4.0 outs) facing bet; pot odds not met. Fold."
+    },
+    {
+      "ref_id": "PILOT_240",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_241",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_242",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_243",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Draw (8.0 outs) facing bet; equity=0.357>=pot_odds. Call."
+    },
+    {
+      "ref_id": "PILOT_244",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "d308_HJ_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) OOP multiway dry board; worse_hand_pct=0.95, villain_air=0.39. Bet for value."
+    },
+    {
+      "ref_id": "PILOT_246",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster, hc=11) facing bet HU. Raise for value: worse_hand_pct=0.96. Build pot vs villain's calling range."
+    },
+    {
+      "ref_id": "PILOT_247",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster, hc=12) facing bet HU. Raise for value: worse_hand_pct=1.00. Build pot vs villain's calling range."
+    },
+    {
+      "ref_id": "d521_BTN_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) IP; bet for value. worse_hand_pct=0.98, villain_air=0.39."
+    },
+    {
+      "ref_id": "d282_BTN_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) IP; bet for value. worse_hand_pct=0.89, villain_air=0.02."
+    },
+    {
+      "ref_id": "d588_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) OOP multiway; villain_tp+=0.75. Value bet vs dominated villain range."
+    },
+    {
+      "ref_id": "d249_BB_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) OOP multiway dry board; worse_hand_pct=0.97, villain_air=0.56. Bet for value."
+    },
+    {
+      "ref_id": "d576_BTN_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) IP; bet for value. worse_hand_pct=0.99, villain_air=0.33."
+    },
+    {
+      "ref_id": "PILOT_253",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster, hc=12) facing bet HU. Raise for value: worse_hand_pct=1.00. Build pot vs villain's calling range."
+    },
+    {
+      "ref_id": "d588_HJ_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) OOP multiway; villain_tp+=0.68. Value bet vs dominated villain range."
+    },
+    {
+      "ref_id": "d153_BTN_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) IP; bet for value. worse_hand_pct=0.89, villain_air=0.40."
+    },
+    {
+      "ref_id": "PILOT_256",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) OOP multiway dry board; worse_hand_pct=0.97, villain_air=0.43. Bet for value."
+    },
+    {
+      "ref_id": "d249_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) OOP multiway dry board; worse_hand_pct=0.90, villain_air=0.38. Bet for value."
+    },
+    {
+      "ref_id": "d588_BB_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) OOP multiway; villain_tp+=0.61. Value bet vs dominated villain range."
+    },
+    {
+      "ref_id": "PILOT_259",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) OOP multiway dry board; worse_hand_pct=0.97, villain_air=0.25. Bet for value."
+    },
+    {
+      "ref_id": "d576_BTN_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) IP; bet for value. worse_hand_pct=0.98, villain_air=0.33."
+    },
+    {
+      "ref_id": "PILOT_261",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster, hc=12) facing bet HU. Raise for value: worse_hand_pct=1.00. Build pot vs villain's calling range."
+    },
+    {
+      "ref_id": "d588_HJ_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) OOP multiway; villain_tp+=0.64. Value bet vs dominated villain range."
+    },
+    {
+      "ref_id": "d622_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) OOP multiway dry board; worse_hand_pct=0.96, villain_air=0.34. Bet for value."
+    },
+    {
+      "ref_id": "PILOT_264",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) facing bet 3-way; villain_tp+=0.46. Raise extracts value from villain's TP+ continuing range. worse_hand_pct=0.90."
+    },
+    {
+      "ref_id": "PILOT_265",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing (4.0 outs) IP HU; check to realize equity. villain_air=0.13<0.30."
+    },
+    {
+      "ref_id": "PILOT_266",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.14. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_267",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing (4.0 outs) IP HU; check to realize equity. villain_air=0.13<0.30."
+    },
+    {
+      "ref_id": "PILOT_268",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.17. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_269",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing (4.0 outs) IP HU; check to realize equity. villain_air=0.12<0.30."
+    },
+    {
+      "ref_id": "PILOT_270",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.08. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_271",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing (4.0 outs) IP HU; check to realize equity. villain_air=0.17<0.30."
+    },
+    {
+      "ref_id": "PILOT_272",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) IP; bet for value. worse_hand_pct=0.96, villain_air=0.13."
+    },
+    {
+      "ref_id": "PILOT_273",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Weak draw (4.0 outs) facing bet; pot odds not met. Fold."
+    },
+    {
+      "ref_id": "PILOT_274",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.21. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_275",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.17. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_276",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.15. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_277",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.23. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_278",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing (4.0 outs) IP HU; check to realize equity. villain_air=0.16<0.30."
+    },
+    {
+      "ref_id": "PILOT_279",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing (8.0 outs) IP HU; check to realize equity. villain_air=0.14<0.30."
+    },
+    {
+      "ref_id": "PILOT_280",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_281",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing (4.0 outs) IP HU; check to realize equity. villain_air=0.21<0.30."
+    },
+    {
+      "ref_id": "PILOT_282",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.08. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_283",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Weak draw (4.0 outs) facing bet; pot odds not met. Fold."
+    },
+    {
+      "ref_id": "PILOT_284",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_285",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_286",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Weak draw (4.0 outs) facing bet; pot odds not met. Fold."
+    },
+    {
+      "ref_id": "PILOT_287",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Weak draw (4.0 outs) facing bet; pot odds not met. Fold."
+    },
+    {
+      "ref_id": "PILOT_288",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) IP; bet for value. worse_hand_pct=0.99, villain_air=0.12."
+    },
+    {
+      "ref_id": "PILOT_289",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing (8.0 outs) IP HU; check to realize equity. villain_air=0.23<0.30."
+    },
+    {
+      "ref_id": "PILOT_290",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.19. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_291",
+      "action": "FOLD",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made facing bet; equity=0.221<pot_odds=0.247. better_hand_pct=0.77. Fold."
+    },
+    {
+      "ref_id": "PILOT_292",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing (4.0 outs) IP HU; check to realize equity. villain_air=0.25<0.30."
+    },
+    {
+      "ref_id": "PILOT_293",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Draw (8.0 outs) facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_294",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing (4.0 outs) IP HU; check to realize equity. villain_air=0.17<0.30."
+    },
+    {
+      "ref_id": "PILOT_295",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.26. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_296",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.21. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_297",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.22. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_298",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing (4.0 outs) IP HU; check to realize equity. villain_air=0.23<0.30."
+    },
+    {
+      "ref_id": "PILOT_299",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing (4.0 outs) IP HU; check to realize equity. villain_air=0.12<0.30."
+    },
+    {
+      "ref_id": "PILOT_300",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) facing bet; equity=0.078<<pot_odds=0.253. Fold."
+    },
+    {
+      "ref_id": "PILOT_301",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster, hc=13) facing bet HU. Raise for value: worse_hand_pct=0.97. Build pot vs villain's calling range."
+    },
+    {
+      "ref_id": "PILOT_302",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing (4.0 outs) IP HU; check to realize equity. villain_air=0.17<0.30."
+    },
+    {
+      "ref_id": "PILOT_303",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Strong made (strong_made) facing bet; equity=0.569 vs pot_odds=0.244. better_hand_pct=0.43. Call."
+    },
+    {
+      "ref_id": "PILOT_304",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.18. No profitable bluff spot."
+    },
+    {
+      "ref_id": "d622_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=9.0. Check."
+    },
+    {
+      "ref_id": "PILOT_306",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + nut blocker facing bet HU; villain_air_pct=0.28>=0.20. v3.2 KB \u00a71.7: semi-bluff raise. draw_outs=9.0."
+    },
+    {
+      "ref_id": "PILOT_307",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + blocker but villain_air_pct=0.12<0.20. v3.2 Fix 2 OVERRIDE: CALL. equity=0.497>=pot_odds=0.259."
+    },
+    {
+      "ref_id": "PILOT_308",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Nut FD + blocker but villain_air_pct=0.17<0.20. v3.2 Fix 2 OVERRIDE: CALL. equity=0.579>=pot_odds=0.235."
+    },
+    {
+      "ref_id": "d521_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) OOP multiway dry board; worse_hand_pct=0.92, villain_air=0.20. Bet for value."
+    },
+    {
+      "ref_id": "d249_BB_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) OOP multiway dry board; worse_hand_pct=0.90, villain_air=0.30. Bet for value."
+    },
+    {
+      "ref_id": "d719_BTN_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) IP; bet for value. worse_hand_pct=0.97, villain_air=0.06."
+    },
+    {
+      "ref_id": "d308_BTN_turn",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) facing bet 3-way; villain_tp+=0.76. Raise extracts value from villain's TP+ continuing range. worse_hand_pct=0.97."
+    },
+    {
+      "ref_id": "d521_BB_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) OOP multiway dry board; worse_hand_pct=0.93, villain_air=0.39. Bet for value."
+    },
+    {
+      "ref_id": "d282_BB_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) OOP multiway dry board; worse_hand_pct=0.86, villain_air=0.02. Bet for value."
+    },
+    {
+      "ref_id": "PILOT_315",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster, hc=13) facing bet HU. Raise for value: worse_hand_pct=0.94. Build pot vs villain's calling range."
+    },
+    {
+      "ref_id": "PILOT_316",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster, hc=11) facing bet HU. Raise for value: worse_hand_pct=0.88. Build pot vs villain's calling range."
+    },
+    {
+      "ref_id": "d622_BB_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) OOP multiway dry board; worse_hand_pct=0.98, villain_air=0.46. Bet for value."
+    },
+    {
+      "ref_id": "PILOT_318",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster, hc=12) facing bet HU. Raise for value: worse_hand_pct=1.00. Build pot vs villain's calling range."
+    },
+    {
+      "ref_id": "d107_BB_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) OOP multiway dry board; worse_hand_pct=0.98, villain_air=0.27. Bet for value."
+    },
+    {
+      "ref_id": "d521_BTN_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) IP; bet for value. worse_hand_pct=0.99, villain_air=0.39."
+    },
+    {
+      "ref_id": "d576_BB_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway on paired/2-tone board; v3.2 Rule 11 + DO NOT Rule 5. CHECK: TP/medium cannot profitably bet. villain_tp+=0.21, worse_hand_pct=0.85."
+    },
+    {
+      "ref_id": "d237_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.13, villain_air=0.52."
+    },
+    {
+      "ref_id": "d923_BTN_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Strong made (strong_made) IP; worse_hand_pct=0.85. Value bet."
+    },
+    {
+      "ref_id": "d986_CO_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway on paired/2-tone board; v3.2 Rule 11 + DO NOT Rule 5. CHECK: TP/medium cannot profitably bet. villain_tp+=0.35, worse_hand_pct=0.00."
+    },
+    {
+      "ref_id": "d587_HJ_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway; DO NOT Rules 5+11 push to CHECK. villain_tp+=0.35, worse_hand_pct=0.72."
+    },
+    {
+      "ref_id": "d530_HJ_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.75, villain_air=0.25."
+    },
+    {
+      "ref_id": "d530_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.24, villain_air=0.32."
+    },
+    {
+      "ref_id": "d677_HJ_river",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong made (strong_made) OOP multiway; pot control. villain_tp+=0.83, worse_hand_pct=0.78."
+    },
+    {
+      "ref_id": "d639_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=4.0. Check."
+    },
+    {
+      "ref_id": "d237_BB_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway on paired/2-tone board; v3.2 Rule 11 + DO NOT Rule 5. CHECK: TP/medium cannot profitably bet. villain_tp+=0.17, worse_hand_pct=0.74."
+    },
+    {
+      "ref_id": "d282_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway on paired/2-tone board; v3.2 Rule 11 + DO NOT Rule 5. CHECK: TP/medium cannot profitably bet. villain_tp+=0.25, worse_hand_pct=0.84."
+    },
+    {
+      "ref_id": "d750_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=4.0. Check."
+    },
+    {
+      "ref_id": "d750_BB_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway; DO NOT Rules 5+11 push to CHECK. villain_tp+=0.17, worse_hand_pct=0.91."
+    },
+    {
+      "ref_id": "d370_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.48. No profitable bluff spot."
+    },
+    {
+      "ref_id": "d622_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=4.0. Check."
+    },
+    {
+      "ref_id": "d575_CO_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway on paired/2-tone board; v3.2 Rule 11 + DO NOT Rule 5. CHECK: TP/medium cannot profitably bet. villain_tp+=0.24, worse_hand_pct=0.78."
+    },
+    {
+      "ref_id": "d915_BTN_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) IP; villain_tp+=0.16. worse_hand_pct=0.70. Check."
+    },
+    {
+      "ref_id": "d719_BB_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.47, villain_air=0.13."
+    },
+    {
+      "ref_id": "d169_BB_river",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong made (strong_made) OOP multiway; pot control. villain_tp+=0.64, worse_hand_pct=0.46."
+    },
+    {
+      "ref_id": "d972_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.54. No profitable bluff spot."
+    },
+    {
+      "ref_id": "d959_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Weak made (weak_made, hc=4); check. worse_hand_pct=0.67, better_hand_pct=0.33. Cannot profitably bet."
+    },
+    {
+      "ref_id": "d986_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Weak made (weak_made, hc=4); check. worse_hand_pct=0.36, better_hand_pct=0.64. Cannot profitably bet."
+    },
+    {
+      "ref_id": "d750_CO_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Weak made (weak_made, hc=4); check. worse_hand_pct=0.48, better_hand_pct=0.52. Cannot profitably bet."
+    },
+    {
+      "ref_id": "d237_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Weak made (weak_made, hc=4); check. worse_hand_pct=0.45, better_hand_pct=0.54. Cannot profitably bet."
+    },
+    {
+      "ref_id": "d575_CO_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway on paired/2-tone board; v3.2 Rule 11 + DO NOT Rule 5. CHECK: TP/medium cannot profitably bet. villain_tp+=0.33, worse_hand_pct=0.71."
+    },
+    {
+      "ref_id": "d169_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Weak made (weak_made, hc=4); check. worse_hand_pct=0.74, better_hand_pct=0.26. Cannot profitably bet."
+    },
+    {
+      "ref_id": "d677_BTN_river",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong made (strong_made) IP; villain_tp+=0.79. worse_hand_pct=0.38. Check for pot control."
+    },
+    {
+      "ref_id": "d923_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.41, villain_air=0.59."
+    },
+    {
+      "ref_id": "d3_HJ_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway; DO NOT Rules 5+11 push to CHECK. villain_tp+=0.37, worse_hand_pct=0.79."
+    },
+    {
+      "ref_id": "d854_CO_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway; DO NOT Rules 5+11 push to CHECK. villain_tp+=0.27, worse_hand_pct=0.92."
+    },
+    {
+      "ref_id": "d587_BB_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway; DO NOT Rules 5+11 push to CHECK. villain_tp+=0.34, worse_hand_pct=0.60."
+    },
+    {
+      "ref_id": "PILOT_352",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Weak draw (4.0 outs) facing bet; pot odds not met. Fold."
+    },
+    {
+      "ref_id": "d153_CO_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Weak made (weak_made, hc=3); check. worse_hand_pct=0.33, better_hand_pct=0.66. Cannot profitably bet."
+    },
+    {
+      "ref_id": "d796_BTN_river",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong made (strong_made) IP; villain_tp+=0.83. worse_hand_pct=0.47. Check for pot control."
+    },
+    {
+      "ref_id": "PILOT_355",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_356",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Weak draw (4.0 outs) facing bet; pot odds not met. Fold."
+    },
+    {
+      "ref_id": "PILOT_357",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing (8.0 outs) IP HU; check to realize equity. villain_air=0.19<0.30."
+    },
+    {
+      "ref_id": "PILOT_358",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.06. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_359",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Weak draw (4.0 outs) facing bet; pot odds not met. Fold."
+    },
+    {
+      "ref_id": "PILOT_360",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Draw (8.0 outs) facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_361",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.27, villain_air=0.40."
+    },
+    {
+      "ref_id": "PILOT_362",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Weak draw (4.0 outs) facing bet; pot odds not met. Fold."
+    },
+    {
+      "ref_id": "PILOT_363",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster, hc=11) facing bet HU. Raise for value: worse_hand_pct=0.94. Build pot vs villain's calling range."
+    },
+    {
+      "ref_id": "PILOT_364",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing (4.0 outs) IP HU; check to realize equity. villain_air=0.17<0.30."
+    },
+    {
+      "ref_id": "PILOT_365",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.11. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_366",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.28, villain_air=0.39."
+    },
+    {
+      "ref_id": "PILOT_367",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) IP; villain_air=0.52, worse_hand_pct=0.93. Thin value bet."
+    },
+    {
+      "ref_id": "PILOT_368",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) IP; villain_air=0.48, worse_hand_pct=0.96. Thin value bet."
+    },
+    {
+      "ref_id": "PILOT_369",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing (8.0 outs) IP HU; check to realize equity. villain_air=0.11<0.30."
+    },
+    {
+      "ref_id": "PILOT_370",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.18. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_371",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.19. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_372",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.07. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_373",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) facing bet; equity=0.753>=pot_odds=0.231. better_hand_pct=0.24. Call."
+    },
+    {
+      "ref_id": "PILOT_374",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing (4.0 outs) IP HU; check to realize equity. villain_air=0.14<0.30."
+    },
+    {
+      "ref_id": "PILOT_375",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) IP; villain_air=0.48, worse_hand_pct=0.97. Thin value bet."
+    },
+    {
+      "ref_id": "PILOT_376",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.28, villain_air=0.40."
+    },
+    {
+      "ref_id": "PILOT_377",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster, hc=11) facing bet HU. Raise for value: worse_hand_pct=0.88. Build pot vs villain's calling range."
+    },
+    {
+      "ref_id": "PILOT_378",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Weak draw (4.0 outs) facing bet; pot odds not met. Fold."
+    },
+    {
+      "ref_id": "PILOT_379",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing (4.0 outs) IP HU; check to realize equity. villain_air=0.16<0.30."
+    },
+    {
+      "ref_id": "PILOT_380",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_381",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.03. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_382",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing (4.0 outs) IP HU; check to realize equity. villain_air=0.14<0.30."
+    },
+    {
+      "ref_id": "PILOT_383",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.22, villain_air=0.36."
+    },
+    {
+      "ref_id": "PILOT_384",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway; DO NOT Rules 5+11 push to CHECK. villain_tp+=0.25, worse_hand_pct=0.96."
+    },
+    {
+      "ref_id": "PILOT_385",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway; DO NOT Rules 5+11 push to CHECK. villain_tp+=0.27, worse_hand_pct=0.94."
+    },
+    {
+      "ref_id": "PILOT_386",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing (4.0 outs) IP HU; check to realize equity. villain_air=0.12<0.30."
+    },
+    {
+      "ref_id": "PILOT_387",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Weak draw (4.0 outs) facing bet; pot odds not met. Fold."
+    },
+    {
+      "ref_id": "PILOT_388",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Weak made (weak_made, hc=4); check. worse_hand_pct=0.65, better_hand_pct=0.35. Cannot profitably bet."
+    },
+    {
+      "ref_id": "PILOT_389",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.56. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_390",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing (4.0 outs) IP HU; check to realize equity. villain_air=0.13<0.30."
+    },
+    {
+      "ref_id": "PILOT_391",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.19. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_392",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.18. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_393",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.14. No profitable bluff spot."
+    },
+    {
+      "ref_id": "PILOT_394",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Drawing (4.0 outs) IP HU; check to realize equity. villain_air=0.15<0.30."
+    },
+    {
+      "ref_id": "PILOT_395",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Strong made (strong_made) OOP HU; worse_hand_pct=0.81. Value bet."
+    },
+    {
+      "ref_id": "PILOT_396",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) OOP HU; villain_air=0.44, worse_hand_pct=0.91. Thin value bet."
+    },
+    {
+      "ref_id": "PILOT_397",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) OOP HU; villain_air=0.53, worse_hand_pct=0.84. Thin value bet."
+    },
+    {
+      "ref_id": "PILOT_398",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) OOP HU; villain_air=0.53, worse_hand_pct=0.91. Thin value bet."
+    },
+    {
+      "ref_id": "PILOT_399",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Strong made (strong_made) OOP HU; worse_hand_pct=0.81. Value bet."
+    },
+    {
+      "ref_id": "PILOT_400",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) OOP HU; villain_air=0.44, worse_hand_pct=0.70. Thin value bet."
+    },
+    {
+      "ref_id": "PILOT_401",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Strong made (strong_made) OOP HU; worse_hand_pct=0.77. Value bet."
+    },
+    {
+      "ref_id": "PILOT_402",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) OOP HU; bet for value. worse_hand_pct=0.98."
+    },
+    {
+      "ref_id": "PILOT_403",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Strong made (strong_made) OOP HU; worse_hand_pct=0.66. Value bet."
+    },
+    {
+      "ref_id": "PILOT_404",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Monster (monster) OOP HU; bet for value. worse_hand_pct=0.98."
+    },
+    {
+      "ref_id": "PILOT_405",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) facing bet; equity=0.742>=pot_odds=0.250. better_hand_pct=0.10. Call."
+    },
+    {
+      "ref_id": "PILOT_406",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) facing bet; equity=0.587>=pot_odds=0.250. better_hand_pct=0.04. Call."
+    },
+    {
+      "ref_id": "PILOT_407",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_408",
+      "action": "CALL",
+      "confidence": "LOW",
+      "reasoning": "Air facing bet; equity=0.474>=pot_odds=0.250. Low-confidence call."
+    },
+    {
+      "ref_id": "PILOT_409",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_410",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_411",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_412",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_413",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_414",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_415",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) facing bet; equity=0.508>=pot_odds=0.167. better_hand_pct=0.10. Call."
+    },
+    {
+      "ref_id": "PILOT_416",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_417",
+      "action": "CALL",
+      "confidence": "LOW",
+      "reasoning": "Air facing bet; equity=0.550>=pot_odds=0.250. Low-confidence call."
+    },
+    {
+      "ref_id": "PILOT_418",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) facing bet; equity=0.611>=pot_odds=0.250. better_hand_pct=0.03. Call."
+    },
+    {
+      "ref_id": "PILOT_419",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) facing bet; equity=0.584>=pot_odds=0.167. better_hand_pct=0.06. Call."
+    },
+    {
+      "ref_id": "PILOT_420",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Weak made facing bet; equity=0.513 vs pot_odds=0.250. better_hand_pct=0.49. Fold."
+    },
+    {
+      "ref_id": "PILOT_421",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) facing bet; equity=0.378>=pot_odds=0.250. better_hand_pct=0.12. Call."
+    },
+    {
+      "ref_id": "PILOT_422",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) facing bet; equity=0.479>=pot_odds=0.250. better_hand_pct=0.08. Call."
+    },
+    {
+      "ref_id": "PILOT_423",
+      "action": "CALL",
+      "confidence": "LOW",
+      "reasoning": "Air facing bet; equity=0.456>=pot_odds=0.250. Low-confidence call."
+    },
+    {
+      "ref_id": "PILOT_424",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_425",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_426",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) facing bet; equity=0.588>=pot_odds=0.250. better_hand_pct=0.05. Call."
+    },
+    {
+      "ref_id": "PILOT_427",
+      "action": "CALL",
+      "confidence": "LOW",
+      "reasoning": "Weak made facing bet; equity=0.610>=pot_odds=0.250. better_hand_pct=0.30. Marginal call."
+    },
+    {
+      "ref_id": "PILOT_428",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_429",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_430",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_431",
+      "action": "CALL",
+      "confidence": "LOW",
+      "reasoning": "Air facing bet; equity=0.372>=pot_odds=0.250. Low-confidence call."
+    },
+    {
+      "ref_id": "PILOT_432",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_433",
+      "action": "CALL",
+      "confidence": "LOW",
+      "reasoning": "Air facing bet; equity=0.253>=pot_odds=0.227. Low-confidence call."
+    },
+    {
+      "ref_id": "PILOT_434",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_435",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_436",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_437",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "Weak draw (4.0 outs) facing bet; equity=0.373 with surplus. Marginal call."
+    },
+    {
+      "ref_id": "PILOT_438",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_439",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "Weak draw (4.0 outs) facing bet; equity=0.217 with surplus. Marginal call."
+    },
+    {
+      "ref_id": "PILOT_440",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "Weak draw (4.0 outs) facing bet; equity=0.290 with surplus. Marginal call."
+    },
+    {
+      "ref_id": "PILOT_441",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_442",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) facing bet; equity=0.360>=pot_odds=0.231. better_hand_pct=0.18. Call."
+    },
+    {
+      "ref_id": "PILOT_443",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_444",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Draw (8.0 outs) facing bet; equity=0.316>=pot_odds. Call."
+    },
+    {
+      "ref_id": "PILOT_445",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) facing bet; equity=0.419>=pot_odds=0.231. better_hand_pct=0.16. Call."
+    },
+    {
+      "ref_id": "PILOT_446",
+      "action": "CALL",
+      "confidence": "LOW",
+      "reasoning": "Air facing bet; equity=0.270>=pot_odds=0.250. Low-confidence call."
+    },
+    {
+      "ref_id": "PILOT_447",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "Weak draw (4.0 outs) facing bet; equity=0.309 with surplus. Marginal call."
+    },
+    {
+      "ref_id": "PILOT_448",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_449",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Draw (8.0 outs) facing bet; equity=0.346>=pot_odds. Call."
+    },
+    {
+      "ref_id": "PILOT_450",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "PILOT_451",
+      "action": "CALL",
+      "confidence": "LOW",
+      "reasoning": "Air facing bet; equity=0.281>=pot_odds=0.250. Low-confidence call."
+    },
+    {
+      "ref_id": "PILOT_452",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) facing bet; equity=0.574>=pot_odds=0.250. better_hand_pct=0.32. Call."
+    },
+    {
+      "ref_id": "d639_BTN_river",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Weak draw (4.0 outs) facing bet; pot odds not met. Fold."
+    },
+    {
+      "ref_id": "d622_HJ_river",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Weak draw (4.0 outs) facing bet; pot odds not met. Fold."
+    },
+    {
+      "ref_id": "d521_UTG_river",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Draw (8.0 outs) facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "d336_BTN_turn",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Weak made facing bet; equity=0.275 vs pot_odds=0.285. better_hand_pct=0.28. Fold."
+    },
+    {
+      "ref_id": "d959_UTG_turn",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Air facing bet; equity<pot_odds. Fold."
+    },
+    {
+      "ref_id": "d107_CO_turn",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) facing bet; equity=0.330>=pot_odds=0.285. better_hand_pct=0.31. Call."
+    },
+    {
+      "ref_id": "PILOT_459",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "Medium made (medium_made) facing bet; equity=0.766>=pot_odds=0.242. better_hand_pct=0.19. Call."
+    },
+    {
+      "ref_id": "d622_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.63. No profitable bluff spot."
+    },
+    {
+      "ref_id": "d639_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.26. No profitable bluff spot."
+    },
+    {
+      "ref_id": "d3_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.44. No profitable bluff spot."
+    },
+    {
+      "ref_id": "d249_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=9.0. Check."
+    },
+    {
+      "ref_id": "d576_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=9.0. Check."
+    },
+    {
+      "ref_id": "d986_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Weak made (weak_made, hc=4); check. worse_hand_pct=0.51, better_hand_pct=0.49. Cannot profitably bet."
+    },
+    {
+      "ref_id": "d796_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Weak made (weak_made, hc=4); check. worse_hand_pct=0.64, better_hand_pct=0.36. Cannot profitably bet."
+    },
+    {
+      "ref_id": "d575_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Weak made (weak_made, hc=4); check. worse_hand_pct=0.61, better_hand_pct=0.39. Cannot profitably bet."
+    },
+    {
+      "ref_id": "d107_BTN_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Strong made (strong_made) IP; worse_hand_pct=0.95. Value bet."
+    },
+    {
+      "ref_id": "d719_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.30, villain_air=0.19."
+    },
+    {
+      "ref_id": "d750_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.15, villain_air=0.54."
+    },
+    {
+      "ref_id": "d3_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.16, villain_air=0.44."
+    },
+    {
+      "ref_id": "d986_CO_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=4.0. Check."
+    },
+    {
+      "ref_id": "d107_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=8.0. Check."
+    },
+    {
+      "ref_id": "d282_CO_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=4.0. Check."
+    },
+    {
+      "ref_id": "d986_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway on paired/2-tone board; v3.2 Rule 11 + DO NOT Rule 5. CHECK: TP/medium cannot profitably bet. villain_tp+=0.16, worse_hand_pct=0.58."
+    },
+    {
+      "ref_id": "d796_UTG_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway; DO NOT Rules 5+11 push to CHECK. villain_tp+=0.22, worse_hand_pct=0.91."
+    },
+    {
+      "ref_id": "d959_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway on paired/2-tone board; v3.2 Rule 11 + DO NOT Rule 5. CHECK: TP/medium cannot profitably bet. villain_tp+=0.22, worse_hand_pct=0.95."
+    },
+    {
+      "ref_id": "d719_HJ_flop",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong made (strong_made) OOP multiway; pot control. villain_tp+=0.45, worse_hand_pct=0.91."
+    },
+    {
+      "ref_id": "d750_BTN_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=4.0. Check."
+    },
+    {
+      "ref_id": "d3_BTN_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=8.0. Check."
+    },
+    {
+      "ref_id": "d986_BTN_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Weak made (weak_made, hc=4); check. worse_hand_pct=0.00, better_hand_pct=0.13. Cannot profitably bet."
+    },
+    {
+      "ref_id": "d249_BTN_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Strong made (strong_made) IP; worse_hand_pct=0.95. Value bet."
+    },
+    {
+      "ref_id": "d530_BTN_river",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong made (strong_made) IP; villain_tp+=0.66. worse_hand_pct=0.47. Check for pot control."
+    },
+    {
+      "ref_id": "d915_CO_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air OOP; check. villain_tp+=0.76, villain_air=0.03."
+    },
+    {
+      "ref_id": "d923_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=4.0. Check."
+    },
+    {
+      "ref_id": "d639_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=4.0. Check."
+    },
+    {
+      "ref_id": "d3_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Drawing 3-way not facing bet; DO NOT Rule 2: semi-bluff unprofitable 3-way (need BOTH to fold). draw_outs=8.0. Check."
+    },
+    {
+      "ref_id": "d986_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway on paired/2-tone board; v3.2 Rule 11 + DO NOT Rule 5. CHECK: TP/medium cannot profitably bet. villain_tp+=0.33, worse_hand_pct=0.95."
+    },
+    {
+      "ref_id": "d750_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Medium made (medium_made) OOP multiway; DO NOT Rules 5+11 push to CHECK. villain_tp+=0.21, worse_hand_pct=0.87."
+    },
+    {
+      "ref_id": "d153_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Weak made (weak_made, hc=4); check. worse_hand_pct=0.56, better_hand_pct=0.43. Cannot profitably bet."
+    },
+    {
+      "ref_id": "d719_HJ_river",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong made (strong_made) OOP multiway; pot control. villain_tp+=0.75, worse_hand_pct=0.68."
+    },
+    {
+      "ref_id": "d677_BB_river",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong made (strong_made) OOP multiway; pot control. villain_tp+=0.79, worse_hand_pct=0.40."
+    },
+    {
+      "ref_id": "d587_BB_river",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "Strong made (strong_made) OOP multiway; pot control. villain_tp+=0.83, worse_hand_pct=0.46."
+    },
+    {
+      "ref_id": "d972_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air IP; check. villain_air=0.54. No profitable bluff spot."
+    }
+  ]
+}

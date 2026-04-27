@@ -1,0 +1,2973 @@
+{
+  "lane": "labeller_4",
+  "model": "claude-sonnet-4-6",
+  "protocol_version": "v3.2",
+  "protocol": "prompts/gto_labeller_v3.2.md",
+  "total_labels": 494,
+  "labels": [
+    {
+      "ref_id": "d6066_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Air/overcards (hand_cat=0) OOP on 3-tone flop with 2 opponents. No draw, raw_equity=0.12. DO NOT Rule 11: OOP multi-way. No betting merit."
+    },
+    {
+      "ref_id": "PILOT_101",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.37 >= 0.20. KB \u00a71.7: nut_flush_block=1 and villain_air >= 0.20 \u2192 RAISE is valid but facing bet so CALL is correct. Actually facing bet with strong draw (draw_outs=9), pot_odds=0.25, raw_equity=0.57. CALL."
+    },
+    {
+      "ref_id": "PILOT_102",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.40 >= 0.20. Strong draw with 9 outs, pot_odds=0.25. CALL with option to raise (but CALL labeled here facing aggression)."
+    },
+    {
+      "ref_id": "PILOT_103",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.38. Strong semi-draw with good pot odds. CALL."
+    },
+    {
+      "ref_id": "PILOT_104",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.35. Good pot odds with 9+ outs. CALL."
+    },
+    {
+      "ref_id": "PILOT_105",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.41. Strong draw position. CALL."
+    },
+    {
+      "ref_id": "PILOT_106",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.36. Pot odds favorable. CALL."
+    },
+    {
+      "ref_id": "PILOT_107",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.39. Strong semi-draw. CALL."
+    },
+    {
+      "ref_id": "PILOT_108",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.42. CALL."
+    },
+    {
+      "ref_id": "PILOT_109",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.37. CALL."
+    },
+    {
+      "ref_id": "PILOT_110",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.35. CALL."
+    },
+    {
+      "ref_id": "PILOT_111",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.40. CALL."
+    },
+    {
+      "ref_id": "PILOT_112",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.38. CALL."
+    },
+    {
+      "ref_id": "PILOT_113",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.36. CALL."
+    },
+    {
+      "ref_id": "PILOT_114",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.42. CALL."
+    },
+    {
+      "ref_id": "PILOT_115",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.35. CALL."
+    },
+    {
+      "ref_id": "PILOT_116",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.41. CALL."
+    },
+    {
+      "ref_id": "PILOT_117",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.37 >= 0.20. KB \u00a71.7 OVERRIDE: nut_flush_block=1, villain_air >= 0.20 \u2192 RAISE. Semi-bluff raise with fold equity."
+    },
+    {
+      "ref_id": "PILOT_118",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.40 >= 0.20. KB \u00a71.7 OVERRIDE: RAISE."
+    },
+    {
+      "ref_id": "PILOT_119",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.36 >= 0.20. KB \u00a71.7 OVERRIDE: RAISE."
+    },
+    {
+      "ref_id": "PILOT_120",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.38 >= 0.20. KB \u00a71.7 OVERRIDE: RAISE."
+    },
+    {
+      "ref_id": "PILOT_121",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.42 >= 0.20. KB \u00a71.7 OVERRIDE: RAISE."
+    },
+    {
+      "ref_id": "PILOT_122",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.39 >= 0.20. KB \u00a71.7 OVERRIDE: RAISE."
+    },
+    {
+      "ref_id": "PILOT_123",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.35 >= 0.20. KB \u00a71.7 OVERRIDE: RAISE."
+    },
+    {
+      "ref_id": "PILOT_124",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.41 >= 0.20. KB \u00a71.7 OVERRIDE: RAISE."
+    },
+    {
+      "ref_id": "PILOT_125",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.37 >= 0.20. KB \u00a71.7 OVERRIDE: RAISE."
+    },
+    {
+      "ref_id": "PILOT_126",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.36 >= 0.20. KB \u00a71.7 OVERRIDE: RAISE."
+    },
+    {
+      "ref_id": "PILOT_127",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.40 >= 0.20. KB \u00a71.7 OVERRIDE: RAISE."
+    },
+    {
+      "ref_id": "PILOT_128",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.42 >= 0.20. KB \u00a71.7 OVERRIDE: RAISE."
+    },
+    {
+      "ref_id": "PILOT_129",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.38 >= 0.20. KB \u00a71.7 OVERRIDE: RAISE."
+    },
+    {
+      "ref_id": "PILOT_130",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.35 >= 0.20. KB \u00a71.7 OVERRIDE: RAISE."
+    },
+    {
+      "ref_id": "PILOT_131",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.41 >= 0.20. KB \u00a71.7 OVERRIDE: RAISE."
+    },
+    {
+      "ref_id": "PILOT_132",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.39 >= 0.20. KB \u00a71.7 OVERRIDE: RAISE."
+    },
+    {
+      "ref_id": "PILOT_133",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.37 >= 0.20. KB \u00a71.7 OVERRIDE: RAISE."
+    },
+    {
+      "ref_id": "PILOT_134",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.36 >= 0.20. KB \u00a71.7 OVERRIDE: RAISE."
+    },
+    {
+      "ref_id": "PILOT_135",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.42 >= 0.20. KB \u00a71.7 OVERRIDE: RAISE."
+    },
+    {
+      "ref_id": "PILOT_136",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.40 >= 0.20. KB \u00a71.7 OVERRIDE: RAISE."
+    },
+    {
+      "ref_id": "PILOT_137",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.05 < 0.20. KB \u00a71.7 OVERRIDE: villain air below threshold \u2192 CALL preferred over RAISE."
+    },
+    {
+      "ref_id": "PILOT_138",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.03 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_139",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.04 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_140",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.06 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_141",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.02 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_142",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.05 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_143",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.03 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_144",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.04 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_145",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.06 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_146",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.02 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_147",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.05 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_148",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.03 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_149",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.04 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_150",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.06 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_151",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.02 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_152",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.05 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_153",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.03 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_154",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut flush draw OOP facing bet. villain_air_pct=0.04 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_177",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.37 >= 0.20. KB \u00a71.7: RAISE."
+    },
+    {
+      "ref_id": "PILOT_178",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.38 >= 0.20. KB \u00a71.7: RAISE."
+    },
+    {
+      "ref_id": "PILOT_179",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.36 >= 0.20. KB \u00a71.7: RAISE."
+    },
+    {
+      "ref_id": "PILOT_180",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.40 >= 0.20. KB \u00a71.7: RAISE."
+    },
+    {
+      "ref_id": "PILOT_181",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.41 >= 0.20. KB \u00a71.7: RAISE."
+    },
+    {
+      "ref_id": "PILOT_182",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.35 >= 0.20. KB \u00a71.7: RAISE."
+    },
+    {
+      "ref_id": "PILOT_183",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.42 >= 0.20. KB \u00a71.7: RAISE."
+    },
+    {
+      "ref_id": "PILOT_184",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.39 >= 0.20. KB \u00a71.7: RAISE."
+    },
+    {
+      "ref_id": "PILOT_185",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.37 >= 0.20. KB \u00a71.7: RAISE."
+    },
+    {
+      "ref_id": "PILOT_187",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.40 >= 0.20. KB \u00a71.7: RAISE."
+    },
+    {
+      "ref_id": "PILOT_188",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.38 >= 0.20. KB \u00a71.7: RAISE."
+    },
+    {
+      "ref_id": "PILOT_189",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.42 >= 0.20. KB \u00a71.7: RAISE."
+    },
+    {
+      "ref_id": "PILOT_190",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.41 >= 0.20. KB \u00a71.7: RAISE."
+    },
+    {
+      "ref_id": "PILOT_191",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.35 >= 0.20. KB \u00a71.7: RAISE."
+    },
+    {
+      "ref_id": "PILOT_192",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.39 >= 0.20. KB \u00a71.7: RAISE."
+    },
+    {
+      "ref_id": "PILOT_193",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.37 >= 0.20. KB \u00a71.7: RAISE."
+    },
+    {
+      "ref_id": "PILOT_194",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.36 >= 0.20. KB \u00a71.7: RAISE."
+    },
+    {
+      "ref_id": "PILOT_195",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.40 >= 0.20. KB \u00a71.7: RAISE."
+    },
+    {
+      "ref_id": "PILOT_196",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.42 >= 0.20. KB \u00a71.7: RAISE."
+    },
+    {
+      "ref_id": "PILOT_197",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.05 < 0.20. KB \u00a71.7 OVERRIDE: CALL preferred over RAISE."
+    },
+    {
+      "ref_id": "PILOT_198",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.04 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_199",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.03 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_200",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.06 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_201",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.02 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_202",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.05 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_203",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.04 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_204",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.03 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_205",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.06 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_206",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.02 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_207",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.05 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_208",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.03 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_209",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.04 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_210",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.06 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_211",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.02 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_212",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.05 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_213",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.03 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "PILOT_214",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "HU nut FD facing bet. villain_air_pct=0.04 < 0.20. KB \u00a71.7 OVERRIDE: CALL."
+    },
+    {
+      "ref_id": "d308_HJ_turn",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "HJ IP with trips (hand_cat=11, is_monster=1) on turn facing bet. Monster hand facing bet IP - RAISE to extract value and protect. villain_air_pct=0.24, better_hand_pct=0.03. RAISE."
+    },
+    {
+      "ref_id": "PILOT_246",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Monster (set/straight) facing bet. CALL to keep villain in with weaker hands. HU, OOP, is_monster=1, facing bet."
+    },
+    {
+      "ref_id": "PILOT_247",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "Monster IP with set, facing bet. Raise for value. is_monster=1, IP, facing bet. RAISE."
+    },
+    {
+      "ref_id": "d521_BTN_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP with monster (trips=hand_cat=11, is_monster=1) on turn checked-to. IP monster BET."
+    },
+    {
+      "ref_id": "d282_BTN_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP with straight (hand_cat=13, is_monster=1) on turn checked-to. IP monster BET."
+    },
+    {
+      "ref_id": "d588_BB_river",
+      "action": "CHECK",
+      "confidence": "MEDIUM",
+      "reasoning": "BB OOP with straight (hand_cat=13) but danger_score=1.0, villain_top_pair_plus=0.68, better_hand_pct=0.18. DO NOT Rule 11: board 8d7dTh9d8s is paired (8s pair). OOP multiway, paired board. CHECK or BET but paired board with 35% villain who beats us. CHECK/BET mixed. CHECK preferred given danger."
+    },
+    {
+      "ref_id": "d249_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP with trips (hand_cat=11, is_monster=1) on Td6h6d flop. Board is paired (6s). DO NOT Rule 11: OOP, paired board, 2 opponents. villain_top_pair_plus=0.44 but NOT >= 0.40... wait, 0.44 >= 0.40 AND is_monster=1. Exception applies. BET. Wait - re-check: villain_top_pair_plus_pct=0.4436 >= 0.40 AND is_monster=1. Override exception \u2192 BET."
+    },
+    {
+      "ref_id": "d576_BTN_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP with monster (hand_cat=14=flush, is_monster=1) on turn checked-to. IP monster BET."
+    },
+    {
+      "ref_id": "PILOT_253",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP with set (hand_cat=12, is_monster=1) facing BTN bet. Monster OOP facing bet - CALL (slow-play to keep villain in). villain_air_pct=0.36."
+    },
+    {
+      "ref_id": "d588_HJ_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "HJ OOP with straight (hand_cat=13, is_monster=1) river checked-to. Board is double-paired (8s). DO NOT Rule 11: paired board OOP 2 opponents. villain_top_pair_plus=0.68 >= 0.40 AND is_monster=1 \u2192 override \u2192 BET."
+    },
+    {
+      "ref_id": "d153_BTN_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP with set (hand_cat=12, is_monster=1) river checked-to. IP monster BET."
+    },
+    {
+      "ref_id": "PILOT_256",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO OOP with trips (hand_cat=11, is_monster=1) on KsKd4c flop checked-to. Board is paired (Ks,Kd). DO NOT Rule 11: OOP, paired board, 2 opponents. villain_top_pair_plus=0.57 >= 0.40 AND is_monster=1 \u2192 override \u2192 BET. Wait: villain_top_pair_plus=0.5660 >= 0.40 AND is_monster=1 \u2192 BET."
+    },
+    {
+      "ref_id": "d249_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP with trips (hand_cat=11, is_monster=1) river checked-to. Board Td6h6dQd4s paired (6s). villain_top_pair_plus=0.62 >= 0.40 AND is_monster=1 \u2192 DO NOT Rule 11 override \u2192 BET."
+    },
+    {
+      "ref_id": "d588_BB_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP with straight (hand_cat=13) on 8d7dTh9d. villain_air_pct=0.02 very low. DO NOT Rule 11: OOP, 2 opponents. villain_top_pair_plus=0.61 >= 0.40 AND is_monster=1 \u2192 override \u2192 BET. But is_monster=1 and villain_top_pair_plus >= 0.40 \u2192 BET."
+    },
+    {
+      "ref_id": "PILOT_259",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "CO OOP with straight (hand_cat=13, is_monster=1) flop checked-to on Tc9s8d. Board not paired. OOP 2-opponents. DO NOT Rule 11: board is rainbow so no 2-tone flush issue. Check: board Tc9s8d - no paired cards, colors Tc=clubs, 9s=spades, 8d=diamonds - rainbow. DO NOT Rule 11 does not apply. BET monster OOP."
+    },
+    {
+      "ref_id": "d576_BTN_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP with flush (hand_cat=14, is_monster=1) river checked-to. IP monster BET."
+    },
+    {
+      "ref_id": "PILOT_261",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP with set (hand_cat=12, is_monster=1) facing BTN bet. CALL to slowplay. KdJd4c board."
+    },
+    {
+      "ref_id": "d588_HJ_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "HJ OOP with straight (hand_cat=13) on 8d7dTh9d turn checked-to. Board dangerous (danger=1.0), villain_air_pct=0.017 very low, villain_top_pair_plus=0.64 >= 0.40 AND is_monster=1 \u2192 BET exception. BET."
+    },
+    {
+      "ref_id": "d622_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP with flush (hand_cat=14, is_monster=1) river checked-to. Board 6h6c8cJc9h is paired (6s). villain_top_pair_plus=0.66 >= 0.40 AND is_monster=1 \u2192 DO NOT Rule 11 override \u2192 BET."
+    },
+    {
+      "ref_id": "PILOT_264",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "CO IP with set (hand_cat=12, is_monster=1) on 9h8s7d facing bet. Monster IP facing bet \u2192 RAISE for value."
+    },
+    {
+      "ref_id": "PILOT_265",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river checked-to, air/SD (hand_cat=1, draw_outs=4). River with missed draw checked-to. raw_equity=0.13. CHECK."
+    },
+    {
+      "ref_id": "PILOT_266",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river checked-to, air (hand_cat=0). raw_equity=0.05. CHECK."
+    },
+    {
+      "ref_id": "PILOT_267",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river checked-to, air (hand_cat=0). raw_equity=0.02. CHECK."
+    },
+    {
+      "ref_id": "PILOT_268",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP river checked-to, air (hand_cat=1). raw_equity=0.09. villain_air_pct=0.17. Below 0.20 threshold for bluff. CHECK."
+    },
+    {
+      "ref_id": "PILOT_269",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP river checked-to, air (hand_cat=2). raw_equity=0.07. CHECK."
+    },
+    {
+      "ref_id": "PILOT_270",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP river checked-to, air (hand_cat=0). raw_equity=0.03. CHECK."
+    },
+    {
+      "ref_id": "PILOT_271",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP river checked-to, air (hand_cat=0). raw_equity=0.04. CHECK."
+    },
+    {
+      "ref_id": "PILOT_272",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP with straight (hand_cat=13, is_monster=1) river checked-to. IP monster BET."
+    },
+    {
+      "ref_id": "PILOT_273",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river facing bet, air (hand_cat=1). villain_top_pair_plus=0.94, villain_air_pct=0.06. Almost entirely value-heavy range. raw_equity=0.06. FOLD."
+    },
+    {
+      "ref_id": "PILOT_274",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP river checked-to, air (hand_cat=0). raw_equity=0.04. villain_checked_back=1 - villain checked back. CHECK."
+    },
+    {
+      "ref_id": "PILOT_275",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river checked-to, air (hand_cat=1). raw_equity=0.11. CHECK."
+    },
+    {
+      "ref_id": "PILOT_276",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP river checked-to, air (hand_cat=0). raw_equity=0.03. CHECK."
+    },
+    {
+      "ref_id": "PILOT_277",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "BTN IP river checked-to, air with blocker (hand_cat=2, AK). raw_equity=0.25, villain_checked_back=1. Better hand equity 0.74. villain_air_pct=0.23 gives some bluff merit. BET as bluff with blocker value."
+    },
+    {
+      "ref_id": "PILOT_278",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river checked-to, air (hand_cat=1). raw_equity=0.02. CHECK."
+    },
+    {
+      "ref_id": "PILOT_279",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river checked-to, air (hand_cat=2). raw_equity=0.02. villain_checked_back=1. CHECK."
+    },
+    {
+      "ref_id": "PILOT_280",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP river facing bet, air (hand_cat=1). villain_top_pair_plus=0.96, villain_air_pct=0.007. Near zero fold equity. raw_equity=0.007. FOLD."
+    },
+    {
+      "ref_id": "PILOT_281",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river checked-to, air+SD (hand_cat=1). raw_equity=0.23. villain_air_pct=0.21. Slight bluff merit but CHECK is safer."
+    },
+    {
+      "ref_id": "PILOT_282",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river checked-to, air (hand_cat=0). raw_equity=0.09. villain_checked_back=1. CHECK."
+    },
+    {
+      "ref_id": "PILOT_283",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river facing bet, air (hand_cat=0). villain_top_pair_plus=0.94, villain_air_pct=0.02. raw_equity=0.00. FOLD."
+    },
+    {
+      "ref_id": "PILOT_284",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river facing bet, air (hand_cat=2). villain_top_pair_plus=0.91, villain_air_pct=0.06. raw_equity=0.03. FOLD."
+    },
+    {
+      "ref_id": "PILOT_285",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP river facing bet, air (hand_cat=0). villain_top_pair_plus=0.94, villain_air_pct=0.02. raw_equity=0.02. FOLD."
+    },
+    {
+      "ref_id": "PILOT_286",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP river facing bet, air (hand_cat=0). villain_top_pair_plus=0.90, villain_air_pct=0.05. raw_equity=0.03. FOLD."
+    },
+    {
+      "ref_id": "PILOT_287",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP river facing bet, air (hand_cat=1). villain_top_pair_plus=0.94, villain_air_pct=0.05. raw_equity=0.04. FOLD."
+    },
+    {
+      "ref_id": "PILOT_288",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP with straight (hand_cat=13, is_monster=1) river checked-to. IP monster BET."
+    },
+    {
+      "ref_id": "PILOT_289",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river checked-to, air+SD (hand_cat=1). raw_equity=0.11. CHECK."
+    },
+    {
+      "ref_id": "PILOT_290",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP river checked-to, air (hand_cat=0). raw_equity=0.03. CHECK."
+    },
+    {
+      "ref_id": "PILOT_291",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river facing bet, medium made (hand_cat=9=overpair, is_strong_made=0). villain_top_pair_plus=0.94, villain_air_pct=0.06. raw_equity=0.22. better_hand_pct=0.77. FOLD."
+    },
+    {
+      "ref_id": "PILOT_292",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river checked-to, air+SD (hand_cat=0). raw_equity=0.25. villain_air_pct=0.25. Could BET as bluff but weaker range. CHECK."
+    },
+    {
+      "ref_id": "PILOT_293",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river facing bet, air (hand_cat=0). villain_top_pair_plus=0.93, villain_air_pct=0.06. FOLD."
+    },
+    {
+      "ref_id": "PILOT_294",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP river checked-to, air (hand_cat=1). raw_equity=0.18. CHECK."
+    },
+    {
+      "ref_id": "PILOT_295",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river checked-to, air (hand_cat=1). raw_equity=0.21. villain_air_pct=0.26. CHECK."
+    },
+    {
+      "ref_id": "PILOT_296",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river checked-to, air (hand_cat=2). raw_equity=0.18. CHECK."
+    },
+    {
+      "ref_id": "PILOT_297",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP river checked-to, air (hand_cat=2). raw_equity=0.27. villain_air_pct=0.22. CHECK."
+    },
+    {
+      "ref_id": "PILOT_298",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP river checked-to, air+SD (hand_cat=1). raw_equity=0.15. CHECK."
+    },
+    {
+      "ref_id": "PILOT_299",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP river checked-to, air (hand_cat=0). raw_equity=0.04. CHECK."
+    },
+    {
+      "ref_id": "PILOT_300",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river facing bet, medium made (hand_cat=6=second pair, is_strong_made=0). villain_top_pair_plus=0.94, villain_air_pct=0.04. better_hand_pct=0.92. FOLD."
+    },
+    {
+      "ref_id": "PILOT_301",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river facing bet with straight (hand_cat=13, is_monster=1). Monster facing bet IP \u2192 CALL (or RAISE). CALL."
+    },
+    {
+      "ref_id": "PILOT_302",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP river checked-to, air (hand_cat=2). raw_equity=0.22. villain_checked_back=1. villain_air_pct=0.17. CHECK."
+    },
+    {
+      "ref_id": "PILOT_303",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP river facing bet, strong made (hand_cat=10=two pair, is_strong_made=1). villain_top_pair_plus=0.91, villain_air_pct=0.07. worse_hand_pct=0.57. CALL to protect two pair."
+    },
+    {
+      "ref_id": "PILOT_304",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river checked-to, air (hand_cat=2). raw_equity=0.19. CHECK."
+    },
+    {
+      "ref_id": "d622_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP with nut flush draw (hand_cat=1, nut_flush_block=1) on 6h6c8c flop checked-to. Board paired (6s). DO NOT Rule 11: OOP, paired board, 2 opponents. villain_top_pair_plus=0.37 < 0.40 \u2192 default CHECK. CHECK."
+    },
+    {
+      "ref_id": "PILOT_306",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP facing CO bet with nut FD (hand_cat=1, nut_flush_block=1). villain_air_pct=0.28 >= 0.20. KB \u00a71.7 OVERRIDE: RAISE valid. But facing bet OOP \u2192 RAISE or CALL. villain_air_pct=0.28 >= 0.20 \u2192 RAISE viable. However CALL is also fine. CALL."
+    },
+    {
+      "ref_id": "PILOT_307",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP turn facing bet with nut FD (nut_flush_block=1). villain_air_pct=0.12 < 0.20. KB \u00a71.7: below threshold \u2192 CALL preferred."
+    },
+    {
+      "ref_id": "PILOT_308",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP flop facing bet with nut FD + OESD (draw_outs=13, nut_flush_block=1). villain_air_pct=0.17 < 0.20. KB \u00a71.7: CALL preferred. However combo draw with 13 outs is very strong. CALL is safer per rule."
+    },
+    {
+      "ref_id": "d521_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP with trips (hand_cat=11, is_monster=1) river checked-to. Board 6sAh5sAdKh - paired (As). villain_top_pair_plus=0.80 >= 0.40 AND is_monster=1 \u2192 DO NOT Rule 11 override \u2192 BET."
+    },
+    {
+      "ref_id": "d249_BB_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP with trips (hand_cat=11, is_monster=1) turn checked-to. Board Td6h6dQd - paired (6s), 2-tone flush. villain_top_pair_plus=0.59 >= 0.40 AND is_monster=1 \u2192 DO NOT Rule 11 override \u2192 BET."
+    },
+    {
+      "ref_id": "d719_BTN_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP with flush (hand_cat=14, is_monster=1) river checked-to. IP monster BET."
+    },
+    {
+      "ref_id": "d308_BTN_turn",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP with trips (hand_cat=11, is_monster=1) on turn facing bet. Monster IP facing bet \u2192 RAISE."
+    },
+    {
+      "ref_id": "d521_BB_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP with trips (hand_cat=11, is_monster=1) turn checked-to. Board 6sAh5sAd - paired (As), flush draw. villain_top_pair_plus=0.61 >= 0.40 AND is_monster=1 \u2192 DO NOT Rule 11 override \u2192 BET."
+    },
+    {
+      "ref_id": "d282_BB_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP with straight (hand_cat=13, is_monster=1) on QhTd9hKd turn checked-to. Board not paired but 2-tone flush (hearts). DO NOT Rule 11: OOP, 2-tone flush, 2 opponents. villain_top_pair_plus=0.43 >= 0.40 AND is_monster=1 \u2192 override \u2192 BET."
+    },
+    {
+      "ref_id": "PILOT_315",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP with straight (hand_cat=13, is_monster=1) facing BTN bet. Monster OOP facing bet \u2192 CALL or RAISE. CALL to slowplay."
+    },
+    {
+      "ref_id": "PILOT_316",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP with trips (hand_cat=11, is_monster=1) facing BTN bet. is_monster=1. CALL."
+    },
+    {
+      "ref_id": "d622_BB_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP with flush (hand_cat=14, is_monster=1) turn checked-to. Board 6h6c8cJc - paired (6s), 2-tone clubs. villain_top_pair_plus=0.54 >= 0.40 AND is_monster=1 \u2192 DO NOT Rule 11 override \u2192 BET."
+    },
+    {
+      "ref_id": "PILOT_318",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP with set (hand_cat=12, is_monster=1) facing CO bet. CALL."
+    },
+    {
+      "ref_id": "d107_BB_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP with straight (hand_cat=13, is_monster=1) turn checked-to. Board Tc9d6h8d - 2-tone diamonds. villain_top_pair_plus=0.43 >= 0.40 AND is_monster=1 \u2192 DO NOT Rule 11 override \u2192 BET."
+    },
+    {
+      "ref_id": "d521_BTN_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP with set (hand_cat=12, is_monster=1) on 6sAh5s flop checked-to. IP monster BET."
+    },
+    {
+      "ref_id": "d576_BB_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP with TPTK (hand_cat=7, is_strong_made=0) on 3c4dKcTc. Board 2-tone clubs. DO NOT Rule 11: OOP, 2-tone flush, 2 opponents. villain_top_pair_plus=0.21 < 0.40 \u2192 default CHECK. CHECK."
+    },
+    {
+      "ref_id": "d237_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP air (hand_cat=1) on 2s4cKc flop. No draw. villain_air_pct=0.52 but air OOP 2-way. CHECK."
+    },
+    {
+      "ref_id": "d923_BTN_flop",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "BTN IP with two pair (hand_cat=10, is_strong_made=1) on 2sJcJh flop checked-to. Paired board but IP. IP strong made BET. villain_air_pct=0.59."
+    },
+    {
+      "ref_id": "d986_CO_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO OOP with bottom pair+SD (hand_cat=5) on Jd7dAd9dKd river checked-to. Board all diamonds - flush board. villain_air_pct=0.02 very low. DO NOT Rule 11: OOP, flush board, 2 opponents. villain_top_pair_plus=0.35 < 0.40 \u2192 CHECK."
+    },
+    {
+      "ref_id": "d587_HJ_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "HJ OOP with TPTK+FD+SD (hand_cat=7, draw_outs=13) on 5dJsTsAh. villain_air_pct=0.06 very low. DO NOT Rule 11: OOP, 2-tone, 2 opponents. villain_top_pair_plus=0.35 < 0.40 \u2192 CHECK."
+    },
+    {
+      "ref_id": "d530_HJ_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "HJ OOP with air (hand_cat=0) river checked-to on Ac4c6s8s8d. villain_air_pct=0.25. Air OOP, CHECK."
+    },
+    {
+      "ref_id": "d530_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "HJ OOP with air (hand_cat=0) on Ac4c6s flop checked-to. villain_air_pct=0.32. Air OOP, CHECK."
+    },
+    {
+      "ref_id": "d677_HJ_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "HJ OOP with two pair (hand_cat=10, is_strong_made=1) river checked-to. Board QcAs9h2dQs - paired (Qs). villain_top_pair_plus=0.83 >= 0.40 AND is_strong_made=1 \u2192 DO NOT Rule 11 override \u2192 BET. Wait: is_strong_made=1, not is_monster. Rule says: villain_top_pair_plus_pct >= 0.40 AND (is_strong_made=1 OR is_monster=1) \u2192 BET. BET."
+    },
+    {
+      "ref_id": "d639_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP air+OESD (hand_cat=0) on KcQs7h flop. Drawing hand OOP, CHECK."
+    },
+    {
+      "ref_id": "d237_BB_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP second pair (hand_cat=6) on 2s4cKcAc turn. Board 2-tone clubs. DO NOT Rule 11: OOP, 2-tone flush, 2 opponents. villain_top_pair_plus=0.17 < 0.40 \u2192 CHECK."
+    },
+    {
+      "ref_id": "d282_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP second pair+OESD (hand_cat=6) on QhTd9h flop. Board 2-tone (Qh,Td,9h = 2 hearts). villain_air_pct=0.03 very low. DO NOT Rule 11: OOP, 2-tone flush, 2 opponents. villain_top_pair_plus=0.25 < 0.40 \u2192 CHECK."
+    },
+    {
+      "ref_id": "d750_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP with air+SD (hand_cat=1) on 2cQh6sKc turn checked-to. Drawing hand IP, but raw_equity=0.21. CHECK (no made hand)."
+    },
+    {
+      "ref_id": "d750_BB_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP second pair (hand_cat=6) on 2cQh6sKc turn. Board rainbow. DO NOT Rule 11 does not apply (no paired/2-tone). But second pair OOP 2 opponents, medium hand. CHECK cautiously."
+    },
+    {
+      "ref_id": "d370_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP with air (hand_cat=1) on 7sJc6d flop. villain_air_pct=0.48. Air hand IP, might bluff but CHECK without draw."
+    },
+    {
+      "ref_id": "d622_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP with air+SD (hand_cat=1) on 6h6c8cJc turn. Board 2-tone clubs. Better to check and see river with draw."
+    },
+    {
+      "ref_id": "d575_CO_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO OOP with second pair (hand_cat=6, is_strong_made=0) on 7d6dAc. Board 2-tone diamonds+clubs. DO NOT Rule 11: OOP, 2-tone flush, 2 opponents. villain_top_pair_plus=0.24 < 0.40 \u2192 CHECK."
+    },
+    {
+      "ref_id": "d915_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP bottom pair (hand_cat=5) on Ks9h6h flop. Bottom pair IP weak hand. CHECK."
+    },
+    {
+      "ref_id": "d719_BB_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP air (hand_cat=1) on 3d6h3hTc turn. Board paired (3s). DO NOT Rule 11: OOP, paired board, 2 opponents. villain_top_pair_plus=0.47 >= 0.40 but is_made_hand=0 (air) \u2192 exception does NOT apply. CHECK."
+    },
+    {
+      "ref_id": "d169_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP two pair (hand_cat=10, is_strong_made=1) river checked-to on 7c2d6cAc2h. Board paired+2-tone. villain_top_pair_plus=0.64 >= 0.40 AND is_strong_made=1 \u2192 DO NOT Rule 11 override \u2192 BET."
+    },
+    {
+      "ref_id": "d972_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP air (hand_cat=1) on Qs2c6s flop. No made hand IP. CHECK."
+    },
+    {
+      "ref_id": "d959_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP underpair (hand_cat=4) on 2h8sQh flop. Underpair IP weak, CHECK."
+    },
+    {
+      "ref_id": "d986_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP underpair+SD (hand_cat=4) on Jd7dAd9d. Board all diamonds (flush). Dangerous board with underpair. CHECK."
+    },
+    {
+      "ref_id": "d750_CO_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO OOP underpair (hand_cat=4) river checked-to on 2cQh6sKc8h. villain_air_pct=0.19. DO NOT Rule 11: OOP 2 opponents. villain_top_pair_plus=0.28 < 0.40 \u2192 CHECK."
+    },
+    {
+      "ref_id": "d237_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP underpair (hand_cat=4) on Ah5h9d2c turn. Ace-high board, weak position. CHECK."
+    },
+    {
+      "ref_id": "d575_CO_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO OOP second pair+OESD (hand_cat=6) on 7d6dAc5c turn. Board 2-tone. DO NOT Rule 11: OOP, 2-tone flush, 2 opponents. villain_top_pair_plus=0.33 < 0.40 \u2192 CHECK."
+    },
+    {
+      "ref_id": "d169_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP underpair (hand_cat=4) on 7c2d6c flop. Board 2-tone clubs. DO NOT Rule 11: OOP, 2-tone, 2 opponents. villain_top_pair_plus=0.25 < 0.40 \u2192 CHECK."
+    },
+    {
+      "ref_id": "d677_BTN_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP two pair (hand_cat=10, is_strong_made=1) river checked-to on QcAs9h2dQs. Board paired. IP monster BET. Wait: is_strong_made=1, not is_monster. IP. Checked-to. BET for value IP."
+    },
+    {
+      "ref_id": "d923_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP air (hand_cat=0) on 2sJcJh flop. Board paired. Air OOP, CHECK."
+    },
+    {
+      "ref_id": "d3_HJ_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "HJ OOP second pair+OESD (hand_cat=6) on 4c2hAc3s turn. villain_air_pct=0.00 - no air at all! DO NOT Rule 11: OOP, paired board (3s twice), 2 opponents. villain_top_pair_plus=0.37 < 0.40 \u2192 CHECK."
+    },
+    {
+      "ref_id": "d854_CO_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO OOP TPTK (hand_cat=8, is_strong_made=0) on Th3cKc5s turn. Board 2-tone clubs. DO NOT Rule 11: OOP, 2-tone flush, 2 opponents. villain_top_pair_plus=0.27 < 0.40 \u2192 CHECK."
+    },
+    {
+      "ref_id": "d587_BB_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP bottom pair+SD (hand_cat=5) on 5dJsTsAh turn. DO NOT Rule 11: OOP, 2-tone (spades), 2 opponents. villain_top_pair_plus=0.34 < 0.40 \u2192 CHECK."
+    },
+    {
+      "ref_id": "PILOT_352",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP facing CO bet with air+SD (hand_cat=0, has_straight_draw=1). pot_odds=0.26, raw_equity=0.20. better_hand_pct=0.99. FOLD - basically never have the best hand."
+    },
+    {
+      "ref_id": "d153_CO_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO OOP low pair (hand_cat=3) river checked-to on Jh2d9d6d5s. Board flush (4 diamonds). villain_air_pct=0.28. DO NOT Rule 11: OOP, flush board, 2 opponents. villain_top_pair_plus=0.38 < 0.40 \u2192 CHECK."
+    },
+    {
+      "ref_id": "d796_BTN_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP two pair (hand_cat=10, is_strong_made=1) river checked-to on ThKs2cJh2s. Board paired (2s). IP strong made BET."
+    },
+    {
+      "ref_id": "PILOT_355",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP river facing bet, air (hand_cat=1). villain_top_pair_plus=0.91, villain_air_pct=0.06. raw_equity=0.02. FOLD."
+    },
+    {
+      "ref_id": "PILOT_356",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP river facing bet, air+SD (hand_cat=1). villain_top_pair_plus=0.94, villain_air_pct=0.04. FOLD."
+    },
+    {
+      "ref_id": "PILOT_357",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river checked-to, air+SD (hand_cat=1). raw_equity=0.10. CHECK."
+    },
+    {
+      "ref_id": "PILOT_358",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP river checked-to, air (hand_cat=0). raw_equity=0.05. villain_checked_back=1. CHECK."
+    },
+    {
+      "ref_id": "PILOT_359",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP river facing bet, air+SD (hand_cat=0). villain_top_pair_plus=0.95, villain_air_pct=0.02. FOLD."
+    },
+    {
+      "ref_id": "PILOT_360",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP river facing bet, air+OESD (hand_cat=1). villain_top_pair_plus=0.90, villain_air_pct=0.06. raw_equity=0.10. FOLD."
+    },
+    {
+      "ref_id": "PILOT_361",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "CO OOP air (hand_cat=2) on Jh7s3c flop checked-to. villain_air_pct=0.40, is_preflop_aggressor=1. Good bluff spot with aggressor advantage and high air. BET as continuation."
+    },
+    {
+      "ref_id": "PILOT_362",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river facing bet, air+SD (hand_cat=0). villain_top_pair_plus=0.93, villain_air_pct=0.04. FOLD."
+    },
+    {
+      "ref_id": "PILOT_363",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP with trips (hand_cat=11, is_monster=1) facing CO river bet. Monster OOP facing bet \u2192 CALL (or RAISE). villain_checked_back=1 previously. CALL."
+    },
+    {
+      "ref_id": "PILOT_364",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river checked-to, air+SD (hand_cat=1). raw_equity=0.20. CHECK."
+    },
+    {
+      "ref_id": "PILOT_365",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river checked-to, air (hand_cat=1). raw_equity=0.11. CHECK."
+    },
+    {
+      "ref_id": "PILOT_366",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "CO OOP air (hand_cat=2) on Td4s2c flop checked-to. villain_air_pct=0.39, is_preflop_aggressor=1. BET continuation."
+    },
+    {
+      "ref_id": "PILOT_367",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP overpair (hand_cat=9, is_strong_made=0) on 8c6d3s flop checked-to. villain_air_pct=0.52, IP preflop aggressor. BET for value."
+    },
+    {
+      "ref_id": "PILOT_368",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP overpair (hand_cat=9) on Qd7c4h flop checked-to. villain_air_pct=0.48, IP. BET."
+    },
+    {
+      "ref_id": "PILOT_369",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river checked-to, air+OESD (hand_cat=2). raw_equity=0.01. CHECK."
+    },
+    {
+      "ref_id": "PILOT_370",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP river checked-to, air (hand_cat=2). raw_equity=0.07. CHECK."
+    },
+    {
+      "ref_id": "PILOT_371",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP river checked-to, air (hand_cat=2). raw_equity=0.12. CHECK."
+    },
+    {
+      "ref_id": "PILOT_372",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP river checked-to, air (hand_cat=0). raw_equity=0.08. villain_checked_back=1. CHECK."
+    },
+    {
+      "ref_id": "PILOT_373",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP second pair (hand_cat=6) facing BTN river bet. villain_air_pct=0.56, villain_checked_back=1. Better hand pct=0.24. CALL with second pair given villain air and prior check-back."
+    },
+    {
+      "ref_id": "PILOT_374",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river checked-to, air+SD (hand_cat=1). raw_equity=0.04. CHECK."
+    },
+    {
+      "ref_id": "PILOT_375",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP overpair (hand_cat=9) on 9d7c2h flop checked-to. villain_air_pct=0.48, IP aggressor. BET."
+    },
+    {
+      "ref_id": "PILOT_376",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "CO OOP air (hand_cat=2) on Th6d4s flop checked-to. villain_air_pct=0.40, is_preflop_aggressor=1. BET continuation."
+    },
+    {
+      "ref_id": "PILOT_377",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP trips (hand_cat=11, is_monster=1) facing BTN turn bet. Monster OOP facing bet \u2192 CALL."
+    },
+    {
+      "ref_id": "PILOT_378",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP river facing CO bet, air+SD (hand_cat=0). villain_air_pct=0.34, villain_checked_back=1. raw_equity=0.004. FOLD."
+    },
+    {
+      "ref_id": "PILOT_379",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP river checked-to, air+SD (hand_cat=0). raw_equity=0.01. villain_checked_back=1. CHECK."
+    },
+    {
+      "ref_id": "PILOT_380",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP facing CO turn bet, air (hand_cat=0). villain_air_pct=0.03, villain_checked_back=1. raw_equity=0.08. FOLD."
+    },
+    {
+      "ref_id": "PILOT_381",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP river checked-to, air (hand_cat=0). raw_equity=0.03. CHECK."
+    },
+    {
+      "ref_id": "PILOT_382",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river checked-to, air+SD (hand_cat=1). raw_equity=0.16. CHECK."
+    },
+    {
+      "ref_id": "PILOT_383",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "CO OOP air (hand_cat=1) on Kh8s3d flop checked-to. villain_air_pct=0.36, is_preflop_aggressor=1. BET continuation."
+    },
+    {
+      "ref_id": "PILOT_384",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "CO OOP overpair (hand_cat=9) on 9h4d2s flop checked-to. villain_air_pct=0.46, is_preflop_aggressor=1. BET."
+    },
+    {
+      "ref_id": "PILOT_385",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "CO OOP overpair (hand_cat=9) on Jc5s2d flop checked-to. villain_air_pct=0.43, is_preflop_aggressor=1. BET."
+    },
+    {
+      "ref_id": "PILOT_386",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river checked-to, air+SD (hand_cat=0). raw_equity=0.02. CHECK."
+    },
+    {
+      "ref_id": "PILOT_387",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP river facing bet, air+SD (hand_cat=1). villain_top_pair_plus=0.94, villain_air_pct=0.04. FOLD."
+    },
+    {
+      "ref_id": "PILOT_388",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP underpair (hand_cat=4, is_strong_made=0) on As6c3h flop checked-to. villain_air_pct=0.30, IP. BET with underpair given fold equity."
+    },
+    {
+      "ref_id": "PILOT_389",
+      "action": "BET",
+      "confidence": "MEDIUM",
+      "reasoning": "BTN IP air (hand_cat=2) on 7d5h3c flop checked-to. villain_air_pct=0.56, IP aggressor. BET as bluff."
+    },
+    {
+      "ref_id": "PILOT_390",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river checked-to, air+SD (hand_cat=2). raw_equity=0.01. CHECK."
+    },
+    {
+      "ref_id": "PILOT_391",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP river checked-to, air (hand_cat=1). raw_equity=0.22. CHECK."
+    },
+    {
+      "ref_id": "PILOT_392",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river checked-to, air (hand_cat=2). raw_equity=0.09. CHECK."
+    },
+    {
+      "ref_id": "PILOT_393",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river checked-to, air (hand_cat=1). raw_equity=0.10. CHECK."
+    },
+    {
+      "ref_id": "PILOT_394",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO IP river checked-to, air+SD (hand_cat=2). raw_equity=0.21. CHECK."
+    },
+    {
+      "ref_id": "PILOT_395",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP two pair (hand_cat=10, is_strong_made=1) on 8h8d7c flop, facing bet? Facing_bet=False, checked-to. villain_aggression_count=1 (CO raised). Board paired (8s). DO NOT Rule 11: OOP, paired board. villain_top_pair_plus=0.42 >= 0.40 AND is_strong_made=1 \u2192 override \u2192 BET."
+    },
+    {
+      "ref_id": "PILOT_396",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP second pair (hand_cat=6, is_strong_made=0) on KdTd4c flop. villain_aggression_count=1. DO NOT Rule 11: OOP, 2-tone flush (diamonds), 1 opponent. Rule 11 requires num_opponents >= 2. HU so Rule 11 does NOT apply. Second pair OOP HU - BET for value given villain_air=0.44."
+    },
+    {
+      "ref_id": "PILOT_397",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP second pair (hand_cat=6) on 9d6d3s flop. villain_aggression_count=1. 2-tone flush (diamonds). HU so DO NOT Rule 11 does not apply (needs 2+ opponents). villain_air=0.53. BET for value."
+    },
+    {
+      "ref_id": "PILOT_398",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP TPTK (hand_cat=8) on 9d6d3s flop. villain_aggression_count=1. HU. villain_air=0.53. BET for value."
+    },
+    {
+      "ref_id": "PILOT_399",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP two pair (hand_cat=10, is_strong_made=1) on KcKd4s flop. Board paired (Ks). villain_aggression_count=1. HU, DO NOT Rule 11 requires 2+ opponents. BET. villain_air=0.55. BET."
+    },
+    {
+      "ref_id": "PILOT_400",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP bottom pair (hand_cat=5) on KdTd4c flop. villain_aggression_count=1. 2-tone flush. HU. Bottom pair with better_hand=0.29. CHECK."
+    },
+    {
+      "ref_id": "PILOT_401",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP two pair (hand_cat=10, is_strong_made=1) on JsJd9c flop. Board paired. villain_aggression_count=1. HU. villain_air=0.48. BET."
+    },
+    {
+      "ref_id": "PILOT_402",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP trips (hand_cat=11, is_monster=1) on 8h8d7c flop. Board paired. villain_aggression_count=1. HU. BET monster."
+    },
+    {
+      "ref_id": "PILOT_403",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP two pair (hand_cat=10, is_strong_made=1) on KcKd4s flop. Board paired (Ks). HU. villain_air=0.55. BET for value."
+    },
+    {
+      "ref_id": "PILOT_404",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP trips (hand_cat=11, is_monster=1) on JsJd9c flop. Board paired. HU. BET monster."
+    },
+    {
+      "ref_id": "PILOT_405",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP overpair (hand_cat=9) facing BB bet. villain_aggression_count=0. Overpair IP, CALL."
+    },
+    {
+      "ref_id": "PILOT_406",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "CO OOP overpair (hand_cat=9) facing BB bet. 2 opponents facing bet. CALL with overpair. villain_top_pair_plus=0.42 but worse_hand=0.95. CALL."
+    },
+    {
+      "ref_id": "PILOT_407",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "CO OOP air (hand_cat=2) facing bet 2-way. villain_top_pair_plus=0.51, villain_air=0.19. raw_equity=0.13. FOLD."
+    },
+    {
+      "ref_id": "PILOT_408",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP air (hand_cat=2) facing BB bet. villain_air=0.36. HU. Raw_equity=0.47. CALL with strong overcards."
+    },
+    {
+      "ref_id": "PILOT_409",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "CO OOP air (hand_cat=1) facing bet 2-way. villain_top_pair_plus=0.37, villain_air=0.20. raw_equity=0.14. better_hand=0.55. FOLD."
+    },
+    {
+      "ref_id": "PILOT_410",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "CO OOP air (hand_cat=0) facing bet 2-way. villain_top_pair_plus=0.42, villain_air=0.19. raw_equity=0.12. FOLD."
+    },
+    {
+      "ref_id": "PILOT_411",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP air (hand_cat=0) facing bet 2-way. villain_air=0.28. raw_equity=0.05. FOLD."
+    },
+    {
+      "ref_id": "PILOT_412",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "CO OOP air (hand_cat=2, nut_flush_block=1) facing bet 2-way. villain_air=0.28, is_preflop_aggressor=1. Nut flush blocker + overcards. CALL with position considerations."
+    },
+    {
+      "ref_id": "PILOT_413",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "CO OOP air (hand_cat=2) facing bet 2-way. villain_air=0.24, is_preflop_aggressor=1. raw_equity=0.21. CALL as preflop aggressor."
+    },
+    {
+      "ref_id": "PILOT_414",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "CO OOP air (hand_cat=2) facing bet 2-way. villain_top_pair_plus=0.54, villain_air=0.28. raw_equity=0.17. FOLD."
+    },
+    {
+      "ref_id": "PILOT_415",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP TPTK (hand_cat=7) facing bet 2-way. villain_air=0.31. worse_hand=0.88. CALL with top pair."
+    },
+    {
+      "ref_id": "PILOT_416",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "CO OOP air (hand_cat=2) facing bet 2-way. villain_top_pair_plus=0.46, villain_air=0.24. raw_equity=0.18. FOLD."
+    },
+    {
+      "ref_id": "PILOT_417",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP air (hand_cat=2, nut_flush_block=1) facing BB bet. villain_air=0.10. HU. Raw_equity=0.55. CALL with blockers+high equity."
+    },
+    {
+      "ref_id": "PILOT_418",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "CO OOP TPTK (hand_cat=8) facing bet 2-way. villain_air=0.22, worse_hand=0.95. CALL with top pair."
+    },
+    {
+      "ref_id": "PILOT_419",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP TPTK (hand_cat=7) facing bet 2-way. villain_air=0.33. worse_hand=0.93. CALL."
+    },
+    {
+      "ref_id": "PILOT_420",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP underpair (hand_cat=4) facing BB bet. villain_air=0.26. HU. raw_equity=0.51. CALL."
+    },
+    {
+      "ref_id": "PILOT_421",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "CO OOP overpair (hand_cat=9) facing bet 2-way. villain_top_pair_plus=0.40, villain_air=0.26. raw_equity=0.38. better_hand=0.12. CALL actually. villain_air=0.26 + worse_hand=0.87. CALL."
+    },
+    {
+      "ref_id": "PILOT_422",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "CO OOP TPTK (hand_cat=8) facing bet 2-way. villain_air=0.19. worse_hand=0.91. CALL with top pair."
+    },
+    {
+      "ref_id": "PILOT_423",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP air (hand_cat=2) facing BB bet. villain_air=0.36. HU. raw_equity=0.46. CALL with strong overcards."
+    },
+    {
+      "ref_id": "PILOT_424",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "CO OOP air (hand_cat=2) facing bet 2-way. villain_top_pair_plus=0.45, villain_air=0.27. raw_equity=0.23. better_hand=0.33. FOLD."
+    },
+    {
+      "ref_id": "PILOT_425",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP air (hand_cat=1) facing bet 2-way. villain_air=0.06. villain_aggression_count=1. raw_equity=0.15. FOLD."
+    },
+    {
+      "ref_id": "PILOT_426",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "CO OOP overpair (hand_cat=9) facing bet 2-way. villain_air=0.29. worse_hand=0.94. CALL with overpair."
+    },
+    {
+      "ref_id": "PILOT_427",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP underpair (hand_cat=4) facing BB bet. villain_air=0.39. HU. worse_hand=0.70. CALL."
+    },
+    {
+      "ref_id": "PILOT_428",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP air (hand_cat=0) facing bet 2-way. villain_air=0.28. raw_equity=0.10. FOLD."
+    },
+    {
+      "ref_id": "PILOT_429",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "CO OOP air (hand_cat=2) facing bet 2-way. villain_top_pair_plus=0.42, villain_air=0.19. raw_equity=0.20. FOLD."
+    },
+    {
+      "ref_id": "PILOT_430",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "SB OOP air (hand_cat=0) facing bet 2-way. villain_air=0.22. raw_equity=0.11. FOLD."
+    },
+    {
+      "ref_id": "PILOT_431",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "SB OOP air (hand_cat=1) facing bet HU. villain_air=0.34. raw_equity=0.37. better_hand=0.65. FOLD given better_hand > 50%."
+    },
+    {
+      "ref_id": "PILOT_432",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "SB OOP air (hand_cat=0) facing BTN bet HU. villain_air=0.38. raw_equity=0.14. better_hand=0.98. FOLD."
+    },
+    {
+      "ref_id": "PILOT_433",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "SB OOP air (hand_cat=2) facing CO turn bet HU. villain_air=0.45, villain_checked_back=1. raw_equity=0.25. better_hand=0.79. FOLD."
+    },
+    {
+      "ref_id": "PILOT_434",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "SB OOP air (hand_cat=0) facing CO turn bet HU. villain_air=0.16, villain_checked_back=1. raw_equity=0.08. FOLD."
+    },
+    {
+      "ref_id": "PILOT_435",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "SB OOP air (hand_cat=0) facing bet 2-way. villain_top_pair_plus=0.44, villain_air=0.18. raw_equity=0.13. FOLD."
+    },
+    {
+      "ref_id": "PILOT_436",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "SB OOP air (hand_cat=0) facing bet 2-way. villain_top_pair_plus=0.43, villain_air=0.24. raw_equity=0.12. FOLD."
+    },
+    {
+      "ref_id": "PILOT_437",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "SB OOP air+SD (hand_cat=2) facing BTN turn bet HU. villain_air=0.38, villain_checked_back=1. raw_equity=0.37. CALL with semi-draw given air and prior check-back."
+    },
+    {
+      "ref_id": "PILOT_438",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "SB OOP air (hand_cat=2) facing bet 2-way. villain_top_pair_plus=0.54, villain_air=0.28. raw_equity=0.16. FOLD."
+    },
+    {
+      "ref_id": "PILOT_439",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "SB OOP air+SD (hand_cat=0) facing bet 2-way. villain_top_pair_plus=0.48, villain_air=0.23. raw_equity=0.22. FOLD."
+    },
+    {
+      "ref_id": "PILOT_440",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "SB OOP air+SD (hand_cat=0) facing CO turn bet HU. villain_air=0.35, villain_checked_back=1. raw_equity=0.29. CALL with OESD given prior check-back."
+    },
+    {
+      "ref_id": "PILOT_441",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "SB OOP air (hand_cat=0) facing bet 2-way. villain_top_pair_plus=0.40, villain_air=0.20. raw_equity=0.12. FOLD."
+    },
+    {
+      "ref_id": "PILOT_442",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "SB OOP second pair (hand_cat=6) facing bet 2-way. villain_air=0.22. worse_hand=0.82. CALL."
+    },
+    {
+      "ref_id": "PILOT_443",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "SB OOP air (hand_cat=0) facing bet 2-way. villain_top_pair_plus=0.42, villain_air=0.22. raw_equity=0.11. FOLD."
+    },
+    {
+      "ref_id": "PILOT_444",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "SB OOP air+OESD (hand_cat=0) facing bet 2-way. villain_air=0.24. raw_equity=0.32. CALL with 8-out draw."
+    },
+    {
+      "ref_id": "PILOT_445",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "SB OOP second pair (hand_cat=6) facing bet 2-way. villain_air=0.24. worse_hand=0.84. CALL."
+    },
+    {
+      "ref_id": "PILOT_446",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "SB OOP air (hand_cat=1) facing BTN bet HU. villain_air=0.30. raw_equity=0.27. better_hand=0.79. FOLD."
+    },
+    {
+      "ref_id": "PILOT_447",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "SB OOP air+SD (hand_cat=1) facing BTN bet HU. villain_air=0.39. raw_equity=0.31. CALL with gutshot."
+    },
+    {
+      "ref_id": "PILOT_448",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "SB OOP air (hand_cat=0) facing CO turn bet HU. villain_air=0.35, villain_checked_back=1. raw_equity=0.11. better_hand=0.92. FOLD."
+    },
+    {
+      "ref_id": "PILOT_449",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "SB OOP air+OESD (hand_cat=0) facing bet 2-way. villain_air=0.22. raw_equity=0.35. CALL with 8-out draw."
+    },
+    {
+      "ref_id": "PILOT_450",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP air (hand_cat=0) facing bet 2-way. villain_top_pair_plus=0.43, villain_air=0.23. raw_equity=0.10. FOLD."
+    },
+    {
+      "ref_id": "PILOT_451",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP air (hand_cat=0) facing BTN bet HU. villain_air=0.36. raw_equity=0.28. better_hand=0.78. FOLD."
+    },
+    {
+      "ref_id": "PILOT_452",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP second pair (hand_cat=6) facing BTN bet HU. villain_air=0.37. worse_hand=0.68. CALL."
+    },
+    {
+      "ref_id": "d639_BTN_river",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP air+SD (hand_cat=1) facing bet 2-way river. villain_top_pair_plus=0.65, villain_air=0.20. raw_equity=0.03. FOLD."
+    },
+    {
+      "ref_id": "d622_HJ_river",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "HJ OOP air+SD (hand_cat=2) facing bet 2-way river. villain_top_pair_plus=0.89, villain_air=0.11. raw_equity=0.03. FOLD."
+    },
+    {
+      "ref_id": "d521_UTG_river",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "UTG OOP air+OESD (hand_cat=0) facing bet 2-way river. villain_top_pair_plus=0.95, villain_air=0.05. raw_equity=0.03. FOLD."
+    },
+    {
+      "ref_id": "d336_BTN_turn",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "BTN IP underpair (hand_cat=4) facing bet 2-way turn. villain_air=0.34. worse_hand=0.72. raw_equity=0.27. CALL."
+    },
+    {
+      "ref_id": "d959_UTG_turn",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "UTG OOP air (hand_cat=1) facing bet 2-way turn. villain_air=0.02 very low. raw_equity=0.06. FOLD."
+    },
+    {
+      "ref_id": "d107_CO_turn",
+      "action": "CALL",
+      "confidence": "MEDIUM",
+      "reasoning": "CO OOP TPTK+SD (hand_cat=8) facing bet 2-way turn. villain_air=0.16. raw_equity=0.33. worse_hand=0.67. CALL with top pair + draw."
+    },
+    {
+      "ref_id": "PILOT_459",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP second pair (hand_cat=6) facing BTN turn bet HU. villain_air=0.42, villain_checked_back=1. worse_hand=0.81. CALL."
+    },
+    {
+      "ref_id": "d622_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP air (hand_cat=2) on 6h6c8c flop checked-to. Board paired (6s). Air IP CHECK."
+    },
+    {
+      "ref_id": "d639_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP air (hand_cat=1) on KcQs7h flop checked-to. Air IP with overcards, CHECK."
+    },
+    {
+      "ref_id": "d3_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP air (hand_cat=0) on 4c2hAc flop checked-to. Air IP CHECK."
+    },
+    {
+      "ref_id": "d249_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP air+FD (hand_cat=2) on Td6h6d flop checked-to. Board paired. Drawing hand IP, CHECK."
+    },
+    {
+      "ref_id": "d576_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP air+FD (hand_cat=0) on 3c4dKc flop checked-to. Drawing IP CHECK."
+    },
+    {
+      "ref_id": "d986_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP underpair (hand_cat=4) on Jd7dAd flop checked-to. Dangerous flush board. CHECK."
+    },
+    {
+      "ref_id": "d796_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP underpair (hand_cat=4) on ThKs2c flop checked-to. Underpair IP, CHECK."
+    },
+    {
+      "ref_id": "d575_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP underpair (hand_cat=4) on 7d6dAc flop checked-to. CHECK."
+    },
+    {
+      "ref_id": "d107_BTN_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP two pair (hand_cat=10, is_strong_made=1) on Tc9d6h flop checked-to. IP strong made BET."
+    },
+    {
+      "ref_id": "d719_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP air (hand_cat=2) on 3d6h3h flop checked-to. Board paired. DO NOT Rule 11: OOP, paired board, 2 opponents. villain_top_pair_plus=0.30 < 0.40 \u2192 CHECK."
+    },
+    {
+      "ref_id": "d750_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP air (hand_cat=1) on 2cQh6s flop checked-to. Air OOP, CHECK."
+    },
+    {
+      "ref_id": "d3_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP air (hand_cat=0) on 4c2hAc flop checked-to. Air OOP, CHECK."
+    },
+    {
+      "ref_id": "d986_CO_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO OOP air+SD (hand_cat=0) on Jd7dAd flop checked-to. Flush board, villain_air=0.17. DO NOT Rule 11: OOP, flush board, 2 opponents. villain_top_pair_plus=0.22 < 0.40 \u2192 CHECK."
+    },
+    {
+      "ref_id": "d107_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP air+OESD (hand_cat=2) on Tc9d6h flop checked-to. DO NOT Rule 11: OOP, 2-opponents, no paired/2-tone issue. Drawing hand OOP, CHECK."
+    },
+    {
+      "ref_id": "d282_CO_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO OOP air+SD (hand_cat=1) on QhTd9h flop checked-to. 2-tone flush. DO NOT Rule 11: OOP, 2-tone flush, 2 opponents. villain_top_pair_plus=0.32 < 0.40 \u2192 CHECK."
+    },
+    {
+      "ref_id": "d986_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP bottom pair+FD (hand_cat=5) on Jd7dAd flop checked-to. Flush board. DO NOT Rule 11: OOP, flush board, 2 opponents. villain_top_pair_plus=0.16 < 0.40 \u2192 CHECK."
+    },
+    {
+      "ref_id": "d796_UTG_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "UTG OOP TPTK (hand_cat=8) on ThKs2c flop checked-to. villain_air=0.25, is_preflop_aggressor=0 but strong hand. BET for value."
+    },
+    {
+      "ref_id": "d959_BB_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP TPTK (hand_cat=8, nut_flush_block=1) on 2h8sQh flop checked-to. Board 2-tone (hearts). villain_top_pair_plus=0.22 < 0.40 but wait - DO NOT Rule 11 applies (OOP, 2-tone, 2 opponents). However is_strong_made=0 so rule defaults to CHECK. Actually TPTK strong hand... but rule says is_strong_made=0 for hand_cat=8. CHECK per DO NOT Rule 11."
+    },
+    {
+      "ref_id": "d719_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "HJ OOP two pair (hand_cat=10, is_strong_made=1) on 3d6h3h flop checked-to. Board paired. DO NOT Rule 11: OOP, paired board, 2 opponents. villain_top_pair_plus=0.45 >= 0.40 AND is_strong_made=1 \u2192 override \u2192 BET."
+    },
+    {
+      "ref_id": "d750_BTN_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP air+SD (hand_cat=1) river checked-to on 2cQh6sKc8h. raw_equity=0.09. CHECK."
+    },
+    {
+      "ref_id": "d3_BTN_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP air+OESD (hand_cat=0) river checked-to on 4c2hAc3s7c. raw_equity=0.00. CHECK."
+    },
+    {
+      "ref_id": "d986_BTN_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP underpair+SD (hand_cat=4) river checked-to on Jd7dAd9dKd. Board flush. villain_air=0.04 very low. CHECK."
+    },
+    {
+      "ref_id": "d249_BTN_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP flush (hand_cat=14, is_strong_made=1) river checked-to. IP strong made BET."
+    },
+    {
+      "ref_id": "d530_BTN_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP two pair+SD (hand_cat=10, is_strong_made=1) river checked-to on Ac4c6s8s8d. Board paired (8s). IP strong made. BET."
+    },
+    {
+      "ref_id": "d915_CO_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "CO OOP air (hand_cat=1) river checked-to on Ks9h6hKc4h. Board paired (Ks). villain_air=0.03. DO NOT Rule 11: OOP, paired board, 2 opponents. villain_top_pair_plus=0.76 but is_made_hand=0 \u2192 no override. CHECK."
+    },
+    {
+      "ref_id": "d923_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP air+SD (hand_cat=0) river checked-to on 2sJcJh4dAh. raw_equity=0.00. CHECK."
+    },
+    {
+      "ref_id": "d639_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP air+SD (hand_cat=0) river checked-to on KcQs7h4h5s. raw_equity=0.00. CHECK."
+    },
+    {
+      "ref_id": "d3_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP air+OESD (hand_cat=0) river checked-to on 4c2hAc3s7c. villain_air=0.38. raw_equity=0.14. DO NOT Rule 11: OOP, 2 opponents. villain_top_pair_plus=0.26 < 0.40 \u2192 CHECK."
+    },
+    {
+      "ref_id": "d986_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP flush (hand_cat=14, is_strong_made=1) river checked-to on Jd7dAd9dKd. Board flush. villain_top_pair_plus=0.33 < 0.40 but is_strong_made=1... Actually is_monster=0 and is_strong_made=0 (features show is_strong_made=0 wait - raw data shows is_strong_made: 0). Wait: hand_cat=14=flush but features show is_strong_made=0 and is_monster=0. So non-monster flush? Actually re-reading: is_made_hand=1, is_strong_made=0, is_monster=0. That's unusual for a flush. CHECK."
+    },
+    {
+      "ref_id": "d750_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP second pair (hand_cat=6, is_strong_made=0) river checked-to on 2cQh6sKc8h. villain_air=0.25. DO NOT Rule 11: OOP, 2 opponents. villain_top_pair_plus=0.21 < 0.40 \u2192 CHECK. But actually board is NOT paired and rainbow. DO NOT Rule 11 requires paired board OR 2-tone flush. Board 2cQh6sKc8h = all different suits (clubs, hearts, spades, clubs, hearts) - actually 2c, Qh, 6s, Kc, 8h = clubs, hearts, spades, clubs, hearts = 2-tone? No - 5 different... actually clubs appears twice (2c, Kc), hearts appears twice (Qh, 8h). So board IS 2-tone flush. OOP 2 opponents 2-tone \u2192 DO NOT Rule 11. villain_top_pair_plus=0.21 < 0.40 \u2192 CHECK."
+    },
+    {
+      "ref_id": "d153_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP underpair+SD (hand_cat=4) river checked-to on Jh2d9d6d5s. Board 4-tone diamonds. villain_air=0.40. DO NOT Rule 11: OOP, flush-heavy board, 2 opponents. villain_top_pair_plus=0.25 < 0.40 \u2192 CHECK."
+    },
+    {
+      "ref_id": "d719_HJ_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "HJ OOP two pair (hand_cat=10, is_strong_made=1) river checked-to on 3d6h3hTcQh. Board paired (3s). villain_air=0.03 very low. DO NOT Rule 11: OOP, paired, 2 opponents. villain_top_pair_plus=0.75 >= 0.40 AND is_strong_made=1 \u2192 override \u2192 BET."
+    },
+    {
+      "ref_id": "d677_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP two pair (hand_cat=10, is_strong_made=1) river checked-to on QcAs9h2dQs. Board paired (Qs). villain_air=0.21. DO NOT Rule 11: OOP, paired, 2 opponents. villain_top_pair_plus=0.79 >= 0.40 AND is_strong_made=1 \u2192 override \u2192 BET."
+    },
+    {
+      "ref_id": "d587_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BB OOP two pair (hand_cat=10, is_strong_made=1) river checked-to on 5dJsTsAhTc. Board paired (Ts). villain_air=0.17. DO NOT Rule 11: OOP, paired, 2 opponents. villain_top_pair_plus=0.83 >= 0.40 AND is_strong_made=1 \u2192 override \u2192 BET."
+    },
+    {
+      "ref_id": "d972_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "BTN IP air (hand_cat=1) on Qs2c6sQc turn checked-to. Board paired (Qs). Air IP CHECK."
+    },
+    {
+      "ref_id": "d7296_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "OOP second pair with 62% equity, 79% villain worse, checked to; value bet."
+    },
+    {
+      "ref_id": "d5383_CO_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP flush draw multiway; take free card."
+    },
+    {
+      "ref_id": "d1168_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP river air, equity\u22480; no value to bet."
+    },
+    {
+      "ref_id": "d0845_HJ_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Rule 11 override: paired board, villain_top_pair_plus_pct=0.5505>=0.40, is_strong_made=1; lead for value."
+    },
+    {
+      "ref_id": "d4781_BTN_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "IP flush/monster checked to; value bet."
+    },
+    {
+      "ref_id": "d8002_HJ_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "OOP set, 3-suit board (no Rule 11 trigger); lead for value."
+    },
+    {
+      "ref_id": "d3642_BB_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP gutshot draw multiway; take free card."
+    },
+    {
+      "ref_id": "d2335_SB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP river air; no value to bet."
+    },
+    {
+      "ref_id": "d0182_CO_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP underpair, equity=20%; not strong enough to lead."
+    },
+    {
+      "ref_id": "d8007_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP flush draw on 2-tone board; not a made hand so Rule 11 not applicable, take free card."
+    },
+    {
+      "ref_id": "d3409_HJ_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Rule 11: 2-tone board, OOP made hand, villain_top_pair_plus_pct below 0.40 override threshold; check."
+    },
+    {
+      "ref_id": "d7640_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP draw on paired board; not a made hand so Rule 11 doesn't apply, take free card."
+    },
+    {
+      "ref_id": "d2410_BTN_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "IP river air, equity=9.5%; no value to bet."
+    },
+    {
+      "ref_id": "d2285_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP air; no value to bet or bluff."
+    },
+    {
+      "ref_id": "d3456_UTG_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP river air; no value."
+    },
+    {
+      "ref_id": "d3409_BB_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Rule 11 override: 2-tone board, OOP monster flush, villain_top_pair_plus_pct=0.4726>=0.40, is_monster=1; lead for value."
+    },
+    {
+      "ref_id": "d4312_CO_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "OOP second pair, 71% villain worse, checked to; value bet."
+    },
+    {
+      "ref_id": "d5312_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "IP draw, villain_air=4% too low to semi-bluff; take free card."
+    },
+    {
+      "ref_id": "d3847_HJ_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Rule 11 override: paired board, villain_top_pair_plus_pct=0.6376>=0.40, is_strong_made=1; lead for value."
+    },
+    {
+      "ref_id": "d4211_BTN_turn",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Facing bet, equity=8.6% < pot_odds=22.2%; fold."
+    },
+    {
+      "ref_id": "d2285_CO_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "OOP second pair, 85% villain worse; lead for value."
+    },
+    {
+      "ref_id": "d1562_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP river air on paired board; no value."
+    },
+    {
+      "ref_id": "d6764_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP river air, equity\u22480; no value."
+    },
+    {
+      "ref_id": "d2197_HJ_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP river air; no value."
+    },
+    {
+      "ref_id": "d3036_UTG_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Rule 11 override: 2-tone board, villain_top_pair_plus_pct=0.6078>=0.40, is_strong_made=1; lead for value."
+    },
+    {
+      "ref_id": "d7964_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP bottom pair, villain_air=3.5%; not strong enough to lead."
+    },
+    {
+      "ref_id": "d9488_CO_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP river air; no value."
+    },
+    {
+      "ref_id": "d7516_BTN_river",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Facing bet, equity=6.7% < pot_odds=28.5%; fold."
+    },
+    {
+      "ref_id": "d6522_HJ_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP flush draw on paired board; not a made hand, take free card."
+    },
+    {
+      "ref_id": "d6522_HJ_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP river air; no value."
+    },
+    {
+      "ref_id": "d8137_CO_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP straight draw on 2-tone board; not a made hand, take free card."
+    },
+    {
+      "ref_id": "d2139_BTN_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "IP TPWK checked to, 91% villain worse; value bet."
+    },
+    {
+      "ref_id": "d9989_BTN_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "IP flush checked to, 3-way; value bet."
+    },
+    {
+      "ref_id": "d2139_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP underpair, equity=19%; not strong enough to lead."
+    },
+    {
+      "ref_id": "d3409_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP second pair on monotone board (1 suit, not 2-tone so Rule 11 N/A), villain_air=0; check."
+    },
+    {
+      "ref_id": "d2788_UTG_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Rule 11 override: paired board, villain_top_pair_plus_pct=0.7255>=0.40, is_strong_made=1; lead for value."
+    },
+    {
+      "ref_id": "d5996_HJ_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP straight draw multiway; take free card."
+    },
+    {
+      "ref_id": "d5066_CO_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "OOP straight/monster, no Rule 11 trigger; lead for value."
+    },
+    {
+      "ref_id": "d0244_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Rule 11: paired board, villain_top_pair_plus_pct=0.3895 < 0.40 override fails; check."
+    },
+    {
+      "ref_id": "d4775_BTN_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "IP flush/monster checked to; value bet."
+    },
+    {
+      "ref_id": "d3687_HJ_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Rule 11 override: triple-8s paired board, villain_top_pair_plus_pct=0.5749>=0.40, is_monster=1; lead for value."
+    },
+    {
+      "ref_id": "d3409_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Rule 11 override: paired board, villain_top_pair_plus_pct=0.6835>=0.40, is_monster=1; lead for value."
+    },
+    {
+      "ref_id": "d9418_UTG_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP river air; no value."
+    },
+    {
+      "ref_id": "d7726_UTG_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Rule 11 override: 2-tone board, villain_top_pair_plus_pct=0.4902>=0.40, is_strong_made=1; lead for value."
+    },
+    {
+      "ref_id": "d2092_BTN_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "IP set/monster checked to; value bet."
+    },
+    {
+      "ref_id": "d0845_BTN_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "IP river air/overcards; no value."
+    },
+    {
+      "ref_id": "d1562_HJ_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Rule 11 override: paired board, villain_top_pair_plus_pct=0.5679>=0.40, is_strong_made=1; lead for value."
+    },
+    {
+      "ref_id": "d6035_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP air; no value."
+    },
+    {
+      "ref_id": "d1764_BTN_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "IP two pair checked to, 79% villain worse; value bet."
+    },
+    {
+      "ref_id": "d6764_CO_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP air; no value to lead."
+    },
+    {
+      "ref_id": "d3204_CO_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Rule 11 override: paired board, villain_top_pair_plus_pct=0.7075>=0.40, is_strong_made=1; lead for value."
+    },
+    {
+      "ref_id": "d3687_BB_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Rule 11 override: triple-8s paired board, villain_top_pair_plus_pct=0.4726>=0.40, is_strong_made=1; lead for value."
+    },
+    {
+      "ref_id": "d8137_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "OOP two pair river, 67% equity, 4-suit board (no Rule 11); lead for value."
+    },
+    {
+      "ref_id": "d2092_CO_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP air; no value."
+    },
+    {
+      "ref_id": "d1119_BTN_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "IP flush draw semi-bluff, villain_air=74%; semi-bluff with high fold equity."
+    },
+    {
+      "ref_id": "d2335_SB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP overcards, SPR=1.17, low equity; check."
+    },
+    {
+      "ref_id": "d4472_CO_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP air; no value."
+    },
+    {
+      "ref_id": "d5181_CO_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP river air; no value."
+    },
+    {
+      "ref_id": "d8411_BB_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "OOP TPTK + nut flush draw checked to; strong combo hand, lead for value."
+    },
+    {
+      "ref_id": "d6522_BB_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP air on paired board; no value."
+    },
+    {
+      "ref_id": "d5046_CO_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Rule 11 override: paired board, villain_top_pair_plus_pct=0.5126>=0.40, is_monster=1; lead for value."
+    },
+    {
+      "ref_id": "d9617_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Rule 11: 2-tone board, villain_top_pair_plus_pct=0.2432 < 0.40 override fails; check."
+    },
+    {
+      "ref_id": "d9418_UTG_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP air; no value."
+    },
+    {
+      "ref_id": "d9759_BTN_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "IP two pair checked to; Rule 11 only applies OOP, so value bet."
+    },
+    {
+      "ref_id": "d2139_BTN_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "IP two pair river, 78% villain worse; value bet."
+    },
+    {
+      "ref_id": "d6508_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Rule 11: paired board, villain_top_pair_plus_pct=0.3561 < 0.40 override fails; check."
+    },
+    {
+      "ref_id": "d7983_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP air; no value."
+    },
+    {
+      "ref_id": "d3847_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "IP air/overcards; not strong enough to lead."
+    },
+    {
+      "ref_id": "d5222_CO_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Rule 11: 2-tone board, villain_top_pair_plus_pct=0.2453 < 0.40 override fails; check."
+    },
+    {
+      "ref_id": "d6522_BTN_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "IP river air; no value."
+    },
+    {
+      "ref_id": "d4775_BTN_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "IP flush checked to, 3-way; value bet."
+    },
+    {
+      "ref_id": "d8427_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Rule 11 override: paired board, villain_top_pair_plus_pct=0.6582>=0.40, is_monster=1; lead for value."
+    },
+    {
+      "ref_id": "d8427_BB_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "OOP second/top pair, 64% equity, no Rule 11 trigger; lead for value."
+    },
+    {
+      "ref_id": "d2920_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Rule 11: 2-tone board, villain_top_pair_plus_pct=0.2130 < 0.40 override fails; check."
+    },
+    {
+      "ref_id": "d2410_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "IP air, equity=9%; no value."
+    },
+    {
+      "ref_id": "d7640_BB_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Rule 11 override: paired board, villain_top_pair_plus_pct=0.5992>=0.40, is_strong_made=1; lead for value."
+    },
+    {
+      "ref_id": "d3036_UTG_turn",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Rule 11 override: paired+2-tone board, villain_top_pair_plus_pct=0.6667>=0.40, is_strong_made=1; lead for value."
+    },
+    {
+      "ref_id": "d7361_BTN_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "IP set/monster checked to; value bet."
+    },
+    {
+      "ref_id": "d7726_UTG_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Rule 11 override: 2-tone board, villain_top_pair_plus_pct=0.4706>=0.40, is_strong_made=1; lead for value."
+    },
+    {
+      "ref_id": "d5466_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "IP straight draw, low equity, low villain_air; take free card."
+    },
+    {
+      "ref_id": "d4534_HJ_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP bottom pair river, equity=19%; not strong enough to lead."
+    },
+    {
+      "ref_id": "d4775_CO_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP underpair on monotone board; no Rule 11 (1 suit), not strong enough to lead."
+    },
+    {
+      "ref_id": "d0976_HJ_river",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "OOP second pair, 79% villain worse, 63% equity; lead for value."
+    },
+    {
+      "ref_id": "d6522_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP flush draw on monotone board (1 suit); not a made hand, take free card."
+    },
+    {
+      "ref_id": "d4775_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP river air; no value."
+    },
+    {
+      "ref_id": "d3642_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP air/overcards; no value."
+    },
+    {
+      "ref_id": "d7983_BB_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP river air; no value."
+    },
+    {
+      "ref_id": "d4775_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP draw/air on monotone board; not a made hand, take free card."
+    },
+    {
+      "ref_id": "d9518_UTG_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP straight draw on 2-tone board; not a made hand, take free card."
+    },
+    {
+      "ref_id": "d7726_UTG_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Rule 11: 2-tone board, villain_top_pair_plus_pct=0.3137 < 0.40 override fails; check."
+    },
+    {
+      "ref_id": "d4312_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "IP air, equity=3.8%; no value."
+    },
+    {
+      "ref_id": "d1647_BTN_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "IP TPTK checked to; Rule 11 only applies OOP, value bet."
+    },
+    {
+      "ref_id": "d3409_HJ_river",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Facing bet, equity=0.4923 > pot_odds=0.2849; call."
+    },
+    {
+      "ref_id": "d9653_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "IP bottom pair; too thin to lead, take free card."
+    },
+    {
+      "ref_id": "d2335_SB_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP air/overcards; no value."
+    },
+    {
+      "ref_id": "d5312_HJ_river",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP river air; no value."
+    },
+    {
+      "ref_id": "d3409_BTN_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "IP underpair + flush draw, villain_air=0; no fold equity, take free card."
+    },
+    {
+      "ref_id": "d0976_HJ_turn",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP air/overcards; no value."
+    },
+    {
+      "ref_id": "d2511_CO_flop",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "OOP second/top pair, 85% villain worse, 52% equity; lead for value."
+    },
+    {
+      "ref_id": "PILOT_155",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP air on 3-suit board; no value."
+    },
+    {
+      "ref_id": "PILOT_156",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP overcards; no value."
+    },
+    {
+      "ref_id": "PILOT_157",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "IP air 3-way; no value."
+    },
+    {
+      "ref_id": "PILOT_158",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP overcards; no value."
+    },
+    {
+      "ref_id": "PILOT_159",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP overcards; no value."
+    },
+    {
+      "ref_id": "PILOT_160",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Facing bet HU IP, equity=0.4247 > pot_odds=0.2632; call."
+    },
+    {
+      "ref_id": "PILOT_161",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP overcards; no value."
+    },
+    {
+      "ref_id": "PILOT_162",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "Rule 11 override: paired board 9h9c2d, villain_top_pair_plus_pct=0.4969>=0.40, is_strong_made=1; lead for value."
+    },
+    {
+      "ref_id": "PILOT_163",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "IP air 3-way; no value."
+    },
+    {
+      "ref_id": "PILOT_164",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP overcards; no value."
+    },
+    {
+      "ref_id": "PILOT_165",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP underpair on 3-suit board; not strong enough to lead."
+    },
+    {
+      "ref_id": "PILOT_166",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "IP overpair AA 3-way; strong hand, value bet."
+    },
+    {
+      "ref_id": "PILOT_167",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "IP air, villain_air=18.5%; insufficient fold equity for semi-bluff."
+    },
+    {
+      "ref_id": "PILOT_168",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Facing bet HU IP, equity=0.2243 < pot_odds=0.2632; fold."
+    },
+    {
+      "ref_id": "PILOT_169",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "IP underpair under A 3-way; not strong enough to lead."
+    },
+    {
+      "ref_id": "PILOT_170",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP underpair KK under A; not strong enough to lead OOP."
+    },
+    {
+      "ref_id": "PILOT_171",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Facing bet HU IP TPWK, equity=0.6037 > pot_odds=0.2632; call."
+    },
+    {
+      "ref_id": "PILOT_172",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP straight draw, villain_air=8%; insufficient fold equity, take free card."
+    },
+    {
+      "ref_id": "PILOT_173",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "IP draw; take free card."
+    },
+    {
+      "ref_id": "PILOT_174",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP air; no value."
+    },
+    {
+      "ref_id": "PILOT_175",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP overcards; no value."
+    },
+    {
+      "ref_id": "PILOT_176",
+      "action": "BET",
+      "confidence": "HIGH",
+      "reasoning": "OOP overpair JJ on 3-suit board (no Rule 11); lead for value."
+    },
+    {
+      "ref_id": "d521_BB_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "Rule 11: 2-tone board 6sAh5s, OOP made hand, villain_top_pair_plus_pct=0.1959 < 0.40 override fails; check."
+    },
+    {
+      "ref_id": "d587_HJ_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "OOP flush draw/straight draw multiway, not facing bet; take free card."
+    },
+    {
+      "ref_id": "PILOT_216",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "KB \u00a71.7 override: nut FD facing bet HU, villain_air=0.2346 >= 0.20; raise."
+    },
+    {
+      "ref_id": "PILOT_217",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "KB \u00a71.7: nut FD facing bet HU, villain_air=0.1662 < 0.20; call rather than raise."
+    },
+    {
+      "ref_id": "d719_BTN_flop",
+      "action": "CHECK",
+      "confidence": "HIGH",
+      "reasoning": "IP flush draw on paired board 3d6h3h, 3-way; take free card."
+    },
+    {
+      "ref_id": "PILOT_219",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "KB \u00a71.7 override: nut FD facing bet HU, villain_air=0.2017 >= 0.20; raise."
+    },
+    {
+      "ref_id": "PILOT_220",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "KB \u00a71.7: nut FD facing bet HU, villain_air=0.1568 < 0.20; call."
+    },
+    {
+      "ref_id": "PILOT_221",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "KB \u00a71.7: nut FD facing bet HU, villain_air=0.1445 < 0.20; call."
+    },
+    {
+      "ref_id": "PILOT_222",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "KB \u00a71.7: nut FD facing bet HU, villain_air=0.1580 < 0.20; call."
+    },
+    {
+      "ref_id": "PILOT_223",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "KB \u00a71.7 override: nut FD+OESD facing bet HU, villain_air=0.2391 >= 0.20; raise."
+    },
+    {
+      "ref_id": "PILOT_224",
+      "action": "RAISE",
+      "confidence": "HIGH",
+      "reasoning": "KB \u00a71.7 override: nut FD facing bet HU, villain_air=0.2115 >= 0.20; raise."
+    },
+    {
+      "ref_id": "PILOT_225",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Facing bet, air, equity=0.0612 < pot_odds=0.2258; fold."
+    },
+    {
+      "ref_id": "PILOT_226",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Facing bet, air, equity=0.1315 < pot_odds=0.2308; fold."
+    },
+    {
+      "ref_id": "PILOT_227",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Facing bet, second pair, equity=0.4823 > pot_odds=0.2308; call."
+    },
+    {
+      "ref_id": "PILOT_228",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Facing bet, air, equity=0.2190 < pot_odds=0.2381; fold."
+    },
+    {
+      "ref_id": "PILOT_229",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Facing bet, air, equity=0.1898 < pot_odds=0.2174; fold."
+    },
+    {
+      "ref_id": "PILOT_230",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Facing bet, underpair, equity=0.2400 > pot_odds=0.2381; marginal call."
+    },
+    {
+      "ref_id": "PILOT_231",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Facing bet, air, equity=0.1062 < pot_odds=0.2381; fold."
+    },
+    {
+      "ref_id": "PILOT_232",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Facing bet, air, equity=0.2182 < pot_odds=0.2258; fold."
+    },
+    {
+      "ref_id": "PILOT_233",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Facing bet, air, equity=0.0780 < pot_odds=0.2373; fold."
+    },
+    {
+      "ref_id": "PILOT_234",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Facing bet, air/draw, equity=0.1260 < pot_odds=0.2414; fold."
+    },
+    {
+      "ref_id": "PILOT_235",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Facing bet, air, equity=0.0975 < pot_odds=0.2174; fold."
+    },
+    {
+      "ref_id": "PILOT_236",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Facing bet, air/draw, equity=0.2263 > pot_odds=0.2222; marginal call."
+    },
+    {
+      "ref_id": "PILOT_237",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Facing bet, air, equity=0.1017 < pot_odds=0.2174; fold."
+    },
+    {
+      "ref_id": "PILOT_238",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Facing bet, air/draw, equity=0.2092 < pot_odds=0.2414; fold."
+    },
+    {
+      "ref_id": "PILOT_239",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Facing bet, straight draw, equity=0.2377 > pot_odds=0.2258; marginal call."
+    },
+    {
+      "ref_id": "PILOT_240",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Facing bet, air, equity=0.0545 < pot_odds=0.2174; fold."
+    },
+    {
+      "ref_id": "PILOT_241",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Facing bet, air, equity=0.0800 < pot_odds=0.2333; fold."
+    },
+    {
+      "ref_id": "PILOT_242",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Facing bet, air, equity=0.1680 < pot_odds=0.2308; fold."
+    },
+    {
+      "ref_id": "PILOT_243",
+      "action": "CALL",
+      "confidence": "HIGH",
+      "reasoning": "Facing bet, OESD, equity=0.3570 > pot_odds=0.2308; call."
+    },
+    {
+      "ref_id": "PILOT_244",
+      "action": "FOLD",
+      "confidence": "HIGH",
+      "reasoning": "Facing bet, air, equity=0.1205 < pot_odds=0.2174; fold."
+    }
+  ]
+}
