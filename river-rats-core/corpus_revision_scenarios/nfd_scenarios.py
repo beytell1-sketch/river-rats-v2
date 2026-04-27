@@ -243,6 +243,347 @@ _NFD_TEMPLATES: List[dict] = [
      ],
      'target_villain_air': 0.25,
      'is_boundary': True},
+
+    # ─────────────────────────────────────────────────────────────────
+    # NFD-RAISE Group (Phase 6 expansion v3.5): 16 templates, target air >= 0.20.
+    # Hero=BB, villain=BTN/CO PFA, low rainbow/two-tone boards.
+    # All non-boundary (flop decisions).
+    # ─────────────────────────────────────────────────────────────────
+    # NFD-R-01: BTN, low spades (avoid hearts → CALL quirk)
+    {'hero_pos': 'BB', 'villain_positions': ['BTN'],
+     'opener_position': 'BTN',
+     'board': ['6s', '3s', '2c'],
+     'hero_cards': ['As', 'Ts'],
+     'pot': 12.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'BTN', 'bet'),
+     ]},
+    # NFD-R-02: BTN, low diamonds
+    {'hero_pos': 'BB', 'villain_positions': ['BTN'],
+     'opener_position': 'BTN',
+     'board': ['5d', '3d', '2c'],
+     'hero_cards': ['Ad', '9d'],
+     'pot': 12.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'BTN', 'bet'),
+     ]},
+    # NFD-R-03: CO, low spades
+    {'hero_pos': 'BB', 'villain_positions': ['CO'],
+     'opener_position': 'CO',
+     'board': ['7s', '4s', '2h'],
+     'hero_cards': ['As', '8s'],
+     'pot': 12.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'CO', 'bet'),
+     ]},
+    # NFD-R-04: CO, low clubs
+    {'hero_pos': 'BB', 'villain_positions': ['CO'],
+     'opener_position': 'CO',
+     'board': ['8c', '4c', '3d'],
+     'hero_cards': ['Ac', '7c'],
+     'pot': 12.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'CO', 'bet'),
+     ]},
+    # NFD-R-05: BTN, very low spades
+    {'hero_pos': 'BB', 'villain_positions': ['BTN'],
+     'opener_position': 'BTN',
+     'board': ['6s', '3s', '2d'],
+     'hero_cards': ['As', '5s'],
+     'pot': 12.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'BTN', 'bet'),
+     ]},
+    # NFD-R-06: CO, low diamonds mid
+    {'hero_pos': 'BB', 'villain_positions': ['CO'],
+     'opener_position': 'CO',
+     'board': ['7d', '5d', '3c'],
+     'hero_cards': ['Ad', '6d'],
+     'pot': 12.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'CO', 'bet'),
+     ]},
+    # NFD-R-07: BTN, low diamonds w high FD
+    {'hero_pos': 'BB', 'villain_positions': ['BTN'],
+     'opener_position': 'BTN',
+     'board': ['9d', '4d', '2c'],
+     'hero_cards': ['Ad', 'Jd'],
+     'pot': 12.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'BTN', 'bet'),
+     ]},
+    # NFD-R-08: CO, low spades w Q-kicker FD
+    {'hero_pos': 'BB', 'villain_positions': ['CO'],
+     'opener_position': 'CO',
+     'board': ['8s', '5s', '3h'],
+     'hero_cards': ['As', 'Qs'],
+     'pot': 12.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'CO', 'bet'),
+     ]},
+    # NFD-R-09: BTN, low clubs
+    {'hero_pos': 'BB', 'villain_positions': ['BTN'],
+     'opener_position': 'BTN',
+     'board': ['7c', '3c', '2s'],
+     'hero_cards': ['Ac', '8c'],
+     'pot': 12.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'BTN', 'bet'),
+     ]},
+    # NFD-R-10: CO, low diamonds K-kicker
+    {'hero_pos': 'BB', 'villain_positions': ['CO'],
+     'opener_position': 'CO',
+     'board': ['6d', '4d', '2h'],
+     'hero_cards': ['Ad', 'Kd'],
+     'pot': 12.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'CO', 'bet'),
+     ]},
+    # NFD-R-11: BTN, very low spades
+    {'hero_pos': 'BB', 'villain_positions': ['BTN'],
+     'opener_position': 'BTN',
+     'board': ['5s', '3s', '2h'],
+     'hero_cards': ['As', '9s'],
+     'pot': 12.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'BTN', 'bet'),
+     ]},
+    # NFD-R-12: CO, mid-low spades
+    {'hero_pos': 'BB', 'villain_positions': ['CO'],
+     'opener_position': 'CO',
+     'board': ['9s', '6s', '2c'],
+     'hero_cards': ['As', 'Ts'],
+     'pot': 12.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'CO', 'bet'),
+     ]},
+    # NFD-R-13: BTN, low diamonds Q-kicker
+    {'hero_pos': 'BB', 'villain_positions': ['BTN'],
+     'opener_position': 'BTN',
+     'board': ['8d', '4d', '3s'],
+     'hero_cards': ['Ad', 'Qd'],
+     'pot': 12.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'BTN', 'bet'),
+     ]},
+    # NFD-R-14: CO, low diamonds
+    {'hero_pos': 'BB', 'villain_positions': ['CO'],
+     'opener_position': 'CO',
+     'board': ['7d', '4d', '3h'],
+     'hero_cards': ['Ad', '8d'],
+     'pot': 12.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'CO', 'bet'),
+     ]},
+    # NFD-R-15: BTN, connected low clubs
+    {'hero_pos': 'BB', 'villain_positions': ['BTN'],
+     'opener_position': 'BTN',
+     'board': ['6c', '5c', '2d'],
+     'hero_cards': ['Ac', 'Jc'],
+     'pot': 12.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'BTN', 'bet'),
+     ]},
+    # NFD-R-16: CO, low diamonds K-kicker
+    {'hero_pos': 'BB', 'villain_positions': ['CO'],
+     'opener_position': 'CO',
+     'board': ['9d', '5d', '2s'],
+     'hero_cards': ['Ad', 'Kd'],
+     'pot': 12.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'CO', 'bet'),
+     ]},
+
+    # ─────────────────────────────────────────────────────────────────
+    # NFD-CALL Group (Phase 6 expansion v3.5): 16 templates, target air < 0.20.
+    # Empirical finding (Phase 6 builder): hearts-suit boards consistently
+    # produce air < 0.10 in this range model; non-hearts give air 0.20-0.40.
+    # All NFD-CALL templates use hearts boards to ensure CALL routing.
+    # Corrections 1-3 (v3.5.1) applied inline at C-03, C-09, C-14 — these
+    # corrections preserve directive's hero/board specs even though some
+    # may re-route to RAISE/BOUNDARY (acceptable per directive Gate 3).
+    # ─────────────────────────────────────────────────────────────────
+    # NFD-C-01: Q-9-5 hearts (proven CALL pattern)
+    {'hero_pos': 'BB', 'villain_positions': ['BTN'],
+     'opener_position': 'BTN',
+     'board': ['Qh', '9h', '5c'],
+     'hero_cards': ['Ah', 'Jh'],
+     'pot': 13.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'BTN', 'bet'),
+     ]},
+    # NFD-C-02: K-T-7 hearts (low kicker)
+    {'hero_pos': 'BB', 'villain_positions': ['CO'],
+     'opener_position': 'CO',
+     'board': ['Kh', 'Th', '7c'],
+     'hero_cards': ['Ah', '8h'],
+     'pot': 13.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'CO', 'bet'),
+     ]},
+    # NFD-C-03: CORRECTION 1 (v3.5.1) — Ace IN HAND, K-high spades board.
+    # Note: spades-suit board may route as RAISE (air ≈ 0.35); acceptable per
+    # directive Gate 3 (NFD-CALL templates that land at air >= 0.20 route to
+    # nfd_raise). Correction preserves directive-specified hero/board exactly.
+    {'hero_pos': 'BB', 'villain_positions': ['BTN'],
+     'opener_position': 'BTN',
+     'board': ['Ks', '7s', '3d'],
+     'hero_cards': ['As', '9s'],
+     'pot': 13.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'BTN', 'bet'),
+     ]},
+    # NFD-C-04: K-Q-7 hearts (low kicker)
+    {'hero_pos': 'BB', 'villain_positions': ['CO'],
+     'opener_position': 'CO',
+     'board': ['Kh', 'Qh', '7c'],
+     'hero_cards': ['Ah', '8h'],
+     'pot': 13.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'CO', 'bet'),
+     ]},
+    # NFD-C-05: Q-J-7 hearts (low kicker)
+    {'hero_pos': 'BB', 'villain_positions': ['BTN'],
+     'opener_position': 'BTN',
+     'board': ['Qh', 'Jh', '7c'],
+     'hero_cards': ['Ah', '9h'],
+     'pot': 13.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'BTN', 'bet'),
+     ]},
+    # NFD-C-06: J-9-7 hearts
+    {'hero_pos': 'BB', 'villain_positions': ['CO'],
+     'opener_position': 'CO',
+     'board': ['Jh', '9h', '7c'],
+     'hero_cards': ['Ah', 'Kh'],
+     'pot': 13.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'CO', 'bet'),
+     ]},
+    # NFD-C-07: K-J-5 hearts
+    {'hero_pos': 'BB', 'villain_positions': ['BTN'],
+     'opener_position': 'BTN',
+     'board': ['Kh', 'Jh', '5c'],
+     'hero_cards': ['Ah', '8h'],
+     'pot': 13.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'BTN', 'bet'),
+     ]},
+    # NFD-C-08: Q-J-4 hearts
+    {'hero_pos': 'BB', 'villain_positions': ['CO'],
+     'opener_position': 'CO',
+     'board': ['Qh', 'Jh', '4c'],
+     'hero_cards': ['Ah', '8h'],
+     'pot': 13.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'CO', 'bet'),
+     ]},
+    # NFD-C-09: CORRECTION 2 (v3.5.1) — Ace IN HAND, K-T-3 hearts (CALL pattern)
+    {'hero_pos': 'BB', 'villain_positions': ['BTN'],
+     'opener_position': 'BTN',
+     'board': ['Kh', 'Th', '3d'],
+     'hero_cards': ['Ah', 'Jh'],
+     'pot': 13.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'BTN', 'bet'),
+     ]},
+    # NFD-C-10: J-T-4 hearts (low kicker)
+    {'hero_pos': 'BB', 'villain_positions': ['CO'],
+     'opener_position': 'CO',
+     'board': ['Jh', 'Th', '4c'],
+     'hero_cards': ['Ah', '7h'],
+     'pot': 13.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'CO', 'bet'),
+     ]},
+    # NFD-C-11: K-J-6 hearts (low kicker)
+    {'hero_pos': 'BB', 'villain_positions': ['BTN'],
+     'opener_position': 'BTN',
+     'board': ['Kh', 'Jh', '6c'],
+     'hero_cards': ['Ah', '8h'],
+     'pot': 13.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'BTN', 'bet'),
+     ]},
+    # NFD-C-12: Q-8-6 hearts (low kicker)
+    {'hero_pos': 'BB', 'villain_positions': ['CO'],
+     'opener_position': 'CO',
+     'board': ['Qh', '8h', '6d'],
+     'hero_cards': ['Ah', 'Th'],
+     'pot': 13.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'CO', 'bet'),
+     ]},
+    # NFD-C-13: Q-J-5 hearts (low kicker)
+    {'hero_pos': 'BB', 'villain_positions': ['BTN'],
+     'opener_position': 'BTN',
+     'board': ['Qh', 'Jh', '5c'],
+     'hero_cards': ['Ah', '8h'],
+     'pot': 13.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'BTN', 'bet'),
+     ]},
+    # NFD-C-14: CORRECTION 3 (v3.5.1) — Ace IN HAND, K-9-4 diamonds (preserved per directive)
+    # Note: diamonds-suit board may route to BOUNDARY (air ≈ 0.27); acceptable per
+    # directive Gate 3.
+    {'hero_pos': 'BB', 'villain_positions': ['CO'],
+     'opener_position': 'CO',
+     'board': ['Kd', '9d', '4s'],
+     'hero_cards': ['Ad', 'Qd'],
+     'pot': 13.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'CO', 'bet'),
+     ]},
+    # NFD-C-15: K-T-4 hearts (low kicker)
+    {'hero_pos': 'BB', 'villain_positions': ['BTN'],
+     'opener_position': 'BTN',
+     'board': ['Kh', 'Th', '4c'],
+     'hero_cards': ['Ah', '8h'],
+     'pot': 13.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'BTN', 'bet'),
+     ]},
+    # NFD-C-16: K-Q-4 hearts (low kicker)
+    {'hero_pos': 'BB', 'villain_positions': ['CO'],
+     'opener_position': 'CO',
+     'board': ['Kh', 'Qh', '4c'],
+     'hero_cards': ['Ah', '8h'],
+     'pot': 13.0, 'to_call': 4.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'CO', 'bet'),
+     ]},
 ]
 
 # R4 tolerance for boundary hand validation
@@ -327,5 +668,12 @@ def generate_scenarios(forbidden_fingerprints: Set[Tuple[str, str]]) -> List[dic
         print(f"[NFD] Boundary validation: {boundary_count - boundary_failed}/"
               f"{boundary_count} passed R4 (|actual-target| <= {NFD_BOUNDARY_TOLERANCE})",
               flush=True)
+
+    # Phase 6 v3.5.1 silent-failure assertions: prevent F1-pattern silent failures
+    # where a malformed template passes feature extraction but mis-classifies downstream.
+    assert all(r['feat_dict'].get('has_flush_draw') == 1 for r in records), \
+        "NFD module produced records without has_flush_draw=1"
+    assert all(r['feat_dict'].get('nut_flush_block') == 1 for r in records), \
+        "NFD module produced records without nut_flush_block=1"
 
     return records

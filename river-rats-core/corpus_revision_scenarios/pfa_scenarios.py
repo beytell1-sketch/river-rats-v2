@@ -253,6 +253,357 @@ _PFA_TEMPLATES: List[dict] = [
          ('flop', 'SB', 'check'), ('flop', 'BB', 'check'), ('flop', 'BTN', 'check'),
      ],
      'label': 'PFA-4e'},
+
+    # ─────────────────────────────────────────────────────────────────
+    # PFA-5 (Phase 6 expansion v3.5): HJ opener, CO+BB callers (8 templates)
+    # New flop textures (paired, monotone, connected) not in PFA-3.
+    # ─────────────────────────────────────────────────────────────────
+    {'hero_pos': 'HJ', 'villain_positions': ['CO', 'BB'],
+     'opener_position': 'HJ',
+     'board': ['Ac', '9s', '4d'],  # A-high dry
+     'hero_cards': ['Kh', 'Qd'],
+     'pot': 15.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'HJ', 'raise'), ('preflop', 'CO', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-5a'},
+    {'hero_pos': 'HJ', 'villain_positions': ['CO', 'BB'],
+     'opener_position': 'HJ',
+     'board': ['Ks', '8c', '3h'],
+     'hero_cards': ['Jc', 'Jd'],
+     'pot': 14.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'HJ', 'raise'), ('preflop', 'CO', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-5b'},
+    {'hero_pos': 'HJ', 'villain_positions': ['CO', 'BB'],
+     'opener_position': 'HJ',
+     'board': ['Qc', '6d', '2s'],
+     'hero_cards': ['Ah', 'Kd'],
+     'pot': 15.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'HJ', 'raise'), ('preflop', 'CO', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-5c'},
+    {'hero_pos': 'HJ', 'villain_positions': ['CO', 'BB'],
+     'opener_position': 'HJ',
+     'board': ['Jd', '9s', '5c'],
+     'hero_cards': ['Ks', 'Qh'],
+     'pot': 14.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'HJ', 'raise'), ('preflop', 'CO', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-5d'},
+    {'hero_pos': 'HJ', 'villain_positions': ['CO', 'BB'],
+     'opener_position': 'HJ',
+     'board': ['Tc', '4d', '2h'],
+     'hero_cards': ['Ad', 'Qc'],
+     'pot': 15.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'HJ', 'raise'), ('preflop', 'CO', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-5e'},
+    {'hero_pos': 'HJ', 'villain_positions': ['CO', 'BB'],
+     'opener_position': 'HJ',
+     'board': ['8s', '8d', '3c'],  # paired flop
+     'hero_cards': ['Ah', 'Kc'],
+     'pot': 14.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'HJ', 'raise'), ('preflop', 'CO', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-5f'},
+    {'hero_pos': 'HJ', 'villain_positions': ['CO', 'BB'],
+     'opener_position': 'HJ',
+     'board': ['Kd', '6c', '6s'],  # paired flop
+     'hero_cards': ['Qs', 'Jd'],
+     'pot': 15.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'HJ', 'raise'), ('preflop', 'CO', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-5g'},
+    {'hero_pos': 'HJ', 'villain_positions': ['CO', 'BB'],
+     'opener_position': 'HJ',
+     'board': ['5h', '5d', '2c'],  # paired flop
+     'hero_cards': ['Kc', 'Kd'],
+     'pot': 14.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'HJ', 'raise'), ('preflop', 'CO', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-5h'},
+
+    # ─────────────────────────────────────────────────────────────────
+    # PFA-6 (Phase 6): CO opener, BTN+BB callers (10 templates)
+    # Dynamic and connected boards, vary hero hand types.
+    # ─────────────────────────────────────────────────────────────────
+    {'hero_pos': 'CO', 'villain_positions': ['BTN', 'BB'],
+     'opener_position': 'CO',
+     'board': ['Ad', '6s', '3d'],
+     'hero_cards': ['Kh', 'Jd'],
+     'pot': 16.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-6a'},
+    {'hero_pos': 'CO', 'villain_positions': ['BTN', 'BB'],
+     'opener_position': 'CO',
+     'board': ['Jc', '7s', '4h'],
+     'hero_cards': ['Ac', '9c'],
+     'pot': 15.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-6b'},
+    {'hero_pos': 'CO', 'villain_positions': ['BTN', 'BB'],
+     'opener_position': 'CO',
+     'board': ['Qs', '9d', '8c'],  # connected
+     'hero_cards': ['Kh', 'Kd'],
+     'pot': 16.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-6c'},
+    {'hero_pos': 'CO', 'villain_positions': ['BTN', 'BB'],
+     'opener_position': 'CO',
+     'board': ['Tc', '9s', '8d'],  # 3-connected
+     'hero_cards': ['Jd', '7c'],
+     'pot': 15.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-6d'},
+    {'hero_pos': 'CO', 'villain_positions': ['BTN', 'BB'],
+     'opener_position': 'CO',
+     'board': ['Ah', '7c', '4s'],
+     'hero_cards': ['Qd', 'Qs'],
+     'pot': 16.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-6e'},
+    {'hero_pos': 'CO', 'villain_positions': ['BTN', 'BB'],
+     'opener_position': 'CO',
+     'board': ['Kc', '5s', '3h'],
+     'hero_cards': ['Ac', 'Jc'],
+     'pot': 15.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-6f'},
+    {'hero_pos': 'CO', 'villain_positions': ['BTN', 'BB'],
+     'opener_position': 'CO',
+     'board': ['9h', '9c', '2d'],  # paired flop
+     'hero_cards': ['Kd', 'Kh'],
+     'pot': 16.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-6g'},
+    {'hero_pos': 'CO', 'villain_positions': ['BTN', 'BB'],
+     'opener_position': 'CO',
+     'board': ['Qd', 'Jh', '5c'],  # broadway-heavy
+     'hero_cards': ['As', 'Kh'],
+     'pot': 15.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-6h'},
+    {'hero_pos': 'CO', 'villain_positions': ['BTN', 'BB'],
+     'opener_position': 'CO',
+     'board': ['8h', '6c', '4d'],  # connected low
+     'hero_cards': ['Kc', 'Qd'],
+     'pot': 16.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-6i'},
+    {'hero_pos': 'CO', 'villain_positions': ['BTN', 'BB'],
+     'opener_position': 'CO',
+     'board': ['5c', '5s', '3d'],  # paired low
+     'hero_cards': ['Ah', 'Qs'],
+     'pot': 15.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-6j'},
+
+    # ─────────────────────────────────────────────────────────────────
+    # PFA-7 (Phase 6): BTN opener, CO+SB callers, BB folds (8 templates)
+    # BB folded preflop → BB NOT in villain_positions.
+    # ─────────────────────────────────────────────────────────────────
+    {'hero_pos': 'BTN', 'villain_positions': ['CO', 'SB'],
+     'opener_position': 'BTN',
+     'board': ['Kd', '8s', '2h'],
+     'hero_cards': ['Ah', 'Jd'],
+     'pot': 20.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'CO', 'call'),
+         ('preflop', 'SB', 'call'), ('preflop', 'BB', 'fold'),
+     ],
+     'label': 'PFA-7a'},
+    {'hero_pos': 'BTN', 'villain_positions': ['CO', 'SB'],
+     'opener_position': 'BTN',
+     'board': ['Qh', '7d', '4c'],
+     'hero_cards': ['Kc', 'Ks'],
+     'pot': 20.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'CO', 'call'),
+         ('preflop', 'SB', 'call'), ('preflop', 'BB', 'fold'),
+     ],
+     'label': 'PFA-7b'},
+    {'hero_pos': 'BTN', 'villain_positions': ['CO', 'SB'],
+     'opener_position': 'BTN',
+     'board': ['Jd', '6s', '3c'],
+     'hero_cards': ['Ac', 'Qd'],
+     'pot': 20.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'CO', 'call'),
+         ('preflop', 'SB', 'call'), ('preflop', 'BB', 'fold'),
+     ],
+     'label': 'PFA-7c'},
+    {'hero_pos': 'BTN', 'villain_positions': ['CO', 'SB'],
+     'opener_position': 'BTN',
+     'board': ['Th', '5d', '2s'],
+     'hero_cards': ['Kh', 'Jc'],
+     'pot': 20.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'CO', 'call'),
+         ('preflop', 'SB', 'call'), ('preflop', 'BB', 'fold'),
+     ],
+     'label': 'PFA-7d'},
+    {'hero_pos': 'BTN', 'villain_positions': ['CO', 'SB'],
+     'opener_position': 'BTN',
+     'board': ['Ah', '4c', '2d'],
+     'hero_cards': ['9h', '9d'],
+     'pot': 20.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'CO', 'call'),
+         ('preflop', 'SB', 'call'), ('preflop', 'BB', 'fold'),
+     ],
+     'label': 'PFA-7e'},
+    {'hero_pos': 'BTN', 'villain_positions': ['CO', 'SB'],
+     'opener_position': 'BTN',
+     'board': ['7s', '6d', '3h'],
+     'hero_cards': ['Ks', 'Qc'],
+     'pot': 20.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'CO', 'call'),
+         ('preflop', 'SB', 'call'), ('preflop', 'BB', 'fold'),
+     ],
+     'label': 'PFA-7f'},
+    {'hero_pos': 'BTN', 'villain_positions': ['CO', 'SB'],
+     'opener_position': 'BTN',
+     'board': ['Qs', '5h', '2c'],
+     'hero_cards': ['Ac', 'Kd'],
+     'pot': 20.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'CO', 'call'),
+         ('preflop', 'SB', 'call'), ('preflop', 'BB', 'fold'),
+     ],
+     'label': 'PFA-7g'},
+    {'hero_pos': 'BTN', 'villain_positions': ['CO', 'SB'],
+     'opener_position': 'BTN',
+     'board': ['9c', '8s', '4h'],
+     'hero_cards': ['Jh', 'Jd'],
+     'pot': 20.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'CO', 'call'),
+         ('preflop', 'SB', 'call'), ('preflop', 'BB', 'fold'),
+     ],
+     'label': 'PFA-7h'},
+
+    # ─────────────────────────────────────────────────────────────────
+    # PFA-8 (Phase 6): Turn c-bet (delayed) (8 templates)
+    # Hero checks flop, all check, hero faces turn decision.
+    # Postflop action order: SB < BB < UTG/HJ < CO < BTN.
+    # ─────────────────────────────────────────────────────────────────
+    # PFA-8a: CO opener, BTN+BB callers, turn c-bet
+    {'hero_pos': 'CO', 'villain_positions': ['BTN', 'BB'],
+     'opener_position': 'CO',
+     'board': ['Ks', '7d', '2c', 'Qh'],
+     'hero_cards': ['Ah', 'Kd'],
+     'pot': 22.0, 'to_call': 0.0, 'street': 'turn',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'CO', 'check'), ('flop', 'BTN', 'check'),
+     ],
+     'label': 'PFA-8a'},
+    # PFA-8b: CO opener with different board
+    {'hero_pos': 'CO', 'villain_positions': ['BTN', 'BB'],
+     'opener_position': 'CO',
+     'board': ['Jc', '6h', '2d', 'Tc'],
+     'hero_cards': ['As', 'Js'],
+     'pot': 24.0, 'to_call': 0.0, 'street': 'turn',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'CO', 'check'), ('flop', 'BTN', 'check'),
+     ],
+     'label': 'PFA-8b'},
+    # PFA-8c: HJ opener, CO+BB callers
+    {'hero_pos': 'HJ', 'villain_positions': ['CO', 'BB'],
+     'opener_position': 'HJ',
+     'board': ['Qd', '5s', '3h', '8d'],
+     'hero_cards': ['Kh', 'Kd'],
+     'pot': 22.0, 'to_call': 0.0, 'street': 'turn',
+     'action_history': [
+         ('preflop', 'HJ', 'raise'), ('preflop', 'CO', 'call'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'HJ', 'check'), ('flop', 'CO', 'check'),
+     ],
+     'label': 'PFA-8c'},
+    # PFA-8d: BTN opener, SB+BB callers
+    {'hero_pos': 'BTN', 'villain_positions': ['SB', 'BB'],
+     'opener_position': 'BTN',
+     'board': ['Ah', '5c', '2d', '9s'],
+     'hero_cards': ['Kh', 'Qd'],
+     'pot': 23.0, 'to_call': 0.0, 'street': 'turn',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'SB', 'call'), ('preflop', 'BB', 'call'),
+         ('flop', 'SB', 'check'), ('flop', 'BB', 'check'), ('flop', 'BTN', 'check'),
+     ],
+     'label': 'PFA-8d'},
+    # PFA-8e: CO opener
+    {'hero_pos': 'CO', 'villain_positions': ['BTN', 'BB'],
+     'opener_position': 'CO',
+     'board': ['9h', '8c', '4d', 'Jh'],
+     'hero_cards': ['Kd', 'Qs'],
+     'pot': 22.0, 'to_call': 0.0, 'street': 'turn',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'CO', 'check'), ('flop', 'BTN', 'check'),
+     ],
+     'label': 'PFA-8e'},
+    # PFA-8f: BTN opener, SB+BB callers
+    {'hero_pos': 'BTN', 'villain_positions': ['SB', 'BB'],
+     'opener_position': 'BTN',
+     'board': ['Td', '6s', '2c', 'Ks'],
+     'hero_cards': ['Jh', 'Jd'],
+     'pot': 24.0, 'to_call': 0.0, 'street': 'turn',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'SB', 'call'), ('preflop', 'BB', 'call'),
+         ('flop', 'SB', 'check'), ('flop', 'BB', 'check'), ('flop', 'BTN', 'check'),
+     ],
+     'label': 'PFA-8f'},
+    # PFA-8g: HJ opener
+    {'hero_pos': 'HJ', 'villain_positions': ['CO', 'BB'],
+     'opener_position': 'HJ',
+     'board': ['8d', '5s', '2h', 'As'],
+     'hero_cards': ['Kc', 'Qh'],
+     'pot': 22.0, 'to_call': 0.0, 'street': 'turn',
+     'action_history': [
+         ('preflop', 'HJ', 'raise'), ('preflop', 'CO', 'call'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'HJ', 'check'), ('flop', 'CO', 'check'),
+     ],
+     'label': 'PFA-8g'},
+    # PFA-8h: CO opener
+    {'hero_pos': 'CO', 'villain_positions': ['BTN', 'BB'],
+     'opener_position': 'CO',
+     'board': ['Qh', '7c', '3s', '5d'],
+     'hero_cards': ['Ah', '9h'],
+     'pot': 23.0, 'to_call': 0.0, 'street': 'turn',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+         ('flop', 'BB', 'check'), ('flop', 'CO', 'check'), ('flop', 'BTN', 'check'),
+     ],
+     'label': 'PFA-8h'},
 ]
 
 
@@ -264,7 +615,9 @@ def generate_scenarios(forbidden_fingerprints: Set[Tuple[str, str]]) -> List[dic
     """
     records = []
     turn_cbet_count = 0
-    max_turn_cbets = 10  # Blueprint cap for PFA-4
+    # Phase 6 expansion v3.5: PFA-4 (5 existing) + PFA-8 (8 new) = 13 turn c-bets.
+    # Cap raised from 10 → 15 to accommodate full PFA-8 group.
+    max_turn_cbets = 15
 
     for tmpl in _PFA_TEMPLATES:
         label = tmpl['label']
@@ -315,5 +668,10 @@ def generate_scenarios(forbidden_fingerprints: Set[Tuple[str, str]]) -> List[dic
         from corpus_revision_scenarios._scenario_utils import fingerprint
         fp = fingerprint(hero_cards_str, board_str)
         forbidden_fingerprints.add(fp)
+
+    # Phase 6 v3.5.1 silent-failure assertion: every PFA record must have IS_PFA=1.
+    # Catches malformed templates that pass build_situation but mis-classify downstream.
+    assert all(r['feat_dict'].get('is_preflop_aggressor') == 1 for r in records), \
+        "PFA module produced records without is_preflop_aggressor=1"
 
     return records

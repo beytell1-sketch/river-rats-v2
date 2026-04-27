@@ -1577,3 +1577,39 @@ class TestRareCategoryFirstAllocator:
         assert nfd_cats & cats_air_high, (
             f"Expected at least one NFD subcategory in {cats_air_high}"
         )
+
+
+# ===========================================================================
+# Phase 6 v3.5.1 Correction 6: post-blueprint-v3.5 expansion tests
+# ===========================================================================
+
+class TestE2BModeBPoolPostExpansion:
+    """Phase 6 v3.5.1 correction 6: spr_med scarcity tie test + total-size test.
+
+    After expansion, both spr_med and pfa scarcity = 0.9302 (small slack).
+    These tests catch scarcity-tie shuffle non-determinism before C2 runs.
+    """
+
+    def test_e2b_pool_spr_med_yield_post_expansion(self):
+        """Post-blueprint-v3.5 expansion: spr_med yield must support quota fill
+        despite scarcity tie with pfa (both 0.9302).
+        """
+        path = os.path.join(REPO, 'data',
+                            'corpus_revision_pool_mode_b_2026-04-27.jsonl')
+        if not os.path.exists(path):
+            pytest.skip(f'{path} not yet generated')
+        pool = [json.loads(l) for l in open(path)]
+        spr_med = sum(1 for r in pool
+                      if 2.0 <= r.get('feat_dict', {}).get('spr', 0) < 4.0)
+        assert spr_med >= 22, f'spr_med pool yield {spr_med} below 22 minimum'
+
+    def test_e2b_pool_total_post_expansion(self):
+        """Post-expansion Mode B pool size must be >= 250 (target 261)."""
+        path = os.path.join(REPO, 'data',
+                            'corpus_revision_pool_mode_b_2026-04-27.jsonl')
+        if not os.path.exists(path):
+            pytest.skip(f'{path} not yet generated')
+        pool_size = sum(1 for _ in open(path))
+        assert pool_size >= 250, (
+            f'Mode B pool {pool_size} below 250 (115 + 146 = 261 expected)'
+        )
