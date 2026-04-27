@@ -1348,3 +1348,232 @@ class TestNfdBoundaryTurnDecisionTemplates:
                 f"F4: boundary template {r['template']} has nut_flush_block=0. "
                 f"Hero must hold Ace of flush suit for nut_flush_block=1."
             )
+
+
+# ============================================================================
+# F5: Rare-category-first allocator tests
+# Phase 4 directive: MAIN_TERMINAL_BUILD_EXECUTE_PHASE4_DIRECTIVE_2026-04-27.md
+# (master 43a80bb). Replaces greedy FCFS allocator that consumed MAGG records
+# via earlier PFA quota.
+# ============================================================================
+class TestRareCategoryFirstAllocator:
+    """F5: rare-category-first Phase A allocator tests."""
+
+    @staticmethod
+    def _make_rec(sit_id, hero_cards, board, hero_pos='HJ', street='river',
+                  feat_overrides=None, generation_source='test'):
+        """Build a minimal record with a default feat_dict + overrides."""
+        feat = {
+            'is_preflop_aggressor': 0,
+            'has_flush_draw': 0,
+            'nut_flush_block': 0,
+            'villain_air_pct': 0.0,
+            'is_monster': 0,
+            'villain_aggression_count': 0,
+            'num_callers_to_bet': 0,
+            'spr': 5.0,
+        }
+        if feat_overrides:
+            feat.update(feat_overrides)
+        return {
+            'situation_id': sit_id,
+            'hero_cards': hero_cards,
+            'board': board,
+            'hero_position': hero_pos,
+            'street': street,
+            'feat_dict': feat,
+            'generation_source': generation_source,
+        }
+
+    def _import_phase_a(self):
+        """Lazy-import to avoid path issues if test runs in isolation."""
+        sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..',
+                                        'scripts'))
+        import build_corpus_revision_500_hand as mod
+        return mod
+
+    def test_targets_dict_matches_phase_a_quotas(self):
+        """Structural: PHASE_A_QUOTAS dict has expected 12 categories summing to 355."""
+        mod = self._import_phase_a()
+        expected = {
+            'pfa': 80, 'magg': 40, 'bac': 20, 'monster': 20,
+            'nfd_raise': 20, 'nfd_call': 20, 'nfd_boundary': 10,
+            'rule11': 10, 'donk': 25, 'sb': 20,
+            'spr_std': 50, 'spr_med': 40,
+        }
+        assert mod.PHASE_A_QUOTAS == expected, (
+            f"PHASE_A_QUOTAS mismatch: got {mod.PHASE_A_QUOTAS}"
+        )
+        assert sum(mod.PHASE_A_QUOTAS.values()) == 355
+
+    def test_magg_records_assigned_to_magg_not_pfa(self):
+        """Synthetic pool: 10 MAGG-AND-PFA records + 100 PFA-only records.
+        Old greedy allocator: PFA quota 80 consumes the 10 MAGG records first
+        (alongside 70 PFA-only), then MAGG quota 40 finds 0 left → MAGG=0.
+        New rare-cat-first allocator: MAGG (scarcity 40/10=4.0) > PFA
+        (80/110=0.73), so MAGG records get assigned to MAGG → MAGG=10.
+        """
+        mod = self._import_phase_a()
+        import random as _random
+
+        # 10 MAGG records that ALSO satisfy PFA (multi-membership)
+        magg_pfa_recs = []
+        for i in range(10):
+            r = self._make_rec(
+                sit_id=f'magg_pfa_{i}',
+                hero_cards=['Ah', 'Kh'],
+                board=['9c', '5d', '2s', f'{i+1}h', f'{(i+1)%13+1}d'],  # unique boards
+                feat_overrides={
+                    'villain_aggression_count': 2,
+                    'is_preflop_aggressor': 1,
+                    'spr': 5.0,
+                },
+            )
+            magg_pfa_recs.append(r)
+
+        # 100 PFA-only records
+        pfa_only_recs = []
+        for i in range(100):
+            r = self._make_rec(
+                sit_id=f'pfa_only_{i}',
+                hero_cards=['Qs', 'Js'],
+                board=[f'{(i % 13) + 1}c', '7d', f'{(i+5) % 13 + 1}h'],
+                hero_pos='CO',
+                street='flop',
+                feat_overrides={
+                    'is_preflop_aggressor': 1,
+                    'spr': 5.0,
+                },
+            )
+            pfa_only_recs.append(r)
+
+        pool = magg_pfa_recs + pfa_only_recs
+        rng = _random.Random(42)
+        selected, used_fps = mod._phase_a_select(pool, set(), rng)
+
+        # Verify MAGG records made it (would be 0 under greedy allocator)
+        magg_in_selected = [r for r in selected
+                            if r.get('feat_dict', {}).get('villain_aggression_count', 0) >= 2
+                            and r.get('street') == 'river']
+        assert len(magg_in_selected) >= 10, (
+            f"Expected at least 10 MAGG records assigned to MAGG quota; "
+            f"got {len(magg_in_selected)}. Old greedy allocator regression."
+        )
+
+    def test_scarcity_ordering(self):
+        """Pool with rare-cat (5 MAGG, target 40 → scarcity 8.0) and abundant-cat
+        (100 PFA-only, target 80 → scarcity 0.8). Rare-cat fills first."""
+        mod = self._import_phase_a()
+        import random as _random
+
+        # 5 MAGG-only records
+        magg_recs = []
+        for i in range(5):
+            r = self._make_rec(
+                sit_id=f'magg_{i}',
+                hero_cards=['Td', 'Tc'],
+                board=['9c', '5d', '2s', '7h', f'{i+1}d'],
+                feat_overrides={
+                    'villain_aggression_count': 2,
+                    'spr': 5.0,
+                },
+            )
+            magg_recs.append(r)
+
+        # 100 PFA-only records
+        pfa_recs = []
+        for i in range(100):
+            r = self._make_rec(
+                sit_id=f'pfa_{i}',
+                hero_cards=['Qs', 'Js'],
+                board=[f'{(i % 13) + 1}c', '8d', f'{(i+3) % 13 + 1}h'],
+                hero_pos='CO',
+                street='flop',
+                feat_overrides={
+                    'is_preflop_aggressor': 1,
+                    'spr': 5.0,
+                },
+            )
+            pfa_recs.append(r)
+
+        pool = magg_recs + pfa_recs
+        rng = _random.Random(42)
+        selected, used_fps = mod._phase_a_select(pool, set(), rng)
+
+        magg_in_selected = [r for r in selected
+                            if r.get('feat_dict', {}).get('villain_aggression_count', 0) >= 2]
+        # All 5 MAGG records should be assigned (rare-cat-first)
+        assert len(magg_in_selected) == 5, (
+            f"Expected all 5 MAGG records to fill (target 40, yield 5); "
+            f"got {len(magg_in_selected)}"
+        )
+
+    def test_no_fingerprint_dupes_after_assignment(self):
+        """Assigned records have unique fingerprints (no double-assignment)."""
+        mod = self._import_phase_a()
+        import random as _random
+
+        # Mix of records across categories
+        pool = []
+        for i in range(50):
+            pool.append(self._make_rec(
+                sit_id=f'mix_{i}',
+                hero_cards=['Ah', 'Kh'],
+                board=['9c', '5d', f'{i+1}s', '7h', f'{(i+5)%13+1}d'],
+                feat_overrides={
+                    'is_preflop_aggressor': i % 2,
+                    'villain_aggression_count': 2 if i % 5 == 0 else 0,
+                    'spr': 5.0 if i % 3 == 0 else 3.0,
+                },
+            ))
+
+        rng = _random.Random(42)
+        selected, used_fps = mod._phase_a_select(pool, set(), rng)
+
+        # Compute fingerprints of selected
+        from collections import Counter
+        fps = [mod._fingerprint_record(r) for r in selected]
+        fp_counts = Counter(fps)
+        dupes = {fp: c for fp, c in fp_counts.items() if c > 1}
+        assert not dupes, f"Duplicate fingerprints in selected: {dupes}"
+
+    def test_classify_record_membership_correctness(self):
+        """_classify_record returns the correct category set per spec."""
+        mod = self._import_phase_a()
+
+        # MAGG-AND-PFA-AND-spr_std
+        rec = self._make_rec(
+            sit_id='multi',
+            hero_cards=['As', 'Ks'],
+            board=['9c', '5d', '2s', '7h', '4d'],
+            feat_overrides={
+                'villain_aggression_count': 2,
+                'is_preflop_aggressor': 1,
+                'spr': 5.0,
+            },
+        )
+        cats = mod._classify_record(rec)
+        assert 'magg' in cats, f"Expected 'magg' in cats; got {cats}"
+        assert 'pfa' in cats, f"Expected 'pfa' in cats; got {cats}"
+        assert 'spr_std' in cats, f"Expected 'spr_std' in cats; got {cats}"
+
+        # NFD-boundary classification routing
+        rec_nfd_air_high = self._make_rec(
+            sit_id='nfd_air_high',
+            hero_cards=['Ah', 'Jh'],
+            board=['Kh', '8h', '3d'],
+            street='flop',
+            feat_overrides={
+                'has_flush_draw': 1,
+                'nut_flush_block': 1,
+                'villain_air_pct': 0.30,
+                'spr': 5.0,
+            },
+        )
+        cats_air_high = mod._classify_record(rec_nfd_air_high)
+        # nfd_raise OR nfd_boundary (depends on _validate_nfd_boundary semantics);
+        # at minimum, it should be one of the NFD subcategories
+        nfd_cats = {'nfd_raise', 'nfd_call', 'nfd_boundary'}
+        assert nfd_cats & cats_air_high, (
+            f"Expected at least one NFD subcategory in {cats_air_high}"
+        )
