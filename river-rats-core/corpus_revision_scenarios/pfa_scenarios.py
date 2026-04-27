@@ -604,6 +604,323 @@ _PFA_TEMPLATES: List[dict] = [
          ('flop', 'BB', 'check'), ('flop', 'CO', 'check'), ('flop', 'BTN', 'check'),
      ],
      'label': 'PFA-8h'},
+
+    # ─────────────────────────────────────────────────────────────────
+    # SPR-MED Group (Phase 8 v3.6): 8 templates routing to spr_med category.
+    # Pot 28-45 BB → SPR 2.22-3.57 (in spr_med band 2.0 <= SPR < 4.0).
+    # Hero CO or BTN (NOT SB), flop decisions, villain_aggression_count=0.
+    # Category set: {pfa, spr_med}; spr_med scarcity (0.83) > pfa (0.58) → routes spr_med.
+    # ─────────────────────────────────────────────────────────────────
+    # SPR-MED-01: CO opener, BTN+BB callers, pot 30 → SPR 3.333
+    {'hero_pos': 'CO', 'villain_positions': ['BTN', 'BB'],
+     'opener_position': 'CO',
+     'board': ['Kh', '8s', '3d'],
+     'hero_cards': ['Ac', 'Jc'],
+     'pot': 30.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'SPR-MED-01'},
+    # SPR-MED-02: BTN opener, SB+BB callers, pot 28 → SPR 3.571
+    {'hero_pos': 'BTN', 'villain_positions': ['SB', 'BB'],
+     'opener_position': 'BTN',
+     'board': ['Qd', '7c', '4h'],
+     'hero_cards': ['Kh', 'Kd'],  # overpair
+     'pot': 28.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'SB', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'SPR-MED-02'},
+    # SPR-MED-03: CO opener, pot 32 → SPR 3.125
+    {'hero_pos': 'CO', 'villain_positions': ['BTN', 'BB'],
+     'opener_position': 'CO',
+     'board': ['Jc', '5s', '2d'],
+     'hero_cards': ['Qd', 'Qh'],  # overpair
+     'pot': 32.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'SPR-MED-03'},
+    # SPR-MED-04: BTN opener, SB+BB callers, pot 35 → SPR 2.857
+    # NIT-1 fix (round 8): blueprint had typo extra apostrophe in villain_positions key.
+    {'hero_pos': 'BTN', 'villain_positions': ['SB', 'BB'],
+     'opener_position': 'BTN',
+     'board': ['As', '6c', '3h'],
+     'hero_cards': ['Th', 'Td'],  # underpair
+     'pot': 35.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'SB', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'SPR-MED-04'},
+    # SPR-MED-05: CO opener, pot 38 → SPR 2.632
+    {'hero_pos': 'CO', 'villain_positions': ['BTN', 'BB'],
+     'opener_position': 'CO',
+     'board': ['Td', '4s', '2c'],
+     'hero_cards': ['Ah', 'Qs'],  # overcards
+     'pot': 38.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'SPR-MED-05'},
+    # SPR-MED-06: BTN opener, SB+BB callers, pot 40 → SPR 2.500
+    {'hero_pos': 'BTN', 'villain_positions': ['SB', 'BB'],
+     'opener_position': 'BTN',
+     'board': ['8c', '6d', '3s'],
+     'hero_cards': ['Jh', 'Jd'],  # overpair
+     'pot': 40.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'SB', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'SPR-MED-06'},
+    # SPR-MED-07: CO opener, pot 43 → SPR 2.326
+    {'hero_pos': 'CO', 'villain_positions': ['BTN', 'BB'],
+     'opener_position': 'CO',
+     'board': ['9h', '4d', '2s'],
+     'hero_cards': ['Kc', 'Kh'],  # overpair
+     'pot': 43.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'SPR-MED-07'},
+    # SPR-MED-08: BTN opener, SB+BB callers, pot 45 → SPR 2.222
+    {'hero_pos': 'BTN', 'villain_positions': ['SB', 'BB'],
+     'opener_position': 'BTN',
+     'board': ['7d', '5h', '3c'],
+     'hero_cards': ['Ad', 'Kc'],  # overcards
+     'pot': 45.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'SB', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'SPR-MED-08'},
+
+    # ─────────────────────────────────────────────────────────────────
+    # SPR-MED v3.6.1 supplement (Phase 8): 3 ADDITIONAL spr_med templates.
+    # Per ml-architect round 8 CHANGES_REQUESTED material accounting fix:
+    # 3 MAGG-A pot=50 records were filling spr_med pre-adjustment; raising
+    # their pot REMOVES them from spr_med pool (costs 3 fills, doesn't free
+    # 3 slots). Net spr_med gain = 32 - 3 + 8 = 37; need 3 more for 40.
+    # Pattern matches SPR-MED-01..08; novel boards.
+    # ─────────────────────────────────────────────────────────────────
+    # SPR-MED-09: CO opener, pot 36 → SPR 2.778
+    {'hero_pos': 'CO', 'villain_positions': ['BTN', 'BB'],
+     'opener_position': 'CO',
+     'board': ['Jh', '7s', '3c'],
+     'hero_cards': ['Ac', 'Kd'],  # overcards
+     'pot': 36.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'SPR-MED-09'},
+    # SPR-MED-10: BTN opener, SB+BB callers, pot 39 → SPR 2.564
+    {'hero_pos': 'BTN', 'villain_positions': ['SB', 'BB'],
+     'opener_position': 'BTN',
+     'board': ['9d', '7c', '2h'],
+     'hero_cards': ['Ah', 'Ad'],  # overpair (AA)
+     'pot': 39.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'SB', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'SPR-MED-10'},
+    # SPR-MED-11: CO opener, pot 42 → SPR 2.381
+    {'hero_pos': 'CO', 'villain_positions': ['BTN', 'BB'],
+     'opener_position': 'CO',
+     'board': ['Th', '6d', '4s'],
+     'hero_cards': ['Ks', 'Qc'],  # overcards
+     'pot': 42.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'SPR-MED-11'},
+
+    # ─────────────────────────────────────────────────────────────────
+    # PFA-9 Group (Phase 8 v3.6): 18 pure-pfa templates routing to pfa.
+    # Pot 14-20 BB → SPR 5.0-7.14 (spr_std band).
+    # Flop decisions, villain_aggression_count=0 (no magg eligibility).
+    # Category set: {pfa, spr_std}; pfa scarcity (0.58) > spr_std (~0.39) → routes pfa.
+    # ─────────────────────────────────────────────────────────────────
+    # PFA-9a: HJ opener, BTN+BB callers, pot 14 → SPR 7.14
+    {'hero_pos': 'HJ', 'villain_positions': ['BTN', 'BB'],
+     'opener_position': 'HJ',
+     'board': ['Ad', '5c', '3h'],
+     'hero_cards': ['Kh', 'Ks'],  # overpair
+     'pot': 14.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'HJ', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-9a'},
+    # PFA-9b: BTN opener, SB+BB callers, pot 15 → SPR 6.67
+    {'hero_pos': 'BTN', 'villain_positions': ['SB', 'BB'],
+     'opener_position': 'BTN',
+     'board': ['Kc', '6h', '2s'],
+     'hero_cards': ['Qs', 'Qd'],  # overpair
+     'pot': 15.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'SB', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-9b'},
+    # PFA-9c: CO opener, BTN+BB callers, pot 16 → SPR 6.25
+    {'hero_pos': 'CO', 'villain_positions': ['BTN', 'BB'],
+     'opener_position': 'CO',
+     'board': ['Th', '8d', '4c'],
+     'hero_cards': ['Jc', 'Js'],  # overpair
+     'pot': 16.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-9c'},
+    # PFA-9d: HJ opener, CO+BB callers, pot 15 → SPR 6.67
+    {'hero_pos': 'HJ', 'villain_positions': ['CO', 'BB'],
+     'opener_position': 'HJ',
+     'board': ['7h', '6c', '2d'],
+     'hero_cards': ['As', 'Ah'],  # overpair (AA)
+     'pot': 15.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'HJ', 'raise'), ('preflop', 'CO', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-9d'},
+    # PFA-9e: BTN opener, CO+SB callers, BB folds, pot 20 → SPR 5.0 (PFA-7 convention)
+    {'hero_pos': 'BTN', 'villain_positions': ['CO', 'SB'],
+     'opener_position': 'BTN',
+     'board': ['Qc', '4d', '2h'],
+     'hero_cards': ['Kd', 'Jh'],  # overcards
+     'pot': 20.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'CO', 'call'),
+         ('preflop', 'SB', 'call'), ('preflop', 'BB', 'fold'),
+     ],
+     'label': 'PFA-9e'},
+    # PFA-9f: CO opener, pot 14 → SPR 7.14
+    {'hero_pos': 'CO', 'villain_positions': ['BTN', 'BB'],
+     'opener_position': 'CO',
+     'board': ['8s', '7d', '3c'],
+     'hero_cards': ['Ac', 'Kh'],  # overcards
+     'pot': 14.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-9f'},
+    # PFA-9g: HJ opener, CO+BB callers, pot 15 → SPR 6.67
+    {'hero_pos': 'HJ', 'villain_positions': ['CO', 'BB'],
+     'opener_position': 'HJ',
+     'board': ['6d', '4s', '2c'],
+     'hero_cards': ['Qs', 'Jh'],  # overcards
+     'pot': 15.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'HJ', 'raise'), ('preflop', 'CO', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-9g'},
+    # PFA-9h: BTN opener, SB+BB callers, pot 16 → SPR 6.25
+    {'hero_pos': 'BTN', 'villain_positions': ['SB', 'BB'],
+     'opener_position': 'BTN',
+     'board': ['Ah', '9d', '5s'],
+     'hero_cards': ['Kc', 'Qh'],  # overcards
+     'pot': 16.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'SB', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-9h'},
+    # PFA-9i: CO opener, pot 15 → SPR 6.67
+    {'hero_pos': 'CO', 'villain_positions': ['BTN', 'BB'],
+     'opener_position': 'CO',
+     'board': ['Jh', '4d', '2c'],
+     'hero_cards': ['Th', 'Tc'],  # underpair
+     'pot': 15.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-9i'},
+    # PFA-9j: HJ opener, BTN+BB callers, pot 14 → SPR 7.14
+    {'hero_pos': 'HJ', 'villain_positions': ['BTN', 'BB'],
+     'opener_position': 'HJ',
+     'board': ['Kd', '5h', '3c'],
+     'hero_cards': ['Ah', 'Jd'],  # overcards
+     'pot': 14.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'HJ', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-9j'},
+    # PFA-9k: BTN opener, CO+SB callers, BB folds, pot 20 → SPR 5.0 (PFA-7 convention)
+    {'hero_pos': 'BTN', 'villain_positions': ['CO', 'SB'],
+     'opener_position': 'BTN',
+     'board': ['5s', '3d', '2h'],
+     'hero_cards': ['Kh', 'Ks'],  # overpair
+     'pot': 20.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'CO', 'call'),
+         ('preflop', 'SB', 'call'), ('preflop', 'BB', 'fold'),
+     ],
+     'label': 'PFA-9k'},
+    # PFA-9l: CO opener, pot 16 → SPR 6.25
+    {'hero_pos': 'CO', 'villain_positions': ['BTN', 'BB'],
+     'opener_position': 'CO',
+     'board': ['Qh', '3s', '2d'],
+     'hero_cards': ['Ac', 'Ks'],  # overcards
+     'pot': 16.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-9l'},
+    # PFA-9m: HJ opener, CO+BB callers, pot 15 → SPR 6.67
+    {'hero_pos': 'HJ', 'villain_positions': ['CO', 'BB'],
+     'opener_position': 'HJ',
+     'board': ['Tc', '9d', '4h'],
+     'hero_cards': ['Ks', 'Kd'],  # overpair
+     'pot': 15.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'HJ', 'raise'), ('preflop', 'CO', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-9m'},
+    # PFA-9n: BTN opener, SB+BB callers, pot 15 → SPR 6.67
+    {'hero_pos': 'BTN', 'villain_positions': ['SB', 'BB'],
+     'opener_position': 'BTN',
+     'board': ['7c', '5d', '2h'],
+     'hero_cards': ['Jh', 'Jd'],  # overpair
+     'pot': 15.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'SB', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-9n'},
+    # PFA-9o: CO opener, pot 14 → SPR 7.14
+    {'hero_pos': 'CO', 'villain_positions': ['BTN', 'BB'],
+     'opener_position': 'CO',
+     'board': ['9s', '7h', '4d'],
+     'hero_cards': ['Ah', 'Qd'],  # overcards
+     'pot': 14.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-9o'},
+    # PFA-9p: HJ opener, CO+BB callers, pot 14 → SPR 7.14
+    {'hero_pos': 'HJ', 'villain_positions': ['CO', 'BB'],
+     'opener_position': 'HJ',
+     'board': ['4h', '3c', '2d'],
+     'hero_cards': ['Kd', 'Qh'],  # overcards
+     'pot': 14.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'HJ', 'raise'), ('preflop', 'CO', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-9p'},
+    # PFA-9q: BTN opener, CO+SB callers, BB folds, pot 20 → SPR 5.0 (PFA-7 convention)
+    {'hero_pos': 'BTN', 'villain_positions': ['CO', 'SB'],
+     'opener_position': 'BTN',
+     'board': ['Jd', '8c', '3h'],
+     'hero_cards': ['Ah', 'Ac'],  # overpair (AA)
+     'pot': 20.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'CO', 'call'),
+         ('preflop', 'SB', 'call'), ('preflop', 'BB', 'fold'),
+     ],
+     'label': 'PFA-9q'},
+    # PFA-9r: CO opener, pot 15 → SPR 6.67
+    {'hero_pos': 'CO', 'villain_positions': ['BTN', 'BB'],
+     'opener_position': 'CO',
+     'board': ['6c', '5h', '2s'],
+     'hero_cards': ['Kd', 'Qs'],  # overcards
+     'pot': 15.0, 'to_call': 0.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'CO', 'raise'), ('preflop', 'BTN', 'call'), ('preflop', 'BB', 'call'),
+     ],
+     'label': 'PFA-9r'},
 ]
 
 

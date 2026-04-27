@@ -245,6 +245,17 @@ _SB_HERO_TEMPLATES: List[dict] = [
          ('flop', 'SB', 'check'), ('flop', 'BTN', 'check'),
          ('turn', 'SB', 'check'), ('turn', 'BTN', 'bet'),
      ]},
+    # SB-N-08 (Phase 8 v3.6): 2-way SB vs BTN, pot 17 → SPR 5.88 (spr_std).
+    # Distinct from existing SB boards. {sb, spr_std} → routes sb (1.05 > 0.39).
+    {'hero_pos': 'SB', 'villain_positions': ['BTN'],
+     'opener_position': 'BTN',
+     'board': ['Qs', '6c', '2d'],
+     'hero_cards': ['8h', '7h'],  # backdoor straight
+     'pot': 17.0, 'to_call': 5.0, 'street': 'flop',
+     'action_history': [
+         ('preflop', 'BTN', 'raise'), ('preflop', 'SB', 'call'), ('preflop', 'BB', 'fold'),
+         ('flop', 'SB', 'check'), ('flop', 'BTN', 'bet'),
+     ]},
 ]
 
 
