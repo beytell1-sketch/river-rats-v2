@@ -1,19 +1,32 @@
 ---
 date: 2026-05-04
-from: River Rats QC
+from: River Rats QC stream (standalone, ~/river-rats-qc/)
 to: Main terminal (orchestrator) · LEAD-PROGRAMMER (builder)
-re: PR #126 pre-merge audit — APPROVE for merge; 2 NIT-class prose inconsistencies (advisory)
+re: PR #126 audit (now POST-MERGE) — CONVERGED APPROVE with parallel-dispatched QC subagent; +1 SOLO NIT
 severity: NIT (no HIGH / MEDIUM / LOW)
-status: FLAG → APPROVE; QC-side hold lifts
-test-class: TC-23-CONTENT + TC-23-CANONICAL-STATE + V-Source-1/3/4 + V-X4
-multi-expert verdict: SOLO (mechanical sub-vector audit per orchestrator dispatch scope)
+status: POST-MERGE confirmation — PR #126 already merged at d7d2cdd per orchestrator's parallel QC verdict; this finding adds 1 NIT not caught by the parallel subagent
+test-class: TC-23-CONTENT + TC-23-CANONICAL-STATE + V-Source-1/3/4 + V-X4 + TC-15 (multi-expert convergence)
+multi-expert verdict: **CONVERGED** with `/tmp/qc_125d_findings.md` (orchestrator's parallel QC subagent) on APPROVE + NIT-2; **SOLO** add of NIT-1
 ---
 
-# QC Finding — PR #126 pre-merge audit (TC-23 sub-vector): APPROVE
+# QC Finding — PR #126 audit (TC-23 sub-vector): CONVERGED APPROVE + 1 SOLO NIT
+
+## Process note (read first)
+
+This finding was produced **independently and in parallel** with the QC subagent the orchestrator dispatched as part of the three-way A/B/C decision sequence (referenced as `/tmp/qc_125d_findings.md` in `MAIN_TERMINAL_PHASE125D_SYNTHESIS_OWNER_GATE_2026-05-04.md` line 136). Neither voice was aware of the other during execution.
+
+The orchestrator's synthesis already merged PR #126 (commit `d7d2cdd`) on the parallel subagent's APPROVE verdict before this finding landed. **No corrective action needed** — verdicts converge on the merge decision.
+
+This finding serves three purposes now that it lands post-merge:
+1. **TC-15 multi-expert convergence record** — independent confirmation of the parallel subagent's APPROVE
+2. **+1 SOLO NIT (V-X4)** that the parallel subagent missed
+3. **Process observation** — the orchestrator dispatched QC via fallback subagent without routing through the standalone QC stream session that was active. Not a problem this cycle (CONVERGED), but worth noting for future cycles.
 
 ## Headline
 
-**APPROVE PR #126 for merge.** All three orchestrator-dispatched sub-axes (diff scope + citation existence + provenance) clear cleanly. Two NIT-class prose inconsistencies surfaced; substance is correct in both. QC's hold on PR #126 lifts. Other gates (gto-expert, ml-architect, owner WHAT decision) remain.
+**CONVERGED APPROVE.** Both QC voices (this standalone stream + orchestrator's parallel-dispatched subagent) independently APPROVE PR #126. Both flag the NIT-2 "promoted to /tmp" wording cleanup. This standalone audit additionally surfaces NIT-1 (V-X4 carryforward overclaim in BLOCKED comm) which the parallel subagent missed.
+
+All three orchestrator-dispatched sub-axes (diff scope + citation existence + provenance) cleared cleanly. Two NIT-class prose inconsistencies; substance correct in both. PR #126 now merged.
 
 ## Audit scope (per `MAIN_TERMINAL_PHASE125D_GATE_FAIL_DECISION_2026-05-04.md`)
 
@@ -75,6 +88,28 @@ NIT-1 is worth noting as a **sub-pattern** worth tracking in `incident_pattern_l
 
 ## Status
 
-**QC-side gate cleared. PR #126 may merge whenever the orchestrator and other reviewers (gto-expert, ml-architect) clear and the owner makes the WHAT decision.**
+**POST-MERGE confirmation:** PR #126 already merged (`d7d2cdd`) on parallel-dispatched QC subagent's APPROVE per `MAIN_TERMINAL_PHASE125D_SYNTHESIS_OWNER_GATE_2026-05-04.md`. This standalone QC voice converges on APPROVE; no action change.
 
-Two advisory NITs: orchestrator + builder decide whether to fix-forward or leave as-is. They do not block.
+**Owner WHAT decision (A/B/C/C') is the live gate**, not this finding.
+
+Two advisory NITs (NIT-1 SOLO + NIT-2 CONVERGED): orchestrator + builder decide whether to fix-forward or leave as-is. They do not gate anything.
+
+## TC-15 multi-expert convergence record
+
+| Axis | Standalone QC stream verdict | Parallel QC subagent verdict (per synthesis lines 64-73) | Outcome |
+|---|---|---|---|
+| Overall | APPROVE | APPROVE | **CONVERGED** |
+| Diff scope | CLEAN (4 files, +2097/-0, no model artifact) | "Diff scope — exactly 4 files; zero edits to existing source surfaces; no model artifact" | **CONVERGED** |
+| Citation existence | CLEAN (8/8 paths, 4/4 PRs, 6/6 symbols) | "Citation existence (TC-23) — zero drift at current master HEAD; all citations verified live" | **CONVERGED** |
+| Provenance | CLEAN (warm-start SHA256 bit-for-bit; 10/10 numerical claims; e3c0dfc HEAD) | "Provenance — warm-start anchor SHA256 9f3845bb...c366900 matches; xgboost/numpy/python versions match" | **CONVERGED** |
+| NIT-2 ("promoted to /tmp") | flagged | flagged ("trainer report line 261 says...wording cleanup, technical state correct") | **CONVERGED** |
+| NIT-1 (BLOCKED comm "Three files NOT four" V-X4) | flagged | NOT flagged | **SOLO** (this stream) |
+| Mixed-direction decomposition cross-check | empirically corroborated (5+2+2 = 9 failures = 31/40 holds) | NOT in subagent scope | **SOLO** (this stream) — but converges with gto-expert finding 2 in synthesis |
+
+**Confidence boost:** TC-15 protocol-diversity outcome as expected — CONVERGED at gate-decision level (high confidence on APPROVE) + DIVERGED at finding level (one extra NIT surfaced by single voice). This is the "ideal" multi-expert pattern per `~/river-rats-qc/learning/test_class_registry.md` TC-15.
+
+## Test class implication updated
+
+- **TC-15** instance recorded — second pre-merge audit demonstration of CONVERGE-at-gate / DIVERGE-at-finding pattern (first was 2026-04-26 TC-10 first-run on PRs #5-#9). Pattern now confirmed on a second high-stakes audit.
+- **NIT-1 surfacing pattern** — sub-pattern of incident #18 (carryforward overclaim) — comm self-describes its ship state but ship state changes during PR finalization. Worth tracking; promote to its own pattern if it recurs.
+- **Process observation** — dispatching QC via fallback subagent in parallel with active standalone QC stream is a TC-18 (reviewer-pool diversity) sub-case. Not a process bug this time (CONVERGED), but if the standalone QC voice were to DIVERGE significantly from a parallel subagent verdict in the future, that's a process integrity question worth surfacing.
