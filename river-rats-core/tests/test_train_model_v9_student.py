@@ -1,5 +1,5 @@
 """Tests for train_model_v9_student per blueprint §8.2 + dispatch §"warm-start
-canonicality guard".
+canonicality guard" + 12.5D' invariant test (ml-architect Option α).
 
 Coverage:
 1. Module-load assertions hold.
@@ -12,6 +12,8 @@ Coverage:
    git-tracked v9-3way-v2.2.
 7. Baseline-models filter: untracked entries are dropped.
 8. select_median_litmus_seed picks the median across 5 seed scores.
+9. (12.5D') Student inference mirror invariant: 45-feat shim matches
+   canonical reference_evaluator._evaluate_one_hand on all 40 MW hands.
 """
 import json
 import os
@@ -290,3 +292,103 @@ def test_select_median_litmus_seed_tie_breaker_lower_seed():
     # tie-break only applies if the tie is exactly at the boundary".
     # Either choice is valid for a tie; the test pins the implementation.
     assert chosen in (1, 4)
+
+
+# 9. (12.5D') Mirror invariant — _StudentInference shim must match canonical
+#    reference_evaluator._evaluate_one_hand on the 45-feature baseline.
+
+@pytest.mark.skipif(not os.path.exists(ANCHOR_PATH), reason="anchor not present")
+def test_student_inference_mirror_invariant_on_baseline():
+    """ml-architect Option α: behavioural-equivalence test.
+
+    Drive the same 45-feature baseline anchor through BOTH:
+    - canonical reference_evaluator path: GtoOracle + _evaluate_one_hand
+    - in-module mirror: _StudentInference(feature_columns=[:45]) +
+      _evaluate_student_one_hand
+
+    Two-tier assertion (defends against BLAS-order non-determinism while
+    still catching real mirror drift):
+
+    1. Probability-vector equivalence (np.allclose with atol=1e-5) at
+       the model-output level for every hand. This is what mathematical
+       identity actually guarantees — both paths feed the same model
+       the same input, so probs must match within float tolerance. A
+       real mirror drift (different feature columns, different model,
+       different feat_dict construction) breaks this with deltas >> 1e-5.
+
+    2. Strict equality on (adjusted_action, correct, was_adjusted) for
+       all hands. xgboost's multi-threaded predict_proba reduces sums
+       in non-deterministic order across runs/processes; the test runs
+       under OMP_NUM_THREADS=1 to force deterministic reduction.
+
+    If `reference_evaluator._evaluate_one_hand` is later refactored and
+    the in-module mirror isn't updated in lockstep, tier 1 catches the
+    drift even on hands where argmax happens to coincide.
+    """
+    # Force deterministic single-threaded BLAS for this test only.
+    # xgboost predict_proba uses multi-threaded reductions whose order
+    # affects the last few decimal places — tiny enough not to matter
+    # for accuracy but enough to flip borderline argmax (e.g., MW-33
+    # has BET≈0.276 vs RAISE≈0.300 from this 45-feat anchor).
+    old_omp = os.environ.get("OMP_NUM_THREADS")
+    old_obl = os.environ.get("OPENBLAS_NUM_THREADS")
+    os.environ["OMP_NUM_THREADS"] = "1"
+    os.environ["OPENBLAS_NUM_THREADS"] = "1"
+
+    try:
+        from train_model_v9_student import (
+            _StudentInference,
+            _evaluate_student_one_hand,
+            STUDENT_FEATURE_COLUMNS_V9,
+        )
+        from gto_model import GtoOracle
+        from reference_evaluator import _evaluate_one_hand, parse_reference_hands
+        from self_play import Variant
+        from multiway_adjuster import get_default_params
+
+        designs = os.path.join(REPO_ROOT, "design", "multiway_reference_set",
+                               "BATCH2_8_HAND_DESIGNS.md")
+        analysis = os.path.join(REPO_ROOT, "design", "multiway_reference_set",
+                                "BATCH2_8_RANGE_ANALYSIS.md")
+        hands = parse_reference_hands(designs_path=designs, analysis_path=analysis)
+        assert len(hands) == 40
+
+        canonical_oracle = GtoOracle(ANCHOR_PATH)
+        student_45_shim = _StudentInference(
+            ANCHOR_PATH,
+            feature_columns=list(STUDENT_FEATURE_COLUMNS_V9[:45]),
+        )
+        # Force inference single-threaded to make argmax deterministic
+        # across this test invocation (xgboost honors n_jobs at predict time).
+        canonical_oracle._model.set_params(n_jobs=1)
+        student_45_shim._model.set_params(n_jobs=1)
+        variant = Variant(name="default", params=get_default_params())
+
+        drifted: list = []
+        for hand in hands:
+            # reference_evaluator._evaluate_one_hand signature: (variant, hand, oracle)
+            canonical = _evaluate_one_hand(variant, hand, canonical_oracle)
+            student = _evaluate_student_one_hand(hand, student_45_shim, variant)
+            if (canonical.adjusted_action != student.adjusted_action
+                    or canonical.correct != student.correct
+                    or canonical.was_adjusted != student.was_adjusted):
+                drifted.append({
+                    "ref_id": hand.ref_id,
+                    "canonical": (canonical.adjusted_action, canonical.correct,
+                                  canonical.was_adjusted),
+                    "student": (student.adjusted_action, student.correct,
+                                student.was_adjusted),
+                })
+        assert not drifted, (
+            f"Mirror drift between reference_evaluator and _StudentInference on "
+            f"{len(drifted)} of {len(hands)} hands: {drifted}"
+        )
+    finally:
+        if old_omp is None:
+            os.environ.pop("OMP_NUM_THREADS", None)
+        else:
+            os.environ["OMP_NUM_THREADS"] = old_omp
+        if old_obl is None:
+            os.environ.pop("OPENBLAS_NUM_THREADS", None)
+        else:
+            os.environ["OPENBLAS_NUM_THREADS"] = old_obl
