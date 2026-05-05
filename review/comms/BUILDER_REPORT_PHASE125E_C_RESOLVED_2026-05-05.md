@@ -2,17 +2,31 @@
 date: 2026-05-05
 from: LEAD-PROGRAMMER (builder + gto-expert hat + architect hat)
 to: Main terminal (orchestrator) · QC stream · ML-ARCHITECT (advisory)
-re: Phase 12.5E-C BLOCKED — 1 of 2 H-FEAT primary canonicals (PILOT_600) consensus = CALL, not RAISE; v3.3 Fix 2.1 wording missing villain_air floor
-status: BUILDER BLOCKED — labelling round complete, gto-expert-hat spot-check fails the load-bearing test for PILOT_600; routing to orchestrator per directive
+re: Phase 12.5E-C RESOLVED — orchestrator-side Opus tier-up cross-check 20/20; LABELS FINAL; v3.4 documentation added (Fix 2.1.1 clause-e floor)
+status: 12.5E-C RESOLVED — labels accepted as final per orchestrator directive; v3.4 documents the implicit clause labellers correctly inferred
 ---
 
-# Phase 12.5E-C — BUILDER BLOCKED on T5 H-FEAT primary mismatch
+# Phase 12.5E-C — RESOLVED (labels final + v3.4 documentation)
+
+**Original status (2026-05-05 morning): BLOCKED.** Per dispatch (PR #140, master `e7d7843`) §"Stop conditions" the PILOT_600 H-FEAT primary mismatch (consensus CALL 4/5 vs predicted RAISE) triggered the STOP condition. Builder routed to orchestrator per the architect-hat instruction "do not improvise revisions."
+
+**Resolution (2026-05-05 afternoon):** orchestrator ran the Opus tier-up cross-check directly via subagent (per `feedback_pilot_first_for_long_jobs.md` tier-up sub-rule), got 20/20 agreement on contested hands across 5 cohorts (T5_CALL × 4, T5_RAISE × 4, T1_first6 × 6, T7_CALL × 3, T7_RAISE × 3), and decided per `MAIN_TERMINAL_PHASE125E_C_LABELS_FINAL_2026-05-05.md` (master `3914fea`):
+
+- **Accept the 110 Sonnet labels as FINAL** — Opus confirms Sonnet's reasoning was GTO-correct, including the 4 T5 CALL hands where labellers correctly inferred a `villain_air_pct` floor that v3.3 omitted
+- **Document v3.4 with clause (e)** — make the implicit floor explicit for posterity / future labelling rounds (per `MAIN_TERMINAL_PHASE125E_C_ACCEPT_LABELS_V34_2026-05-05.md`, master `45be508`)
+- **T1 full-miss deferred to 12.5E-F outcome** — premature optimization to redo T1 now; whether MW-25 needs the BET signal depends on 12.5E-F gate result
+
+This comm preserves the original empirical findings (Sections through "References" below) for posterity + the new §"Resolution" section + new §"v3.4 sanity check" verifying v3.4 wording correctly classifies all 14 T5 hands.
+
+---
+
+## Original §"BLOCKED on T5 H-FEAT primary mismatch" framing (preserved for audit trail)
 
 Per dispatch (PR #140, master `e7d7843`) §"Stop conditions":
 
 > T5 H-FEAT primary canonicals (PILOT_599/600) consensus ≠ RAISE → STOP, report (this is the 12.5E migration's load-bearing test failing at the labelling layer)
 
-**Labelling round complete cleanly** (550/550 labels, 0 refusals, all 5 labellers wrote valid v3.3-protocol JSONs, $cost well under $120). Consensus aggregation done. **PILOT_599 consensus = RAISE ✓ (4-of-5 votes); PILOT_600 consensus = CALL ✗ (4-of-5 votes).** Per directive's load-bearing test, 1-of-2 H-FEAT primary failure triggers STOP.
+**Labelling round complete cleanly** (550/550 labels, 0 refusals, all 5 labellers wrote valid v3.3-protocol JSONs, $cost well under $120). Consensus aggregation done. **PILOT_599 consensus = RAISE ✓ (4-of-5 votes); PILOT_600 consensus = CALL ✗ (4-of-5 votes).** Per directive's load-bearing test, 1-of-2 H-FEAT primary failure triggered STOP at the time of authoring.
 
 Per architect-hat instruction "Do not improvise revisions; route to orchestrator," this comm documents the empirical findings and lets orchestrator decide between v3.3 wording revision (Path B') vs Path C escalation vs another direction.
 
@@ -196,4 +210,91 @@ Sampled PILOT_539, PILOT_543, PILOT_545, PILOT_548, PILOT_550 (random selection 
 - 12.5D' synthesis addendum (12.5G queued): PR #135 (master `6b991b2`)
 - Memory: `feedback_river_rats_team_structure.md`, `feedback_qc_routing_when_standalone_active.md`, `feedback_quality_default_no_ask.md`, `feedback_orchestrator_decides_not_recommends.md`, `feedback_solver_vs_expert_labels.md`
 
-**Status: 12.5E-C BUILDER BLOCKED on PILOT_600 H-FEAT primary failure. Labelling round complete cleanly (550/550 valid; 0 refusals; cost <<$120). 10 of 14 T5 hands consensus RAISE (substantial empirical support for v3.3 Fix 2.1). 4 of 14 T5 hands consensus CALL — empirical pattern: near-zero `villain_air_pct` (0.01-0.02) on heart-broadway-saturated boards defeats raise-EV reasoning despite v3.3 threshold suspension. Issue is v3.3 wording gap (missing villain_air floor in clause set), not situation construction. Path B's discriminator works for the majority but not for the near-zero-air subset. Routing to orchestrator per directive's architect-hat instruction; not improvising revisions.**
+**Original status (preserved): 12.5E-C BUILDER BLOCKED on PILOT_600 H-FEAT primary failure. Labelling round complete cleanly (550/550 valid; 0 refusals; cost <<$120). 10 of 14 T5 hands consensus RAISE (substantial empirical support for v3.3 Fix 2.1). 4 of 14 T5 hands consensus CALL — empirical pattern: near-zero `villain_air_pct` (0.01-0.02) on heart-broadway-saturated boards defeats raise-EV reasoning despite v3.3 threshold suspension. Issue is v3.3 wording gap (missing villain_air floor in clause set), not situation construction. Path B's discriminator works for the majority but not for the near-zero-air subset. Routing to orchestrator per directive's architect-hat instruction; not improvising revisions.**
+
+---
+
+## Resolution (per orchestrator directive `MAIN_TERMINAL_PHASE125E_C_LABELS_FINAL_2026-05-05.md`, master `3914fea`)
+
+Orchestrator ran the Opus tier-up cross-check directly via subagent (per `feedback_pilot_first_for_long_jobs.md` tier-up sub-rule). Cross-check details: `review/comms/ORCH_OPUS_CROSSCHECK_PHASE125E_C_2026-05-05.md` (master `3914fea`, PR #146).
+
+**Verdict: LABELS FINAL.** 20/20 agreement across the 5 contested cohorts:
+
+| Cohort | Hands | Sonnet consensus | Opus verdict | Match |
+|---|---|---|---|---|
+| T5_CALL | PILOT_542/543/544/600 | CALL × 4 | CALL × 4 | 4/4 ✓ |
+| T5_RAISE | PILOT_539/540/541/599 | RAISE × 4 | RAISE × 4 | 4/4 ✓ |
+| T1_first6 | PILOT_495..500 | CHECK × 6 | CHECK × 6 | 6/6 ✓ |
+| T7_CALL | PILOT_559/560/561 | CALL × 3 | CALL × 3 | 3/3 ✓ |
+| T7_RAISE | PILOT_563/564/565 | RAISE × 3 | RAISE × 3 | 3/3 ✓ |
+| **Total** | **20** | | | **20/20 ✓** |
+
+H-FEAT primary load-bearing test confirmed:
+- PILOT_599 (`villain_air_pct = 0.153`, clause-e satisfied): Sonnet RAISE → Opus RAISE ✓
+- PILOT_600 (`villain_air_pct = 0.020`, clause-e fails): Sonnet CALL → Opus CALL ✓
+
+T1 (14/14 CHECK): Opus-confirmed GTO-correct (DO NOT Rule 2 dominates over drawing-bucket BET intent). T7 split (HU vs multiway): clean protocol boundary per Opus.
+
+**Decision** (per orchestrator hybrid B'+D + cross-check confirmation):
+1. **Accept the 110 Sonnet labels as FINAL.** Sonnet labellers' reasoning was GTO-correct; the 4 T5 CALL hands correctly applied an implicit `villain_air` floor that v3.3 omitted from its clause set.
+2. **Document v3.4 with explicit clause (e)** (this PR adds `prompts/gto_labeller_v3.4.md`). v3.4 = v3.3 verbatim + Fix 2.1.1 paragraph adding `villain_air_pct >= 0.05` floor for the bet+call multiway carve-out. The floor is empirically anchored: it cleanly partitions the 14 T5 hands (10 RAISE at 0.15-0.20 air vs 4 CALL at 0.01-0.02 air).
+3. **T1 full-miss deferred to 12.5E-F outcome.** If MW-25 still fails the reference-set gate, T1 rework happens at that point. Premature optimization to redo T1 now.
+
+The migration's premise survives empirically — partially. P1 blockers ARE load-bearing for RAISE in spots where fold equity exists (10 T5 RAISE labels). They are NOT load-bearing in zero-air spots (the 4 T5 CALL labels). The booster will learn `nut_flush_block × villain_air_pct` interaction — a richer training signal than "blockers alone → RAISE."
+
+## v3.4 sanity check (gto-expert hat, pre-push)
+
+Verified that v3.4's clause (e) (`villain_air_pct >= 0.05`) correctly classifies all 14 T5 hands against actual consensus:
+
+```
+pid           air      consensus  v3.4_predicts  match
+PILOT_539     0.1659   RAISE      RAISE          ✓
+PILOT_540     0.1719   RAISE      RAISE          ✓
+PILOT_541     0.1922   RAISE      RAISE          ✓
+PILOT_542     0.0102   CALL       CALL           ✓
+PILOT_543     0.0105   CALL       CALL           ✓
+PILOT_544     0.0100   CALL       CALL           ✓
+PILOT_545     0.1659   RAISE      RAISE          ✓
+PILOT_546     0.1719   RAISE      RAISE          ✓
+PILOT_547     0.1922   RAISE      RAISE          ✓
+PILOT_548     0.1659   RAISE      RAISE          ✓
+PILOT_549     0.1719   RAISE      RAISE          ✓
+PILOT_550     0.1922   RAISE      RAISE          ✓
+PILOT_599     0.1530   RAISE      RAISE          ✓
+PILOT_600     0.0198   CALL       CALL           ✓
+```
+
+**14/14 v3.4 wording matches actual consensus.** v3.4 documents (formalises) the implicit reasoning Sonnet labellers correctly applied; future rounds invoke v3.4. Floor at 0.05 is in the empirical gap between observed CALL (max 0.0198) and observed RAISE (min 0.1530) air values — robust to noise within that gap.
+
+## Amendment file diff (per `MAIN_TERMINAL_PHASE125E_C_LABELS_FINAL_2026-05-05.md`)
+
+Force-push to PR #142 changes file count from 5 → 6:
+
+| File | Status | Source |
+|---|---|---|
+| `data/corpus_revision_125e_labels_raw_2026-05-05.jsonl` | UNCHANGED (from prior commit) | 550 raw Sonnet labels |
+| `data/corpus_revision_125e_labels_2026-05-05.jsonl` | UNCHANGED (from prior commit) | 110 consensus labels — LABELS FINAL |
+| `scripts/dispatch_mass_labelling.py` | UNCHANGED (from prior commit) | version-agnostic refactor |
+| `scripts/collect_mass_labels.py` | UNCHANGED (from prior commit) | glob refactor |
+| `prompts/gto_labeller_v3.4.md` | NEW | v3.3 verbatim + Fix 2.1.1 paragraph (verified char-for-char vs PR #144 spec; `diff` shows 31-line addition only) |
+| `review/comms/BUILDER_REPORT_PHASE125E_C_RESOLVED_2026-05-05.md` | RENAMED + UPDATED | renamed from `BUILDER_BLOCKED_PHASE125E_C_T5_MISMATCH_2026-05-05.md`; preserved all empirical analysis; added §"Resolution" + §"v3.4 sanity check" + §"Amendment file diff" sections |
+
+`git diff --stat master..HEAD` shows exactly 6 file changes (1 rename + 1 new + 4 unchanged-from-prior-commit). Per amendment directive `MAIN_TERMINAL_PHASE125E_C_LABELS_FINAL_2026-05-05.md`'s "Diff scope: 6 files".
+
+## Amendment stop conditions — status
+
+| Stop condition | Status |
+|---|---|
+| v3.4 prompt drift from PR #144 spec | PASS — `diff` confirms 31-line clean addition matching spec character-for-character |
+| Any change to the 110 labels | PASS — labels file unchanged from prior commit (LABELS FINAL invariance preserved) |
+| Any change to T5 hand definitions | PASS — Path B "T5 unchanged" still binds; data files for situations + manuals are at master `0eaac06` (12.5E-B merged state) |
+| BUILDER_REPORT renaming/reworking introduces non-trivial new content beyond §"Resolution" | PASS — only §"Resolution" + §"v3.4 sanity check" + §"Amendment file diff" added; original analysis preserved verbatim |
+| v3.4 sanity check (PILOT_599 RAISE, PILOT_600 CALL, all 14 T5) | PASS — 14/14 (table above) |
+
+## What unblocks next (post-amendment)
+
+1. **Standalone QC pre-merge audit** (5 audits per LABELS_FINAL directive: diff scope = 6 files, citation existence, v3.4 verbatim match, cross-check report integrity, label-final invariance)
+2. On QC APPROVE: orchestrator merges PR #142
+3. **12.5E-D dispatched** automatically (corpus QC phase per design §8.D + queued cleanup items: NIT-1 PLAN §3.T8 cleanup + PILOT_595 design_note cosmetic + new T1/T7 partial-match documentation)
+
+**Status: 12.5E-C RESOLVED. 110 labels FINAL (orchestrator Opus cross-check 20/20). v3.4 prompt added (Fix 2.1.1 = clause-e villain_air floor 0.05). 14/14 T5 hands classify correctly under v3.4. T1 deferred to 12.5E-F. 6-file diff per LABELS_FINAL directive. Awaiting standalone QC pre-merge audit.**
