@@ -40,10 +40,33 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sys
 from typing import Any, Dict, List, Optional
 
 _REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def _extract_protocol_version(protocol_path: str) -> str:
+    """Derive protocol version (e.g. 'v3.3') from the protocol filename.
+
+    Recognises `gto_labeller_v<MAJOR>.<MINOR>.md` (the canonical naming
+    pattern). Returns 'v3.2' as a backward-compatible fallback so legacy
+    callers and tests keep working without an explicit `--protocol-version`.
+
+    Added at Phase 12.5E-C dispatch (per amendment §"Pre-flight" item 2)
+    so the brief content + output filename + manifest accurately reflect
+    the protocol version actually being labelled against.
+    """
+    m = re.search(r"gto_labeller_v(\d+)\.(\d+)\.md$", protocol_path)
+    if m:
+        return f"v{m.group(1)}.{m.group(2)}"
+    return "v3.2"
+
+
+def _filename_safe(version: str) -> str:
+    """Convert 'v3.3' → 'v3_3' for use in filenames."""
+    return version.replace(".", "_")
 
 
 def compute_ref_id(record: Dict[str, Any]) -> str:
@@ -127,22 +150,27 @@ def _format_hand_summary(record: Dict[str, Any]) -> str:
 def _build_brief(
     labeller_id: int,
     protocol_text: str,
+    protocol_path: str,
+    protocol_version: str,
     hand_summaries: List[str],
     output_path_relative: str,
     total_hands: int,
+    num_labellers: int,
 ) -> str:
     """Compose the prompt brief that the dispatching builder feeds to the
     sonnet subagent for labeller_<id>.
 
     The brief is self-contained: the subagent reads it, applies the
-    protocol, and writes labels_v3_2_labeller_<id>.json at the
-    specified path.
+    protocol, and writes labels_<version>_labeller_<id>.json at the
+    specified path. `protocol_version` is threaded through brief text +
+    schema metadata so the brief accurately reflects the protocol the
+    labeller is being asked to apply (12.5E-C amendment).
     """
     head = (
-        f"# Mass-labelling brief — labeller {labeller_id}/5\n\n"
-        f"You are a v3.2 GTO poker labeller. Read the protocol below in "
-        f"full BEFORE labelling. Then label each of the {total_hands} hands "
-        f"in the corpus block. Apply the protocol verbatim — no "
+        f"# Mass-labelling brief — labeller {labeller_id}/{num_labellers}\n\n"
+        f"You are a {protocol_version} GTO poker labeller. Read the protocol "
+        f"below in full BEFORE labelling. Then label each of the {total_hands} "
+        f"hands in the corpus block. Apply the protocol verbatim — no "
         f"improvisation.\n\n"
         f"## Output contract\n\n"
         f"Write your labels to:\n\n"
@@ -152,15 +180,15 @@ def _build_brief(
         f"{{\n"
         f"  \"lane\": \"labeller_{labeller_id}\",\n"
         f"  \"model\": \"claude-sonnet-4-6\",\n"
-        f"  \"protocol_version\": \"v3.2\",\n"
-        f"  \"protocol\": \"prompts/gto_labeller_v3.2.md\",\n"
+        f"  \"protocol_version\": \"{protocol_version}\",\n"
+        f"  \"protocol\": \"{protocol_path}\",\n"
         f"  \"total_labels\": {total_hands},\n"
         f"  \"labels\": [\n"
         f"    {{\n"
         f"      \"ref_id\": \"<the HAND id from the corpus block>\",\n"
         f"      \"action\": \"BET|RAISE|CALL|CHECK|FOLD\",\n"
         f"      \"confidence\": \"HIGH|MEDIUM|LOW\",\n"
-        f"      \"reasoning\": \"<one paragraph applying the v3.2 protocol>\"\n"
+        f"      \"reasoning\": \"<one paragraph applying the {protocol_version} protocol>\"\n"
         f"    }},\n"
         f"    ...\n"
         f"  ]\n"
@@ -178,7 +206,7 @@ def _build_brief(
         f"hands (<= 25 of {total_hands}).\n"
         f"- Output ONLY the JSON file at the path above. No markdown, no "
         f"chat-style prose around it.\n\n"
-        f"## v3.2 protocol (verbatim)\n\n"
+        f"## {protocol_version} protocol (verbatim)\n\n"
     )
 
     corpus_block = (
@@ -195,15 +223,23 @@ def prepare(
     protocol_path: str,
     num_labellers: int,
     output_dir: str,
+    protocol_version: Optional[str] = None,
 ) -> Dict[str, Any]:
-    """Build the 5 per-labeller brief files + a manifest.
+    """Build the per-labeller brief files + a manifest.
 
     Returns the manifest dict (also written to disk).
+    `protocol_version` defaults to a value derived from the protocol
+    filename (e.g. 'v3.3' from 'gto_labeller_v3.3.md'); pass explicitly
+    to override.
     """
     if not os.path.exists(corpus_path):
         raise FileNotFoundError(f"corpus not found: {corpus_path}")
     if not os.path.exists(protocol_path):
         raise FileNotFoundError(f"protocol not found: {protocol_path}")
+
+    if protocol_version is None:
+        protocol_version = _extract_protocol_version(protocol_path)
+    fname_version = _filename_safe(protocol_version)
 
     with open(corpus_path) as f:
         records = [json.loads(line) for line in f if line.strip()]
@@ -211,7 +247,7 @@ def prepare(
 
     with open(protocol_path) as f:
         protocol_text = f.read()
-    print(f"[dispatch] loaded protocol ({len(protocol_text)} chars)")
+    print(f"[dispatch] loaded {protocol_version} protocol ({len(protocol_text)} chars)")
 
     ref_ids = [compute_ref_id(r) for r in records]
     if len(set(ref_ids)) != len(ref_ids):
@@ -226,9 +262,10 @@ def prepare(
 
     os.makedirs(output_dir, exist_ok=True)
 
+    protocol_relpath = os.path.relpath(protocol_path, _REPO)
     briefs = []
     for n in range(1, num_labellers + 1):
-        out_filename = f"labels_v3_2_labeller_{n}.json"
+        out_filename = f"labels_{fname_version}_labeller_{n}.json"
         # Path relative to repo root for the subagent's Write call.
         out_relpath = os.path.join(
             os.path.relpath(output_dir, _REPO), out_filename
@@ -236,9 +273,12 @@ def prepare(
         brief_text = _build_brief(
             labeller_id=n,
             protocol_text=protocol_text,
+            protocol_path=protocol_relpath,
+            protocol_version=protocol_version,
             hand_summaries=summaries,
             output_path_relative=out_relpath,
             total_hands=len(records),
+            num_labellers=num_labellers,
         )
         brief_path = os.path.join(output_dir, f"labeller_{n}_brief.md")
         with open(brief_path, 'w') as f:
@@ -253,8 +293,8 @@ def prepare(
 
     manifest = {
         'corpus_path': os.path.relpath(corpus_path, _REPO),
-        'protocol_path': os.path.relpath(protocol_path, _REPO),
-        'protocol_version': 'v3.2',
+        'protocol_path': protocol_relpath,
+        'protocol_version': protocol_version,
         'num_labellers': num_labellers,
         'total_hands': len(records),
         'output_dir': os.path.relpath(output_dir, _REPO),
@@ -283,7 +323,12 @@ def main(argv: Optional[List[str]] = None) -> int:
     )
     p_prepare.add_argument(
         '--protocol', required=True,
-        help='v3.2 protocol path (prompts/gto_labeller_v3.2.md)',
+        help='Labeller protocol path (e.g. prompts/gto_labeller_v3.3.md)',
+    )
+    p_prepare.add_argument(
+        '--protocol-version', default=None,
+        help='Override protocol version label (e.g. "v3.3"); defaults to '
+             'value derived from the --protocol filename pattern',
     )
     p_prepare.add_argument(
         '--num-labellers', type=int, default=5,
@@ -302,6 +347,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             protocol_path=args.protocol,
             num_labellers=args.num_labellers,
             output_dir=args.output_dir,
+            protocol_version=args.protocol_version,
         )
         return 0
     parser.print_help()
