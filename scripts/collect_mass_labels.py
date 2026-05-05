@@ -146,16 +146,24 @@ def collect(
     print(f"[collect] loaded {len(records)} records from {corpus_path}")
 
     labeller_files = []
+    import glob as _glob
     for n in range(1, num_labellers + 1):
-        path = os.path.join(labels_dir, f"labels_v3_2_labeller_{n}.json")
-        if not os.path.exists(path):
-            print(f"[collect] WARNING: missing labeller file: {path}",
+        # Glob for any protocol version (e.g. labels_v3_2_labeller_1.json
+        # OR labels_v3_3_labeller_1.json — generalised at 12.5E-C amendment).
+        pattern = os.path.join(labels_dir, f"labels_v*_labeller_{n}.json")
+        matches = sorted(_glob.glob(pattern))
+        if not matches:
+            print(f"[collect] WARNING: no labeller file matching {pattern}",
                   file=sys.stderr)
             labeller_files.append({})
         else:
+            if len(matches) > 1:
+                print(f"[collect] WARNING: multiple labeller files match "
+                      f"{pattern}; using {matches[0]}", file=sys.stderr)
+            path = matches[0]
             labeller_files.append(_load_labeller_file(path))
             print(f"[collect] loaded labeller {n}: "
-                  f"{len(labeller_files[-1])} labels")
+                  f"{len(labeller_files[-1])} labels (from {os.path.basename(path)})")
 
     rows = []
     missing_per_labeller = [0] * num_labellers
@@ -229,7 +237,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     )
     parser.add_argument('--corpus', required=True, help='Corpus JSONL path')
     parser.add_argument('--labels-dir', required=True,
-                        help='Directory with labels_v3_2_labeller_<N>.json files')
+                        help='Directory with labels_v*_labeller_<N>.json files (any protocol version)')
     parser.add_argument('--output', required=True, help='Output JSONL path')
     parser.add_argument('--num-labellers', type=int, default=5)
 
