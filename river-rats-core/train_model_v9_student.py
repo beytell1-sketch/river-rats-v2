@@ -926,12 +926,13 @@ def write_report(
     held_out_accs_w = [sr.held_out_metrics["accuracy_weighted"] for sr in seed_results]
     sc_scores = [seed_litmus_results[sr.seed]["student"]["solver_corrected"][0] for sr in seed_results]
 
+    phase = getattr(cli_args, "phase_label", None) or "12.5D'"
     if promoted:
-        status_line = "status: IMPLEMENTATION + RUN COMPLETE — model promoted; awaiting QC + reviews"
-        topline = "12.5D' RUN COMPLETE; median-litmus seed promoted to canonical (cleared v9-3way-v2.2 baseline)."
+        status_line = f"status: IMPLEMENTATION + RUN COMPLETE — model promoted; awaiting QC + reviews"
+        topline = f"{phase} RUN COMPLETE; median-litmus seed promoted to canonical (cleared v9-3way-v2.2 baseline)."
     else:
-        status_line = "status: BUILDER BLOCKED — 12.5D' implementation + 5-seed run complete; gate did not promote; model NOT promoted"
-        topline = "12.5D' RUN COMPLETE; median seed below v9-3way-v2.2 baseline. Per dispatch gate threshold the model was NOT promoted. Section E quantifies the delta vs 12.5D baseline."
+        status_line = f"status: BUILDER BLOCKED — {phase} implementation + 5-seed run complete; gate did not promote; model NOT promoted"
+        topline = f"{phase} RUN COMPLETE; median seed below v9-3way-v2.2 baseline. Per dispatch gate threshold the model was NOT promoted. Section E quantifies the delta vs 12.5D baseline."
 
     lines: List[str] = []
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
@@ -939,11 +940,11 @@ def write_report(
     lines.append(f"date: {today}")
     lines.append("from: LEAD-PROGRAMMER (builder)")
     lines.append("to: Main terminal (orchestrator) · Owner · ML-ARCHITECT (advisory) · GTO-EXPERT (review) · QC stream")
-    lines.append("re: Phase 12.5D' — v9 student trainer hybrid weighting (C') run")
+    lines.append(f"re: Phase {phase} — v9 student trainer run (hybrid weighting; combined corpus)")
     lines.append(status_line)
     lines.append("---")
     lines.append("")
-    lines.append("# Phase 12.5D' — v9 student trainer report (hybrid weighting)")
+    lines.append(f"# Phase {phase} — v9 student trainer report (hybrid weighting)")
     lines.append("")
     lines.append(topline)
     lines.append("")
@@ -1368,7 +1369,23 @@ def write_report(
     lines.append("- ml-architect spec: PR #110 (master `291af80`)")
     lines.append("- Solver corrections: `~/.claude/projects/-home-rupertbeytell/memory/reference_corrections.md`")
     lines.append("")
-    lines.append(f"**Status: 12.5D RUN COMPLETE. Median-litmus seed promoted to `{student_output_path}`. Awaiting QC pre-merge audit + ml-architect/gto-expert review.**")
+    # MEDIUM-2 V-X4 cleanup (12.5E-E dispatch §"Step 4"): footer status is
+    # now CONDITIONAL on actual model promotion (was unconditional in BLOCKED
+    # runs, falsely claiming "promoted to {path}" even when no model written);
+    # phase prose is parameterized via --phase-label (was hardcoded "12.5D").
+    if promoted:
+        lines.append(
+            f"**Status: {phase} RUN COMPLETE. Median-litmus seed promoted to "
+            f"`{_rel(student_output_path)}`. Awaiting QC pre-merge audit + "
+            f"ml-architect/gto-expert review.**"
+        )
+    else:
+        lines.append(
+            f"**Status: {phase} RUN COMPLETE; model NOT promoted "
+            f"(median seed below v9-3way-v2.2 baseline). 12.5E-F gate decides "
+            f"next direction. Awaiting QC pre-merge audit + ml-architect/"
+            f"gto-expert review.**"
+        )
     lines.append("")
     Path(output_path).parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "w") as f:
@@ -1397,7 +1414,7 @@ def _build_argparse() -> argparse.ArgumentParser:
     p.add_argument("--output", type=str,
         default="river-rats-core/models/gto_model_v9_student.json")
     p.add_argument("--report", type=str,
-        default="review/comms/PROGRAMMER_REPORT_PHASE125D_PRIME_TRAINER_2026-05-04.md")
+        default="review/comms/PROGRAMMER_REPORT_PHASE125E_E_TRAINER_2026-05-05.md")
     p.add_argument("--seeds", type=str, default="0,1,2,3,4")
     p.add_argument("--test-size", type=float, default=0.20)
     p.add_argument("--confidence-weighting",
@@ -1409,6 +1426,9 @@ def _build_argparse() -> argparse.ArgumentParser:
                  "river-rats-core/models/gto_model_v9_3way_v2.2.json"))
     p.add_argument("--no-write-model", action="store_true",
         help="Do NOT save the model JSON (R-1 dry-run mode).")
+    p.add_argument("--phase-label", type=str, default="12.5E",
+        help="Phase label for report headers + status lines (e.g., \"12.5D'\", "
+             "\"12.5E\", \"12.5G\"). Defaults to current phase \"12.5E\".")
     p.add_argument("--verbose", action="store_true")
     return p
 
