@@ -116,6 +116,35 @@ def build_hand_dict(
     }
 
 
+def _hero_only_prior_actions(
+    prior_actions: List[str], hero_position: str,
+) -> List[str]:
+    """Filter prior_actions to hero-only entries.
+
+    Existing 494-row corpus convention (verified empirically by gto-expert
+    in 12.5E-B review and re-confirmed at amendment time): each entry's
+    actor must equal hero_position. Format: 'street: ACTOR action [size]'.
+    Non-hero actions are dropped from the output row's prior_actions.
+    The full multi-actor sequence still flows through `action_history`
+    (which extract_all_features consumes for chain narrowing).
+    """
+    out: List[str] = []
+    for entry in prior_actions:
+        # Format: 'street: ACTOR action ...'
+        parts = entry.split(":", 1)
+        if len(parts) != 2:
+            out.append(entry)
+            continue
+        rest = parts[1].strip().split()
+        if not rest:
+            out.append(entry)
+            continue
+        actor = rest[0]
+        if actor == hero_position:
+            out.append(entry)
+    return out
+
+
 def emit_row(
     *,
     situation_id: str,
@@ -143,8 +172,11 @@ def emit_row(
     """Emit one canonical corpus row with feat_dict via extract_all_features.
 
     Output shape matches data/corpus_revision_500_hand_2026-04-27.jsonl
-    cohort 2 (rows 100-493).
+    cohort 2 (rows 100-493). prior_actions is filtered to hero-only per
+    the existing-494 convention; action_history (consumed by
+    extract_all_features) preserves the full multi-actor sequence.
     """
+    prior_actions = _hero_only_prior_actions(prior_actions, hero_position)
     primary_villain = villain_positions[0] if villain_positions else "BB"
     hd = build_hand_dict(
         hero_cards=hero_cards,
@@ -1243,14 +1275,19 @@ _MANUALS: List[Dict[str, Any]] = [
             hero_cards="AsKh", board="Js9s4s", street="flop", hero_position="BTN",
             villain_positions=["HJ", "CO", "BB"], pot=11.0, to_call=0.0,
             facing_bet=False, num_opponents=3,
+            # Amendment 2026-05-05 fix #7: insert missing `flop: BB check`
+            # before `flop: HJ check` to complete the postflop sequence
+            # (BB acts first; then PFR/HJ; then CO; then hero/BTN).
             prior_actions=["preflop: HJ raise 2.5", "preflop: CO call",
                            "preflop: BTN call", "preflop: BB call",
+                           "flop: BB check",
                            "flop: HJ check", "flop: CO check"],
             generation_source="t1_manual_canonical", opener_position="HJ",
             bettor_position=None, villain_aggression_count=0,
             villain_checked_back=1, villain_call_count=0,
             num_callers_to_bet=0, facing_raise=0,
             action_history=[
+                {"street": "flop", "actor": "BB", "action": "check"},
                 {"street": "flop", "actor": "HJ", "action": "check"},
                 {"street": "flop", "actor": "CO", "action": "check"},
             ],
@@ -1268,14 +1305,17 @@ _MANUALS: List[Dict[str, Any]] = [
             hero_cards="AhQc", board="Th7h3h", street="flop", hero_position="BTN",
             villain_positions=["HJ", "CO", "BB"], pot=11.0, to_call=0.0,
             facing_bet=False, num_opponents=3,
+            # Amendment 2026-05-05 fix #7: insert missing `flop: BB check`.
             prior_actions=["preflop: HJ raise 2.5", "preflop: CO call",
                            "preflop: BTN call", "preflop: BB call",
+                           "flop: BB check",
                            "flop: HJ check", "flop: CO check"],
             generation_source="t1_manual_canonical", opener_position="HJ",
             bettor_position=None, villain_aggression_count=0,
             villain_checked_back=1, villain_call_count=0,
             num_callers_to_bet=0, facing_raise=0,
             action_history=[
+                {"street": "flop", "actor": "BB", "action": "check"},
                 {"street": "flop", "actor": "HJ", "action": "check"},
                 {"street": "flop", "actor": "CO", "action": "check"},
             ],
@@ -1294,14 +1334,17 @@ _MANUALS: List[Dict[str, Any]] = [
             hero_cards="AhTd", board="Ac8s3d", street="flop", hero_position="BTN",
             villain_positions=["HJ", "CO", "BB"], pot=11.0, to_call=0.0,
             facing_bet=False, num_opponents=3,
+            # Amendment 2026-05-05 fix #7: insert missing `flop: BB check`.
             prior_actions=["preflop: HJ raise 2.5", "preflop: CO call",
                            "preflop: BTN call", "preflop: BB call",
+                           "flop: BB check",
                            "flop: HJ check", "flop: CO check"],
             generation_source="t2_manual_canonical", opener_position="HJ",
             bettor_position=None, villain_aggression_count=0,
             villain_checked_back=1, villain_call_count=0,
             num_callers_to_bet=0, facing_raise=0,
             action_history=[
+                {"street": "flop", "actor": "BB", "action": "check"},
                 {"street": "flop", "actor": "HJ", "action": "check"},
                 {"street": "flop", "actor": "CO", "action": "check"},
             ],
@@ -1319,14 +1362,17 @@ _MANUALS: List[Dict[str, Any]] = [
             hero_cards="KhJc", board="Kc7d2s", street="flop", hero_position="BTN",
             villain_positions=["HJ", "CO", "BB"], pot=11.0, to_call=0.0,
             facing_bet=False, num_opponents=3,
+            # Amendment 2026-05-05 fix #7: insert missing `flop: BB check`.
             prior_actions=["preflop: HJ raise 2.5", "preflop: CO call",
                            "preflop: BTN call", "preflop: BB call",
+                           "flop: BB check",
                            "flop: HJ check", "flop: CO check"],
             generation_source="t2_manual_canonical", opener_position="HJ",
             bettor_position=None, villain_aggression_count=0,
             villain_checked_back=1, villain_call_count=0,
             num_callers_to_bet=0, facing_raise=0,
             action_history=[
+                {"street": "flop", "actor": "BB", "action": "check"},
                 {"street": "flop", "actor": "HJ", "action": "check"},
                 {"street": "flop", "actor": "CO", "action": "check"},
             ],
@@ -1337,32 +1383,35 @@ _MANUALS: List[Dict[str, Any]] = [
         "template": "T3",
         "situation_id": "t3_manual_canonical_01",
         "author_design_note": (
-            "Ad8c2sQhKh river. Hero AsKs TPTK. CO opens, BTN calls, hero in BB calls. Flop: "
-            "BB check, CO bet 5, BTN fold, BB call. Turn brings Q: BB check, CO check. River K: "
-            "BB check, CO check. CO's check-call-check line caps to one-pair + missed draws; "
-            "thin value BET targeting weak Kx + Ax-mid kicker."
+            "Ad8c2sQhKh river. Hero AsKs TPTK + nut blocker on river. CO opens HJ, BTN (hero) "
+            "calls, BB calls preflop. Flop CO bet 5, BTN call, BB fold. Turn Q: CO check, BTN "
+            "check. River K: CO check; hero (BTN, IP) faces a fresh river decision. CO's "
+            "check-call-check line caps to one-pair + missed draws; thin value BET targeting "
+            "weak Kx + Ax-mid kicker. Amendment 2026-05-05 fix #1: re-authored as BTN IP "
+            "(matching PILOT_596 structure); fresh river decision (no hero-side or villain-side "
+            "check on the river yet)."
         ),
         "kwargs": dict(
-            hero_cards="AsKs", board="Ad8c2sQhKh", street="river", hero_position="BB",
+            hero_cards="AsKs", board="Ad8c2sQhKh", street="river", hero_position="BTN",
             villain_positions=["CO"], pot=22.0, to_call=0.0,
             facing_bet=False, num_opponents=1,
             prior_actions=["preflop: CO raise 2.5", "preflop: BTN call",
-                           "preflop: BB call", "flop: BB check", "flop: CO bet 5",
-                           "flop: BTN fold", "flop: BB call",
-                           "turn: BB check", "turn: CO check",
-                           "river: BB check", "river: CO check"],
+                           "preflop: BB call",
+                           "flop: BB check", "flop: CO bet 5",
+                           "flop: BTN call", "flop: BB fold",
+                           "turn: CO check", "turn: BTN check",
+                           "river: CO check"],
             generation_source="t3_manual_canonical", opener_position="CO",
             bettor_position="CO", villain_aggression_count=1,
-            villain_checked_back=1, villain_call_count=1,
+            villain_checked_back=1, villain_call_count=0,
             num_callers_to_bet=0, facing_raise=0,
             action_history=[
                 {"street": "flop", "actor": "BB", "action": "check"},
                 {"street": "flop", "actor": "CO", "action": "bet", "size": 5.0},
-                {"street": "flop", "actor": "BTN", "action": "fold"},
-                {"street": "flop", "actor": "BB", "action": "call"},
-                {"street": "turn", "actor": "BB", "action": "check"},
+                {"street": "flop", "actor": "BTN", "action": "call"},
+                {"street": "flop", "actor": "BB", "action": "fold"},
                 {"street": "turn", "actor": "CO", "action": "check"},
-                {"street": "river", "actor": "BB", "action": "check"},
+                {"street": "turn", "actor": "BTN", "action": "check"},
                 {"street": "river", "actor": "CO", "action": "check"},
             ],
         ),
@@ -1403,21 +1452,24 @@ _MANUALS: List[Dict[str, Any]] = [
         "author_design_note": (
             "Hero 9c9d on 9h6s2cJh turn. Slowplay-set RAISE for value vs AJ/JJ + AK + KJ + "
             "protection vs draw completions. The literal MW-45 pattern (slowplayed set + "
-            "turn-lead RAISE 4-way)."
+            "turn-lead RAISE 4-way). Amendment 2026-05-05 fix #2: added `turn: BTN call` + "
+            "`turn: SB fold` after CO turn bet so hero (BB, last to act) genuinely faces a "
+            "decision in turn — facing CO bet + BTN call (1 caller behind committed) + SB folded."
         ),
         "kwargs": dict(
             hero_cards="9c9d", board="9h6s2cJh", street="turn", hero_position="BB",
-            villain_positions=["CO", "BTN", "SB"], pot=23.0, to_call=12.0,
+            villain_positions=["CO", "BTN", "SB"], pot=35.0, to_call=12.0,
             facing_bet=True, num_opponents=3,
             prior_actions=["preflop: CO raise 2.5", "preflop: BTN call",
                            "preflop: SB call", "preflop: BB call",
                            "flop: SB check", "flop: BB check",
                            "flop: CO check", "flop: BTN check",
-                           "turn: SB check", "turn: BB check", "turn: CO bet 12"],
+                           "turn: SB check", "turn: BB check",
+                           "turn: CO bet 12", "turn: BTN call", "turn: SB fold"],
             generation_source="t4_manual_canonical", opener_position="CO",
             bettor_position="CO", villain_aggression_count=1,
-            villain_checked_back=0, villain_call_count=0,
-            num_callers_to_bet=0, facing_raise=0,
+            villain_checked_back=0, villain_call_count=1,
+            num_callers_to_bet=1, facing_raise=0,
             action_history=[
                 {"street": "flop", "actor": "SB", "action": "check"},
                 {"street": "flop", "actor": "BB", "action": "check"},
@@ -1426,6 +1478,8 @@ _MANUALS: List[Dict[str, Any]] = [
                 {"street": "turn", "actor": "SB", "action": "check"},
                 {"street": "turn", "actor": "BB", "action": "check"},
                 {"street": "turn", "actor": "CO", "action": "bet", "size": 12.0},
+                {"street": "turn", "actor": "BTN", "action": "call"},
+                {"street": "turn", "actor": "SB", "action": "fold"},
             ],
         ),
     },
@@ -1435,21 +1489,23 @@ _MANUALS: List[Dict[str, Any]] = [
         "author_design_note": (
             "Hero 7s7d on 7h4c2sQs turn. Lower set rank + turn overcard Q. Slowplay-set RAISE for "
             "value vs AQ/KQ/QJ/QT + sets-of-Qs + occasional 2-pair; folds out air. Tests bucket "
-            "uniformity across set rank."
+            "uniformity across set rank. Amendment 2026-05-05 fix #3: added `turn: BTN call` + "
+            "`turn: SB fold` so hero (BB) genuinely faces a decision after CO turn bet."
         ),
         "kwargs": dict(
             hero_cards="7s7d", board="7h4c2sQs", street="turn", hero_position="BB",
-            villain_positions=["CO", "BTN", "SB"], pot=24.0, to_call=14.0,
+            villain_positions=["CO", "BTN", "SB"], pot=38.0, to_call=14.0,
             facing_bet=True, num_opponents=3,
             prior_actions=["preflop: CO raise 2.5", "preflop: BTN call",
                            "preflop: SB call", "preflop: BB call",
                            "flop: SB check", "flop: BB check",
                            "flop: CO check", "flop: BTN check",
-                           "turn: SB check", "turn: BB check", "turn: CO bet 14"],
+                           "turn: SB check", "turn: BB check",
+                           "turn: CO bet 14", "turn: BTN call", "turn: SB fold"],
             generation_source="t4_manual_canonical", opener_position="CO",
             bettor_position="CO", villain_aggression_count=1,
-            villain_checked_back=0, villain_call_count=0,
-            num_callers_to_bet=0, facing_raise=0,
+            villain_checked_back=0, villain_call_count=1,
+            num_callers_to_bet=1, facing_raise=0,
             action_history=[
                 {"street": "flop", "actor": "SB", "action": "check"},
                 {"street": "flop", "actor": "BB", "action": "check"},
@@ -1458,6 +1514,8 @@ _MANUALS: List[Dict[str, Any]] = [
                 {"street": "turn", "actor": "SB", "action": "check"},
                 {"street": "turn", "actor": "BB", "action": "check"},
                 {"street": "turn", "actor": "CO", "action": "bet", "size": 14.0},
+                {"street": "turn", "actor": "BTN", "action": "call"},
+                {"street": "turn", "actor": "SB", "action": "fold"},
             ],
         ),
     },
@@ -1526,21 +1584,22 @@ _MANUALS: List[Dict[str, Any]] = [
         "template": "T6",
         "situation_id": "t6_manual_canonical_01",
         "author_design_note": (
-            "Hero 8s8d on 8h6c2dQs turn. Flop bet+call (hero call). Turn Q: BB check, CO bets 18. "
-            "Hero raises set into second-barrel turn lead — disguised hand line, RAISE for value "
-            "vs over-pair + AQ + KQ + occasional bluffs."
+            "Hero 8s8d on 8h6c2dQs turn. Flop bet+call (hero call). Turn Q: BB check, CO bets 18, "
+            "BTN calls. Hero (BB, last to act) faces bet+call decision. Raises set for value vs "
+            "over-pair + AQ + KQ + occasional bluffs. Amendment 2026-05-05 fix #4: added "
+            "`turn: BTN call` so hero is genuinely next-to-act."
         ),
         "kwargs": dict(
             hero_cards="8s8d", board="8h6c2dQs", street="turn", hero_position="BB",
-            villain_positions=["CO", "BTN"], pot=43.5, to_call=18.0,
+            villain_positions=["CO", "BTN"], pot=61.5, to_call=18.0,
             facing_bet=True, num_opponents=2,
             prior_actions=["preflop: CO raise 2.5", "preflop: BTN call",
                            "preflop: BB call", "flop: BB check", "flop: CO bet 5",
                            "flop: BTN call", "flop: BB call",
-                           "turn: BB check", "turn: CO bet 18"],
+                           "turn: BB check", "turn: CO bet 18", "turn: BTN call"],
             generation_source="t6_manual_canonical", opener_position="CO",
             bettor_position="CO", villain_aggression_count=2,
-            villain_checked_back=0, villain_call_count=0,
+            villain_checked_back=0, villain_call_count=1,
             num_callers_to_bet=1, facing_raise=0,
             action_history=[
                 {"street": "flop", "actor": "BB", "action": "check"},
@@ -1549,6 +1608,7 @@ _MANUALS: List[Dict[str, Any]] = [
                 {"street": "flop", "actor": "BB", "action": "call"},
                 {"street": "turn", "actor": "BB", "action": "check"},
                 {"street": "turn", "actor": "CO", "action": "bet", "size": 18.0},
+                {"street": "turn", "actor": "BTN", "action": "call"},
             ],
         ),
     },
@@ -1557,27 +1617,29 @@ _MANUALS: List[Dict[str, Any]] = [
         "situation_id": "t6_manual_canonical_02",
         "author_design_note": (
             "Hero 6c6d on 6s4h2cJd turn lead 3-way. Set on coordinated low + connected J turn. "
-            "RAISE for value vs JJ-overpair, AJ, KJ + protection vs draws. Lower set rank in "
-            "different turn-card-context — verifies booster generalises monster⇒RAISE across set "
-            "ranks AND post-flop sequences (lead vs barrel)."
+            "Hero (BB) faces CO bet + BTN call → RAISE for value vs JJ-overpair, AJ, KJ + "
+            "protection vs draws. Tests booster generalisation across set ranks AND post-flop "
+            "sequences. Amendment 2026-05-05 fix #5: added `turn: BTN call`."
         ),
         "kwargs": dict(
             hero_cards="6c6d", board="6s4h2cJd", street="turn", hero_position="BB",
-            villain_positions=["CO", "BTN"], pot=22.5, to_call=12.0,
+            villain_positions=["CO", "BTN"], pot=34.5, to_call=12.0,
             facing_bet=True, num_opponents=2,
             prior_actions=["preflop: CO raise 2.5", "preflop: BTN call",
                            "preflop: BB call", "flop: BB check", "flop: CO check",
-                           "flop: BTN check", "turn: BB check", "turn: CO bet 12"],
+                           "flop: BTN check", "turn: BB check",
+                           "turn: CO bet 12", "turn: BTN call"],
             generation_source="t6_manual_canonical", opener_position="CO",
             bettor_position="CO", villain_aggression_count=1,
-            villain_checked_back=0, villain_call_count=0,
-            num_callers_to_bet=0, facing_raise=0,
+            villain_checked_back=0, villain_call_count=1,
+            num_callers_to_bet=1, facing_raise=0,
             action_history=[
                 {"street": "flop", "actor": "BB", "action": "check"},
                 {"street": "flop", "actor": "CO", "action": "check"},
                 {"street": "flop", "actor": "BTN", "action": "check"},
                 {"street": "turn", "actor": "BB", "action": "check"},
                 {"street": "turn", "actor": "CO", "action": "bet", "size": 12.0},
+                {"street": "turn", "actor": "BTN", "action": "call"},
             ],
         ),
     },
@@ -1586,13 +1648,17 @@ _MANUALS: List[Dict[str, Any]] = [
         "template": "T7",
         "situation_id": "t7_manual_canonical_01",
         "author_design_note": (
-            "MW-17 pattern: hero AhJh on Jh8h4d, BB facing CO single bet 3-way (PFR opens, BTN "
-            "calls, BB calls; flop CO bets, BTN folds, hero faces single bet). Hero AhJh = TPTK "
-            "+ NFD with nut-FD blocker. Composition (NFD + overcards) + nut-FD blocker against "
-            "CO range + implied odds make CALL profitable."
+            "MW-17 pattern: hero AhKh on Jh7h4d (board distinct from factory T7's Jh8h4d to "
+            "avoid fingerprint duplicate), BB facing CO single bet 3-way (PFR opens, BTN "
+            "calls, BB calls; flop CO bets, BTN folds, hero faces single bet). Hero AhKh = NFD + "
+            "K overcard with nut-FD blocker (Ah). PURE drawing bucket (no top pair — board J "
+            "high, hero K is overcard but no pair). Composition (NFD + overcards) + nut-FD "
+            "blocker against CO range + implied odds make CALL profitable. Amendment 2026-05-05 "
+            "fix #6: changed hero from AhJh (TPTK + NFD = strong_made bucket) to AhKh on a "
+            "distinct board per gto-expert + ml-architect — restores MW-17's pure-draw template."
         ),
         "kwargs": dict(
-            hero_cards="AhJh", board="Jh8h4d", street="flop", hero_position="BB",
+            hero_cards="AhKh", board="Jh7h4d", street="flop", hero_position="BB",
             villain_positions=["CO", "BTN"], pot=13.0, to_call=5.0,
             facing_bet=True, num_opponents=2,
             prior_actions=["preflop: CO raise 2.5", "preflop: BTN call",

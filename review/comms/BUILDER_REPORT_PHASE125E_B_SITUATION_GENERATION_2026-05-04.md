@@ -1,17 +1,24 @@
 ---
-date: 2026-05-04
+date: 2026-05-05
 from: LEAD-PROGRAMMER (builder)
-to: Main terminal (orchestrator) · GTO-EXPERT (review of 14 manual canonicals) · QC stream · ML-ARCHITECT (advisory)
-re: Phase 12.5E-B — situation generation (110 hands across 8 templates) READY for review; gto-expert gate on 14 manuals before 12.5E-C dispatch
-status: 12.5E-B SITUATION GENERATION COMPLETE — awaiting gto-expert review of 14 manual canonicals before 12.5E-C dispatch
+to: Main terminal (orchestrator) · GTO-EXPERT (re-review) · QC stream · ML-ARCHITECT (advisory)
+re: Phase 12.5E-B AMENDED (Path B / v3.3 carve-out) — 6 mechanical fixes + hero-only convention + v3.3 prompt; T5 hands UNCHANGED
+status: 12.5E-B AMENDED — re-review window open per BUILDER_AMEND_READY comm
 ---
 
-# Phase 12.5E-B — situation generation report
+# Phase 12.5E-B — situation generation report (AMENDED 2026-05-05)
 
 Implements ml-architect 12.5E-A design comm
 (`review/comms/PLAN_PHASE125E_CORPUS_EXPANSION_2026-05-04.md`, master `bad1396`)
 per Phase 12.5E-B dispatch
-(`review/comms/MAIN_TERMINAL_PHASE125E_DISPATCH_2026-05-04.md`, master `bad1396`).
+(`review/comms/MAIN_TERMINAL_PHASE125E_DISPATCH_2026-05-04.md`, master `bad1396`)
+and Phase 12.5E-B Path B amendment directive
+(`review/comms/MAIN_TERMINAL_PHASE125E_B_AMEND_PATH_B_2026-05-05.md`,
+master `10f914b`).
+
+**See §"Amendment 2026-05-05" at the end of this report for the full
+amendment scope (6 mechanical fixes + hero-only convention pick + v3.3
+prompt + Path B preservation of T5 hands).**
 
 ## Pre-flight (per 12.5D' dispatch protocol amendment)
 
@@ -196,4 +203,106 @@ Per dispatch §"NOT included in 12.5E-B":
 - Existing labeller pipeline (reused for 12.5E-C): `scripts/dispatch_mass_labelling.py`, `scripts/collect_mass_labels.py`
 - Memory: `feedback_solver_vs_expert_labels.md`, `feedback_bucket_first_labelling.md`, `feedback_quality_default_no_ask.md`, `feedback_qc_routing_when_standalone_active.md`
 
-**Status: 12.5E-B SITUATION GENERATION COMPLETE. 110 hands ready (96 parametric + 14 manual canonicals). G1-G3 self-checks pass. PILOT_495..PILOT_604 sequential. T5 H-FEAT primary test population at 14/14. Awaiting gto-expert review of PILOT_591..PILOT_604 before 12.5E-C dispatch.**
+**Original status (2026-05-04): 12.5E-B SITUATION GENERATION COMPLETE. 110 hands ready (96 parametric + 14 manual canonicals). G1-G3 self-checks pass. PILOT_495..PILOT_604 sequential. T5 H-FEAT primary test population at 14/14.** (Superseded by Amendment 2026-05-05 below — gto-expert REJECT-amend cycle.)
+
+---
+
+## Amendment 2026-05-05 (Path B / v3.3 carve-out)
+
+GTO-EXPERT review of PR #136 returned REJECT with two finding classes (per `MAIN_TERMINAL_PHASE125E_B_AMEND_PATH_B_2026-05-05.md`, master `10f914b`):
+
+1. **6 of 14 manual canonicals broken** — mechanical fixes required (action sequences, composition, position)
+2. **All 14 T5 hands structurally fail v3.2 KB §1.7 OVERRIDE** — under v3.2 the labellers would systematically produce CALL labels for the H-FEAT primary test, breaking the migration's load-bearing test before it reaches the labelling round
+
+ML-ARCHITECT recommended **Path B** as the HOW. Orchestrator adopted Path B per `feedback_quality_default_no_ask.md` (slow-quality default).
+
+### Path B summary
+
+- T5 hands kept as-authored (PILOT_599 + PILOT_600 unchanged, all 12 factory T5 hands unchanged)
+- 6 mechanical fixes to the 6 broken hands + insert missing flop checks on 4 T1/T2 hands (cosmetic-but-completes)
+- Hero-only convention applied uniformly across all 110 `prior_actions` (matches existing 494 corpus convention)
+- New `prompts/gto_labeller_v3.3.md` = `prompts/gto_labeller_v3.2.md` verbatim + Fix 2.1 KB §1.7 carve-out refinement (refines v3.2's blanket 0.20 villain_air threshold to suspend it in bet+call multiway lines where structural fold-equity comes from the committed second caller, not the air bucket)
+
+### 6 mechanical fixes applied
+
+| Hand | Fix | Detail |
+|---|---|---|
+| **PILOT_595** (T3 manual canonical 01) | Re-authored as BTN IP (matching PILOT_596); fresh river decision | `hero_position` BB → BTN; `villain_positions` [CO, BTN] → [CO]; flop sequence corrected (CO bet, BTN call, BB fold); turn CO check + BTN check; river ends with `CO check` (no hero or villain river check sequence — fresh decision). `villain_call_count` 1 → 0. |
+| **PILOT_597** (T4 manual canonical 01) | Add `turn: BTN call` + `turn: SB fold` so hero (BB) is genuinely next-to-act after CO turn bet | `pot` 23.0 → 35.0 (added BTN call into pot); `villain_call_count` 0 → 1; `num_callers_to_bet` 0 → 1. |
+| **PILOT_598** (T4 manual canonical 02) | Same fix as 597 | `pot` 24.0 → 38.0; `villain_call_count` 0 → 1; `num_callers_to_bet` 0 → 1. |
+| **PILOT_601** (T6 manual canonical 01) | Add `turn: BTN call` so hero is next-to-act after CO turn bet | `pot` 43.5 → 61.5; `villain_call_count` 0 → 1; `num_callers_to_bet` 0 → 1. |
+| **PILOT_602** (T6 manual canonical 02) | Same fix as 601 | `pot` 22.5 → 34.5; `villain_call_count` 0 → 1; `num_callers_to_bet` 0 → 1. |
+| **PILOT_603** (T7 manual canonical 01) | Hero AhJh (TPTK + NFD = strong_made) → AhKh (NFD + overcards only = drawing bucket); board Jh8h4d → Jh7h4d to keep distinct fingerprint vs factory PILOT_559 | Restores MW-17's pure-draw template per gto-expert + ml-architect. Distinct board avoids G3 internal duplicate. |
+| PILOT_591/592/593/594 (T1/T2 manual canonicals) | Insert missing `flop: BB check` before `flop: HJ check` to complete postflop sequence | Cosmetic but completes the action ordering. Filtered out of `prior_actions` by hero-only convention (hero=BTN), retained in `action_history` for feature extraction. |
+
+### Hero-only convention pick
+
+Existing 494-row corpus uses hero-only convention in `prior_actions` (verified empirically: 0/494 rows have non-hero actions in `prior_actions`). New manuals + factory rows initially drifted to full multi-actor history; amendment rewrites convention uniformly.
+
+Implementation: new `_hero_only_prior_actions(prior_actions, hero_position)` helper added to `emit_row()`; filter is applied on every row at construction time, so the convention is enforced rather than hand-applied.
+
+Verification: empirical scan of all 110 amended rows shows 0 violations (every entry's actor matches `hero_position`).
+
+`action_history` is NOT filtered — `extract_all_features` consumes the full multi-actor sequence for chain narrowing computation. Only the human-readable `prior_actions` field on the row is hero-only.
+
+### v3.3 prompt addition
+
+New file: `prompts/gto_labeller_v3.3.md`. Built as `cp prompts/gto_labeller_v3.2.md prompts/gto_labeller_v3.3.md` then append the Fix 2.1 KB §1.7 OVERRIDE refinement section (verbatim per directive, character-for-character) immediately after the v3.2 OVERRIDE section ends (before the `---` separator that begins the Pass 2 Review section).
+
+`diff` confirms v3.3 = v3.2 + exactly the Fix 2.1 section (39 added lines, 0 changes elsewhere).
+
+The Fix 2.1 carve-out:
+- Suspends v3.2's `villain_air_pct >= 0.20` threshold in bet+call multiway lines (`villain_call_count >= 1` AND `villain_aggression_count == 1`)
+- Re-applies KB §1.7 (Nut FD + nut blocker → RAISE) when (a) hero has nut FD with Ace blocker, (b) hero is OOP relative to bettor, (c) action sequence is bet+call(s) with no raise on current street, (d) hero has ≥35% raw equity
+- Calibration anchor: MW-47 (RAISE per `reference_corrections.md`)
+- Counter-anchors: MW-39 (CALL — HU bet), MW-30 (CALL — no nut FD), bet+raise+call (carve-out doesn't trigger)
+
+### G1-G3 re-run on amended dataset
+
+```
+[gen] generating 96 parametric situations ...
+[gen] generated 96 parametric rows
+[gen] generating 14 manual canonical hands ...
+[gen] generated 14 manual rows
+[gen] running G1-G3 self-checks (combined 110 rows) ...
+  G1 PASS: 110 unique pilot_hand_ids; zero collision with existing 494
+  G2 PASS: T1=14/14, T2=12/12, T3=12/12, T4=14/14, T5=14/14, T6=10/10, T7=12/12, T8=22/22
+  G3 PASS: 0 (board, hero, position, prior_actions) duplicates vs existing 494; 0 internal duplicates
+```
+
+(One internal collision arose during amendment when PILOT_603 was changed from AhJh→AhKh on Jh8h4d — duplicating factory PILOT_559's AhKh on Jh8h4d. Resolved by changing PILOT_603 board to Jh7h4d, distinct from any factory T7 board.)
+
+### Path B stop conditions check (per amendment directive)
+
+| Stop condition | Status |
+|---|---|
+| T5 hand definitions changed | NONE — all 14 T5 hands (12 factory + 2 manual) unchanged from 2026-05-04 author state |
+| Convention not uniformly applied | PASS — 0/110 violations across factory + manual |
+| v3.3 prompt diverges from ml-architect spec | NONE — `diff` confirms verbatim insertion |
+| G1/G2/G3 fails after regeneration | PASS — all gates clear |
+| Mechanical fix drifts a template family | NONE — PILOT_603 still T7/MW-17 (drawing bucket) on a distinct heart-board |
+
+### Deliverable diff after amendment — 5 files (was 4)
+
+| File | Status |
+|---|---|
+| `scripts/build_corpus_revision_125e_situations.py` | UPDATE |
+| `data/corpus_revision_125e_situations_2026-05-04.jsonl` | UPDATE (regenerated) |
+| `data/corpus_revision_125e_manual_canonicals_2026-05-04.jsonl` | UPDATE (regenerated; T5 hands unchanged) |
+| `review/comms/BUILDER_REPORT_PHASE125E_B_SITUATION_GENERATION_2026-05-04.md` | UPDATE (this amendment section) |
+| `prompts/gto_labeller_v3.3.md` | NEW (v3.2 verbatim + Fix 2.1) |
+
+### Methodology lesson incorporated NOW (per amendment directive)
+
+The 12.5E-A design assumed v3.2 protocol would label T5 hands as RAISE. Empirically the labellers would have labelled CALL because v3.2's KB §1.7 OVERRIDE catches T5's MW-47 family along with MW-39. Future blueprints citing a labelling protocol must verify the protocol's discriminator predicate against sample situations BEFORE declaring the design complete (similar to the join-cardinality protocol amendment from 12.5D'); ideally by running a small-sample falsification test.
+
+This is added as a follow-on protocol amendment beyond the join-cardinality rule. Lives in the amendment dispatch until ml-architect formalizes in `docs/PROCESS_GUIDE.md`.
+
+### What unblocks next (post-amendment)
+
+1. **Standalone QC pre-merge audit** (5 audits per amendment directive: diff scope = 5 files, citation existence, distribution sanity, **convention uniformity**, **v3.3 carve-out wording verbatim match**)
+2. **GTO-EXPERT re-review** of (a) the 6 fixed hands per fix-list above, (b) the v3.3 carve-out wording (falsification test: MW-47 → RAISE, MW-39 → CALL, HU bet w/ NFD-blocker → CALL, multi-way bet+RAISE+call → CALL)
+3. **ML-ARCHITECT advisory** confirming v3.3 prompt matches the spec
+4. On all clear: orchestrator merges PR #136; **12.5E-C dispatch points at v3.3 prompt** (NOT v3.2) per amendment directive
+
+**Status: 12.5E-B AMENDED. Path B adopted. 110 hands; T5 unchanged; 6 mechanical fixes landed; hero-only convention uniformly applied; v3.3 prompt added. G1-G3 PASS. Force-pushed to PR #136. BUILDER_AMEND_READY comm posted to `review/comms/`.**
