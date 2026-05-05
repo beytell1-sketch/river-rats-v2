@@ -298,11 +298,73 @@ The 12.5E-A design assumed v3.2 protocol would label T5 hands as RAISE. Empirica
 
 This is added as a follow-on protocol amendment beyond the join-cardinality rule. Lives in the amendment dispatch until ml-architect formalizes in `docs/PROCESS_GUIDE.md`.
 
+### gto-expert self-review (multi-hat, before-final-push)
+
+Per amendment directive §"LEAD-PROGRAMMER (gto-expert hat — self-review before force-push)" the builder also wears the gto-expert hat for a self-review of the amended dataset + v3.3 carve-out wording before final push. (The standalone gto-expert team will re-review independently after the push — this is upstream sanity, not a substitute.)
+
+#### A — 14-manual re-review pass
+
+For each manual canonical post-amendment, verified composition triple, board texture, action sequence plausibility, position+SPR consistency, and hero-only convention. Outcome:
+
+| pilot_hand_id | template | hero | board | bucket | hero-only conv | composition consistent w/ design note | outcome |
+|---|---|---|---|---|---|---|---|
+| PILOT_591 | T1 | AsKh | Js9s4s | drawing (NFD + 2 over) | ✓ | ✓ (`nut_flush_block=1, has_flush_draw=1`) | PASS |
+| PILOT_592 | T1 | AhQc | Th7h3h | drawing (NFD + 1 over) | ✓ | ✓ | PASS |
+| PILOT_593 | T2 | AhTd | Ac8s3d | strong_made (TP-T-kicker on rainbow) | ✓ | ✓ (`is_made_hand=1, is_rainbow=1`) | PASS |
+| PILOT_594 | T2 | KhJc | Kc7d2s | strong_made (TP-J-kicker on rainbow) | ✓ | ✓ | PASS |
+| PILOT_595 | T3 | AsKs | Ad8c2sQhKh | strong_made (top two pair on river K) | ✓ | NOTE: `hand_category=10` is two pair, not TPTK as design_note loosely describes — situation is *stronger* than TPTK (top two pair AAxKK). Bucket + thin-value-BET-after-villain-check-line conclusion unchanged. Minor design_note wording, not a content error. | PASS |
+| PILOT_596 | T3 | KhQc | Ks7d3c5h2s | strong_made (TPTK) | ✓ | ✓ (`hand_category=7`) | PASS |
+| PILOT_597 | T4 | 9c9d | 9h6s2cJh | monster (set) | ✓ | ✓ (`is_monster=1, hand_category=12, street=turn`) | PASS — fix #2 landed (BTN call + SB fold added; pot 35.0 reflects CO bet + BTN call) |
+| PILOT_598 | T4 | 7s7d | 7h4c2sQs | monster (set) | ✓ | ✓ | PASS — fix #3 landed |
+| **PILOT_599** | **T5** | **AsQs** | **KsJs6c** | **drawing (NFD + gutshot, nut blocker)** | ✓ | ✓ (`nut_flush_block=1, has_flush_draw=1`) — **UNCHANGED per Path B** | PASS |
+| **PILOT_600** | **T5** | **AhKh** | **JhTh5c** | **drawing (NFD + OE, nut blocker)** | ✓ | ✓ — **UNCHANGED per Path B** | PASS |
+| PILOT_601 | T6 | 8s8d | 8h6c2dQs | monster (set, delayed-aggression) | ✓ | ✓ (`is_monster=1`) | PASS — fix #4 landed (BTN call added; pot 61.5) |
+| PILOT_602 | T6 | 6c6d | 6s4h2cJd | monster (set) | ✓ | ✓ | PASS — fix #5 landed |
+| PILOT_603 | T7 | AhKh | Jh7h4d | drawing (NFD + K overcard, nut blocker) | ✓ | ✓ (`nut_flush_block=1, has_flush_draw=1`; pure draw, no top pair) | PASS — fix #6 landed (AhJh→AhKh; board Jh8h4d→Jh7h4d to avoid PILOT_559 fingerprint) |
+| PILOT_604 | T7 | AdQh | Td9d4c | drawing (back-door + overcards + nut diamond blocker; no FD on flop) | ✓ | ✓ (`nut_flush_block=1, has_flush_draw=0` — only 3 diamonds total; back-door FD only) | PASS |
+
+**Cosmetic finding (not blocker):** PILOT_595's design_note describes hero as "TPTK + nut blocker" but the situation actually gives top-two-pair (AsKs on Ad...QhKh river ⇒ both A and K paired). The bucket and labelling logic are unchanged (still strong_made → thin-value BET vs CO check-line); only the design_note wording is loose. Flagged for orchestrator awareness; no fix needed.
+
+All 14 manuals: hero-only convention ✓, all 6 mechanical fixes landed correctly ✓, T5 (PILOT_599 + 600) unchanged ✓.
+
+#### B — v3.3 carve-out falsification test
+
+Walked the v3.3 wording through the 4 directive-specified test cases. For each, traced predicate evaluation: trigger condition (`villain_call_count >= 1 AND villain_aggression_count == 1`) and clauses (a-d) of KB §1.7 re-application.
+
+| Case | Setup | Trigger predicate | Clauses (a-d) | Predicted action | Expected | Outcome |
+|---|---|---|---|---|---|---|
+| 1. MW-47 | AsQs on Ks-J-5 (2 spades), BB OOP, CO bet → BTN call → hero acts | `villain_call_count=1, villain_aggression_count=1` → **TRUE** | (a) NFD+As ✓; (b) BB OOP ✓; (c) bet+call no raise ✓; (d) ~40% equity ≥35% ✓ | KB §1.7 RAISE re-applies → **RAISE** | RAISE | **PASS** |
+| 2. MW-39 | AhJh on Kh8h3d, BB HU vs CO c-bet | `villain_call_count=0` → **FALSE** | (n/a — trigger off) | v3.3 does NOT activate; v3.2 < 0.20 threshold catches → **CALL** | CALL | **PASS** |
+| 3. Constructed HU NFD-blocker | AhKh on Jh8h4d, BB HU vs CO bet (low villain_air) | `villain_call_count=0` → **FALSE** | (n/a) | v3.3 does NOT activate; v3.2 catches HU low-air → **CALL** | CALL | **PASS** |
+| 4. Constructed multi-way bet+RAISE+call | AsQs on KsJs5c, BB OOP; CO bet → BTN raise → SB call → hero acts | `villain_aggression_count=2` (raise present) → **FALSE** | (n/a — clause (c) "no raise" fails AND trigger condition fails) | v3.3 does NOT activate; multi-way bet+raise faced with NFD-only equity ≈ 30% → **CALL** (or FOLD on bad price) | CALL | **PASS** |
+
+All 4 cases falsify in the predicted direction. **Falsification test: PASS.**
+
+#### C — (a)/(b)/(c)/(d) clause tightness audit
+
+Reviewed each clause for over-generalization risk:
+
+- **Clause (a) — "hero has the nut flush draw with the canonical Ace blocker":** TIGHT. Requires both (i) NFD (which by definition means hero holds the highest card of the flush suit, since the next draw would be a higher card) AND (ii) explicit Ace-of-suit blocker. Excludes K-high FD (no Ace blocker), bare blocker without FD (e.g., Ah-Kc on a 2-spade board has Ah but no spade FD).
+- **Clause (b) — "hero is OOP relative to the bettor":** TIGHT. Carve-out specifically targets the OOP geometry where raise pressure exploits position (BTN+1 caller behind committed → hero raise puts villain in bad continue-EV). IP carve-out has different EV mechanics; intentionally excluded.
+- **Clause (c) — "the action sequence is bet+call(s) on the current street with no raise":** TIGHT. Excludes both (i) HU bet (no caller, fold equity comes from villain's solo c-bet range only, captured by v3.2) and (ii) bet+raise+call (raise breaks the structural fold-equity model — raising into a re-raised pot is suicide as the directive explicitly notes). The phrasing "no raise on current street" is precise.
+- **Clause (d) — "≥35% raw equity vs the inferred continuing range":** TIGHT. 35% is the minimum floor for raise EV to clear under the bet+call OOP geometry (per ml-architect's spec). Excludes thin-equity NFDs (e.g., NFD with no overcards on a paired board) where equity drops below the threshold.
+
+**Conjunctive requirement:** all 4 clauses are required (AND). Removing any one would leak the carve-out into a region it shouldn't apply. Wording is conservatively tight.
+
+**Counter-anchor coverage:** the carve-out's three explicit counter-anchors (MW-39 / MW-30 / multi-way bet+raise+call) each fail on a different clause:
+- MW-39: trigger predicate fails (`villain_call_count=0`)
+- MW-30: clause (a) fails (top pair, not nut FD)
+- Multi-way bet+raise+call: clause (c) fails (raise in sequence; trigger predicate also fails on `villain_aggression_count`)
+
+The three counter-anchors cover three distinct exit doors (trigger / clause-a / clause-c), giving the carve-out's negative space good coverage.
+
+**gto-expert hat verdict (self-review):** v3.3 carve-out is sound and tight. No wording revision recommended. Standalone gto-expert team will re-verify independently per amendment directive §"GTO-EXPERT (re-review)".
+
 ### What unblocks next (post-amendment)
 
 1. **Standalone QC pre-merge audit** (5 audits per amendment directive: diff scope = 5 files, citation existence, distribution sanity, **convention uniformity**, **v3.3 carve-out wording verbatim match**)
-2. **GTO-EXPERT re-review** of (a) the 6 fixed hands per fix-list above, (b) the v3.3 carve-out wording (falsification test: MW-47 → RAISE, MW-39 → CALL, HU bet w/ NFD-blocker → CALL, multi-way bet+RAISE+call → CALL)
+2. **GTO-EXPERT re-review** of (a) the 6 fixed hands per fix-list above, (b) the v3.3 carve-out wording (falsification test: MW-47 → RAISE, MW-39 → CALL, HU bet w/ NFD-blocker → CALL, multi-way bet+RAISE+call → CALL) — **builder self-review (above) confirms all 4 cases pass; standalone gto-expert independently re-verifies**
 3. **ML-ARCHITECT advisory** confirming v3.3 prompt matches the spec
 4. On all clear: orchestrator merges PR #136; **12.5E-C dispatch points at v3.3 prompt** (NOT v3.2) per amendment directive
 
-**Status: 12.5E-B AMENDED. Path B adopted. 110 hands; T5 unchanged; 6 mechanical fixes landed; hero-only convention uniformly applied; v3.3 prompt added. G1-G3 PASS. Force-pushed to PR #136. BUILDER_AMEND_READY comm posted to `review/comms/`.**
+**Status: 12.5E-B AMENDED. Path B adopted. 110 hands; T5 unchanged; 6 mechanical fixes landed; hero-only convention uniformly applied; v3.3 prompt added. G1-G3 PASS. Multi-hat self-review (implementation + architect + gto-expert) complete; falsification test 4/4 PASS. Force-pushed to PR #136. BUILDER_AMEND_READY comm posted to `review/comms/`.**
