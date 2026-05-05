@@ -403,6 +403,7 @@ def train_one_seed(
     test_size: float,
     warm_start_padded_path: str,
     hyperparameters: Dict,
+    class_weight_cap: float = 3.0,
     verbose: bool = False,
 ) -> Tuple[xgb.XGBClassifier, SeedResult]:
     X_train, X_test, y_train, y_test, conf_train, conf_test = train_test_split(
@@ -413,13 +414,13 @@ def train_one_seed(
     )
 
     # Hybrid weighting per ml-architect 12.5D Q3 (closes class-prior collapse).
-    # Cap = 3.0 ported from train_model.py:252-257 prior art (empirically
-    # calibrated for v9-3way-v2.2 to balance aggressive classes without
-    # inverting discipline). On the 5-class corpus, ~3.0× boost on RAISE,
-    # ~1.4× on BET, ~1.6× on CALL, ~1.0× on CHECK/FOLD.
+    # Cap default 3.0 ported from train_model.py:252-257 prior art; parameterized
+    # at 12.5G via --class-weight-cap CLI arg for cap-retune sweeps.
+    # On the 5-class corpus at cap=3.0: ~3.0× boost on RAISE, ~1.4× on BET,
+    # ~1.6× on CALL, ~1.0× on CHECK/FOLD.
     class_counts = np.bincount(y_train, minlength=N_CLASSES)
     mean_class_count = class_counts.mean()
-    class_weights = {c: min(3.0, mean_class_count / max(class_counts[c], 1))
+    class_weights = {c: min(class_weight_cap, mean_class_count / max(class_counts[c], 1))
                      for c in range(N_CLASSES)}
     sw_train = conf_train * np.array([class_weights[c] for c in y_train],
                                      dtype=np.float32)
@@ -961,6 +962,7 @@ def write_report(
     lines.append(f"- Test size: {cli_args.test_size}")
     lines.append(f"- Seeds: {cli_args.seeds}")
     lines.append(f"- Confidence weighting: `{cli_args.confidence_weighting}`")
+    lines.append(f"- Class-weight cap (hybrid): `{getattr(cli_args, 'class_weight_cap', 3.0)}`")
     lines.append(f"- Reference set: `{cli_args.reference_set}`")
     lines.append("")
     lines.append("### Class label distribution (full corpus)")
@@ -1426,6 +1428,11 @@ def _build_argparse() -> argparse.ArgumentParser:
                  "river-rats-core/models/gto_model_v9_3way_v2.2.json"))
     p.add_argument("--no-write-model", action="store_true",
         help="Do NOT save the model JSON (R-1 dry-run mode).")
+    p.add_argument("--class-weight-cap", type=float, default=3.0,
+        help="Cap on per-class inverse-frequency boost in hybrid weighting "
+             "(default 3.0 per ml-architect Q3 spec; parameterized at 12.5G "
+             "for cap-retune sweeps). Higher cap → stronger boost on minority "
+             "classes (RAISE/BET) at the cost of more aggressive predictions.")
     p.add_argument("--phase-label", type=str, default="12.5E",
         help="Phase label for report headers + status lines (e.g., \"12.5D'\", "
              "\"12.5E\", \"12.5G\"). Defaults to current phase \"12.5E\".")
@@ -1519,6 +1526,7 @@ def main(argv: Optional[List[str]] = None) -> int:
                 test_size=args.test_size,
                 warm_start_padded_path=warm_start_padded_path,
                 hyperparameters=_HYPERPARAMETERS,
+                class_weight_cap=args.class_weight_cap,
                 verbose=args.verbose,
             )
             seed_results.append(sr)
