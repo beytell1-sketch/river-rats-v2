@@ -90,9 +90,14 @@ from self_play import Variant
 
 # ─── Module-load assertions (blueprint §2.3) ──────────────────────────
 
-assert len(STUDENT_FEATURE_COLUMNS_V9) == 59, (
-    f"v9 student requires 59 features; feature_extractor.FEATURE_COLUMNS "
-    f"is {len(STUDENT_FEATURE_COLUMNS_V9)} — Path Y assumes 59 on master HEAD."
+# 12.5J-B (Direction-X-retro): feature surface extended 59 → 61 with
+# `nut_blocker_overcard_count` (MW-17 axis) + `bet_call_multiway_oop_raise_pressure_index`
+# (MW-47 axis). Pre-pad mechanism extended to bump 45 → 61 (was 45 → 59).
+# Path Y boundary INTENTIONALLY relaxed for 12.5J per 12.5H-F owner gate.
+assert len(STUDENT_FEATURE_COLUMNS_V9) == 61, (
+    f"v9 student (12.5J-B) requires 61 features (59 + 2 new for MW-17/47); "
+    f"feature_extractor.FEATURE_COLUMNS is {len(STUDENT_FEATURE_COLUMNS_V9)} "
+    f"— Direction-X-retro assumes 61 on master HEAD post-12.5J-B."
 )
 
 _V24_P1_BLOCKERS = (
@@ -101,15 +106,25 @@ _V24_P1_BLOCKERS = (
     "straight_draw_block_pct",
     "nut_made_block_pct",
 )
-assert tuple(STUDENT_FEATURE_COLUMNS_V9[-4:]) == _V24_P1_BLOCKERS, (
-    f"v2.4 P1 blockers must be the last 4 entries of FEATURE_COLUMNS for "
-    f"the pre-pad mechanism to be append-only. Found tail: "
-    f"{STUDENT_FEATURE_COLUMNS_V9[-4:]}"
+_S18_NEW_FEATURES = (
+    "nut_blocker_overcard_count",
+    "bet_call_multiway_oop_raise_pressure_index",
+)
+# v2.4 P1 blockers at positions 56-59 (indices -6:-2 of the 61-feature list);
+# Step 18 new features at positions 60-61 (indices -2: of the 61-feature list).
+assert tuple(STUDENT_FEATURE_COLUMNS_V9[-6:-2]) == _V24_P1_BLOCKERS, (
+    f"v2.4 P1 blockers must be at positions -6:-2 of the 61-feature list. "
+    f"Found: {STUDENT_FEATURE_COLUMNS_V9[-6:-2]}"
+)
+assert tuple(STUDENT_FEATURE_COLUMNS_V9[-2:]) == _S18_NEW_FEATURES, (
+    f"Step 18 (12.5J-B) new features must be the last 2 entries for the "
+    f"pre-pad mechanism to be append-only. Found tail: "
+    f"{STUDENT_FEATURE_COLUMNS_V9[-2:]}"
 )
 
 assert N_CLASSES == 5
 
-_N_FEATURES_STUDENT = 59
+_N_FEATURES_STUDENT = 61  # 12.5J-B: 59 → 61 (Direction-X-retro)
 _N_FEATURES_BASELINE = 45  # v9-3way-v2.2 lineage; see R-3 in blueprint §4
 
 # Solver-corrected reference labels (memory/reference_corrections.md).
@@ -286,7 +301,7 @@ def load_corpus(path: str) -> Dict[str, Dict[str, float]]:
             if missing:
                 raise ValueError(
                     f"corpus row {line_no} ({sid}) feat_dict missing "
-                    f"{len(missing)} of 59 keys: {missing[:5]}..."
+                    f"{len(missing)} of 61 keys: {missing[:5]}..."
                 )
             rows[sid] = feat
     return rows

@@ -91,6 +91,15 @@ class F:
     STRAIGHT_DRAW_BLOCK_PCT = 'straight_draw_block_pct'
     NUT_MADE_BLOCK_PCT = 'nut_made_block_pct'
 
+    # Step 18 (12.5J-B): Direction-X-retro features 60-61 for MW-17/47 axis
+    # Spec: review/comms/PLAN_PHASE125J_FEATURE_ENGINEERING_2026-05-06.md
+    # Note: design §3 originally proposed 3 features but `implied_outs_overcard`
+    # was found to be REDUNDANT with existing `overcard_outs` (line 47 of
+    # FEATURE_COLUMNS). Reduced to 2 new features per architect-hat decision
+    # documented in 12.5J-B builder report.
+    NUT_BLOCKER_OVERCARD_COUNT = 'nut_blocker_overcard_count'
+    BET_CALL_MULTIWAY_OOP_RAISE_PRESSURE_INDEX = 'bet_call_multiway_oop_raise_pressure_index'
+
     # Metadata fields (underscore prefix, not in model)
     META_NUM_OPPONENTS = '_num_opponents'
     META_NUM_RAISES = '_num_raises_this_street'
