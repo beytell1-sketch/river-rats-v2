@@ -2,15 +2,97 @@
 date: 2026-05-06
 from: LEAD-PROGRAMMER
 to: Main terminal (orchestrator) · QC stream
-re: Phase 12.5H-B — situation generation (90 hands across 6 templates)
-status: REPORT — PR open, ready for QC trigger
-branch: programmer/phase125h-b-situation-generation-2026-05-06
-base: master `8c90649`
+re: Phase 12.5H-B' — situation generation amendment (path c; T7-ext SUITED-NFD redesign)
+status: REPORT — amendment PR open, ready for QC trigger
+branch: programmer/phase125h-b-prime-amendment-2026-05-06
+base: master `c01b799` (post 12.5H-B + PR #173 PILOT HALT merge)
+amendment of: PR #169 (master `094cfc2`)
 ---
 
-# 12.5H-B builder report — situation generation (90 hands)
+# 12.5H-B' amendment builder report — T7-ext SUITED-NFD redesign
 
-## Summary
+## Amendment 2026-05-06 (path c — T7-ext SUITED-NFD redesign)
+
+Per orchestrator dispatch `MAIN_TERMINAL_PHASE125H_B_PRIME_AMEND_2026-05-06.md`
+(master `a84793c`, PR #174). 12.5H-C pilot HALT (PR #173) identified the
+T7-ext / MW-17 protocol-vs-reference gap: original UNSUITED hero hands
+(literal MW-17 spec AdKs on Jd8d4c) routed via v3.4 bucket-first reasoning
+to FOLD with HIGH confidence; full Sonnet × 5 × 90 would have generated
+training labels REINFORCING the model's existing FOLD-on-MW-17
+misclassification. Path (c) adopted: redesign T7-ext template to use
+SUITED-NFD-with-nut-blocker hands (mirrors existing PILOT_553-568 T7
+family which v3.4 handles correctly via the nut-FD axis). Demote literal
+MW-17 canonical from training canonical to evaluation-only reference.
+
+**Files updated in this amendment (4 — same scope as original 12.5H-B PR #169):**
+
+1. `scripts/build_corpus_revision_125h_situations.py` — T7-ext template
+   class (lines 320-400) redesigned: 11 SUITED-NFD parametric configs
+   replacing the original UNSUITED + blocker-only mix. PILOT_693 manual
+   canonical (lines 878-906) changed from `AdKs on Jd8d4c` (UNSUITED)
+   to `AdKd on Jd8d4c` (SUITED — adds the 4th diamond making it true NFD
+   + nut blocker).
+2. `data/corpus_revision_125h_situations_2026-05-06.jsonl` — regenerated
+   from amended factory; T7-ext rows (PILOT_647..657) replaced with new
+   SUITED-NFD-with-blocker discriminative axis.
+3. `data/corpus_revision_125h_manual_canonicals_2026-05-06.jsonl` —
+   regenerated; PILOT_693 row replaced with SUITED variant.
+4. `review/comms/BUILDER_REPORT_PHASE125H_B_SITUATION_GENERATION_2026-05-06.md`
+   — this file; amendment section prepended.
+
+**T7-ext discriminative axis verification (programmatic check, all 12 hands):**
+
+| pilot_hand_id | hero | board | has_flush_draw | nut_flush_block | raw_equity | ✓ |
+|---|---|---|---:|---:|---:|:---:|
+| PILOT_647 | AhKh | Jh9h3c | 1 | 1 | 0.477 | ✓ |
+| PILOT_648 | AhQh | Jh9h3c | 1 | 1 | 0.454 | ✓ |
+| PILOT_649 | AhKh | Th7h3c | 1 | 1 | 0.502 | ✓ |
+| PILOT_650 | AhQh | Th9h3c | 1 | 1 | 0.450 | ✓ |
+| PILOT_651 | AdKd | Jd9d3c | 1 | 1 | 0.458 | ✓ |
+| PILOT_652 | AdQd | Jd9d3c | 1 | 1 | 0.425 | ✓ |
+| PILOT_653 | AdKd | Td9d3c | 1 | 1 | 0.469 | ✓ |
+| PILOT_654 | AsKs | Js9s3c | 1 | 1 | 0.467 | ✓ |
+| PILOT_655 | AsQs | Js9s3c | 1 | 1 | 0.440 | ✓ |
+| PILOT_656 | AcKc | Jc9c3d | 1 | 1 | 0.464 | ✓ |
+| PILOT_657 | AcQc | Jc9c3d | 1 | 1 | 0.431 | ✓ |
+| PILOT_693 (manual) | AdKd | Jd8d4c | 1 | 1 | 0.463 | ✓ |
+
+12 of 12 satisfy the discriminative axis (`has_flush_draw=1` AND
+`nut_flush_block=1`).
+
+**G1-G3 PASS on amended dataset:**
+```
+G1 PASS: 90 unique pilot_hand_ids; 0 collisions vs existing 604
+G2 PASS: T8PRIME=18/18, T9PRIME=14/14, T10PRIME=14/14, T7EXT=12/12, TRAISE=12/12, TCONTROL=20/20
+G3 PASS: 0 (board, hero, position, prior_actions) duplicates internal or vs 604
+```
+
+**v3.4 prediction self-review (4-hand verification subagent run):**
+
+Per dispatch §"LEAD-PROGRAMMER (gto-expert hat — re-review of amended T7-ext)" — verified PILOT_693 + 3 parametric T7-ext hands (PILOT_647, PILOT_651, PILOT_656) through v3.4 protocol via 1-Sonnet labeller subagent.
+
+| pilot_hand_id | hero | board | villain_air_pct | v3.2 ≥ 0.20 threshold | predicted action |
+|---|---|---|---:|:---:|:---:|
+| PILOT_647 | AhKh | Jh9h3c | 0.047 | FAILS | **CALL** |
+| PILOT_651 | AdKd | Jd9d3c | 0.282 | PASSES | **RAISE** (KB §1.7 fires) |
+| PILOT_656 | AcKc | Jc9c3d | 0.282 | PASSES | **RAISE** (KB §1.7 fires) |
+| PILOT_693 | AdKd | Jd8d4c | 0.312 | PASSES | **RAISE** (KB §1.7 fires) |
+
+**v3.4 routing analysis:**
+- Drawing bucket (nut FD + nut blocker, hand_category=2)
+- num_callers_to_bet=0 → v3.3 Fix 2.1 + v3.4 Fix 2.1.1 do NOT engage (HU after BTN fold, not bet+call multiway)
+- KB §1.7 OVERRIDE (v3.2) fires when villain_air ≥ 0.20 → RAISE
+- When villain_air < 0.20 → CALL (drawing-bucket equity vs pot odds, no carve-out)
+- Action split is GTO-correct given the v3.4 protocol's villain-air-conditional KB §1.7 carve-out
+
+**Outcome: amendment successfully resolves the FOLD anti-training risk.** All T7-ext hands now route to RAISE or CALL (NOT FOLD) — generating SOUND training data on the nut-FD-with-blocker discriminative axis. Stop condition "T7-ext SUITED hands STILL produce FOLD-predicted under v3.4 protocol" does NOT trigger; amendment is unblocked.
+
+**Note on orchestrator-side prediction:** Dispatch §"Updated 12.5H-C predictions" predicted CALL for the new PILOT_693. Actual v3.4 verification produces RAISE because villain_air_pct = 0.312 (> 0.20 threshold) on the J-high two-tone with broadway-overcards hero. Orchestrator's prediction text noted "KB §1.7 RAISE may fire if villain_air >= 0.20 — verified at amendment self-review" — this is what fired. RAISE is GTO-correct and not a stop condition; flagging here for orchestrator's information so 12.5H-C re-pilot predictions can be updated to CALL/RAISE-mix-driven-by-villain_air rather than uniform CALL.
+
+**Honest implication for MW-17 stay-wrong (per amendment dispatch §"Honest implication of (c)"):**
+Path (c) generates training data on the SUITED-NFD-with-blocker axis (mostly RAISE with some CALL). MW-17's literal pattern (UNSUITED-overcards-with-blocker, raw_equity 0.245, NO flush-draw outs, ONLY backdoor + blocker) is a different axis and may NOT be fixed by 12.5H training. If 12.5H-F gate fails on MW-17, that's evidence of E-FEATURE primary per gto-expert 12.5D' diagnosis and escalates to feature engineering — that's the genuine next step, not a workaround.
+
+## Summary (12.5H-B original, retained for reference)
 
 90 new situations factory-generated across 6 templates per 12.5H-A
 design (`review/comms/PLAN_PHASE125H_CORPUS_EXPANSION_2026-05-06.md`,

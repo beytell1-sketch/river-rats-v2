@@ -321,42 +321,57 @@ class T10PrimeSlowplaySetTurnLead(TemplateGenerator):
 
 
 class T7ExtNFDOvercardsCall(TemplateGenerator):
-    """MW-17 family expansion. Discriminative axis: has_flush_draw=1
-    (or nut blocker w/o FD) + 1-2 overcards + is_ip=0 + num_opponents=2
-    (single-bet 3-way).
+    """MW-17 family expansion (12.5H-B' amendment, path c).
 
-    11 factory hands; 1 manual canonical.
+    REDESIGNED per orchestrator's 12.5H-B' amendment dispatch (master
+    `a84793c`). Original 12.5H-B design used UNSUITED hero (literal MW-17
+    spec AdKs on Jd8d4c) with discriminative axis = "nut blocker + overcards
+    + backdoor + zero draw outs"; v3.4 protocol routes that to FOLD via
+    bucket-first equity reasoning (caught by 12.5H-C pilot HALT, PR #173).
+
+    Path (c) redesigns the template to carry SUITED-NFD-with-nut-blocker
+    hands. Discriminative axis (post-amendment): has_flush_draw=1 (4 of
+    the FD suit visible: 2 hero + 2 board) AND nut_flush_block=1 (Ace of
+    FD suit on hero) AND 1-2 overcards. This mirrors the existing 12.5E-B
+    PILOT_553-568 t7_nfd_overcards_call_pot_odds family (which v3.4
+    handles correctly via the nut-FD + nut-blocker axis) but on NEW boards.
+
+    Demotion: literal MW-17 (AdKs unsuited on Jd8d4c) is no longer in
+    training set; it remains the evaluation-only reference. If 12.5H-F gate
+    fails on MW-17, that's genuine evidence of E-FEATURE primary per
+    gto-expert 12.5D' diagnosis and would escalate to feature engineering
+    (per 12.5H-B' amendment dispatch §"Honest implication of (c)").
+
+    11 factory hands; 1 manual canonical (PILOT_693 SUITED variant).
     """
 
     template_name = "T7ext"
-    generation_source = "t7ext_nfd_overcards_call_pot_odds"
+    generation_source = "t7ext_suited_nfd_nut_blocker_call_pot_odds"
 
     def generate(self, target_count: int) -> List[GeneratedSituation]:
-        # 12.5E T7 hands all had Ah/Ad/As/Ac + matching FD-suit hole cards.
-        # T7-ext expands with: (a) MW-17-exact replica AdKs on Jd8d4c-style
-        # board (NFD + K overcard, OOP facing single bet 3-way); (b) variant
-        # boards covering implied-odds range; (c) blocker-without-FD variants
-        # so labellers reason from composition not just pot odds.
+        # SUITED-NFD-with-nut-blocker hands on NEW broadway 2-tone boards
+        # (avoiding existing 12.5E-B T7 boards Jh8h4d, Th8h4d, Qh9h4d,
+        # Jd8d4h, Td8d4h, Js8s4d, Ts8s4h, Tc8c4d). Each hand: hero AxKx or
+        # AxQx suited, with the Ace = nut blocker for the FD suit, and the
+        # board has 2 cards of the FD suit + 1 offsuit brick. Hero has
+        # 1-2 overcards above the board high. raw_equity ≈ 0.35-0.45 with
+        # both NFD draw equity + nut blocker + overcards.
         configs = [
-            # MW-17 exact-replica is the manual canonical PILOT_693 (AdKs on
-            # Jd8d4c). Parametric set covers adjacent NFD+overcard variants on
-            # broadway 2-tone boards across all four suits + slight texture
-            # variations, leaving the literal MW-17 board for the canonical.
-            ("AcKd", "Jc8c4d", 5.0),  # NFD clubs + K overcard
-            ("AhKc", "Jh8h4d", 5.0),  # NFD hearts + K overcard
-            ("AsKd", "Js8s4d", 5.0),  # NFD spades + K overcard
-            # Q-overcard variants:
-            ("AhQs", "Th8h4d", 5.0),
-            ("AdQc", "Td8d4c", 5.0),
-            # AJ + nut-FD on Q-high 2-tone (J overcard for second pair potential):
-            ("AhJs", "Qh8h4d", 5.0),
-            ("AdJh", "Qd8d4c", 5.0),
-            # Different implied-odds price points (slightly larger bet):
-            ("AhKs", "Jh8h3c", 6.0),  # bigger bet = tighter pot odds
-            ("AdQs", "Td8d3c", 6.0),
-            # Blocker-only variants (no FD; pure overcard + nut blocker reasoning):
-            ("AdKs", "Jh8h4c", 5.0),  # Ad on J-high heart 2-tone — nut diamond blocker but no FD
-            ("AsQd", "Th8h4c", 5.0),  # As on T-high heart 2-tone — nut spade blocker, no FD
+            # Hearts NFD variants:
+            ("AhKh", "Jh9h3c", 5.0),  # NFD + K + A overcards on J-high
+            ("AhQh", "Jh9h3c", 5.0),  # NFD + Q + A overcards on J-high
+            ("AhKh", "Th7h3c", 5.0),  # NFD + K + A overcards on T-high
+            ("AhQh", "Th9h3c", 5.0),  # NFD + Q + A overcards on T-high
+            # Diamonds NFD variants:
+            ("AdKd", "Jd9d3c", 5.0),  # NFD + K + A overcards on J-high
+            ("AdQd", "Jd9d3c", 5.0),  # NFD + Q + A overcards on J-high
+            ("AdKd", "Td9d3c", 5.0),  # NFD + K + A overcards on T-high
+            # Spades NFD variants:
+            ("AsKs", "Js9s3c", 5.0),  # NFD + K + A overcards on J-high
+            ("AsQs", "Js9s3c", 5.0),  # NFD + Q + A overcards on J-high
+            # Clubs NFD variants:
+            ("AcKc", "Jc9c3d", 5.0),  # NFD + K + A overcards on J-high
+            ("AcQc", "Jc9c3d", 5.0),  # NFD + Q + A overcards on J-high
         ]
         out: List[GeneratedSituation] = []
         for i, (hero, flop, bet_size) in enumerate(configs[:target_count], start=1):
@@ -860,26 +875,31 @@ _MANUALS: List[Dict[str, Any]] = [
             ],
         ),
     },
-    # T7-ext MW-17 exact-replica
+    # T7-ext SUITED-NFD canonical (12.5H-B' amendment, path c — MW-17 demoted)
     {
         "template": "T7ext",
         "situation_id": "t7ext_manual_canonical_01",
         "author_design_note": (
-            "MW-17 exact-replica: hero AdKs on Jd8d4c facing CO single bet 3-way (PFR "
-            "opens, BTN calls, BB calls; flop CO bets, BTN folds, hero faces single bet). "
-            "Hero AdKs = NFD (diamond) + K overcard with nut blocker. Composition (NFD + "
-            "overcards) + nut blocker against CO range + implied odds make CALL profitable. "
-            "Pure drawing-bucket reasoning anchor; NOT threshold-based per "
-            "feedback_bucket_first_labelling.md."
+            "12.5H-B' amendment (path c): hero AdKd on Jd8d4c facing CO single bet "
+            "3-way (PFR opens, BTN calls, BB calls; flop CO bets, BTN folds, hero "
+            "faces single bet). Hero AdKd = NFD (4 diamonds visible: Ad, Kd hero + Jd, "
+            "8d board) + K + A overcards + nut diamond blocker (Ad). Discriminative "
+            "axis: has_flush_draw=1 AND nut_flush_block=1 AND 2 overcards above board. "
+            "v3.4 routes via nut-FD reasoning chain (mirrors PILOT_658/694 in T-RAISE-"
+            "stabilize family). Predicted v3.4 output per orchestrator: CALL "
+            "(implied odds + drawing-bucket equity-vs-pot-odds; KB §1.7 RAISE may "
+            "fire if villain_air >= 0.20 — verified at amendment self-review). "
+            "Demotes literal MW-17 spec (AdKs unsuited on Jd8d4c) from training "
+            "canonical to evaluation-only reference per amendment dispatch."
         ),
         "kwargs": dict(
-            hero_cards="AdKs", board="Jd8d4c", street="flop", hero_position="BB",
+            hero_cards="AdKd", board="Jd8d4c", street="flop", hero_position="BB",
             villain_positions=["CO", "BTN"], pot=13.0, to_call=5.0,
             facing_bet=True, num_opponents=2,
             prior_actions=["preflop: CO raise 2.5", "preflop: BTN call",
                            "preflop: BB call", "flop: BB check",
                            "flop: CO bet 5", "flop: BTN fold"],
-            generation_source="t7ext_manual_canonical", opener_position="CO",
+            generation_source="t7ext_suited_manual_canonical", opener_position="CO",
             bettor_position="CO", villain_aggression_count=1,
             villain_checked_back=0, villain_call_count=0,
             num_callers_to_bet=0, facing_raise=0,
