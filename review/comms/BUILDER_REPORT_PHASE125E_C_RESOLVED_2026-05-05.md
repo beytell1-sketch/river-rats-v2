@@ -148,7 +148,7 @@ Per directive "whether the issue is in v3.3 wording or in the situation construc
 |---|---|---|
 | `data/corpus_revision_125e_labels_raw_2026-05-05.jsonl` | NEW | 550 raw labeller responses (one row per labeller-hand pair) |
 | `data/corpus_revision_125e_labels_2026-05-05.jsonl` | NEW | 110 consensus rows (consensus_action + confidence + per-class votes + feat_dict) |
-| `review/comms/BUILDER_REPORT_PHASE125E_C_RESOLVED_2026-05-05.md` | NEW (renamed at 12.5E-C amendment from `BUILDER_BLOCKED_PHASE125E_C_T5_MISMATCH_2026-05-05.md`) | Originally BLOCKED report; renamed and §"Resolution"-augmented at the 12.5E-C amendment per `MAIN_TERMINAL_PHASE125E_C_LABELS_FINAL_2026-05-05.md`. Stale filename reference cleaned up at 12.5E-E per dispatch §"Step 4" NIT-1. |
+| `review/comms/BUILDER_REPORT_PHASE125E_C_RESOLVED_2026-05-05.md` | NEW | This file. Originally authored as a BLOCKED report; promoted to RESOLVED at the 12.5E-C amendment per `MAIN_TERMINAL_PHASE125E_C_LABELS_FINAL_2026-05-05.md`. Stale legacy filename reference cleaned up at 12.5E-E + 12.5H-E per dispatch §"Step 4" NIT-1 carry-forward (the file was never under any other name on master HEAD). |
 | `scripts/dispatch_mass_labelling.py` | UPDATE | Version-agnostic refactor: `--protocol-version` derives from filename pattern; brief content + filename + manifest reflect actual protocol version. ~30-line edit per dispatch §"Pre-flight" item 2 ("if v3.2 is hard-coded anywhere, fix the dispatch script's prompt-resolution path BEFORE launching ... still in this PR's diff") |
 | `scripts/collect_mass_labels.py` | UPDATE | Glob `labels_v*_labeller_<N>.json` instead of hardcoded `labels_v3_2_labeller_<N>.json`. ~6-line edit |
 
@@ -299,7 +299,7 @@ Force-push to PR #142 changes file count from 5 → 6:
 
 ### PILOT_595 design_note cosmetic (annotation per 12.5E-E dispatch §"Step 4")
 
-Per dispatch directive `MAIN_TERMINAL_PHASE125E_E_DISPATCH_2026-05-05.md` §"Step 4": the situation factory's design_note for PILOT_595 (T3 manual canonical 01) reads "Hero AsKs TPTK + nut blocker on river" in `scripts/build_corpus_revision_125e_situations.py:1386` (master state at 12.5E-C merge). The "TPTK" wording is loose — hero AsKs on Ad8c2sQhKh river actually flops top-pair-Aces (As+Ad) AND pairs Kings on the river K (Ks+Kh) ⇒ **top-two-pair**, not TPTK (top-pair-top-kicker).
+Per dispatch directive `MAIN_TERMINAL_PHASE125E_E_DISPATCH_2026-05-05.md` §"Step 4" + 12.5H-E §"Step 4" carry-forward: the situation factory's design_note for PILOT_595 (T3 manual canonical 01) originally read "Hero AsKs **top-two-pair** + nut blocker on river" (corrected from the loose "TPTK" wording it had at 12.5E-C merge in `scripts/build_corpus_revision_125e_situations.py:1386`). Hero AsKs on Ad8c2sQhKh river flops top-pair-Aces (As+Ad) AND pairs Kings on the river K (Ks+Kh) ⇒ **top-two-pair**, not TPTK (top-pair-top-kicker).
 
 **Cosmetic only — bucket and labelling logic unchanged.** The situation IS a strong_made bucket spot calling for thin-value BET vs CO's check-call-check line; that's correct in both the script's design_note framing AND the labellers' actual labels (PILOT_595 consensus = BET per 12.5E-C labels file). The author_design_note is gto-expert pre-review metadata; labellers don't see it (per `feedback_bucket_first_labelling.md`).
 
