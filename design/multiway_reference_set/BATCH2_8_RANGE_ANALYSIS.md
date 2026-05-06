@@ -729,6 +729,8 @@
 
 **Reasoning:** AhTs on AJ5r gives top pair T kicker in position after 4-way check-through at high SPR. Despite the deep stacks, top pair is strong enough to bet after three checks — the checks cap opponents' ranges. However, at high SPR 4-way, hero should bet small (25-30% pot) rather than a standard 50% sizing to avoid over-inflating the pot with a vulnerable hand. Medium confidence because the bet is thin but correct after complete check-through.
 
+**Verification round footnote (12.5I-MW40-VERIFICATION; 2026-05-06):** PILOT_787 (PR #213) showed Sonnet 3-2 CHECK + Opus HIGH CHECK on this exact reference, suggesting a possible BET → CHECK graduation. A 30-hand parametric verification round (Decision 3β) was run to test whether the J-on-board structural argument generalizes. Result: Sonnet pilot 25/25 BET (PR #241) + Opus 4.7 tier-up 5/5 BET (PR #245) = full multi-source consensus 30/30 BET. **BATCH2 BET MEDIUM stands; graduation-fail confirmed via 4-source convergence symmetric to MW-25 graduation pattern.** PILOT_787 is a single-hand anomaly relative to the broader J-on-board TPMK T-kicker 4-way checked-through IP non-PFA pattern. v3.4 routes via DO NOT Rule 11 OOP-only exemption + composition quad villain_air_pct + villain_checked_back weakness + danger_score=0 → value/protection BET.
+
 ---
 
 ## Axis 7 — Range Narrowing

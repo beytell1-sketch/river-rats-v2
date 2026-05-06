@@ -94,7 +94,7 @@ See `memory/reference_corrections.md` for full details.
 | Hand | Pattern |
 |------|---------|
 | MW-17 | Under-calling (low equity draw) |
-| MW-40 | Residual passive (very thin value bet) — graduation candidate; Opus CHECK HIGH on PILOT_787 (PR #213); 12.5I-MW40-VERIFICATION queued |
+| MW-40 | Residual passive (very thin value bet); BATCH2 BET MEDIUM stands. Verification round complete 2026-05-06 (PR #228 plan / PR #236 corpus / PR #241 Sonnet pilot 25/25 BET / PR #245 Opus 4.7 tier-up 5/5 BET): graduation-fail confirmed via 4-source convergence symmetric to MW-25 graduation pattern. PILOT_787's CHECK is a single-hand anomaly relative to the broader J-on-board TPMK T-kicker 4-way checked-through IP non-PFA pattern. v3.4 DO NOT Rule 11 OOP-only exemption + composition quad routing dominates. |
 | MW-45 | Under-raising |
 | MW-47 | Shared blind spot (nut draw should raise) |
 
