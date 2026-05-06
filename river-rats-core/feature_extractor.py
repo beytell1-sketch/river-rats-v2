@@ -1610,6 +1610,13 @@ FEATURE_COLUMNS = [
     'flush_draw_block_pct',
     'straight_draw_block_pct',
     'nut_made_block_pct',
+    # Step 18 (12.5J-B): Direction-X-retro features 60-61
+    # See review/comms/PLAN_PHASE125J_FEATURE_ENGINEERING_2026-05-06.md
+    # MW-17 axis: composite of nut_flush_block × overcard count (drops
+    # redundant implied_outs_overcard since `overcard_outs` exists at idx 47).
+    # MW-47 axis: composite signal for v3.4 Fix 2.1.1 clause-e at model layer.
+    'nut_blocker_overcard_count',
+    'bet_call_multiway_oop_raise_pressure_index',
 ]
 
 LABEL_COLUMN = 'action'
@@ -2126,6 +2133,96 @@ def compute_flush_block_pct(
     return round(blocked_flush_weight / total_flush_weight, 6)
 
 
+def compute_nut_blocker_overcard_count(
+    hero_cards: List[str],
+    high_card_rank: int,
+    nut_flush_block: int,
+) -> int:
+    """
+    Step 18 feature 60 (12.5J-B): hero overcard count when hero holds the
+    nut blocker. Composite of `overcard_outs / 3` × `nut_flush_block`.
+
+    Targets the MW-17 family (E-FEATURE primary per 12.5I-pre diagnostic):
+    discriminates "nut-blocker + overcards = call profitably" from
+    "no-blocker + overcards = fold to bet" hands.
+
+    For MW-17 (AdKs on Jd8d4c): 2 overcards × nut_flush_block=1 = 2.
+    For non-MW-17 hand without nut blocker: any value × 0 = 0.
+
+    Args:
+        hero_cards: ['Ad', 'Ks']
+        high_card_rank: 11 (J on Jd8d4c)
+        nut_flush_block: 0 or 1
+
+    Returns:
+        Integer count: overcards when hero blocks nut FD; 0 otherwise.
+    """
+    if not nut_flush_block:
+        return 0
+    rank_map = {
+        'A': 14, 'K': 13, 'Q': 12, 'J': 11, 'T': 10,
+        '9': 9, '8': 8, '7': 7, '6': 6, '5': 5, '4': 4, '3': 3, '2': 2,
+    }
+    overcard_count = 0
+    for card in hero_cards:
+        card_rank = rank_map.get(card[0].upper(), 0)
+        if card_rank > high_card_rank:
+            overcard_count += 1
+    return overcard_count
+
+
+def compute_bet_call_multiway_oop_raise_pressure_index(
+    facing_bet: int,
+    num_callers_to_bet: int,
+    num_opponents: int,
+    is_ip: int,
+    nut_flush_block: int,
+    has_flush_draw: int,
+    raw_equity: float,
+) -> float:
+    """
+    Step 18 feature 61 (12.5J-B): composite signal capturing v3.4 Fix 2.1.1
+    clause-e equivalent at the model layer. Targets MW-47 family.
+
+    Returns 0 unless ALL of:
+    - facing_bet == 1 (hero faces a bet)
+    - num_callers_to_bet >= 1 (bet+call multiway, not single bet HU)
+    - num_opponents >= 2 (multiway pot, not HU)
+    - is_ip == 0 (hero OOP)
+    - nut_flush_block == 1 (hero holds nut blocker for FD suit)
+    - has_flush_draw == 1 (hero has actual FD)
+    - raw_equity >= 0.35 (drawing-bucket strong)
+
+    On all-true: returns nfd_strength + multiway_pressure - oop_penalty:
+    - nfd_strength = 1.0 (FD + nut blocker = max)
+    - multiway_pressure = num_callers_to_bet × 0.3
+    - oop_penalty = 0.2 (since is_ip=0)
+
+    For MW-47 (AsQs on KsJd5s; 4-way; CO bet + BTN call): returns 1.1.
+    For non-clause-e hand: returns 0.0.
+
+    Args:
+        facing_bet, num_callers_to_bet, num_opponents, is_ip,
+        nut_flush_block, has_flush_draw: integer features
+        raw_equity: float
+
+    Returns:
+        Float index value.
+    """
+    if not (facing_bet == 1 and
+            num_callers_to_bet >= 1 and
+            num_opponents >= 2 and
+            is_ip == 0 and
+            nut_flush_block == 1 and
+            has_flush_draw == 1 and
+            raw_equity >= 0.35):
+        return 0.0
+    nfd_strength = 1.0
+    multiway_pressure = num_callers_to_bet * 0.3
+    oop_penalty = 0.2
+    return nfd_strength + multiway_pressure - oop_penalty
+
+
 def compute_overcard_outs(hero_cards: List[str], high_card_rank: int) -> int:
     """
     Feature 47: Number of outs from hero's overcards.
@@ -2544,6 +2641,26 @@ def extract_all_features(hand: Dict) -> Dict:
         features[F.FLUSH_DRAW_BLOCK_PCT] = _s17_block['flush_draw_block_pct']
         features[F.STRAIGHT_DRAW_BLOCK_PCT] = _s17_block['straight_draw_block_pct']
         features[F.NUT_MADE_BLOCK_PCT] = _s17_block['nut_made_block_pct']
+
+    # Step 18 (12.5J-B): Direction-X-retro features 60-61 for MW-17/47 axis
+    # See review/comms/PLAN_PHASE125J_FEATURE_ENGINEERING_2026-05-06.md
+    # Composite features built on existing surface — no new range/board work.
+    features[F.NUT_BLOCKER_OVERCARD_COUNT] = compute_nut_blocker_overcard_count(
+        hero_cards,
+        features.get('high_card_rank', 14),
+        features.get(F.NUT_FLUSH_BLOCK, 0),
+    )
+    features[F.BET_CALL_MULTIWAY_OOP_RAISE_PRESSURE_INDEX] = (
+        compute_bet_call_multiway_oop_raise_pressure_index(
+            facing_bet=int(features.get('facing_bet', 0)),
+            num_callers_to_bet=int(features.get('num_callers_to_bet', 0)),
+            num_opponents=int(features.get('num_opponents', 1)),
+            is_ip=int(features.get('is_ip', 0)),
+            nut_flush_block=int(features.get(F.NUT_FLUSH_BLOCK, 0) or 0),
+            has_flush_draw=int(features.get('has_flush_draw', 0)),
+            raw_equity=float(features.get('raw_equity', 0.0)),
+        )
+    )
 
     return features
 
