@@ -46,6 +46,17 @@ from train_model_v9_student import (  # noqa: E402
 from gto_model import ACTION_TO_INT  # noqa: E402
 
 
+# 12.5J-D-pre tier-2 invariant Δ-tolerance constants (PR #228 SHOULD_FIX-1
+# Path 3 Hybrid resolution; PR #212 memo: BLAS reduction-order non-determinism
+# observed gap ≈0.024 on MW-33 with strict argmax-equality flaking ~20%).
+# Tier-1 (np.allclose) catches real mirror drift; Tier-2 (top-gap < tolerance)
+# accepts borderline argmax flips driven by BLAS noise. Do NOT widen beyond
+# 0.05 — that's the empirical BLAS-noise threshold per memo; loosening further
+# would hide real regressions.
+TIER2_BORDERLINE_ARGMAX_TOLERANCE = 0.05
+BLAS_NOISE_PROB_ATOL = 1e-5
+
+
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 # 12.5J-B: legacy 494-hand corpus paths retained as fallback; NEW 694-hand
 # combined corpus is the test target after Direction-X-retro re-extraction.
@@ -378,21 +389,88 @@ def test_student_inference_mirror_invariant_on_baseline():
         student_45_shim._model.set_params(n_jobs=1)
         variant = Variant(name="default", params=get_default_params())
 
+        # Δ-tolerance side-channel imports — mirror the hand_dict construction
+        # in _evaluate_one_hand / _evaluate_student_one_hand so we can recover
+        # the probability vectors those helpers consume internally and don't
+        # return. Used only when HandResult drift triggers the borderline-
+        # argmax check (PR #228 SHOULD_FIX-1 Path 3 Hybrid).
+        from feature_extractor import extract_all_features
+        from feature_keys import F as _F
+        from reference_evaluator import (
+            _resolve_action_history_for_ref_hand,
+            STREET_MAP,
+        )
+
+        def _probs_for_hand(h):
+            street_code = STREET_MAP.get(h.street.capitalize(), "f")
+            _resolved_ah = _resolve_action_history_for_ref_hand(h)
+            hd = {
+                "h": h.hero_cards, "b": h.board, "pos": h.hero_position,
+                "vp": h.villain_position, "pot": h.pot, "tc": h.to_call,
+                "st": street_code, "fb": int(h.facing_bet), "exp": "C",
+                _F.META_NUM_OPPONENTS: h.num_opponents,
+                _F.META_NUM_RAISES: 0,
+                _F.META_OPENER_POSITION: h.opener_position or None,
+                _F.META_BETTOR_POSITION: h.bettor_position,
+                "_villain_aggression_count": h.villain_aggression_count,
+                "_villain_checked_back": h.villain_checked_back,
+                "_villain_call_count": h.villain_call_count,
+                "_num_callers_to_bet": h.num_callers_to_bet,
+                "_facing_raise": h.facing_raise,
+                "_action_history": _resolved_ah,
+            }
+            fd = extract_all_features(hd)
+            cf = GtoOracle.features_from_dict(fd)
+            sf = student_45_shim.features_from_dict(fd)
+            return (canonical_oracle.predict(cf).prob_array,
+                    student_45_shim.predict(sf).prob_array)
+
         drifted: list = []
         for hand in hands:
             # reference_evaluator._evaluate_one_hand signature: (variant, hand, oracle)
             canonical = _evaluate_one_hand(variant, hand, canonical_oracle)
             student = _evaluate_student_one_hand(hand, student_45_shim, variant)
-            if (canonical.adjusted_action != student.adjusted_action
+            if not (canonical.adjusted_action != student.adjusted_action
                     or canonical.correct != student.correct
                     or canonical.was_adjusted != student.was_adjusted):
+                continue
+            # HandResult drift detected — apply two-tier Δ-tolerance.
+            cp, sp = _probs_for_hand(hand)
+            if not np.allclose(cp, sp, atol=BLAS_NOISE_PROB_ATOL):
+                # Tier-1 fail: probability vectors materially differ → real
+                # mirror drift (different model, features, or feat_dict).
                 drifted.append({
                     "ref_id": hand.ref_id,
+                    "reason": "tier1_prob_drift",
                     "canonical": (canonical.adjusted_action, canonical.correct,
                                   canonical.was_adjusted),
                     "student": (student.adjusted_action, student.correct,
                                 student.was_adjusted),
+                    "max_prob_diff": float(np.max(np.abs(cp - sp))),
                 })
+                continue
+            cp_sorted = sorted(cp.tolist(), reverse=True)
+            sp_sorted = sorted(sp.tolist(), reverse=True)
+            cp_gap = cp_sorted[0] - cp_sorted[1]
+            sp_gap = sp_sorted[0] - sp_sorted[1]
+            if min(cp_gap, sp_gap) < TIER2_BORDERLINE_ARGMAX_TOLERANCE:
+                # Borderline-argmax: BLAS reduction-order can flip argmax when
+                # the top probability gap is below the BLAS-noise threshold.
+                # Accept (this is the deflake that PR #228 SHOULD_FIX-1 Path 3
+                # Hybrid resolution sanctions).
+                continue
+            # Non-borderline argmax flip on np.allclose probability vectors.
+            # Should be impossible under exact float equality; record loudly.
+            drifted.append({
+                "ref_id": hand.ref_id,
+                "reason": "tier2_nonborderline_argmax_flip",
+                "canonical": (canonical.adjusted_action, canonical.correct,
+                              canonical.was_adjusted),
+                "student": (student.adjusted_action, student.correct,
+                            student.was_adjusted),
+                "canonical_top_gap": cp_gap,
+                "student_top_gap": sp_gap,
+            })
         assert not drifted, (
             f"Mirror drift between reference_evaluator and _StudentInference on "
             f"{len(drifted)} of {len(hands)} hands: {drifted}"
