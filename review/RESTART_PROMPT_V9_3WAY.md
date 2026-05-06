@@ -89,15 +89,16 @@ See `memory/reference_corrections.md` for full details.
 5. **Knowledge base needs updating** with solver rules before next
    labelling round (especially semi-bluff carve-out)
 
-## 5 True Remaining Failures (solver-corrected)
+## 4 True Remaining Failures (solver-corrected + 2026-05-06 graduation update)
 
 | Hand | Pattern |
 |------|---------|
 | MW-17 | Under-calling (low equity draw) |
-| MW-25 | Residual passive (thin value bet) |
-| MW-40 | Residual passive (very thin value bet) |
+| MW-40 | Residual passive (very thin value bet) — graduation candidate; Opus CHECK HIGH on PILOT_787 (PR #213); 12.5I-MW40-VERIFICATION queued |
 | MW-45 | Under-raising |
 | MW-47 | Shared blind spot (nut draw should raise) |
+
+**Graduated 2026-05-06:** MW-25 was originally on this list as "Residual passive (thin value bet)". 4-source convergence (5/5 pilot + Opus 4.7 HIGH + 30/30 unanimous parametric + v3.4 traces; PR #209 + PR #213 + PR #215) shows the model is GTO-correct on MW-25; the BATCH2 reference was empirically wrong. Reference graduated to CHECK HIGH; model agreement now full. Stay-wrong count 5 → 4.
 
 Plus MW-31, MW-50 (unverified, likely model correct).
 

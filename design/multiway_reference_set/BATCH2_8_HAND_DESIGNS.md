@@ -321,6 +321,9 @@ standard defend range vs CO.
 
 **Action history:** HJ opens, CO calls, BTN (hero) calls, BB calls. Flop As9s5d: all check to hero.
 
+**Expert action history:**
+- 2026-05-06: BET HIGH → **CHECK HIGH** (4-source graduation per PR #209 + PR #213 + PR #215; canonical label lives in BATCH2_8_RANGE_ANALYSIS.md GTO Action Table; see `~/.claude/projects/-home-rupertbeytell/memory/reference_corrections.md` MW-25 entry)
+
 ---
 
 ### MW-26: Ks7s flush draw OOP SB, 4-way hero first to act, As9s5d (mirror of MW-25)
