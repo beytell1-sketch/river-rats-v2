@@ -24,7 +24,7 @@
 | MW-22 | nut_potential | 0.121 | 0.000 | CHECK | MEDIUM |
 | MW-23 | position_ampli | 0.458 | 0.000 | BET | HIGH |
 | MW-24 | position_ampli | 0.604 | 0.000 | BET | MEDIUM |
-| MW-25 | position_ampli | 0.337 | 0.000 | BET | HIGH |
+| MW-25 | position_ampli | 0.337 | 0.000 | CHECK | HIGH |
 | MW-26 | position_ampli | 0.368 | 0.000 | CHECK | HIGH |
 | MW-27 | position_ampli | 0.476 | 0.000 | BET | HIGH |
 | MW-28 | position_ampli | 0.561 | 0.000 | BET | MEDIUM |
@@ -380,9 +380,13 @@
 | hand_category | high_card |
 | num_opponents | 3 |
 
-**GTO Action: BET** — Confidence: HIGH
+**GTO Action: CHECK** — Confidence: HIGH
 
-**Reasoning:** Ks7s on As9s5d is a strong flush draw with three opponents who all checked. IP with a flush draw, hero can bet after seeing three checks — all opponents showed weakness. Betting serves double duty: deny free cards and potentially take the pot now. IP position allows hero to see all checks before committing chips — position amplified in 4-way pot.
+**Reasoning (corrected 2026-05-06; original BET HIGH below):** Ks7s on As9s5d 4-way SRP checked-through is a CHECK. The original BET HIGH read on "all opponents checked = weakness" did not adequately weight the composition triple: (a) hero K-high FD is non-nut (As public on board → no nut blocker; nut_flush_block=0), (b) 4-way checked-through composition contains slowplayed Ax + sets + made flushes (better_hand_pct=0.91 dominates), (c) reverse-implied odds 4-way with non-nut FD punish drawing-equity bets (hitting a spade vs villain Axs = stack-off disaster), (d) 4-way collective fold equity collapses below thin-value-bet break-even because fold equity requires SIMULTANEOUS folds from 3 opponents. CHECK preserves equity realization while avoiding stack-off scenarios.
+
+**Original reasoning (BET HIGH):** Ks7s on As9s5d is a strong flush draw with three opponents who all checked. IP with a flush draw, hero can bet after seeing three checks — all opponents showed weakness. Betting serves double duty: deny free cards and potentially take the pot now. IP position allows hero to see all checks before committing chips — position amplified in 4-way pot. *[Empirically refuted by 12.5I-C 4-source convergence: 5/5 pilot CHECK + Opus 4.7 HIGH (PR #209) + 30/30 unanimous CHECK 1.0 conf parametric (PR #213) + v3.4 protocol traces.]*
+
+**Expert action history:** 2026-05-06: BET HIGH → CHECK HIGH (4-source graduation per PR #209 + PR #213 + PR #215).
 
 ---
 
@@ -1022,10 +1026,10 @@
 ### Axis 4 — Position Amplification
 
 **Hands:** MW-23, MW-24, MW-25, MW-26, MW-27, MW-28
-**Actions:** BET, BET, BET, CHECK, BET, BET
+**Actions:** BET, BET, CHECK, CHECK, BET, BET *(MW-25 corrected 2026-05-06; was BET)*
 **Average equity:** 0.4674
 
-**Axis insight:** IP hands (MW-23, MW-25, MW-27) all receive HIGH confidence BET recommendations. OOP mirrors (MW-24, MW-26, MW-28) receive MEDIUM confidence: MW-24 and MW-28 still BET but with reduced sizing rationale; MW-26 flips to CHECK. The flush draw IP/OOP split (MW-25 vs MW-26) shows the starkest position effect — same draw, opposite action.
+**Axis insight (updated 2026-05-06):** IP made hands (MW-23, MW-27) all receive HIGH confidence BET recommendations. OOP mirrors (MW-24, MW-28) still BET but with reduced sizing rationale at MEDIUM confidence. The flush-draw position pair (MW-25 IP / MW-26 OOP) was originally designed to show "same draw, opposite action" — but 4-source 12.5I-C empirical evidence (PR #209 + PR #213) refutes the IP-FD-bets read: 4-way checked-through SRP with a non-nut FD checks IP as well as OOP, because nut-blocker absence + reverse-implied odds + collective fold equity collapse govern over position. The corrected axis-4 insight: position amplification differentiates MADE-hand value (MW-23/27 IP bet vs MW-24/28 OOP smaller bet sizing), but for non-nut DRAWS it does not flip the action — both IP (MW-25) and OOP (MW-26) check.
 
 ### Axis 7 — Range Narrowing
 
