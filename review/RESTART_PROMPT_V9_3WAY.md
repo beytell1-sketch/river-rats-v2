@@ -1,11 +1,33 @@
 # Restart Prompt — v9-3way Continuation
 
-**Date:** 7 April 2026 (end of session)
-**Session:** v9-3way-v2.2 shipped, features built, ready for next factory batch
+**Date:** 7 May 2026 (12.5L-SHIP-A)
+**Session:** v9-3way-v2.2 LOCKED as Phase 1 INTERIM ceiling; 12.5K experiment closed; D5 blueprinted/deferred
 
 ---
 
-## Where We Are
+## 12.5K experiment closure (2026-05-07)
+
+The 12.5K diagnostic workstream tested three within-stack levers against the v9-3way-v2.2 baseline:
+
+| Lever | Hypothesis | Result | Verdict |
+|---|---|---|---|
+| A — variance | 5-seed sample too small | 20-seed mean **33.10/40 ± 0.30** (PR #261) | Ruled out |
+| B — hyperparameters | 59-surface hypers wrong for 61-surface | 3-config × 5-seed pilot best **33.20 ± 0.40**; spread 0.20 (PR #265) | Ruled out (early-stop) |
+| C — augmented data | 788-corpus undersized for stay-wrong axes | 988-corpus 5-seed mean **33.00/40 ± 0.00** (PR #293) | Ruled out (NULL within Lever A noise) |
+
+**3-lever ceiling claim** (per `review/comms/PHASE125L_GATE_EVAL_SYNTHESIS_2026-05-07.md`, PR #297): v9-3way-v2.2 at **34/40 solver-corrected** IS the ceiling for the current trainer/feature/architecture stack on the 988-corpus 61-feature configuration. None of variance / hyperparameter / data-scale-within-pipeline produced lift; all converged in 33.0-33.2/40.
+
+## Production model lock
+
+**v9-3way-v2.2 IS the Phase 1 INTERIM production model for HU+3way.** "Interim" framing per `review/comms/MAIN_TERMINAL_PR297_RESOLUTION_AND_SHIP_A_DISPATCH_2026-05-07.md` (Hybrid A→D5-deferred): the model ships as production NOW (unblocking coaching/mobile deliverables) WITHOUT permanently accepting the 4-hand stay-wrong list as the project's final ceiling. Phase 3 D5 (75+ feature surface) is committed-but-deferred per blueprint memo `review/comms/PHASE125_D5_DEFERRED_BLUEPRINT_2026-05-07.md`.
+
+**Model artifact**: `river-rats-core/models/gto_model_v9_3way_v2.2.json` — DO NOT modify. Production lock means leave as-is.
+
+**Corpus + feature surface**: 988-corpus + 61-feature surface remain as the empirical record. The v9-3way-v2.2 model itself trains on 45-feature surface; the 988-corpus + 61-surface work parked in `river-rats-core/models/125k_c_e/v9_3way_125k_c_e.json` and `data/corpus_combined_988_*.jsonl` is the 12.5K experiment closure record.
+
+---
+
+## Where We Are (legacy section, retained)
 
 **v9-3way-v2.2 is the production 3-way specialist.**
 - Reference: 32/40 (80% raw), **33/40 (82.5%) solver-corrected**
@@ -89,16 +111,26 @@ See `memory/reference_corrections.md` for full details.
 5. **Knowledge base needs updating** with solver rules before next
    labelling round (especially semi-bluff carve-out)
 
-## 4 True Remaining Failures (solver-corrected + 2026-05-06 graduation update)
+## 4 True Remaining Failures (FINAL stay-wrong taxonomy after 12.5K closure)
 
-| Hand | Pattern |
-|------|---------|
-| MW-17 | Under-calling (low equity draw) |
-| MW-40 | Residual passive (very thin value bet); BATCH2 BET MEDIUM stands. Verification round complete 2026-05-06 (PR #228 plan / PR #236 corpus / PR #241 Sonnet pilot 25/25 BET / PR #245 Opus 4.7 tier-up 5/5 BET): graduation-fail confirmed via 4-source convergence symmetric to MW-25 graduation pattern. PILOT_787's CHECK is a single-hand anomaly relative to the broader J-on-board TPMK T-kicker 4-way checked-through IP non-PFA pattern. v3.4 DO NOT Rule 11 OOP-only exemption + composition quad routing dominates. |
-| MW-45 | Under-raising |
-| MW-47 | Shared blind spot (nut draw should raise) |
+Per dispatch §"CORRECTION" (`MAIN_TERMINAL_PR297_RESOLUTION_AND_SHIP_A_DISPATCH_2026-05-07.md`): the synthesis §6.1 stay-wrong table contained a taxonomy error on MW-40 (labelled canonical CALL; correct is BET MEDIUM). The corrected taxonomy below is load-bearing for the D5 hypothesis (3 of 4 stay-wrong are model-stuck pipeline-aligned → D5 feature-surface expansion is the structurally-correct lever for them).
+
+| Hand | Pipeline label | Canonical label | Model prediction | Taxonomy |
+|---|---|---|---|---|
+| **MW-17** | RAISE (Path A re-tag) | CALL | — | **PIPELINE-CANONICAL MISMATCH** (1 of 4) |
+| **MW-40** | BET (25/25 Sonnet + 5/5 Opus pipeline) | BET MEDIUM | CHECK | **MODEL-STUCK PIPELINE-ALIGNED** (1 of 3) |
+| **MW-45** | RAISE | RAISE | CALL | **MODEL-STUCK PIPELINE-ALIGNED** (2 of 3) |
+| **MW-47** | RAISE | RAISE | CALL | **MODEL-STUCK PIPELINE-ALIGNED** (3 of 3) |
+
+**Pipeline-canonical mismatch** (MW-17 only): v3.x labelling pipeline routes "suited nut FD on 2-FD-suit board → RAISE" via KB §1.7; canonical reference is CALL with low pot odds. Augmented training via the current pipeline cannot teach canonical CALL; this is a structural pipeline limitation. See PR #281 (Path A re-tag analysis).
+
+**Model-stuck pipeline-aligned** (MW-40, MW-45, MW-47): pipeline labels match canonical reference; the model layer cannot extract the discriminating signal at current 61-feature scale. **D5 (75+ feature surface) is the structurally-correct lever for this 3-hand subset** — pre-experiment evidence (the model-stuck-pipeline-aligned characterization) directly supports the hypothesis that feature-surface expansion CAN lift these axes. See `review/comms/PHASE125_D5_DEFERRED_BLUEPRINT_2026-05-07.md` for the deferred Phase 3 D5 blueprint.
+
+**Phase 1 interim ceiling; Phase 3 D5 deferred** per `MAIN_TERMINAL_PR297_RESOLUTION_AND_SHIP_A_DISPATCH_2026-05-07.md`. The 4 stay-wrong are NOT permanently accepted as final; they are interim-ceiling pending Phase 3 D5 execution post-coaching/mobile MVP.
 
 **Graduated 2026-05-06:** MW-25 was originally on this list as "Residual passive (thin value bet)". 4-source convergence (5/5 pilot + Opus 4.7 HIGH + 30/30 unanimous parametric + v3.4 traces; PR #209 + PR #213 + PR #215) shows the model is GTO-correct on MW-25; the BATCH2 reference was empirically wrong. Reference graduated to CHECK HIGH; model agreement now full. Stay-wrong count 5 → 4.
+
+**MW-40 verification 2026-05-06** (graduation-fail; per PR #245 + this taxonomy correction): PR #228 plan / PR #236 corpus / PR #241 Sonnet pilot 25/25 BET / PR #245 Opus 4.7 tier-up 5/5 BET. The pipeline-aligned characterization is empirical: pipeline routes BET; canonical is BET MEDIUM. The model predicts CHECK — that's the model-layer mismatch, NOT a pipeline-canonical mismatch.
 
 Plus MW-31, MW-50 (unverified, likely model correct).
 
