@@ -154,6 +154,36 @@ _HYPERPARAMETERS: Dict = dict(
 )
 
 
+def _apply_env_hp_overrides(hp: Dict) -> Dict:
+    """12.5K-B Lever B hyperparameter sweep extension. Env-var override
+    convention: `RR_HP_<UPPERCASE_KEY>=value` overrides the matching key
+    in `_HYPERPARAMETERS` at module load time. Type-preserving for int and
+    float; passes through string for objective/eval_metric. No-op when no
+    env vars set.
+    """
+    out = dict(hp)
+    for k in list(out.keys()):
+        env_key = f"RR_HP_{k.upper()}"
+        if env_key in os.environ:
+            v = os.environ[env_key]
+            cur = out[k]
+            try:
+                if isinstance(cur, bool):
+                    out[k] = v.lower() in ("1", "true", "yes")
+                elif isinstance(cur, int):
+                    out[k] = int(v)
+                elif isinstance(cur, float):
+                    out[k] = float(v)
+                else:
+                    out[k] = v
+            except (ValueError, TypeError):
+                pass
+    return out
+
+
+_HYPERPARAMETERS = _apply_env_hp_overrides(_HYPERPARAMETERS)
+
+
 # ─── Repo root resolver ───────────────────────────────────────────────
 
 def _repo_root() -> Path:
