@@ -86,14 +86,32 @@ Created `review/comms/PHASE125_D5_DEFERRED_BLUEPRINT_2026-05-07.md` (~280 lines;
 - ❌ Did NOT change v9-3way-v2.2 model file.
 - ❌ Did NOT auto-fix the synthesis's MW-40 taxonomy error in PR #297 (already merged; correction recorded in this PR's deliverables instead per dispatch instruction).
 
-## §7 Sequencing per dispatch
+## §7 Sequencing per dispatch (UPDATED per PR #302)
+
+The original SHIP-A dispatch (PR #301) said "ORCHESTRATOR LOOP STOPS at SHIP-A merge". That was superseded by `MAIN_TERMINAL_SHIP_A_FIRE_AND_PHASE15_QUEUE_2026-05-07.md` (master `a382fa2`, PR #302), which acknowledges PR #300 (builder directive-receipt for HU + unified-59-surface + drop 2 J-B) as legitimate scope-expansion and queues Phase 1.5 unified-59-surface design POST-SHIP-A merge.
 
 After SHIP-A merges:
-- Master at the project's natural endpoint (12.5K closed; v9-3way-v2.2 locked; D5 blueprinted).
-- ORCHESTRATOR LOOP STOPS (state E with queue empty per dispatch §"Sequencing").
-- Owner directive needed to re-open (D5 execution OR v9-4way development OR other).
+- **Phase 1.5-A unified-59-surface design** dispatched immediately by orchestrator. Architect-hat builder produces design comm specifying: 59-surface canonical (61 - 2 J-B features); HU re-train cascade; drop-2-J-B-features migration; retrain-ordering (HU first → 3way verification → router/coaching alignment); cost/time forecast.
+- LOOP CONTINUES through Phase 1.5-A design + QC + merge.
+- Phase 1.5-B/C/D/E execution sub-phases per Phase 1.5-A design (HU re-train per design recommendation; owner ratifies sequencing if/when sub-phase fires).
 
-**Note on PR #300** (parallel owner-directive receipt for HU production-readiness + unified 59-feature surface + drop 2 J-B features): PR #300 sits open and is NOT addressed in this SHIP-A dispatch. The Hybrid A→D5-deferred path explicitly defers to "fresh workstream when production-readiness deliverables progress past user-value threshold". Whether PR #300's owner directive resolves via D5 (a 75+ feature surface that incorporates the unified-feature-surface goal) or via a separate parallel sub-phase is orchestrator-scope; surfacing here for orchestrator's awareness when it issues the next dispatch.
+## §7.1 Phase 1.5 unified-surface acknowledgment (per PR #302 §"Builder report adjustments")
+
+PR #300 (`BUILDER_DIRECTIVE_RECEIPT_HU_PRODUCTION_AND_UNIFIED_SURFACE_2026-05-07.md`) parsed owner's directive as: HU production-readiness + unified feature surface across the chain + drop the 2 J-B features (61 → 59). Builder correctly held per `feedback_optional_is_not_authorized.md` and surfaced for orchestrator sequencing.
+
+Orchestrator-scope verdict (PR #302 §"Builder directive-receipt acknowledged"): the directive-receipt is legitimate scope-expansion. The unified-surface direction IS structurally-aligned with long-term quality — Path Y discipline currently has 38/45/61 fragmentation across HU + 3way + experimental, and coaching pipeline integration benefits from unified surface. PR #300 merged at master `48297e4`.
+
+This SHIP-A PR's deliverables (Phase 1 SHIP record + project memory + D5 blueprint) are ORTHOGONAL to the unified-surface direction. They record the 12.5K experiment closure regardless of next-phase choice. Throwing them away to re-sequence Phase 1.5 first (Option b in PR #302) would lose recorded work for marginal sequencing gain. SHIP-A merges → Phase 1.5-A fires.
+
+## §7.2 Phase ordering corrected (per PR #302 §"Builder report adjustments")
+
+| Phase | What | Status |
+|---|---|---|
+| **Phase 1 — SHIP-A** | This PR. v9-3way-v2.2 INTERIM lock + 12.5K experiment closure + corrected stay-wrong taxonomy + project memory + D5 blueprint memo. | EXECUTING (this PR) |
+| **Phase 1.5 — unified-59-surface workstream** | Drop 2 J-B features (61 → 59); unify HU + 3way + experimental on a single 59-feature surface; HU production-readiness via re-train cascade; coaching pipeline integration. | QUEUED POST-SHIP-A MERGE |
+| **Phase 2 — D5 (75+ features on unified-59 base)** | Per the deferred blueprint memo in this PR; fires POST-Phase-1.5-ship; D5 expansion happens on top of unified-59, NOT on top of fragmented surfaces. | DEFERRED (blueprint ready) |
+
+**Important framing change vs original SHIP-A dispatch (PR #301)**: D5 is NO LONGER the immediate next-phase commitment. Phase 1.5 unified-59-surface workstream replaces it as the next-phase commitment. D5 stays blueprinted as POST-Phase-1.5 candidate. The D5 blueprint memo (`PHASE125_D5_DEFERRED_BLUEPRINT_2026-05-07.md`) §2 hypothesis + §9 references have been updated to reflect this re-sequencing.
 
 ## §8 References
 
@@ -108,4 +126,4 @@ After SHIP-A merges:
 
 ---
 
-**Status: 12.5L-SHIP-A 3 deliverables COMPLETE. Phase 1 SHIP recorded (v9-3way-v2.2 INTERIM ceiling lock); project memory entries created (5 items; owner-scope to ratify); D5 deferred blueprint memo authored (11 candidates + binding pilot gate). Awaiting QC pre-merge audit. ORCHESTRATOR LOOP STOPS at this PR's merge per dispatch §"Sequencing".**
+**Status: 12.5L-SHIP-A 3 deliverables COMPLETE. Phase 1 SHIP recorded (v9-3way-v2.2 INTERIM ceiling lock); project memory entries created (5 items; owner-scope to ratify); D5 deferred blueprint memo authored (11 candidates + binding pilot gate; re-sequenced to Phase 2 post Phase 1.5). Awaiting QC pre-merge audit. After merge, ORCHESTRATOR LOOP CONTINUES into Phase 1.5-A unified-59-surface design dispatch per `MAIN_TERMINAL_SHIP_A_FIRE_AND_PHASE15_QUEUE_2026-05-07.md` (PR #302).**

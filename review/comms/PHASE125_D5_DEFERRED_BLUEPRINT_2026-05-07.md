@@ -16,7 +16,9 @@ This memo provides the architect-hat-ready specification for that future dispatc
 
 ## §2 Hypothesis
 
-**Expanding the feature surface from 61 to 75+ features targeting the structural patterns of MW-40, MW-45, MW-47 will lift the model's solver-corrected accuracy from the 33-34/40 ceiling to ≥36-37/40 by enabling the model layer to extract discriminating signal currently absent at 61-feature scale.**
+**Expanding the feature surface from the unified 59-surface (Phase 1.5 base) to 75+ features targeting the structural patterns of MW-40, MW-45, MW-47 will lift the model's solver-corrected accuracy from the 33-34/40 ceiling to ≥36-37/40 by enabling the model layer to extract discriminating signal currently absent at 59-feature scale.**
+
+**Sequencing update per `MAIN_TERMINAL_SHIP_A_FIRE_AND_PHASE15_QUEUE_2026-05-07.md` (PR #302)**: D5 is no longer the immediate next-phase. Phase 1.5 unified-59-surface workstream comes first (drop the 2 J-B features and unify HU + 3way + experimental on a single 59-feature surface). D5 is re-sequenced as Phase 2, building on top of the unified-59 base — NOT on top of the current fragmented 38/45/61 surfaces. The 11 candidate features below target a 59 → 75+ transition (not 61 → 75+).
 
 ### Pre-experiment evidence supporting the hypothesis
 
@@ -147,6 +149,8 @@ Owner directive: "execute D5 now" (or equivalent) post-coaching/mobile MVP. Phas
 
 - 12.5L synthesis: `review/comms/PHASE125L_GATE_EVAL_SYNTHESIS_2026-05-07.md` (master `ad84d78`, PR #297)
 - SHIP-A dispatch: `review/comms/MAIN_TERMINAL_PR297_RESOLUTION_AND_SHIP_A_DISPATCH_2026-05-07.md` (master `62eae79`, PR #301)
+- **SHIP-A fire authorization + Phase 1.5 queue**: `review/comms/MAIN_TERMINAL_SHIP_A_FIRE_AND_PHASE15_QUEUE_2026-05-07.md` (master `a382fa2`, PR #302) — D5 re-sequenced as Phase 2 post Phase 1.5 unified-59 ship.
+- **Builder directive-receipt** (HU + unified surface + drop 2 J-B): `review/comms/BUILDER_DIRECTIVE_RECEIPT_HU_PRODUCTION_AND_UNIFIED_SURFACE_2026-05-07.md` (master `48297e4`, PR #300) — origin of the unified-59-surface direction.
 - Stay-wrong taxonomy: `~/.claude/projects/-home-rupertbeytell/memory/project_v9_3way_ceiling.md` (this PR; owner-scope to ratify)
 - Lever C NULL evidence: `review/comms/BUILDER_REPORT_PHASE125K_C_E_CORPUS_AND_RETRAIN_2026-05-07.md` (PR #293)
 - 12.5J-B partial-attempt evidence: `review/comms/BUILDER_REPORT_PHASE125J_B_FEATURE_IMPLEMENTATION_2026-05-06.md` (PR #198 era)
@@ -155,4 +159,4 @@ Owner directive: "execute D5 now" (or equivalent) post-coaching/mobile MVP. Phas
 
 ---
 
-**Status: D5 BLUEPRINT MEMO — committed-but-deferred per Hybrid A→D5-deferred decision. Re-open trigger: owner directive post-coaching/mobile MVP. Phase 3-A pilot gate is BINDING; do NOT skip pilot when re-opening.**
+**Status: D5 BLUEPRINT MEMO — committed-but-deferred. Phase ordering: Phase 1 SHIP-A (this PR) → Phase 1.5 unified-59-surface workstream (queued post-SHIP-A merge per PR #302) → Phase 2 D5 (this blueprint; fires post-Phase-1.5-ship). Pilot gate is BINDING; do NOT skip pilot when re-opening.**
