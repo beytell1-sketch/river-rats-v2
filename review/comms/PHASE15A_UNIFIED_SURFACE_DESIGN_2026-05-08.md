@@ -97,29 +97,53 @@ The 59-surface = `river-rats-core/feature_extractor.py:1569-1620` `FEATURE_COLUM
 
 Both are below the 1% Gate 2.3 drop threshold (`docs/PROCESS_GUIDE.md:112-116`); both targeted stay-wrong axes that remained on the stay-wrong list at 12.5K close. The structural-args case for keeping them lapsed when 12.5K-C-E cleared the corpus expansion (3-lever ceiling) without reactivating their importance.
 
-### 1.2 TC-23 EXISTENCE attestation (architect verifies before PR)
+### 1.2 TC-23 EXISTENCE attestation (git-tracked verification)
 
-Architect verified at master HEAD `e66e2e6` (immediately prior to PR #306 dispatch landing at `5863f13`):
+**Amendment 2026-05-09 per QC PR #311 SHOULD_FIX-1 + memory `feedback_tc23_existence_must_be_git_tracked.md`:**
 
-- `river-rats-core/feature_extractor.py` — exists; `FEATURE_COLUMNS` at line 1569 has 61 entries; both J-B features at indices 60-61 (lines 1618-1619).
-- `river-rats-core/feature_keys.py` — exists; `F.NUT_BLOCKER_OVERCARD_COUNT` line 100; `F.BET_CALL_MULTIWAY_OOP_RAISE_PRESSURE_INDEX` line 101.
-- `river-rats-core/train_model_v9_student.py` — exists; line 97 hard-asserts `len(STUDENT_FEATURE_COLUMNS_V9) == 61`; line 119 hard-asserts `_S18_NEW_FEATURES` at tail; line 127 sets `_N_FEATURES_STUDENT = 61`.
-- `river-rats-core/gto_model.py` — exists; production routing FEATURE_COLUMNS (line 33) is 55 features (`N_FEATURES = 55` at line 64); auto-detects width 38/45 at line 104.
-- `river-rats-core/coaching/gto_model.py` — exists; line 33 mirrors production at 55 features.
-- `river-rats-core/oracle_router.py` — exists; HU slot at line 34 references `gto_model_v8_hu.json`; legacy fallback at line 41 references `gto_model_v8_38feat.json`.
-- `river-rats-core/models/gto_model_v8_hu.json` — exists.
-- `river-rats-core/models/gto_model_v8_38feat.json` — exists (legacy).
-- `river-rats-core/models/gto_model_v9_3way_v2.2.json` — exists (Phase 1 INTERIM lock).
-- `river-rats-core/models/125k_c_e/v9_3way_125k_c_e.json` — exists (12.5K-C-E chosen-seed promotion).
-- `data/corpus_combined_988_2026-05-07.jsonl` — exists; 988 rows; `feat_dict` length 61 (verified by inspection of row 1).
-- `data/corpus_combined_988_labels_2026-05-07.jsonl` — exists; 988 labels.
-- `scripts/assemble_125k_c_e_988.py` — exists; canonical 988-corpus assembly script.
-- `docs/PROCESS_GUIDE.md` — exists; §1.1 line 36-44 (agent batch sizes); §1.2 line 45-52 (minimum agent counts); §1.4 line 59-77 (experts recommend, owner decides scope); §2.1 line 94-102 (BLIND calibration).
-- `design/multiway_reference_set/BATCH2_8_HAND_DESIGNS.md` — exists (the 40-hand multiway reference set design pattern).
-- `prompts/gto_labeller_v3.4.md` — exists.
-- `training-data/tag_vocabulary.json` — exists.
-- `river-rats-core/calibration_exam.py` — exists.
-- `river-rats-core/coaching/spot_classifier.py` — exists.
+The original §1.2 attestation (rev 1, in this PR's first commit) used `ls` / disk-existence checks, which is insufficient. TC-23 EXISTENCE requires GIT-TRACKED verification (`git ls-files <path>` non-empty AND `git cat-file -e HEAD:<path>` succeeds). Disk-existence may include local-only artifacts that vanish on fresh checkout / CI / new clone.
+
+Re-attestation method (architect runs `git ls-files <path>` from master HEAD `9c3b9ae` for each cited path):
+
+| # | path | git-tracked? | notes |
+|---|---|---|---|
+| 1 | `river-rats-core/feature_extractor.py` | GREEN | `FEATURE_COLUMNS` at line 1569 has 61 entries; J-B features at lines 1618-1619 |
+| 2 | `river-rats-core/feature_keys.py` | GREEN | `F.NUT_BLOCKER_OVERCARD_COUNT` line 100; `F.BET_CALL_MULTIWAY_OOP_RAISE_PRESSURE_INDEX` line 101 |
+| 3 | `river-rats-core/train_model_v9_student.py` | GREEN | line 97 asserts 61; line 119 asserts `_S18_NEW_FEATURES`; line 127 `_N_FEATURES_STUDENT = 61` |
+| 4 | `river-rats-core/gto_model.py` | GREEN | production routing FEATURE_COLUMNS at 55 (line 64); auto-detect 38/45 at line 104 |
+| 5 | `river-rats-core/coaching/gto_model.py` | GREEN | line 33 mirrors production at 55 features |
+| 6 | `river-rats-core/oracle_router.py` | GREEN | HU slot line 34 references `gto_model_v8_hu.json`; legacy fallback line 41 references `gto_model_v8_38feat.json` |
+| 7 | `river-rats-core/models/gto_model_v8_hu.json` | **RED** | **on disk (11.7 MB) but NOT git-tracked; `*.json` excluded by .gitignore line 3; never committed in any branch (`git log --all --oneline -- <path>` empty)** |
+| 8 | `river-rats-core/models/gto_model_v8_38feat.json` | **RED** | **on disk (11.7 MB) but NOT git-tracked; same root cause as #7** |
+| 9 | `river-rats-core/models/gto_model_v9_3way_v2.2.json` | GREEN | Phase 1 INTERIM lock; force-added (`git add -f`) at 408 KB |
+| 10 | `river-rats-core/models/125k_c_e/v9_3way_125k_c_e.json` | GREEN | 12.5K-C-E chosen-seed promotion |
+| 11 | `data/corpus_combined_988_2026-05-07.jsonl` | GREEN | 988 rows; `feat_dict` length 61 |
+| 12 | `data/corpus_combined_988_labels_2026-05-07.jsonl` | GREEN | 988 labels |
+| 13 | `scripts/assemble_125k_c_e_988.py` | GREEN | canonical 988-corpus assembly script |
+| 14 | `docs/PROCESS_GUIDE.md` | GREEN | §1.1 line 36-44; §1.2 line 45-52; §1.4 line 59-77; §2.1 line 94-102 |
+| 15 | `design/multiway_reference_set/BATCH2_8_HAND_DESIGNS.md` | GREEN | 40-hand multiway reference set design pattern |
+| 16 | `prompts/gto_labeller_v3.4.md` | GREEN | |
+| 17 | `training-data/tag_vocabulary.json` | GREEN | force-added despite `*.json` gitignore |
+| 18 | `river-rats-core/calibration_exam.py` | GREEN | |
+| 19 | `river-rats-core/coaching/spot_classifier.py` | GREEN | |
+
+**Result: 17 GREEN / 2 RED.** The 2 RED entries are the v8-HU model artifacts.
+
+**Root cause of RED entries:**
+
+`.gitignore` line 3 reads `*.json`. Several JSON model files have been explicitly force-added via `git add -f` when they became canonical (e.g., `gto_model_v9_3way_v2.2.json` at 408 KB). The v8-HU model artifacts at 11.7 MB each were never force-added; they exist on disk and are loaded at runtime by `oracle_router.py:34` + `:41` (legacy fallback) but have zero git history.
+
+**Implication for §4 HU re-train cascade:**
+
+§4.2 close-hand-selection methodology depends on v8-HU-38 model uncertainty. The v8-HU-38 model exists on disk and is currently the production HU oracle (loaded at runtime by the router) — but is not git-tracked. This is a real spec-vs-infrastructure drift that the rev-1 §1.2 attestation masked. See §4.2 amendment below for the owner-scope decision this surfaces.
+
+**Production status note (separate concern, flagged for future infrastructure work):**
+
+Inventory of other production-referenced-but-not-git-tracked model paths at master `9c3b9ae`:
+
+- `gto_model_v9_3way.json` (referenced by `oracle_router.py:35`; on disk 397 KB; NOT git-tracked) — note that the canonical Phase 1 INTERIM lock `gto_model_v9_3way_v2.2.json` IS git-tracked, but the router references the older non-versioned filename.
+
+This broader spec-vs-infrastructure drift exists across the model directory and warrants a separate provenance-cleanup workstream after Phase 1.5 ships. NOT addressed in this PR.
 
 **Path corrections vs dispatch wording (per `feedback_verify_source_not_plan.md`):**
 
@@ -157,7 +181,7 @@ Verification: `grep -rln 'nut_blocker_overcard_count\|bet_call_multiway_oop_rais
 
 Going forward (Phase 1.5-B feature-prune mechanical sub-phase + downstream surface-aware sub-phases), the in-scope updates are:
 
-- **Trainer hard-asserts.** `river-rats-core/train_model_v9_student.py:97` (61 → 59); `:115` (`_V24_P1_BLOCKERS` at indices `-5:-1` post-drop, was `-6:-2` pre-drop) — note this is one of the few places where an off-by-N exists in the assertion structure; architect commits to: "assert v2.4 P1 blockers occupy positions 56-59 of the 59-feature list (indices `-4:` of the 59-list)" with rationale that the J-B drop frees the tail. `:127` (`_N_FEATURES_STUDENT = 59`); module docstring at line 1.
+- **Trainer hard-asserts.** `river-rats-core/train_model_v9_student.py:97` (61 → 59); `:115` (`_V24_P1_BLOCKERS` are at indices `-6:-2` of the 61-list pre-drop; after the 2-feature J-B drop, the tail is freed and the v2.4 P1 blockers occupy the final 4 positions of the 59-list — i.e., indices `-4:`). Architect commits to: "assert v2.4 P1 blockers occupy positions 56-59 of the 59-feature list (indices `-4:` of the 59-list)" with rationale that the J-B drop frees the tail. `:127` (`_N_FEATURES_STUDENT = 59`); module docstring at line 1.
 - **Feature definitions.** `river-rats-core/feature_extractor.py:1613-1619` (delete Step 18 block); `:2136-2171` and `:2174-…` (delete compute functions); `:2645-2663` (delete the two call-site assignments); `feature_keys.py:94-101` (delete `F.NUT_BLOCKER_OVERCARD_COUNT` + `F.BET_CALL_MULTIWAY_OOP_RAISE_PRESSURE_INDEX`).
 - **Tests.** `river-rats-core/tests/test_features_125j.py` (delete entire file; J-B tests are the sole purpose); `river-rats-core/tests/test_train_model_v9_student.py` (update surface-size assertions 61 → 59; revise tail-position assertions per the off-by-N note above).
 - **Scripts.** `scripts/generate_lever_c_situations.py`, `scripts/build_corpus_revision_125i_mw40_verif_situations.py`, `scripts/assemble_125i_d_788.py` — delete J-B references; these are historical pipeline scripts; for the latter two (frozen artifacts) the appropriate pattern is to add a docstring note that the script targets a frozen 61-surface and is no longer re-runnable on the 59-surface, rather than mutate it. Architect commits to: scripts/lever_c (active in lever-c lineage) gets the J-B deletion; the two historical scripts get a docstring freeze-note. (This is a quality choice over a menu, per `feedback_quality_default_no_ask.md`: deleting from frozen scripts that produced shipped artifacts violates training provenance per CLAUDE.md §6.)
@@ -397,11 +421,22 @@ Reasoning vs dispatch's "~30-40":
 
 **Hand selection per axis (committed methodology):**
 
-- 3 of 5 hands per axis are CLOSE (per `feedback_close_hand_selection.md`: model uncertainty on v8-HU-38 + poker difficulty, NOT feature-stat extremes).
+- 3 of 5 hands per axis are CLOSE (per `feedback_close_hand_selection.md`: model uncertainty on the close-hand-anchor model + poker difficulty, NOT feature-stat extremes). See ⚠️ owner-scope item below for which model serves as the close-hand-anchor.
 - 2 of 5 are CANONICAL (uncontroversial value or fold spots; serve as ground-truth anchors for inter-labeller agreement).
 - Hand strength composition follows TP+/draws/air per `feedback_preflop_geometry_vs_postflop_composition.md` — NOT preflop range buckets.
 - Solver-aligned bet sizes per `feedback_solver_aligned_sizing.md`: flop 25%/66%, turn 33%/75%, river 33%/75%/150%. Architect adopts these in spot specs; any deviation requires a rationale comm.
 - Terminology compliance per `feedback_terminology_raise_vs_bet.md`: spot specs use "raise = raise of existing bet; bet = first postflop bet; open = preflop opener" verbatim. Architect spot-checks every spot specification before labelling fires.
+
+**⚠️ Owner-scope decision (surfaced 2026-05-09 per QC PR #311 SHOULD_FIX-1 cascade): close-hand-anchor model**
+
+Original §4.2 (rev 1) anchored close-hand selection on v8-HU-38 model uncertainty. Re-attestation in §1.2 found v8-HU-38 model files are NOT git-tracked. Owner must direct one of two paths before 1.5-D.1 fires; this is owner-scope per `feedback_orchestrator_decides_not_recommends.md`.
+
+- **Path α: commit v8-HU-38 to git.** `git add -f river-rats-core/models/gto_model_v8_hu.json river-rats-core/models/gto_model_v8_38feat.json` adds 23 MB to the repo (38% growth on the current 61 MB `.git` size). No git-LFS configured. Pros: keeps v8-HU-38 lineage anchor as designed; aligns close-hand selection with the model that's actually production HU. Cons: ~38% repo size growth borne by every clone / fetch / CI; sets precedent for committing other 11 MB+ artifacts.
+- **Path β: re-anchor close-hand selection on v9-3way-on-59 model uncertainty.** v9-3way handles `num_opponents=1` HU case via the existing `num_opponents` feature in the 59-surface; predictions for HU spots are well-defined. Pros: no repo-size cost; uses a model already on the workstream's critical path (1.5-C output). Cons: v9-3way's HU competence is lower than v8-HU-38's (38-feat HU specialist trained on PokerBench 88.1%); model uncertainty signal may be a less precise discriminator of "close" HU spots; introduces a coupling between 1.5-C output quality and 1.5-D.1 design quality.
+
+**Architect-hat recommendation (HOW, not WHETHER, per `docs/PROCESS_GUIDE.md:59-77`):** Path β. Reasoning: the 23 MB repo cost is a recurring tax on infrastructure; it doesn't go away. Path β's coupling to 1.5-C is acceptable because 1.5-C verification is already on the critical path before 1.5-D.1, and a 1.5-C HALT (mean < 32.00) would block 1.5-D.1 anyway, so the additional dependency is not load-bearing. The "v9-3way handles HU spots" observation is structural (the model takes `num_opponents` as a feature; HU is just `num_opponents=1`), not a workaround.
+
+**Owner-scope:** Owner directs Path α or Path β; if Path α, orchestrator dispatches a 1-file infrastructure PR to commit the v8 artifacts before 1.5-D.1 fires. If Path β, this §4.2 is amended to read "v9-3way-on-59 model uncertainty" verbatim, and §4.5/§4.6 framing adjusts accordingly.
 
 **Design-agent dispatch (per `docs/PROCESS_GUIDE.md:45-52`):**
 
@@ -481,6 +516,8 @@ Reasoning vs dispatch's posed alternatives ("from v8-HU-38-feat OR from-scratch 
   2. **Corpus origin difference.** v8-HU-38 trained on PokerBench-derived data (88.1% accuracy reference); the new HU corpus is a fresh expert-labelled 750 situations. The implicit prior in v8-HU-38 trees may be poorly aligned with the 5-class label distribution of the new corpus, and warm-starting from a poor prior delays convergence relative to from-scratch with the right corpus.
 - Therefore architect commits to from-scratch HU retrain. v8-HU-38 stays as a lineage anchor (provenance only); vNext-HU-59 is a clean training run on the 750 HU corpus + 59-surface.
 
+**Amendment 2026-05-09 per QC PR #311 SHOULD_FIX-1 cascade:** v8-HU-38's "lineage anchor (provenance only)" framing requires nuance — v8-HU-38 is currently the production HU oracle (loaded at runtime by `oracle_router.py:34`/`:41`) but is NOT git-tracked (§1.2 RED entries). Provenance therefore lives in disk artifacts + the `oracle_router.py` filename pointer, not in git history. The from-scratch HU retrain commitment is unaffected; the lineage-anchor-claim is reframed as "production-runtime-anchor without git provenance." Whether to formalize that provenance via git-commit (Path α) or to operate without it (Path β) is the §4.2 ⚠️ owner-scope decision. Either resolution preserves the from-scratch retrain commitment.
+
 **Trainer:** Adapt `river-rats-core/train_model_v9_student.py` to a HU-specific variant `river-rats-core/train_model_vNext_hu.py`. Differences from the 3-way student:
 
 - Surface size assertion 59 (not 61).
@@ -504,7 +541,9 @@ Reasoning vs dispatch's posed alternatives ("PokerBench 88.1% baseline OR per-ha
 
 **Fallback verification:** PokerBench 88.1% parity reported as a SECONDARY metric for provenance; not a gate.
 
-**Ship action:** On gate clear, `models/gto_model_v8_hu.json` (38-feat) is REPLACED in production by `models/gto_model_vNext_hu_59feat.json` via `oracle_router.py:34` filename pointer change. Architect commits to this swap happening in the 1.5-E coaching-alignment sub-phase, NOT the 1.5-D.4 retrain sub-phase, so router/coaching pipelines update in lock-step with the model change.
+**Ship action:** On gate clear, the production HU oracle is swapped from `models/gto_model_v8_hu.json` (38-feat) to `models/gto_model_vNext_hu_59feat.json` via a filename-pointer change at `oracle_router.py:34`. Architect commits to this swap happening in the 1.5-E coaching-alignment sub-phase, NOT the 1.5-D.4 retrain sub-phase, so router/coaching pipelines update in lock-step with the model change.
+
+**Amendment 2026-05-09 per QC PR #311 SHOULD_FIX-1 cascade:** The "REPLACED in production" framing assumes v8-HU-38 was canonically tracked, which §1.2 re-attestation showed it was not. Reframed precisely: the swap is a filename-pointer change at `oracle_router.py:34` from `gto_model_v8_hu.json` (currently runtime-only, not git-tracked per §1.2) to `gto_model_vNext_hu_59feat.json` (will be force-added to git at 1.5-E if the new HU model is committed in the standard force-add pattern used by `gto_model_v9_3way_v2.2.json`). The new model file SHOULD be force-added at 1.5-E to avoid recreating the same git-tracking gap; architect commits to this. Total ship action is therefore: (1) train HU model in 1.5-D.4; (2) at 1.5-E, `git add -f` the new HU model file + change `oracle_router.py:34` filename pointer + run coaching-pipeline tests + commit + open 1.5-E PR.
 
 ### 4.7 Sub-sub-phase decomposition
 
@@ -591,6 +630,7 @@ Per `docs/PROCESS_GUIDE.md:59-77` exception: genuine trade-offs where both optio
 - **HU corpus size 750 vs 1500.** Architect committed to 750 in §4.4 based on PR #293 precedent + cost; 1500 would double labelling cost (~$80-160 additional) but is more conservative on coverage. Owner-gate at 1.5-D.3 dispatch.
 - **Phase 1.5 ship boundary.** Currently committed: Phase 1.5 SHIP after 1.5-E (router/coaching alignment + production swap). Alternative: ship after 1.5-D.4 with 1.5-E as a follow-on. The committed sequencing keeps router/coaching consistent with model swap, but the alternative allows faster headline "Phase 1.5 done" milestone if HU retrain ships on first run. Owner may direct different sequencing.
 - **Phase 2 D5 entry condition.** D5 blueprint at `PHASE125_D5_DEFERRED_BLUEPRINT_2026-05-07.md` assumes Phase 1.5 ships. If Phase 1.5 partially ships (e.g., HU only after a 3-way HALT) or fully ships, D5 entry may need re-scoping. Owner-gate at Phase 1.5 SHIP comm.
+- **⚠️ Close-hand-anchor model for §4.2 (added 2026-05-09 per QC PR #311 SHOULD_FIX-1 cascade).** v8-HU-38 model files are not git-tracked. Owner directs Path α (commit v8 artifacts; ~23 MB / ~38% repo growth) or Path β (re-anchor close-hand selection on v9-3way-on-59 model uncertainty; architect-recommended HOW per §4.2). Owner-gate BEFORE 1.5-D.1 fires. Independent of (does not block) Phase 1.5-A merge — fires in 1.5-D.1 dispatch sequencing.
 
 ---
 

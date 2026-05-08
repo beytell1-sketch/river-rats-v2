@@ -1,12 +1,27 @@
 ---
-date: 2026-05-08
+date: 2026-05-08 (rev 1) · 2026-05-09 (rev 2 amendment per QC PR #311 SHOULD_FIX-1)
 from: LEAD-PROGRAMMER (architect-hat; builder)
 to: Main terminal (orchestrator) · Owner · QC stream
 re: Phase 1.5-A — unified-59-surface design memo (single committed path; design only)
-status: BUILDER REPORT — PR opened; awaiting QC + owner-merge gate
+status: BUILDER REPORT — rev 2 amendment authored per owner direction Path A+; awaiting QC re-audit + owner-merge gate
 ---
 
 # Phase 1.5-A — builder report
+
+## Rev 2 amendment summary (2026-05-09 per QC PR #311 SHOULD_FIX-1 + NIT-1)
+
+Owner directed Path A+ on 2026-05-09: fix in PR #307 (do not fix-forward in 1.5-B). Auto mode authorized; architect-hat executed methodology amendments while surfacing newly-discovered cost data (v8-HU-38 = 11.7 MB × 2 = 23 MB, ~38% growth on current 61 MB `.git`) for owner-scope decision before 1.5-D.1 fires.
+
+Single commit on `programmer/phase15a-unified-surface-design-2026-05-08`:
+
+- **§1.2 re-attestation (SHOULD_FIX-1 fix):** replaced `ls`/disk-existence prose with git-tracked verification (`git ls-files <path>`) for all 19 cited paths. Result: 17 GREEN / 2 RED. The 2 RED are `gto_model_v8_hu.json` + `gto_model_v8_38feat.json` — on disk (11.7 MB each) but never git-tracked due to `.gitignore` line 3 (`*.json`). New attestation explicitly labels each path GREEN/RED; exposes the root cause + production-runtime status.
+- **§4.2 cascade fix:** added ⚠️ owner-scope decision for close-hand-anchor model (Path α commit-v8 ~23 MB vs Path β re-anchor on v9-3way-on-59). Architect-hat recommendation per `docs/PROCESS_GUIDE.md:59-77` HOW-not-WHETHER scope: Path β (no repo-size cost; v9-3way handles HU via `num_opponents=1` feature; structural). Owner directs.
+- **§4.5 cascade fix:** reframed v8-HU-38 "lineage anchor" as "production-runtime-anchor without git provenance" — accurate to current state. From-scratch HU retrain commitment unaffected.
+- **§4.6 cascade fix:** reframed "REPLACED in production" as "filename-pointer change at `oracle_router.py:34`" with explicit commitment that the new HU model file is force-added to git at 1.5-E (avoiding the same git-tracking gap recurring).
+- **§7 owner-scope items:** added 4th item (close-hand-anchor model decision) — does NOT block Phase 1.5-A merge; fires in 1.5-D.1 dispatch sequencing.
+- **NIT-1 fix:** §1.3.3 trainer-asserts prose corrected — pre-drop `_V24_P1_BLOCKERS` indices `-6:-2` of 61-list become indices `-4:` of post-drop 59-list (the J-B drop frees the tail; v2.4 P1 blockers occupy the final 4 positions).
+
+Diff scope still 2 files. New owner-scope item is informational + decision-surfaced; does NOT change the substantive design path of the memo.
 
 ## Dispatch compliance
 
