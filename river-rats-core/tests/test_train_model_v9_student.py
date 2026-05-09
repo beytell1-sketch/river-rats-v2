@@ -58,8 +58,8 @@ BLAS_NOISE_PROB_ATOL = 1e-5
 
 
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-# 12.5J-B: legacy 494-hand corpus paths retained as fallback; NEW 694-hand
-# combined corpus is the test target after Direction-X-retro re-extraction.
+# Phase 1.5-B: legacy 494-hand corpus paths retained as fallback; 694-hand
+# combined corpus path retained for any historical re-runs.
 LEGACY_CORPUS_PATH = os.path.join(REPO_ROOT, "data", "corpus_revision_500_hand_2026-04-27.jsonl")
 LEGACY_LABELS_PATH = os.path.join(REPO_ROOT, "data", "corpus_revision_500_hand_labels_2026-04-27.jsonl")
 CORPUS_PATH = os.path.join(REPO_ROOT, "data", "corpus_combined_694_2026-05-06.jsonl")
@@ -69,23 +69,17 @@ ANCHOR_PATH = os.path.join(REPO_ROOT, "river-rats-core", "models", "gto_model_v9
 
 # 1. Module-load assertions
 
-def test_feature_columns_length_61():
-    """12.5J-B: feature surface extended 59 → 61 with 2 Direction-X-retro
-    features for MW-17 (`nut_blocker_overcard_count`) + MW-47
-    (`bet_call_multiway_oop_raise_pressure_index`)."""
-    assert len(STUDENT_FEATURE_COLUMNS_V9) == 61
+def test_feature_columns_length_59():
+    """Phase 1.5-B: feature surface restored 61 → 59 by dropping the
+    12.5J-B Direction-X-retro features (`nut_blocker_overcard_count` +
+    `bet_call_multiway_oop_raise_pressure_index`)."""
+    assert len(STUDENT_FEATURE_COLUMNS_V9) == 59
 
 
-def test_v24_p1_blockers_at_positions_56_to_59():
-    """v2.4 P1 blockers now at positions 56-59 (indices -6:-2 of 61)."""
-    assert tuple(STUDENT_FEATURE_COLUMNS_V9[-6:-2]) == _V24_P1_BLOCKERS
-
-
-def test_step18_new_features_at_tail():
-    """12.5J-B Step 18 features at positions 60-61 (indices -2: of 61)
-    so pre-pad mechanism is append-only."""
-    assert STUDENT_FEATURE_COLUMNS_V9[-2] == "nut_blocker_overcard_count"
-    assert STUDENT_FEATURE_COLUMNS_V9[-1] == "bet_call_multiway_oop_raise_pressure_index"
+def test_v24_p1_blockers_at_tail_of_59_list():
+    """Phase 1.5-B: v2.4 P1 blockers now occupy the final 4 positions of
+    the 59-feature list (indices -4:); J-B drop frees the tail."""
+    assert tuple(STUDENT_FEATURE_COLUMNS_V9[-4:]) == _V24_P1_BLOCKERS
 
 
 def test_solver_corrections_keys_match_memory():
@@ -100,8 +94,11 @@ def test_solver_corrections_keys_match_memory():
 
 @pytest.mark.skipif(not os.path.exists(CORPUS_PATH), reason="694-hand corpus not present")
 def test_load_corpus_yields_694_rows():
-    """12.5J-B: 694-hand combined corpus (12.5H + 12.5J re-extracted)
-    must satisfy the strict-load assertion on all 61 feature keys."""
+    """Historical 694-hand combined corpus has 61-key feat_dicts (pre
+    Phase 1.5-B drop). Phase 1.5-B `load_corpus` reads only the 59
+    canonical keys; the 2 extra J-B keys in the data are ignored.
+    This test still validates the strict-load assertion against the
+    59 canonical keys."""
     corpus = load_corpus(CORPUS_PATH)
     assert len(corpus) == 694
     sample_sid = next(iter(corpus))
@@ -127,7 +124,7 @@ def test_join_on_ref_id_yields_694_joined_rows():
     corpus = load_corpus(CORPUS_PATH)
     labels = load_labels(LABELS_PATH)
     X, y, sw, ids = join_on_ref_id(corpus, labels)
-    assert X.shape == (694, 61)
+    assert X.shape == (694, 59)
     assert y.shape == (694,)
     assert sw.shape == (694,)
     assert len(ids) == 694
@@ -142,33 +139,33 @@ def test_join_on_ref_id_yields_694_joined_rows():
 
 @pytest.mark.skipif(not os.path.exists(ANCHOR_PATH), reason="anchor not present")
 def test_prepad_round_trip_succeeds():
-    """Bumped JSON allows continued training on 61-column input (12.5J-B Direction-X-retro)."""
-    tmp_path = prepad_baseline_booster(ANCHOR_PATH, target_n_features=61)
+    """Bumped JSON allows continued training on 59-column input (Phase 1.5-B post J-B drop)."""
+    tmp_path = prepad_baseline_booster(ANCHOR_PATH, target_n_features=59)
     try:
         with open(tmp_path) as f:
             mj = json.load(f)
-        assert mj["learner"]["learner_model_param"]["num_feature"] == "61"
+        assert mj["learner"]["learner_model_param"]["num_feature"] == "59"
 
         np.random.seed(0)
-        X = np.random.randn(40, 61).astype(np.float32)
+        X = np.random.randn(40, 59).astype(np.float32)
         y = np.random.randint(0, 5, 40)
         clf = xgb.XGBClassifier(
             n_estimators=3, max_depth=3, learning_rate=0.05,
             objective="multi:softprob", num_class=5,
         )
         clf.fit(X, y, xgb_model=tmp_path)
-        assert clf.n_features_in_ == 61
+        assert clf.n_features_in_ == 59
         assert clf.n_classes_ == 5
-        assert clf.feature_importances_.shape == (61,)
+        assert clf.feature_importances_.shape == (59,)
     finally:
         os.unlink(tmp_path)
 
 
 @pytest.mark.skipif(not os.path.exists(ANCHOR_PATH), reason="anchor not present")
 def test_prepad_counter_trace_without_bump_fails():
-    """Without the num_feature bump xgboost rejects the wider input (61-feature)."""
+    """Without the num_feature bump xgboost rejects the wider input (59-feature)."""
     np.random.seed(0)
-    X = np.random.randn(40, 61).astype(np.float32)
+    X = np.random.randn(40, 59).astype(np.float32)
     y = np.random.randint(0, 5, 40)
     clf = xgb.XGBClassifier(
         n_estimators=3, max_depth=3, learning_rate=0.05,
@@ -179,8 +176,8 @@ def test_prepad_counter_trace_without_bump_fails():
 
 
 def test_prepad_rejects_shrinkage():
-    """Pre-pad is append-only; cannot reduce feature count (61 → 45 forbidden)."""
-    fake = {"learner": {"learner_model_param": {"num_feature": "61"}}}
+    """Pre-pad is append-only; cannot reduce feature count (59 → 45 forbidden)."""
+    fake = {"learner": {"learner_model_param": {"num_feature": "59"}}}
     fd, p = tempfile.mkstemp(suffix=".json")
     with os.fdopen(fd, "w") as f:
         json.dump(fake, f)

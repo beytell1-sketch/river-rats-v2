@@ -1,6 +1,21 @@
 #!/usr/bin/env python3
 """Phase 12.5I-MW40-VERIFICATION-B situation generator — 30 J-on-board variants.
 
+----------------------------------------------------------------------
+FROZEN as of Phase 1.5-B (2026-05-09; master post PR #314).
+
+This script targets the 61-surface that existed pre-Phase-1.5-B and
+references J-B Step-18 features (`nut_blocker_overcard_count` +
+`bet_call_multiway_oop_raise_pressure_index`) that were deleted in
+Phase 1.5-B (J-B drop).
+
+RETAINED for provenance of the 12.5I MW-40 verification artifacts
+(see `data/corpus_revision_125i_mw40_verif_*`); NO LONGER RE-RUNNABLE
+on the post-Phase-1.5-B codebase. Per `feedback_solver_findings.md` +
+CLAUDE.md §6: do not mutate in-place; fork to a new variant if a
+re-run on the 59-surface is needed.
+----------------------------------------------------------------------
+
 Implements amended spec from `MAIN_TERMINAL_PR236_MW40B_RESOLUTION_2026-05-06.md`
 (master `42460ae`, PR #237) — Path γ' resolution of plan §4 contradiction:
 - Sub-axis A (J-high, 7-9 secondary): 15 hands (10 from plan §4 + 5 fresh)

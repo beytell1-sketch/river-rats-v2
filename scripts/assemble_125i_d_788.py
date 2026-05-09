@@ -1,6 +1,23 @@
 #!/usr/bin/env python3
 """Phase 12.5I-D corpus assemble — combine 694-corpus + 94-revision into 788.
 
+----------------------------------------------------------------------
+FROZEN as of Phase 1.5-B (2026-05-09; master post PR #314).
+
+This script targets the 61-surface that existed pre-Phase-1.5-B. It
+imports `compute_nut_blocker_overcard_count` and
+`compute_bet_call_multiway_oop_raise_pressure_index` from
+`feature_extractor.py`, both of which were deleted in Phase 1.5-B
+(J-B drop).
+
+This script is RETAINED for provenance of the 788-corpus shipped artifact
+(`data/corpus_combined_788_2026-05-06.jsonl`) but is NO LONGER RE-RUNNABLE
+on the post-Phase-1.5-B codebase. Per `feedback_solver_findings.md`
+quality discipline + CLAUDE.md §6 training provenance: do not mutate
+this script in-place; if a future re-run is needed, fork to a new
+`scripts/assemble_<phase>_<n>.py` variant for the 59-surface.
+----------------------------------------------------------------------
+
 Per `MAIN_TERMINAL_PR218_MERGE_AND_125ID_DISPATCH_2026-05-06.md`.
 
 Mirrors the 12.5H-D precedent (604 → 694) for the next phase 694 → 788.
