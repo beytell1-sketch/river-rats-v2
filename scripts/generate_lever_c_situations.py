@@ -416,19 +416,11 @@ def _preflight_4check_axis(rows: List[Dict[str, Any]],
             if isinstance(v, float) and (v != v or v in (float('inf'), float('-inf'))):
                 msgs.append(f"Check 1 FAIL [{axis}]: NaN/Inf "
                             f"{r.get('pilot_hand_id')}.{k}={v}")
-    if expected_n != 61:
-        msgs.append(f"Check 1 FAIL [{axis}]: feat_dict size {expected_n} != 61")
+    if expected_n != 59:
+        msgs.append(f"Check 1 FAIL [{axis}]: feat_dict size {expected_n} != 59")
     if any("Check 1 FAIL" in m for m in msgs):
         return False, msgs
-    msgs.append(f"Check 1 PASS [{axis}]: 5 rows × 61 keys; 0 NaN/Inf")
-
-    s18a = sum(1 for r in rows if (r.get("feat_dict") or {}).get(
-        "nut_blocker_overcard_count", 0) > 0)
-    s18b = sum(1 for r in rows if (r.get("feat_dict") or {}).get(
-        "bet_call_multiway_oop_raise_pressure_index", 0) > 0)
-    msgs.append(f"Check 2 REPORT [{axis}]: Step-18 — "
-                f"nut_blocker_overcard_count={s18a}/5, "
-                f"bet_call_multiway_oop_raise_pressure_index={s18b}/5")
+    msgs.append(f"Check 1 PASS [{axis}]: 5 rows × 59 keys; 0 NaN/Inf")
 
     seen = set()
     expected_prefix = f"PILOT_LEVER_C_{axis.replace('-', '')}_"
@@ -603,17 +595,7 @@ def main() -> int:
           f"(001-030 re-used; 031-050 fresh)", file=sys.stderr)
     print(f"  ref_id range MW-45: PILOT_LEVER_C_MW45_001..050", file=sys.stderr)
     print(f"  ref_id range MW-47: PILOT_LEVER_C_MW47_001..050", file=sys.stderr)
-    print(f"  NaN/Inf: {nan_count} of {len(rows) * 61} values", file=sys.stderr)
-
-    s18a_total = sum(1 for r in rows
-                     if (r.get("feat_dict") or {}).get("nut_blocker_overcard_count", 0) > 0)
-    s18b_total = sum(1 for r in rows
-                     if (r.get("feat_dict") or {}).get(
-                         "bet_call_multiway_oop_raise_pressure_index", 0) > 0)
-    print(f"  Step-18 nut_blocker_overcard_count > 0: {s18a_total}/{len(rows)}",
-          file=sys.stderr)
-    print(f"  Step-18 bet_call_multiway_oop_raise_pressure_index > 0: "
-          f"{s18b_total}/{len(rows)}", file=sys.stderr)
+    print(f"  NaN/Inf: {nan_count} of {len(rows) * 59} values", file=sys.stderr)
 
     # Write output
     with open(OUT_PATH, "w") as f:
