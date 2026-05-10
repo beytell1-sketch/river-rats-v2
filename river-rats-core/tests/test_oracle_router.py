@@ -35,20 +35,23 @@ class TestRouterInit:
 class TestRouterDispatch:
     """Router selects the correct model for each opponent count."""
 
-    def test_hu_gets_v8(self):
+    def test_hu_gets_vnext(self):
+        """Phase 1.5-E PR-B production swap: HU position 1 loads vNext-HU-59
+        (was v8-HU-38 before swap; per oracle_router.py:34 _MODEL_FILES[1])."""
         router = OracleRouter(MODELS_DIR)
         oracle = router._get_oracle(1)
         assert oracle is not None
-        # v8 expects 38 features
-        assert oracle._n_features == 38
+        # vNext-HU expects 59 features (was 38 for v8-HU pre-swap)
+        assert oracle._n_features == 59
 
     def test_3way_falls_back_to_hu(self):
-        """Before v9-3way exists, 3-way falls back to v8."""
+        """Before v9-3way exists, 3-way falls back to HU position (vNext-HU-59
+        post-Phase 1.5-E PR-B swap; was v8-HU-38 pre-swap)."""
         router = OracleRouter(MODELS_DIR)
         if not router.has_specialist(2):
             oracle = router._get_oracle(2)
-            # Should get v8 as fallback
-            assert oracle._n_features == 38
+            # Should get vNext-HU-59 as fallback (was v8-HU-38 pre-swap)
+            assert oracle._n_features == 59
 
     def test_5way_falls_back(self):
         """5+ opponents falls back to highest available."""
