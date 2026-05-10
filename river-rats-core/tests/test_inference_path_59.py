@@ -160,21 +160,20 @@ def test_router_dispatches_59_path_when_loaded(vnext_hu_model_path, feat_dict):
     """OracleRouter, when configured to load vNext-HU at position 1, routes through
     the 59-feature path without crashing.
 
-    Uses a temporary models dir containing only vNext-HU to avoid editing
-    `_MODEL_FILES` (which is the PR-B production-swap action).
+    Post-Phase 1.5-E PR-B swap: oracle_router.py:34 _MODEL_FILES[1] points to
+    'gto_model_vNext_hu_59feat.json'; we write vNext under that filename in a
+    temp dir and instantiate OracleRouter with that dir.
     """
-    # Build a temp models dir with only vNext-HU at position 1's filename.
+    # Use the post-swap filename (matches oracle_router.py:34 _MODEL_FILES[1]).
+    from oracle_router import _MODEL_FILES
+    hu_filename = _MODEL_FILES[1]
     with tempfile.TemporaryDirectory() as tmp:
-        # Pre-PR-B oracle_router.py:34 has position 1 = 'gto_model_v8_hu.json'.
-        # To test the 59-feature path through the router without a swap, we
-        # write the vNext model to that filename in a temp dir and instantiate
-        # OracleRouter with that dir.
-        target = os.path.join(tmp, 'gto_model_v8_hu.json')
+        target = os.path.join(tmp, hu_filename)
         shutil.copy(vnext_hu_model_path, target)
         router = OracleRouter(models_dir=tmp)
         assert 1 in router._oracles
         hu = router._oracles[1]
-        assert hu._n_features == 59  # confirms it loaded vNext under the v8 filename
+        assert hu._n_features == 59  # confirms it loaded vNext at HU position
         pred = router.predict(feat_dict, num_opponents=1)
         assert pred.action in {'FOLD', 'CHECK', 'CALL', 'BET', 'RAISE'}
         assert 0.0 <= pred.confidence <= 1.0

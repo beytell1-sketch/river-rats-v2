@@ -32,7 +32,7 @@ _MODELS_DIR = os.path.join(os.path.dirname(__file__), 'models')
 
 # Model filename conventions
 _MODEL_FILES = {
-    1: 'gto_model_v8_hu.json',
+    1: 'gto_model_vNext_hu_59feat.json',
     2: 'gto_model_v9_3way.json',
     3: 'gto_model_v9_4way.json',
     4: 'gto_model_v9_5way.json',  # 5-way handles 4+ opponents
