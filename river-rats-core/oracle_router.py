@@ -24,6 +24,7 @@ import os
 from typing import Dict, Optional
 
 from gto_model import GtoOracle, OraclePrediction, FEATURE_COLUMNS
+from inference_path_59 import features_from_dict_59, N_FEATURES_59
 
 
 # Default model directory
@@ -114,6 +115,12 @@ class OracleRouter:
     def predict(self, feat_dict: dict, num_opponents: int) -> OraclePrediction:
         """Predict action using the correct specialist model.
 
+        Surface-size dispatch (per Phase 1.5-E AMENDMENT PR #378):
+          - Models with `n_features_in_ >= 59` (modern surface) →
+            `inference_path_59.features_from_dict_59` (59-feature array)
+          - Legacy models (38/45/55) → `GtoOracle.features_from_dict`
+            (55-feature array; auto-truncates to model's expected size)
+
         Args:
             feat_dict: Full feature dict from extract_all_features().
             num_opponents: Number of opponents at the decision point.
@@ -122,7 +129,10 @@ class OracleRouter:
             OraclePrediction from the appropriate specialist.
         """
         oracle = self._get_oracle(num_opponents)
-        features = GtoOracle.features_from_dict(feat_dict)
+        if oracle._n_features >= N_FEATURES_59:
+            features = features_from_dict_59(feat_dict)
+        else:
+            features = GtoOracle.features_from_dict(feat_dict)
         return oracle.predict(features)
 
     @property
