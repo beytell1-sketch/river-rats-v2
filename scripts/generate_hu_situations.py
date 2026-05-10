@@ -36,6 +36,12 @@ from typing import Dict, List, Optional, Tuple
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HU_AXIS_1_SPEC = os.path.join(REPO, "design", "hu_reference_set", "HU_AXIS_1_MADE_HAND.md")
 PILOT_DIR = os.path.join(REPO, "data", "hu_corpus", "pilot_50_v2")
+FULL_DIR = os.path.join(REPO, "data", "hu_corpus", "full_HU2_HU6")
+
+# Phase 1.5-D.3 FULL anchors (HU-2..HU-6; 24 anchors; HU-6.5 excluded — already adjudicated CALL by owner per PR #338)
+# Imported from sibling module to keep this file readable.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from hu_anchors_axes_2_6 import ALL_HU2_HU6_ANCHORS  # noqa: E402
 
 # Anchors: HU-1.1..HU-1.5 specs (extracted by structural parsing of the markdown).
 HU1_ANCHORS = [
@@ -137,6 +143,7 @@ HU1_ANCHORS = [
 ]
 
 EFFECTIVE_STACK_VARIATIONS = [60, 100, 150]
+EFFECTIVE_STACK_VARIATIONS_FULL = [40, 60, 80, 100, 125, 150, 200, 300]
 RANK_ORDER = "23456789TJQKA"
 
 
@@ -262,51 +269,92 @@ def _generate_board_runout_variations(anchor: Dict, n: int = 5) -> List[Dict]:
     raise ValueError(f"Unknown street '{anchor['street']}' for anchor {anchor['ref_id']}")
 
 
-def _generate_variations(anchor: Dict, n_per_anchor: int = 10, seed: int = 0) -> List[Dict]:
+def _generate_variations(anchor: Dict, n_per_anchor: int = 10, seed: int = 0,
+                         n_runout: int = 5, n_stack: int = 3, n_action: int = 2,
+                         stack_pool: Optional[List[int]] = None) -> List[Dict]:
     """Generate n_per_anchor variations of an anchor spot.
 
     Strategy (deterministic):
-    - 5 board-runout variations (board fields actually mutated per variation_param semantics)
-    - 3 effective-stack variations (60/100/150bb; nudged if equal to anchor)
-    - 2 villain action-size variations (bet-size if facing bet; opener-line otherwise)
+    - n_runout board-runout variations (board fields actually mutated per variation_param semantics)
+    - n_stack effective-stack variations (drawn from stack_pool; nudged if equal to anchor)
+    - n_action villain action-size variations (bet-size multipliers if facing bet; sequence variants otherwise)
+
+    Default n_per_anchor=10 keeps PILOT V2 backwards-compat. For Phase 1.5-D.3 FULL,
+    n_runout=10/n_stack=8/n_action=11 produces ~29 variations per anchor (24 anchors × 29 = 696 ≈ 700).
     """
+    if stack_pool is None:
+        stack_pool = EFFECTIVE_STACK_VARIATIONS
+
     variations: List[Dict] = []
 
-    # 5 board-runout variations
-    runouts = _generate_board_runout_variations(anchor, n=5)
+    # Board-runout variations
+    runouts = _generate_board_runout_variations(anchor, n=n_runout)
     for i, var in enumerate(runouts):
         var["spot_id"] = f"{anchor['ref_id']}-LK-{i + 1:02d}"
         var["anchor_id"] = anchor["ref_id"]
         variations.append(var)
 
-    # 3 effective-stack variations
-    for j, stack in enumerate(EFFECTIVE_STACK_VARIATIONS):
+    # Effective-stack variations
+    stack_idx_offset = n_runout + 1
+    stacks_chosen: List[int] = []
+    for stack in stack_pool:
         if stack == anchor["effective_stack_bb"]:
             stack += 5
+        if stack in stacks_chosen:
+            continue
+        stacks_chosen.append(stack)
+        if len(stacks_chosen) >= n_stack:
+            break
+    for j, stack in enumerate(stacks_chosen):
         var = dict(anchor)
-        var["spot_id"] = f"{anchor['ref_id']}-LK-{6 + j:02d}"
+        var["spot_id"] = f"{anchor['ref_id']}-LK-{stack_idx_offset + j:02d}"
         var["anchor_id"] = anchor["ref_id"]
         var["variation_axis"] = "effective_stack"
         var["variation_param"] = f"effective_stack_bb={stack}"
         var["effective_stack_bb"] = stack
         variations.append(var)
 
-    # 2 villain-action variations
-    for k in range(2):
-        var = dict(anchor)
-        var["spot_id"] = f"{anchor['ref_id']}-LK-{9 + k:02d}"
-        var["anchor_id"] = anchor["ref_id"]
-        if anchor.get("facing_bet") and anchor.get("to_call_bb", 0) > 0:
-            new_to_call = round(anchor["to_call_bb"] * (0.66 if k == 0 else 1.5), 1)
+    # Villain-action variations
+    action_idx_offset = stack_idx_offset + len(stacks_chosen)
+    if anchor.get("facing_bet") and anchor.get("to_call_bb", 0) > 0:
+        # Bet-sizing variations: multipliers spanning small probe to large overbet
+        # Mirrors solver-aligned sizing tiers (25/33/50/66/75/100/125/150% etc.)
+        sizing_multipliers = [0.5, 0.66, 0.75, 0.9, 1.1, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0]
+        for k in range(min(n_action, len(sizing_multipliers))):
+            mult = sizing_multipliers[k]
+            new_to_call = round(anchor["to_call_bb"] * mult, 1)
+            if new_to_call <= 0:
+                continue
+            var = dict(anchor)
+            var["spot_id"] = f"{anchor['ref_id']}-LK-{action_idx_offset + k:02d}"
+            var["anchor_id"] = anchor["ref_id"]
             var["variation_axis"] = "villain_bet_sizing"
-            var["variation_param"] = f"to_call_bb={new_to_call} (was {anchor['to_call_bb']})"
+            var["variation_param"] = f"to_call_bb={new_to_call} (was {anchor['to_call_bb']}; mult={mult}x)"
             var["to_call_bb"] = new_to_call
-        else:
+            variations.append(var)
+    else:
+        # Action-sequence variations: alternate opener/limp/3bet/check-back patterns
+        sequence_variants = [
+            ("opener_alt", f"opener_alt={anchor['villain_pos']}_open_3bet"),
+            ("limp_iso", "limp-then-iso line"),
+            ("checkback", "PFA flop check-back leading to delayed action"),
+            ("3bet_call", "preflop 3bet-call dynamic; pot inflated"),
+            ("4bet_call", "preflop 4bet-call dynamic; deep SPR"),
+            ("limp_check", "limped-pot multistreet check-flow"),
+            ("openraise_squeeze", "openraise vs squeeze-call dynamic"),
+            ("turn_donk", "OOP turn-donk leading to adjusted ranges"),
+            ("flop_xr", "flop check-raise dynamic in opponent range"),
+            ("turn_xr", "turn check-raise dynamic in opponent range"),
+            ("river_donk", "OOP river-donk leading sequence"),
+        ]
+        for k in range(min(n_action, len(sequence_variants))):
+            tag, desc = sequence_variants[k]
+            var = dict(anchor)
+            var["spot_id"] = f"{anchor['ref_id']}-LK-{action_idx_offset + k:02d}"
+            var["anchor_id"] = anchor["ref_id"]
             var["variation_axis"] = "villain_action_sequence"
-            var["variation_param"] = (
-                f"opener_alt={anchor['villain_pos']}_open_3bet" if k == 0 else "limp-then-iso line"
-            )
-        variations.append(var)
+            var["variation_param"] = f"{tag}: {desc}"
+            variations.append(var)
 
     return variations[:n_per_anchor]
 
@@ -390,5 +438,82 @@ def main() -> int:
     return 0
 
 
+def main_full() -> int:
+    """Phase 1.5-D.3 FULL generator: 24 HU-2..HU-6 anchors × ~29 variations = ~696 lookalikes.
+
+    Per dispatch MAIN_TERMINAL_HU14_ADJUDICATION_AND_PHASE15D3_FULL_DISPATCH_2026-05-10.md §(b):
+    - Anchors: HU-2..HU-6 (5 axes × 5 anchors each = 25 minus HU-6.5 = 24)
+    - Target: ~700 lookalikes; 24 × 29 = 696 ≈ 700
+    - Per-anchor: 10 board-runout + 8 stack + 11 villain-action = 29
+
+    Architect-hat §(c.3) decision: PATH (b) — composition + action_summary fields are kept
+    AS-IS from anchor for board_runout variations (NOT mutated alongside boards). Pilot V2 evidence
+    (PR #344) demonstrated labellers correctly read structured board fields and ignored stale prose.
+    Generator-correctness gap acknowledged; documented in BUILDER_REPORT_PHASE15D3_FULL.
+
+    Architect-hat §(c.1) sanitization + §(c.2) throttle-aware batching are LABELLING-pipeline
+    infrastructure (separate from generation) and are required before labelling fires.
+    """
+    if not os.path.exists(FULL_DIR):
+        os.makedirs(FULL_DIR)
+    print(f"Reading HU-2..HU-6 anchors (24 spots, HU-6.5 excluded)", file=sys.stderr)
+    print(f"Generating ~29 variations per anchor = ~696 lookalikes for Phase 1.5-D.3 FULL", file=sys.stderr)
+
+    all_variations: List[Dict] = []
+    audit_rows: List[Dict] = []
+    for anchor in ALL_HU2_HU6_ANCHORS:
+        vars_for_anchor = _generate_variations(
+            anchor,
+            n_per_anchor=29,
+            seed=42,
+            n_runout=10,
+            n_stack=8,
+            n_action=11,
+            stack_pool=EFFECTIVE_STACK_VARIATIONS_FULL,
+        )
+        for v in vars_for_anchor:
+            _assert_variation_param_matches_board_state(v, anchor)
+            all_variations.append(v)
+            audit_rows.append({
+                "spot_id": v["spot_id"],
+                "anchor_id": v["anchor_id"],
+                "variation_axis": v["variation_axis"],
+                "variation_param": v["variation_param"],
+                "axis_of_targeting": anchor["axis"],
+                "composition": anchor["composition"],
+                "structural_similarity": "anchor-preserving (composition class + axis match; board mutated where variation_axis=board_runout)",
+                "board_flop_anchor": anchor.get("board_flop"),
+                "board_flop_lookalike": v.get("board_flop"),
+                "board_turn_anchor": anchor.get("board_turn"),
+                "board_turn_lookalike": v.get("board_turn"),
+                "board_river_anchor": anchor.get("board_river"),
+                "board_river_lookalike": v.get("board_river"),
+                "v9_3way_uncertainty_score": None,
+                "v9_3way_uncertainty_threshold": None,
+                "v9_3way_uncertainty_within_band": None,
+                "deferred": "v9-3way model uncertainty scoring deferred per architect-hat consult; structural similarity used as filter",
+            })
+
+    sit_path = os.path.join(FULL_DIR, "situations.jsonl")
+    with open(sit_path, "w") as f:
+        for v in all_variations:
+            f.write(json.dumps(v) + "\n")
+    print(f"Wrote {sit_path} ({len(all_variations)} situations)", file=sys.stderr)
+
+    audit_path = os.path.join(FULL_DIR, "similarity_distance_audit.jsonl")
+    with open(audit_path, "w") as f:
+        for row in audit_rows:
+            f.write(json.dumps(row) + "\n")
+    print(f"Wrote {audit_path} ({len(audit_rows)} rows)", file=sys.stderr)
+    return 0
+
+
 if __name__ == "__main__":
-    sys.exit(main())
+    mode = sys.argv[1] if len(sys.argv) > 1 else "pilot_v2"
+    if mode == "full":
+        sys.exit(main_full())
+    elif mode == "pilot_v2":
+        sys.exit(main())
+    else:
+        print(f"Unknown mode: {mode}. Use 'pilot_v2' (default) or 'full'.", file=sys.stderr)
+        sys.exit(2)
