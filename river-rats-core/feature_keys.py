@@ -107,15 +107,10 @@ class F:
     META_OPENER_POSITION = '_opener_position'
     META_BETTOR_POSITION = '_bettor_position'
 
-    # Phase 2-B RE-PILOT features (revised 2026-05-11 per dispatch PR #396).
-    # PILOT v1 (6 features) → RE-PILOT (4 features): 1 kept, 3 re-engineered, 2 dropped.
-    # PILOT v1 result: 1/6 gate-pass; owner-ratified Option A re-engineer.
-    # Dropped (collinear with baseline): multiway_equity_realization_factor
-    # (with num_opponents) + closing_action (with is_ip × players_to_act).
-    PLAYERS_TO_ACT_AFTER_HERO = 'players_to_act_after_hero'  # KEEP: 3.58% in v1
-    # Re-engineered: numeric kicker rank (was: hand_category × J-high × hand_rank).
-    TPMK_KICKER_RANK = 'tpmk_kicker_rank'  # MW-40 axis (re-engineered)
-    # Re-engineered: composite at decision boundary (was: bare broadway count).
-    BROADWAY_PRESSURE_MULTIWAY_FACING = 'broadway_pressure_multiway_facing'  # MW-45
-    # Re-engineered: drop facing_bet gate so signal shows in CHECK spots too.
-    NUT_FD_BLOCKER_MULTIWAY = 'nut_fd_blocker_multiway'  # MW-47 axis (re-engineered)
+    # Phase 2-C cleanup features (revised 2026-05-11 per dispatch PR #400).
+    # Re-pilot (4 features) → Cleanup (2 winners): owner-ratified Option B
+    # promotes only the 2 features that cleared the ≥2% importance gate;
+    # dropped broadway_pressure_multiway_facing (0.26%) +
+    # nut_fd_blocker_multiway (1.87%) per pilot evidence (baseline-absorbed).
+    PLAYERS_TO_ACT_AFTER_HERO = 'players_to_act_after_hero'  # AMENDMENT 1; 3.36%
+    TPMK_KICKER_RANK = 'tpmk_kicker_rank'                    # MW-40; 9.18% rank #2
