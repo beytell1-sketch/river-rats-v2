@@ -62,8 +62,12 @@ class TestFeatureColumns59:
         assert len(FEATURE_COLUMNS_59) == 59
         assert N_FEATURES_59 == 59
 
-    def test_matches_feature_extractor(self):
-        assert tuple(FEATURE_COLUMNS_59) == tuple(FE_COLS)
+    def test_matches_feature_extractor_first_59(self):
+        # Post-Phase-2-B PILOT: feature_extractor.FEATURE_COLUMNS may
+        # extend beyond 59 (Step 18 appends 6 pilot features → 65).
+        # Invariant: FIRST 59 entries match canonical 59-feature production
+        # surface (see inference_path_59._CANONICAL_FEATURE_COLUMNS_59).
+        assert tuple(FEATURE_COLUMNS_59) == tuple(FE_COLS[:N_FEATURES_59])
 
     def test_extends_legacy_55(self):
         # The 59-tuple must be a strict superset of (or extension to) the
