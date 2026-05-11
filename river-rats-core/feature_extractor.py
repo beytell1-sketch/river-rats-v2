@@ -1610,13 +1610,13 @@ FEATURE_COLUMNS = [
     'flush_draw_block_pct',
     'straight_draw_block_pct',
     'nut_made_block_pct',
-    # Step 18: Phase 2-B RE-PILOT features 60-63 (revised 2026-05-11 per
-    # dispatch PR #396). PILOT v1 (6 features) → RE-PILOT (4): 1 kept,
-    # 3 re-engineered, 2 dropped (collinear). Owner-ratified Option A.
-    'players_to_act_after_hero',              # KEEP unchanged (AMENDMENT 1)
-    'tpmk_kicker_rank',                       # RE-ENGINEERED (MW-40)
-    'broadway_pressure_multiway_facing',      # RE-ENGINEERED (MW-45)
-    'nut_fd_blocker_multiway',                # RE-ENGINEERED (MW-47)
+    # Step 18: Phase 2-C cleanup features 60-61 (revised 2026-05-11 per
+    # dispatch PR #400). Re-pilot (4 features) → Cleanup (2 winners): owner
+    # ratified Option B; surface 63→61. Dropped per gate-fail:
+    # nut_fd_blocker_multiway (1.87% absorbed by baseline blockers) +
+    # broadway_pressure_multiway_facing (0.26% baseline-absorbed).
+    'players_to_act_after_hero',  # AMENDMENT 1; 3.36% rank #10
+    'tpmk_kicker_rank',           # MW-40 breakthrough; 9.18% rank #2
 ]
 
 LABEL_COLUMN = 'action'
@@ -2553,48 +2553,44 @@ def extract_all_features(hand: Dict) -> Dict:
         features[F.NUT_MADE_BLOCK_PCT] = _s17_block['nut_made_block_pct']
 
     # =====================================================================
-    # Step 18: Phase 2-B RE-PILOT features (60-63)
-    # Per dispatch PR #396 (owner-ratified Option A; supersedes PR #392).
-    # PILOT v1 (6 features) → RE-PILOT (4): 1 kept, 3 re-engineered with
-    # stronger encodings, 2 dropped (multiway_equity_realization_factor
-    # and closing_action — perfect collinearity with baseline features).
+    # Step 18: Phase 2-C cleanup features (60-61)
+    # Per dispatch PR #400 (owner-ratified Option B; supersedes PR #396).
+    # Re-pilot (4 features) → Cleanup (2 winners): dropped
+    # broadway_pressure_multiway_facing (0.26% baseline-absorbed) +
+    # nut_fd_blocker_multiway (1.87% absorbed by baseline blockers).
+    # Retained 2 features cleared the ≥2% gate in 1-seed re-pilot.
     # =====================================================================
 
     _num_opp = int(features.get('num_opponents', 1))
     _is_ip = int(features.get('is_ip', 0))
 
-    # Card-rank parser: cards come in as 2-char strings ('Kh','Qs') OR
-    # objects with a .rank attribute. Returns numeric rank in {2..14}.
-    _RANK_MAP = {'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,
-                 'T':10,'J':11,'Q':12,'K':13,'A':14}
-    def _crank(_c):
-        if hasattr(_c, 'rank'):
-            return int(_c.rank)
-        if isinstance(_c, str) and len(_c) >= 1:
-            return _RANK_MAP.get(_c[0].upper(), 0)
-        return 0
-
-    # 18.1 — players_to_act_after_hero (KEEP unchanged from PILOT v1)
-    # Per AMENDMENT 1; v1 result: 3.58% importance, rank #10/65 — gate PASS.
-    # Approximation: 0 if IP, num_opponents if OOP. Discriminates EP > MP > LP
-    # pressure asymmetry in multiway.
+    # 18.1 — players_to_act_after_hero (AMENDMENT 1; v1 3.58%, v2 3.36%)
+    # 0 if IP, num_opponents if OOP. Discriminates EP > MP > LP pressure
+    # asymmetry in multiway.
     features['players_to_act_after_hero'] = 0.0 if _is_ip else float(_num_opp)
 
-    # 18.2 — tpmk_kicker_rank (RE-ENGINEERED from v1 tpmk_position_with_kicker_strength)
-    # v1 encoding (J-high × hand_category × hand_rank/10) scored 0.00%. New
-    # encoding: absolute numeric kicker rank (2..14) when hero has top-pair,
-    # 0 otherwise. Per dispatch §"Candidate 1": "numeric kicker carries more
-    # information than J-high-Boolean × hand_rank/10; reduces collinearity
-    # with hand_category + high_card_rank".
+    # 18.2 — tpmk_kicker_rank (MW-40 axis; re-pilot 9.18%, rank #2/63)
+    # Absolute numeric kicker rank (2..14) when hero has top-pair, 0
+    # otherwise. The numeric kicker continuum unlocked the MW-40 axis after
+    # the v1 J-high × hand_category × hand_rank composite scored 0.00%.
     # hand_category: top_pair=6, top_pair_good_kicker=7, top_pair_top_kicker=8.
     _hc = features.get('hand_category', 0)
     if _hc in (6, 7, 8):
         _hero_cards = features.get('_hero_cards', []) or []
         _high_card_rank = int(features.get('high_card_rank', 0))
         if len(_hero_cards) == 2:
+            # Cards may be 2-char strings ('Kh') or objects with .rank.
+            _RANK_MAP = {'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,
+                         'T':10,'J':11,'Q':12,'K':13,'A':14}
+            def _crank(_c):
+                if hasattr(_c, 'rank'):
+                    return int(_c.rank)
+                if isinstance(_c, str) and len(_c) >= 1:
+                    return _RANK_MAP.get(_c[0].upper(), 0)
+                return 0
             _h_ranks = [_crank(c) for c in _hero_cards]
-            # For top pair, one hero card matches the board's high card (= pair rank);
-            # the OTHER hero card's rank is the kicker.
+            # For top pair, one hero card matches the board's high card
+            # (= pair rank); the OTHER hero card's rank is the kicker.
             if _h_ranks[0] == _high_card_rank and _h_ranks[1] != _high_card_rank:
                 _kicker = _h_ranks[1]
             elif _h_ranks[1] == _high_card_rank and _h_ranks[0] != _high_card_rank:
@@ -2608,37 +2604,6 @@ def extract_all_features(hand: Dict) -> Dict:
             features['tpmk_kicker_rank'] = 0.0
     else:
         features['tpmk_kicker_rank'] = 0.0
-
-    # 18.3 — broadway_pressure_multiway_facing (RE-ENGINEERED from v1 broadway_density_completed_on_turn)
-    # v1 encoding (bare broadway count on turn) scored 0.00% — redundant
-    # with high_card_rank + danger_score + is_paired. New encoding compresses
-    # to the actual decision boundary: broadway_count × multiway × facing_bet.
-    # Per dispatch §"Candidate 2": "signal exists at the intersection
-    # (multiway turn flop with broadway texture + decision pressure), not at
-    # the marginal broadway-count level".
-    _street = features.get('street', 0)
-    _board = features.get('_board_cards', []) or []
-    if _street == 1:  # turn
-        _broadway_count = sum(1 for _c in _board if _crank(_c) >= 10)
-    else:
-        _broadway_count = 0
-    _multiway = 1.0 if _num_opp >= 2 else 0.0
-    _facing = float(features.get('facing_bet', 0))
-    features['broadway_pressure_multiway_facing'] = round(
-        float(_broadway_count) * _multiway * _facing, 6
-    )
-
-    # 18.4 — nut_fd_blocker_multiway (RE-ENGINEERED from v1 nut_fd_multiway_pressure_with_blocker)
-    # v1 encoding included facing_bet gate; scored 1.53% (rank #17/65) —
-    # near-miss below 2% gate. Per dispatch §"Candidate 3": "drop the
-    # facing_bet gate → has_FD × nut_block × multiway. Let the model see
-    # signal in CHECK spots too; the model can re-combine with facing_bet
-    # if needed".
-    _has_fd = float(features.get('has_flush_draw', 0))
-    _nfb = float(features.get('nut_flush_block', 0))
-    features['nut_fd_blocker_multiway'] = round(
-        _has_fd * _nfb * _multiway, 6
-    )
 
     return features
 
