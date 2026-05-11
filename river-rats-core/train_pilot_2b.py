@@ -1,21 +1,22 @@
-"""Phase 2-B PILOT trainer — 65-feature smoke (59 baseline + 6 pilot).
+"""Phase 2-B RE-PILOT trainer — 63-feature smoke (59 baseline + 4 re-pilot).
 
 Provenance
 ----------
-Per dispatch PR #392 + design memo PHASE2_UNIFIED_SURFACE_DESIGN_2026-05-11.md
-§5 row 2-B + §3.4 + §3.Y.4. Trains a single-seed XGBoost classifier on
-the 988-on-59 combined corpus with the 6 new pilot features appended
-(surface size 65) and reports per-feature importance scores.
+Per dispatch PR #396 (owner-ratified Option A; supersedes PR #392). Trains
+a single-seed XGBoost classifier on the 988-on-59 combined corpus with the
+4 re-pilot features appended (surface size 63) and reports per-feature
+importance scores.
 
-Purpose
--------
-Pilot is an importance-evidence gate, not a ship candidate. We measure:
-  D5 candidates (3): tpmk/broadway/nut_fd_mw — gate ≥2% importance
-  4-way candidates (2): players_to_act/multiway_realization — gate ≥2%
-  re-raise candidate (1): closing_action — gate ≥1%
+PILOT v1 (PR #393) → RE-PILOT (this script):
+  KEEP:           players_to_act_after_hero (3.58% v1; verify regression)
+  RE-ENGINEERED:  tpmk_kicker_rank                  (was tpmk_position_with_kicker_strength)
+                  broadway_pressure_multiway_facing (was broadway_density_completed_on_turn)
+                  nut_fd_blocker_multiway           (was nut_fd_multiway_pressure_with_blocker)
+  DROPPED:        multiway_equity_realization_factor + closing_action (collinear w/ baseline)
 
-Per `feedback_pilot_first_for_long_jobs.md` STANDING RULE: pilot proves
-signal before full multi-seed train + full multiway corpus refresh.
+Gates (per design memo §3.4 + §3.Y.4):
+  players_to_act_after_hero (regression check): 2.58% ≤ x ≤ 4.58% (v1 3.58% ±1%)
+  3 re-engineered: each ≥2% importance + ≥1 stay-wrong graduation
 
 Training data
 -------------
@@ -24,17 +25,17 @@ hero_cards, 59-key feat_dict) joined with
 `data/corpus_combined_988_on_59_labels_2026-05-09.jsonl` (consensus_action,
 consensus_confidence) on pilot_hand_id.
 
-The 6 pilot features are computed inline by replicating Step 18 logic
-from `feature_extractor.py` over each row's existing feat_dict + board.
-This mirrors the production extractor exactly.
+The 4 re-pilot features are computed inline by replicating Step 18 logic
+from `feature_extractor.py` over each row's existing feat_dict + board +
+hero_cards. This mirrors the production extractor exactly.
 
 CLI
 ---
-  python3 river-rats-core/train_pilot_2b.py \
-      --situations data/corpus_combined_988_on_59_2026-05-09.jsonl \
-      --labels data/corpus_combined_988_on_59_labels_2026-05-09.jsonl \
-      --seed 42 \
-      --output review/comms/PILOT_2B_FEATURE_IMPORTANCE_2026-05-11.json
+  python3 river-rats-core/train_pilot_2b.py \\
+      --situations data/corpus_combined_988_on_59_2026-05-09.jsonl \\
+      --labels data/corpus_combined_988_on_59_labels_2026-05-09.jsonl \\
+      --seed 42 \\
+      --output review/comms/PILOT_2B_REPILOT_FEATURE_IMPORTANCE_2026-05-11.json
 """
 from __future__ import annotations
 
@@ -55,89 +56,104 @@ from feature_extractor import FEATURE_COLUMNS
 from gto_model import ACTION_CLASSES, ACTION_TO_INT, N_CLASSES
 
 
+# 4 re-pilot features (last 4 of 63-feature surface)
 PILOT_FEATURES = (
+    'players_to_act_after_hero',
+    'tpmk_kicker_rank',
+    'broadway_pressure_multiway_facing',
+    'nut_fd_blocker_multiway',
+)
+
+# v1 features that were dropped/renamed in re-pilot (sanity guard for legacy state)
+PILOT_V1_RENAMED = (
     'tpmk_position_with_kicker_strength',
     'broadway_density_completed_on_turn',
     'nut_fd_multiway_pressure_with_blocker',
-    'players_to_act_after_hero',
+)
+PILOT_V1_DROPPED = (
     'multiway_equity_realization_factor',
     'closing_action',
 )
 
-assert len(FEATURE_COLUMNS) == 65, (
-    f"Pilot trainer requires 65-feature surface; "
+assert len(FEATURE_COLUMNS) == 63, (
+    f"Re-pilot trainer requires 63-feature surface; "
     f"feature_extractor.FEATURE_COLUMNS is {len(FEATURE_COLUMNS)}."
 )
-assert tuple(FEATURE_COLUMNS[-6:]) == PILOT_FEATURES
+assert tuple(FEATURE_COLUMNS[-4:]) == PILOT_FEATURES
+
+
+_RANK_MAP = {'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,
+             'T':10,'J':11,'Q':12,'K':13,'A':14}
 
 
 def _card_rank(c: str) -> int:
     if not c:
         return 0
-    return {'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,
-            'T':10,'J':11,'Q':12,'K':13,'A':14}.get(c[0].upper(), 0)
+    return _RANK_MAP.get(c[0].upper(), 0)
 
 
-def _split_board(board_str: str) -> List[str]:
-    """Split '4c7d5s' into ['4c','7d','5s']."""
-    if not board_str:
+def _split_cards(s: str) -> List[str]:
+    """Split '7h7s' or '4c7d5s' into list of 2-char tokens."""
+    if not s:
         return []
-    return [board_str[i:i+2] for i in range(0, len(board_str), 2)]
+    return [s[i:i+2] for i in range(0, len(s), 2)]
 
 
 def augment_with_pilot_features(feat_dict: Dict[str, float],
                                 board_str: str,
+                                hero_cards_str: str,
                                 street_int: int) -> Dict[str, float]:
-    """Compute the 6 pilot features from feat_dict + board and return a new dict.
+    """Compute the 4 re-pilot features from feat_dict + board + hero_cards.
 
     Mirrors `feature_extractor.extract_all_features` Step 18 logic exactly.
     """
     out = dict(feat_dict)
-
-    # 18.1 tpmk_position_with_kicker_strength
-    hc = out.get('hand_category', 0)
-    is_tpmk = 1.0 if hc in (6, 7) else 0.0
-    is_j_high = 1.0 if out.get('high_card_rank', 0) == 11 else 0.0
-    hand_rank_norm = max(0.0, min(1.0, float(out.get('hand_rank', 0.0)) / 10.0))
-    out['tpmk_position_with_kicker_strength'] = round(
-        is_tpmk * is_j_high * hand_rank_norm, 6
-    )
-
-    # 18.2 broadway_density_completed_on_turn
-    if street_int == 1:  # turn
-        cards = _split_board(board_str)
-        broadway_count = sum(1 for c in cards if _card_rank(c) >= 10)
-        out['broadway_density_completed_on_turn'] = float(broadway_count)
-    else:
-        out['broadway_density_completed_on_turn'] = 0.0
-
-    # 18.3 nut_fd_multiway_pressure_with_blocker
-    has_fd = float(out.get('has_flush_draw', 0))
-    nfb = float(out.get('nut_flush_block', 0))
-    multiway = 1.0 if out.get('num_opponents', 1) >= 2 else 0.0
-    facing = float(out.get('facing_bet', 0))
-    out['nut_fd_multiway_pressure_with_blocker'] = round(
-        has_fd * nfb * multiway * facing, 6
-    )
-
-    # 18.4 players_to_act_after_hero
     num_opp = int(out.get('num_opponents', 1))
     is_ip = int(out.get('is_ip', 0))
+    multiway = 1.0 if num_opp >= 2 else 0.0
+
+    # 18.1 players_to_act_after_hero (KEEP)
     out['players_to_act_after_hero'] = 0.0 if is_ip else float(num_opp)
 
-    # 18.5 multiway_equity_realization_factor
-    lookup = {1: 1.0, 2: 0.85, 3: 0.75, 4: 0.70}
-    out['multiway_equity_realization_factor'] = lookup.get(num_opp, 0.70)
+    # 18.2 tpmk_kicker_rank (RE-ENGINEERED)
+    hc = out.get('hand_category', 0)
+    if hc in (6, 7, 8):
+        hero_cards = _split_cards(hero_cards_str)
+        high_card_rank = int(out.get('high_card_rank', 0))
+        if len(hero_cards) == 2:
+            h_ranks = [_card_rank(c) for c in hero_cards]
+            if h_ranks[0] == high_card_rank and h_ranks[1] != high_card_rank:
+                kicker = h_ranks[1]
+            elif h_ranks[1] == high_card_rank and h_ranks[0] != high_card_rank:
+                kicker = h_ranks[0]
+            else:
+                kicker = max(h_ranks) if h_ranks else 0
+            out['tpmk_kicker_rank'] = float(kicker)
+        else:
+            out['tpmk_kicker_rank'] = 0.0
+    else:
+        out['tpmk_kicker_rank'] = 0.0
 
-    # 18.6 closing_action
-    out['closing_action'] = 1.0 if (
-        is_ip and out['players_to_act_after_hero'] == 0.0
-    ) else 0.0
+    # 18.3 broadway_pressure_multiway_facing (RE-ENGINEERED)
+    if street_int == 1:  # turn
+        cards = _split_cards(board_str)
+        broadway_count = sum(1 for c in cards if _card_rank(c) >= 10)
+    else:
+        broadway_count = 0
+    facing = float(out.get('facing_bet', 0))
+    out['broadway_pressure_multiway_facing'] = round(
+        float(broadway_count) * multiway * facing, 6
+    )
+
+    # 18.4 nut_fd_blocker_multiway (RE-ENGINEERED, no facing_bet gate)
+    has_fd = float(out.get('has_flush_draw', 0))
+    nfb = float(out.get('nut_flush_block', 0))
+    out['nut_fd_blocker_multiway'] = round(has_fd * nfb * multiway, 6)
 
     return out
 
 
-_STREET_TO_INT = {'preflop': 0, 'flop': 0, 'turn': 1, 'river': 2}
+_STREET_TO_INT = {'preflop': -1, 'flop': 0, 'turn': 1, 'river': 2}
 
 
 def load_corpus(situations_path: str, labels_path: str) -> Tuple[List[Dict], List[str]]:
@@ -149,24 +165,22 @@ def load_corpus(situations_path: str, labels_path: str) -> Tuple[List[Dict], Lis
             sits[d['pilot_hand_id']] = d
     rows = []
     actions = []
-    with open(labels_path) as f:
-        for line in f:
-            d = json.loads(line)
-            phi = d['pilot_hand_id']
-            if phi not in sits:
-                continue
-            sit = sits[phi]
-            feat_dict = d['feat_dict']
-            board = sit.get('board', '')
-            street_str = sit.get('street', 'flop')
-            # feat_dict's 'street' is integer-encoded; use original string for
-            # broadway_density logic (turn = 1 in our encoding regardless)
-            street_int = _STREET_TO_INT.get(street_str, 0)
-            if street_str == 'preflop':
-                street_int = -1  # not flop; not turn (broadway returns 0)
-            augmented = augment_with_pilot_features(feat_dict, board, street_int)
-            rows.append(augmented)
-            actions.append(d['consensus_action'])
+    for line in open(labels_path):
+        d = json.loads(line)
+        phi = d['pilot_hand_id']
+        if phi not in sits:
+            continue
+        sit = sits[phi]
+        feat_dict = d['feat_dict']
+        board = sit.get('board', '')
+        hero_cards = sit.get('hero_cards', '')
+        street_str = sit.get('street', 'flop')
+        street_int = _STREET_TO_INT.get(street_str, 0)
+        augmented = augment_with_pilot_features(
+            feat_dict, board, hero_cards, street_int
+        )
+        rows.append(augmented)
+        actions.append(d['consensus_action'])
     return rows, actions
 
 
@@ -185,31 +199,30 @@ def main():
     ap.add_argument('--situations', required=True)
     ap.add_argument('--labels', required=True)
     ap.add_argument('--seed', type=int, default=42)
-    ap.add_argument('--output', required=True,
-                    help='Path to write per-feature importance JSON')
+    ap.add_argument('--output', required=True)
     args = ap.parse_args()
 
-    print(f'[pilot-2b] loading corpus...')
+    print('[repilot-2b] loading corpus...')
     rows, actions = load_corpus(args.situations, args.labels)
-    print(f'[pilot-2b] {len(rows)} rows joined')
-    print(f'[pilot-2b] action distribution: {Counter(actions)}')
+    print(f'[repilot-2b] {len(rows)} rows joined')
+    print(f'[repilot-2b] action distribution: {Counter(actions)}')
 
     X, y = build_xy(rows, actions)
-    print(f'[pilot-2b] X shape: {X.shape}; y shape: {y.shape}')
+    print(f'[repilot-2b] X shape: {X.shape}; y shape: {y.shape}')
 
-    # Pilot features sanity
+    # Sanity on the 4 re-pilot features
     pilot_idx = [FEATURE_COLUMNS.index(k) for k in PILOT_FEATURES]
     for k, idx in zip(PILOT_FEATURES, pilot_idx):
         col = X[:, idx]
-        nan_inf = np.sum(~np.isfinite(col))
-        nonzero = np.sum(col != 0)
-        print(f'[pilot-2b]   {k:50s} idx={idx} '
+        nan_inf = int(np.sum(~np.isfinite(col)))
+        nonzero = int(np.sum(col != 0))
+        print(f'[repilot-2b]   {k:42s} idx={idx} '
               f'nonzero={nonzero}/{len(col)} mean={col.mean():.4f} '
               f'min={col.min():.4f} max={col.max():.4f} nan_inf={nan_inf}')
         assert nan_inf == 0, f'NaN/Inf in {k}'
 
-    # Train 1-seed XGBoost. Hyperparams from v9_student (same regularization regime).
-    print(f'[pilot-2b] training XGBoost (seed={args.seed})...')
+    # Train 1-seed XGBoost (same hyperparams as v1 PILOT trainer)
+    print(f'[repilot-2b] training XGBoost (seed={args.seed})...')
     clf = xgb.XGBClassifier(
         objective='multi:softprob',
         num_class=N_CLASSES,
@@ -227,49 +240,45 @@ def main():
 
     train_pred = clf.predict(X)
     train_acc = accuracy_score(y, train_pred)
-    print(f'[pilot-2b] train accuracy (overfit-baseline): {train_acc:.4f}')
+    print(f'[repilot-2b] train accuracy (overfit-baseline): {train_acc:.4f}')
 
-    # Importances
     importances = clf.feature_importances_
     paired = list(zip(FEATURE_COLUMNS, importances.tolist()))
     paired.sort(key=lambda kv: kv[1], reverse=True)
 
-    print(f'\n[pilot-2b] top 20 features by importance:')
+    print('\n[repilot-2b] top 20 features by importance:')
     for k, v in paired[:20]:
-        marker = ' ← PILOT' if k in PILOT_FEATURES else ''
-        print(f'  {k:50s} {v*100:6.2f}%{marker}')
+        marker = ' ← RE-PILOT' if k in PILOT_FEATURES else ''
+        print(f'  {k:42s} {v*100:6.2f}%{marker}')
 
-    print(f'\n[pilot-2b] PILOT features specifically:')
+    print('\n[repilot-2b] RE-PILOT features specifically:')
     pilot_imp = {}
     for k in PILOT_FEATURES:
         idx = FEATURE_COLUMNS.index(k)
         v = float(importances[idx])
         pilot_imp[k] = v
         rank = next((i for i, (kk, _) in enumerate(paired, 1) if kk == k), -1)
-        print(f'  {k:50s} {v*100:6.2f}%  rank #{rank}/65')
+        print(f'  {k:42s} {v*100:6.2f}%  rank #{rank}/63')
 
-    # Gate evidence
-    d5_features = (
-        'tpmk_position_with_kicker_strength',
-        'broadway_density_completed_on_turn',
-        'nut_fd_multiway_pressure_with_blocker',
+    # Gate evidence (dispatch §"Re-pilot gate criteria")
+    kept_2pct = 0.025 <= pilot_imp['players_to_act_after_hero']  # regression: v1 was 3.58%
+    regression_ok = (
+        0.0258 <= pilot_imp['players_to_act_after_hero'] <= 0.0458
+    )  # v1 3.58% ±1%
+    d5_re = (
+        'tpmk_kicker_rank',
+        'broadway_pressure_multiway_facing',
+        'nut_fd_blocker_multiway',
     )
-    fourway_features = (
-        'players_to_act_after_hero',
-        'multiway_equity_realization_factor',
-    )
-    reraise_features = ('closing_action',)
+    d5_passing = [k for k in d5_re if pilot_imp[k] >= 0.02]
+    n_pass_total = (1 if kept_2pct else 0) + len(d5_passing)
 
-    d5_passing = [k for k in d5_features if pilot_imp[k] >= 0.02]
-    fourway_passing = [k for k in fourway_features if pilot_imp[k] >= 0.02]
-    reraise_passing = [k for k in reraise_features if pilot_imp[k] >= 0.01]
+    print('\n[repilot-2b] GATE EVIDENCE:')
+    print(f'  KEEP players_to_act_after_hero ≥2.5%: {pilot_imp["players_to_act_after_hero"]*100:.2f}% — {"PASS" if kept_2pct else "FAIL"}')
+    print(f'  KEEP regression check (3.58% ±1%):    {"PASS" if regression_ok else "FAIL"}')
+    print(f'  RE-ENGINEERED ≥2%:                    {len(d5_passing)}/3 passing — {d5_passing}')
+    print(f'  TOTAL features passing gate:          {n_pass_total}/4')
 
-    print(f'\n[pilot-2b] GATE EVIDENCE:')
-    print(f'  D5 ≥2% importance:       {len(d5_passing)}/3 passing — {d5_passing}')
-    print(f'  4-way ≥2% importance:    {len(fourway_passing)}/2 passing — {fourway_passing}')
-    print(f'  re-raise ≥1% importance: {len(reraise_passing)}/1 passing — {reraise_passing}')
-
-    # Dump JSON for builder report
     out = {
         'seed': args.seed,
         'n_rows': len(rows),
@@ -279,16 +288,17 @@ def main():
         'all_feature_importance': dict(zip(FEATURE_COLUMNS, importances.tolist())),
         'pilot_feature_importance': pilot_imp,
         'gate_evidence': {
-            'd5_passing_2pct': d5_passing,
-            'fourway_passing_2pct': fourway_passing,
-            'reraise_passing_1pct': reraise_passing,
+            'kept_passing_25pct': bool(kept_2pct),
+            'kept_regression_within_1pct': bool(regression_ok),
+            'd5_re_engineered_passing_2pct': d5_passing,
+            'total_passing': n_pass_total,
         },
         'top_20_by_importance': [{'feature': k, 'importance': v} for k, v in paired[:20]],
     }
     os.makedirs(os.path.dirname(args.output), exist_ok=True)
     with open(args.output, 'w') as f:
         json.dump(out, f, indent=2)
-    print(f'[pilot-2b] wrote {args.output}')
+    print(f'[repilot-2b] wrote {args.output}')
 
 
 if __name__ == '__main__':
