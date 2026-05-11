@@ -381,6 +381,117 @@ Per amendment §"Implication for ship gate":
 
 (Started from 6 raw; dropped #9 + #12 per collinearity; net 4: #8, #10, #11, #13.)
 
+## §X — 4-way labeller-prompt readiness (per AMENDMENT 3 item 1; PR #389)
+
+Owner direction (2026-05-11 03:05 SAST): "does the plan include research session to make sure we can prompt labelers correctly on 4 way pots?"
+
+### X.1 Background — HU labelling incident
+
+Per `BUILDER_OBSERVATION_FL4_RULE_BASED_INVALIDATION_2026-05-10.md` (PR #354): Phase 1.5 HU labelling experienced systemic methodology violations — FL4 wrote a Python rule-based scoring script; FL1/2/3/5 used template-based reasoning. Recovery (PR #357 AMENDMENT) required EXPLICIT anti-rule-based prompt boilerplate, validated by FL6+FL7-10 producing varied per-spot LLM reasoning at 696-spot scale.
+
+**Memory rule from incident** (per `feedback_solver_vs_expert_labels.md` + `feedback_bucket_first_labelling.md`): labelling-pipeline subagent dispatches MUST include explicit "no Python scoring functions; per-spot LLM reasoning required" boilerplate. STANDING RULE for all future labelling.
+
+### X.2 4-way labelling complexity vs HU
+
+| Dimension | HU (1 villain) | 4-way (3 villains) | New brief content needed |
+|-----------|----------------|---------------------|--------------------------|
+| Range tracking | 1 villain range | 3 distinct narrowed-by-own-action ranges | Multiway range-chain reasoning |
+| Players-left-to-act | N/A (closing always) | Variable per position (0-3 behind) | Per-spot enumeration of behind-villains + squeeze risk |
+| Squeeze pressure | None | Active (re-raise × behind-villain) | Per-spot reasoning about squeeze potential |
+| Closing-action vs early | Same hand always closes | Differential decision tree | Brief MUST distinguish closing/early action trees |
+| Pot-cascade | Static (HU stays HU) | 4-way → 3-way → HU progression | Brief: reassess if villain folds |
+| Range-chain narrowing | Single chain | Per-villain chains | Reference `range_narrowing.py` MULTIWAY path |
+
+Naive HU brief reuse → labels miss multiway dimensions → bad model.
+
+### X.3 4-way labeller brief design proposal
+
+Extend HU brief with new sections:
+1. **Multiway range-chain reasoning**: per-villain narrowing
+2. **Players-left-to-act + squeeze-pressure prompt**: per-spot enumeration
+3. **Closing-action vs early-action decision tree**: per-spot identification
+4. **Anti-rule-based boilerplate** (MANDATORY per memory STANDING RULE)
+5. **Bucket-first compliance** (per `feedback_bucket_first_labelling.md`)
+
+### X.4 Calibration set design for 4-way
+
+HU calibration was 28 hands. 4-way needs broader axis coverage:
+- Preflop axis: limp/iso/cold-call/squeeze (~6 hands)
+- Flop 4-way: c-bet defend / multi-way check-raise / donk-lead / set vs multiway (~8 hands)
+- 3-bet pot 4-way (~4 hands)
+- 4-bet pot 4-way (~2 hands)
+- Closing-action variants (~4 hands)
+- Turn 4-way (~3 hands)
+- River 4-way (~2 hands)
+
+**Architect proposal: 29-hand calibration set** (analog to HU 28; +1 for axis breadth). 5 reversal anchors must-pass-100% covering preflop squeeze, flop multi-way check-raise, closing-action river bluff-catch, 3-bet pot RAISE, 4-bet pot CALL — designed in 2-E.0.
+
+### X.5 5-hand pilot validation (NEW sub-phase 2-E.0)
+
+Per amendment + `feedback_pilot_first_for_long_jobs.md` STANDING RULE: 5-hand pilot before full pipeline (~$120-150 LLM + 25-40h).
+
+**Sub-phase 2-E.0 — 4-way labeller readiness:**
+- Deliverables: 4-way labeller brief + 29-hand calibration set + 5-hand pilot spots
+- Run 1 fresh Sonnet labeller on 5 pilot spots (sample-check)
+- **STOP-condition gate**: naive HU-style reasoning OR rule-based shortcuts OR template patterns → REPORT before scaling; re-design brief; re-pilot
+- **PASS-condition gate**: 5/5 spots have varied per-spot multiway-aware reasoning (range-chain, squeeze, closing-action) → proceed to full 2-E
+
+**2-E.0 inserts BEFORE 2-E in §5 sub-phase decomposition.**
+
+### X.6 Cost-benefit
+
+Pilot cost: <$5 + ~30min. Full pipeline cost: ~$120-150 + 25-40h. The Phase 1.5 FL4 incident demonstrated naive labelling at scale produces unrecoverable cost; 2-E.0 prevents recurrence at 4-way scale.
+
+## §Y — 5-way scope decision (per AMENDMENT 3 item 2; PR #389)
+
+Owner direction (2026-05-11 03:05 SAST): "is it worthwhile to consider covering 5 and 6 way models now or keep separate?"
+
+### Y.1 State assessment
+
+`oracle_router.py:34-38` `_MODEL_FILES` position 4 (`gto_model_v9_5way.json`) is the **catch-all for ALL pots with 4+ opponents** (5/6/7/8/9-way). Single model handles all >= 5-way.
+
+**Verified file state**: `gto_model_v9_5way.json` is **MISSING** from disk at master `6961cca`:
+- Listed in `_MODEL_FILES` but never present in `river-rats-core/models/`
+- Per `oracle_router._load_models`: silently skipped
+- Per `_get_oracle(num_opponents=4+)`: falls back to position 1 (vNext-HU-59 post-Phase-1.5-E)
+
+**Effective state**: 5+way runtime requests fall back to vNext-HU-59. 5-way "specialist" never had a production artifact in current era.
+
+### Y.2 Frequency in production
+
+- PokerBench-derived multiway data: not surveyed (architect estimates 5+way < 10% of multiway data in typical online cash)
+- Coaching/mobile-app usage: depends on game format. Architect estimates **<5% of production usage** for typical online cash app target.
+
+### Y.3 Surface implication if 5-way included
+
+- Same 74-80 feature surface (no fork; `inference_path_59` extends to surface-size dispatch per §4.3)
+- `players_to_act_after_hero` cardinality goes 0-3 (4-way) → 0-8 (9-way); features scale
+- 5+way reference set required (~20 hands; smaller than 4-way 35 due to lower coverage need)
+
+### Y.4 Corpus implication
+
+- 5+way fresh labelling: §X labeller-readiness applies at higher scale (probably 7-hand pilot)
+- Cost: ~$200-300 LLM (analog scaling from 4-way's ~$120-150)
+- Wall-clock: +~30-50h on top of Phase 2 4-way
+
+### Y.5 Architect proposal
+
+**Option A — Include 5-way in Phase 2:**
+- Pros: full chain refresh; same surface; pipeline reuse; closes catch-all gap
+- Cons: Phase 2 wall-clock expands ~30-50h; 5-way usage rare (~<5%); "be careful + truly ready" mandate strains across 4-way + 5-way concurrently
+
+**Option B — Defer 5-way to Phase 3:**
+- Pros: scope discipline; 4-way ships sooner; 5-way as smaller dedicated workstream when warranted
+- Cons: 5-way stays on HU-fallback routing post-Phase-2-ship; eventual Phase 3 dispatch needed
+
+**Architect picks Option B as default** per:
+- `feedback_quality_default_no_ask.md` slow/quality path: better to do 4-way RIGHT than spread thin
+- `feedback_pilot_first_for_long_jobs.md`: Phase 2 already 70-110h; +5-way pushes to 100-160h
+- 5-way usage rarity (<5%) means deferral has low product impact
+- 5-way Phase 3 can build on Phase 2 4-way evidence (proven labeller brief, incremental extension)
+
+**Owner-gate decision (item 9):** ratify Option B (defer to Phase 3) or override to Option A (include in Phase 2).
+
 ### 3.4 Pilot gate strategy for 4-way candidates
 
 Per dispatch §3 "Pilot gate strategy for 4-way candidates (analog to D5 §4)":
@@ -526,6 +637,18 @@ Parallelizable: 2-D + 2-E ≈ 30-50h parallel with 2-C/2-F.
 
 **Owner-gate decision:** approve fold-into-Phase-2 or pivot to small-PR ship.
 
+### 6.8 4-way labeller-prompt readiness + 2-E.0 sub-phase (per AMENDMENT 3 item 1)
+
+**Architect proposal:** insert NEW sub-phase 2-E.0 (4-way labeller readiness) before 2-E (full pipeline) per §X.5. Deliverables: 4-way labeller brief + 29-hand calibration set + 5-hand pilot validation. STOP-condition gate prevents naive HU-style reasoning from cascading to full pipeline.
+
+**Owner-gate decision:** ratify 2-E.0 insertion + 5-hand pilot gate (or override calibration set size / pilot scope).
+
+### 6.9 5-way scope decision (per AMENDMENT 3 item 2)
+
+**Architect proposal:** **Option B — Defer 5-way to Phase 3** (per §Y.5 reasoning: Phase 2 already 70-110h; +5-way pushes to 100-160h; 5-way usage <5%; quality-default favors doing 4-way RIGHT first; Phase 3 5-way builds on proven 4-way labeller brief).
+
+**Owner-gate decision:** ratify Option B (defer) or override to Option A (include in Phase 2).
+
 ## §7 — NO build, NO train, NO corpus work confirmation
 
 Per dispatch §"NO build, NO train, NO corpus work":
@@ -576,7 +699,7 @@ Per dispatch §"QC stream — what you audit (post-design-PR)" 8-item:
 
 ## §11 — Pre-push checks (per `feedback_orchestrator_branch_base_verification.md`)
 
-- HEAD vs `origin/master` at `git checkout -b`: MATCH `596bb89` ✓ (Phase 2 dispatch + AMENDMENT 1 + AMENDMENT 2 all merged)
+- HEAD vs `origin/master` at `git checkout -b`: branch base `596bb89`; current master `3763d8a` (AMENDMENT 3 merged after branch creation; this commit folds AMENDMENT 3 §X + §Y + §6.8/6.9 per dispatch §"Path A — Amend PR #388 directly")
 - Diff vs master: 1 file (this memo)
 - Log vs master: 1 commit
 
@@ -585,6 +708,7 @@ Per dispatch §"QC stream — what you audit (post-design-PR)" 8-item:
 - Phase 2 dispatch (this PR's trigger): master `16a5aab` (PR #385)
 - Phase 2 design AMENDMENT 1 (street distribution; per owner): master `cee0705` (PR #386)
 - Phase 2 design AMENDMENT 2 (re-raise × players-left; per owner): master `596bb89` (PR #387)
+- Phase 2 design AMENDMENT 3 (labeller readiness + 5-way scope; per owner): master `3763d8a` (PR #389)
 - Phase 1.5 SHIP boundary: master `6961cca` (PR #382 + QC PR #384 PASS)
 - Phase 1.5-E PR-A inference path (cross-cutting infrastructure for §4.3): master `6f61ba2` (PR #379)
 - Phase 1.5 unified surface design (analog template): `review/comms/PHASE15A_UNIFIED_SURFACE_DESIGN_2026-05-08.md`
@@ -597,4 +721,4 @@ Per dispatch §"QC stream — what you audit (post-design-PR)" 8-item:
 - Solver-verification queue protocol: `feedback_solver_verification_queue.md` + `feedback_owner_too_difficult_orchestrator_picks_solver_flag.md`
 - Memory: `feedback_quality_default_no_ask.md`, `feedback_pilot_first_for_long_jobs.md`, `feedback_orchestrator_decides_not_recommends.md`, `feedback_orchestrator_branch_base_verification.md`, `feedback_qc_required_before_approval.md`, `feedback_river_rats_team_structure.md`, `feedback_named_author_builds_not_polls.md`
 
-**Status: Phase 2-A architect-hat design memo complete. 11 D5 candidates (refreshed; no drops) + 6 4-way candidates net (3 owner/orchestrator + 4 architect survey - 1 superseded by §3.Y collinearity) + 4 re-raise × players-left candidates net (post-collinearity-resolution from 6 raw per AMENDMENT 2) = 21 candidates total; estimated 74-80 final surface. AMENDMENTS 1 + 2 folded in (§3.X street distribution; §3.Y re-raise × players-left; ship-gate weighting Option A). Sub-phases 2-B through 2-H proposed with critical path; 4-way reference 35-hands street-weighted. 7 owner-scope items surfaced for ratification. NO build/train/corpus work in this PR. Awaits QC PASS + orchestrator merge → owner ratification → Phase 2-B pilot dispatch.**
+**Status: Phase 2-A architect-hat design memo complete. 11 D5 candidates (refreshed; no drops) + 6 4-way candidates net + 4 re-raise × players-left candidates net = 21 candidates total; estimated 74-80 final surface. ALL 3 AMENDMENTS folded in: §3.X street distribution (AMENDMENT 1); §3.Y re-raise × players-left (AMENDMENT 2); §X 4-way labeller readiness + §Y 5-way scope (AMENDMENT 3). Sub-phases 2-A through 2-H proposed; NEW 2-E.0 (4-way labeller readiness) inserted before 2-E per §X.5; 4-way reference 35-hands street-weighted; ship-gate Option A weighted total ≥28/35. 9 owner-scope items surfaced for ratification (architect default Option B for 5-way: defer to Phase 3). NO build/train/corpus work in this PR. Awaits QC PASS + orchestrator merge → owner ratification → Phase 2-B pilot dispatch.**
