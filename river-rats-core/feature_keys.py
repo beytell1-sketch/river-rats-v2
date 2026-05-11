@@ -106,3 +106,14 @@ class F:
     META_VILLAIN_RANGE_CAPPED = '_villain_range_capped'
     META_OPENER_POSITION = '_opener_position'
     META_BETTOR_POSITION = '_bettor_position'
+
+    # Phase 2-B PILOT features (added 2026-05-11 per dispatch PR #392)
+    # 3 D5 candidates (1 per stay-wrong axis per PHASE125_D5_DEFERRED_BLUEPRINT §3):
+    TPMK_POSITION_WITH_KICKER_STRENGTH = 'tpmk_position_with_kicker_strength'  # MW-40 axis
+    BROADWAY_DENSITY_COMPLETED_ON_TURN = 'broadway_density_completed_on_turn'  # MW-45 axis
+    NUT_FD_MULTIWAY_PRESSURE_WITH_BLOCKER = 'nut_fd_multiway_pressure_with_blocker'  # MW-47 axis
+    # 2 4-way candidates (per PHASE2_UNIFIED_SURFACE_DESIGN §3.3 + §3.4):
+    PLAYERS_TO_ACT_AFTER_HERO = 'players_to_act_after_hero'  # AMENDMENT 1 owner-direct
+    MULTIWAY_EQUITY_REALIZATION_FACTOR = 'multiway_equity_realization_factor'  # §3.2.2
+    # 1 re-raise × players-left candidate (per §3.Y.4 mandatory pick):
+    CLOSING_ACTION = 'closing_action'  # AMENDMENT 2 §3.Y.3 #11

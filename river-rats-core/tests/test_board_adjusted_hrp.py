@@ -76,13 +76,34 @@ class TestBoardAdjustedHrpAirOnMonotone:
         )
 
 
-class TestFeatureCountIs55:
-    """FEATURE_COLUMNS must have 55 entries (up from 54)."""
+class TestFeatureSurface:
+    """Feature-surface invariants for production paths.
 
-    def test_feature_count_is_55(self):
+    Original 55-pin (v2.3.1) was superseded by Phase 1.5-B 61→59 J-B drop;
+    canonical production HU + 3-way surface is 59 (frozen in
+    inference_path_59._CANONICAL_FEATURE_COLUMNS_59). feature_extractor.
+    FEATURE_COLUMNS may extend beyond 59 (Phase 2-B PILOT appends to 65)
+    but the FIRST 59 entries must match canonical.
+    """
+
+    def test_production_surface_at_least_59(self):
         from feature_extractor import FEATURE_COLUMNS
-        assert len(FEATURE_COLUMNS) == 55, (
-            f"Expected 55 feature columns, got {len(FEATURE_COLUMNS)}"
+        from inference_path_59 import N_FEATURES_59
+        assert len(FEATURE_COLUMNS) >= N_FEATURES_59, (
+            f"feature_extractor.FEATURE_COLUMNS has {len(FEATURE_COLUMNS)} "
+            f"entries; need ≥{N_FEATURES_59} for production 59-feature path."
+        )
+
+    def test_first_59_match_canonical(self):
+        from feature_extractor import FEATURE_COLUMNS
+        from inference_path_59 import (
+            FEATURE_COLUMNS_59 as CANONICAL_59,
+            N_FEATURES_59,
+        )
+        assert tuple(FEATURE_COLUMNS[:N_FEATURES_59]) == CANONICAL_59, (
+            "feature_extractor.FEATURE_COLUMNS first 59 entries diverged "
+            "from canonical production surface; production 59-trained "
+            "models will silently produce wrong predictions."
         )
 
     def test_gto_model_feature_count_is_55(self):

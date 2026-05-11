@@ -66,10 +66,12 @@ from sklearn.model_selection import train_test_split
 # Make river-rats-core importable when invoked from repo root.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from feature_extractor import (
-    FEATURE_COLUMNS as STUDENT_FEATURE_COLUMNS_V9,
-    extract_all_features,
-)
+from feature_extractor import extract_all_features
+# v9 student is frozen on the 59-feature production surface (Phase 1.5-B
+# J-B drop). After Phase 2-B PILOT, feature_extractor.FEATURE_COLUMNS may
+# extend beyond 59 (Step 18). Source the 59-frozen surface from the canonical
+# guard module so this trainer stays pinned to its historical surface.
+from inference_path_59 import FEATURE_COLUMNS_59 as STUDENT_FEATURE_COLUMNS_V9
 from feature_keys import F
 from gto_model import (
     ACTION_CLASSES, ACTION_TO_INT, INT_TO_ACTION, N_CLASSES,

@@ -61,17 +61,51 @@ from feature_extractor import FEATURE_COLUMNS as _FE_COLS
 # Public surface size constant — current 59-feature production surface
 N_FEATURES_59 = 59
 
-FEATURE_COLUMNS_59 = tuple(_FE_COLS)
+# Canonical 59-feature production surface — captured at Phase 1.5-B prune
+# (PR #356) and Phase 1.5-E PR-A (PR #379). This frozen tuple is the
+# load-time invariant: production HU + 3-way inference always builds an
+# array in exactly this order. If feature_extractor.FEATURE_COLUMNS later
+# appends new features (e.g., Phase 2-B PILOT), the FIRST 59 entries MUST
+# remain identical to this list or the dispatch silently routes wrong-
+# sized / mis-ordered arrays to 59-trained production models.
+_CANONICAL_FEATURE_COLUMNS_59 = (
+    'street', 'facing_bet', 'pot_size', 'to_call', 'pot_odds', 'bet_to_pot',
+    'hero_position', 'villain_position', 'is_ip', 'hand_category', 'hand_rank',
+    'is_made_hand', 'is_strong_made', 'is_monster', 'has_flush_draw',
+    'has_straight_draw', 'draw_outs', 'is_monotone', 'is_two_tone', 'is_rainbow',
+    'is_paired', 'is_double_paired', 'connectivity_score', 'high_card_rank',
+    'danger_score', 'flush_danger', 'straight_danger', 'raw_equity',
+    'equity_vs_range', 'better_hand_pct', 'worse_hand_pct', 'equity_margin',
+    'spr', 'is_3bet_pot', 'villain_aggression_count', 'villain_checked_back',
+    'villain_call_count', 'num_opponents', 'villain_top_pair_plus_pct',
+    'villain_draw_pct', 'villain_air_pct', 'villain_range_capped',
+    'board_favour', 'num_callers_to_bet', 'facing_raise', 'flush_block_pct',
+    'overcard_outs', 'improvement_probability', 'hero_range_percentile',
+    'has_showdown_value', 'villain_fold_equity_estimate', 'flush_draw_rank',
+    'is_preflop_aggressor', 'villain_medium_made_pct', 'board_adjusted_hrp',
+    'nut_flush_block', 'flush_draw_block_pct', 'straight_draw_block_pct',
+    'nut_made_block_pct',
+)
 
-# Module-load guard: if `feature_extractor.FEATURE_COLUMNS` ever extends
-# beyond 59 (e.g., a future feature add), this assertion trips and forces
-# the dispatch to be rewired explicitly rather than silently routing wrong-
-# sized arrays to 59-trained models.
-assert len(FEATURE_COLUMNS_59) == N_FEATURES_59, (
-    f"inference_path_59 requires feature_extractor.FEATURE_COLUMNS to "
-    f"contain exactly {N_FEATURES_59} entries; found {len(FEATURE_COLUMNS_59)}. "
-    f"If feature surface has changed, update this module + oracle_router "
-    f"surface-size dispatch logic explicitly."
+FEATURE_COLUMNS_59 = _CANONICAL_FEATURE_COLUMNS_59
+
+# Module-load guard: production-surface integrity. The 59-feature production
+# inference array MUST match the canonical column order — even after
+# feature_extractor extends with new columns (Phase 2-B PILOT and beyond).
+# This guard trips if the FIRST 59 entries of feature_extractor.FEATURE_COLUMNS
+# diverge from canonical (e.g., column reorder, rename, or removal), which
+# would silently break vNext-HU-59 + v9-3way-on-59 inference.
+_fe_first_59 = tuple(_FE_COLS[:N_FEATURES_59])
+assert len(_FE_COLS) >= N_FEATURES_59, (
+    f"feature_extractor.FEATURE_COLUMNS has only {len(_FE_COLS)} entries; "
+    f"need ≥{N_FEATURES_59} for production 59-feature path."
+)
+assert _fe_first_59 == _CANONICAL_FEATURE_COLUMNS_59, (
+    f"feature_extractor.FEATURE_COLUMNS first {N_FEATURES_59} entries diverged "
+    f"from canonical production surface. Diff: "
+    f"{[(i, _fe_first_59[i], _CANONICAL_FEATURE_COLUMNS_59[i]) for i in range(N_FEATURES_59) if _fe_first_59[i] != _CANONICAL_FEATURE_COLUMNS_59[i]][:5]}. "
+    f"Production 59-trained models will silently produce wrong predictions. "
+    f"Surface re-extension requires explicit dispatch rewire in oracle_router."
 )
 
 

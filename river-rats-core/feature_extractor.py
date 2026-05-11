@@ -1610,6 +1610,17 @@ FEATURE_COLUMNS = [
     'flush_draw_block_pct',
     'straight_draw_block_pct',
     'nut_made_block_pct',
+    # Step 18: Phase 2-B PILOT features 60-65 (added 2026-05-11 per dispatch PR #392)
+    # See review/comms/PHASE2_UNIFIED_SURFACE_DESIGN_2026-05-11.md
+    # 3 D5 candidates per PHASE125_D5_DEFERRED_BLUEPRINT §3:
+    'tpmk_position_with_kicker_strength',     # MW-40 axis
+    'broadway_density_completed_on_turn',     # MW-45 axis
+    'nut_fd_multiway_pressure_with_blocker',  # MW-47 axis
+    # 2 4-way candidates per design memo §3.3:
+    'players_to_act_after_hero',              # AMENDMENT 1
+    'multiway_equity_realization_factor',     # §3.2.2
+    # 1 re-raise × players-left candidate per §3.Y.4:
+    'closing_action',                         # AMENDMENT 2
 ]
 
 LABEL_COLUMN = 'action'
@@ -2544,6 +2555,91 @@ def extract_all_features(hand: Dict) -> Dict:
         features[F.FLUSH_DRAW_BLOCK_PCT] = _s17_block['flush_draw_block_pct']
         features[F.STRAIGHT_DRAW_BLOCK_PCT] = _s17_block['straight_draw_block_pct']
         features[F.NUT_MADE_BLOCK_PCT] = _s17_block['nut_made_block_pct']
+
+    # =====================================================================
+    # Step 18: Phase 2-B PILOT features (60-65)
+    # Per dispatch PR #392 + design memo PHASE2_UNIFIED_SURFACE_DESIGN.
+    # 3 D5 (MW-40/45/47) + 2 4-way + 1 re-raise × players-left.
+    # =====================================================================
+
+    # 18.1 — tpmk_position_with_kicker_strength (MW-40)
+    # Composite: TPMK (top pair, kicker-not-top) on J-high board × kicker strength.
+    # Per blueprint §3.1: discriminates TPMK with T+ kicker (thin value) from
+    # TPMK with low kicker (CHECK). Uses HAND_CATEGORY_ENCODING values:
+    # top_pair=6, top_pair_good_kicker=7. Board J-high = high_card_rank == 11.
+    _hc = features.get('hand_category', 0)
+    _is_tpmk = 1.0 if _hc in (6, 7) else 0.0  # top_pair or TPGK (excludes TPTK=8)
+    _is_j_high = 1.0 if features.get('high_card_rank', 0) == 11 else 0.0
+    # hand_rank captures kicker strength within top_pair category;
+    # normalize to [0, 1] by clipping (typical hand_rank ranges 0-9 in this scale)
+    _hand_rank_norm = max(0.0, min(1.0, float(features.get('hand_rank', 0.0)) / 10.0))
+    features['tpmk_position_with_kicker_strength'] = round(
+        _is_tpmk * _is_j_high * _hand_rank_norm, 6
+    )
+
+    # 18.2 — broadway_density_completed_on_turn (MW-45)
+    # Count of broadway cards (T/J/Q/K/A; ranks 10-14) on board AT THE TURN.
+    # Per blueprint §3.2: discriminates "Q+J+T" turn (high broadway density;
+    # multiway pressure) from non-completing turns.
+    # street: 0=flop, 1=turn, 2=river per STREET_ENCODING.
+    _board = features.get('_board_cards', []) or []
+    _street = features.get('street', 0)
+    if _street == 1:  # turn
+        # Each card is a tuple/object with rank attribute or 2-char string;
+        # use card.rank if available, else parse from string
+        def _card_rank(c):
+            if hasattr(c, 'rank'):
+                return int(c.rank)
+            if isinstance(c, str) and len(c) >= 1:
+                _r = c[0].upper()
+                return {'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,
+                        'T':10,'J':11,'Q':12,'K':13,'A':14}.get(_r, 0)
+            return 0
+        _broadway_count = sum(1 for c in _board if _card_rank(c) >= 10)
+        features['broadway_density_completed_on_turn'] = float(_broadway_count)
+    else:
+        features['broadway_density_completed_on_turn'] = 0.0
+
+    # 18.3 — nut_fd_multiway_pressure_with_blocker (MW-47)
+    # Composite: nut FD with blocker × multiway × facing bet.
+    # Per blueprint §3.3: nut FD with blocker on bet-call line should RAISE
+    # but model predicts CALL. Decomposes 12.5J-B's combined index.
+    _has_fd = float(features.get('has_flush_draw', 0))
+    _nfb = float(features.get('nut_flush_block', 0))
+    _multiway = 1.0 if features.get('num_opponents', 1) >= 2 else 0.0
+    _facing = float(features.get('facing_bet', 0))
+    features['nut_fd_multiway_pressure_with_blocker'] = round(
+        _has_fd * _nfb * _multiway * _facing, 6
+    )
+
+    # 18.4 — players_to_act_after_hero (AMENDMENT 1; owner-direct)
+    # Number of villains positioned to act AFTER hero on current street.
+    # Approximation: when hero is IP, 0 players behind (hero acts last among
+    # known villains); when hero is OOP, all num_opponents villains may act after.
+    # Per design memo §3.3: discriminates EP > MP > LP pressure asymmetry.
+    _num_opp = int(features.get('num_opponents', 1))
+    _is_ip = int(features.get('is_ip', 0))
+    if _is_ip:
+        features['players_to_act_after_hero'] = 0.0
+    else:
+        features['players_to_act_after_hero'] = float(_num_opp)
+
+    # 18.5 — multiway_equity_realization_factor (architect §3.2.2)
+    # Equity realization in multiway is lower than HU: HU≈1.0; 3-way≈0.85;
+    # 4-way≈0.75; 5+way≈0.70 per multiway theory.
+    _realization_lookup = {1: 1.0, 2: 0.85, 3: 0.75, 4: 0.70}
+    features['multiway_equity_realization_factor'] = _realization_lookup.get(
+        _num_opp, 0.70  # 5+ falls into 0.70 bucket
+    )
+
+    # 18.6 — closing_action (AMENDMENT 2 §3.Y.3 #11; mandatory pilot pick per §3.Y.4)
+    # Binary: hero is last to act this street = no squeeze risk.
+    # HU + IP: hero closes (1). HU + OOP: villain acts after (0).
+    # Multiway: closing only if hero is IP AND no behind-villains
+    # (approximation: is_ip AND players_to_act == 0).
+    features['closing_action'] = 1.0 if (
+        _is_ip and features['players_to_act_after_hero'] == 0.0
+    ) else 0.0
 
     return features
 
