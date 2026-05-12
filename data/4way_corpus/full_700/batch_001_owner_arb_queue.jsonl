@@ -1,0 +1,4 @@
+{"spot_id": "4WF-4-WAY-3--001", "consensus_state": "3-2+opus-disagree-OWNERARB", "consensus_action": null, "sonnet_votes": ["CALL", "FOLD", "CALL", "CALL", "FOLD"], "opus_vote": "FOLD"}
+{"spot_id": "4WF-4-WAY-3--007", "consensus_state": "3-2+opus-disagree-OWNERARB", "consensus_action": null, "sonnet_votes": ["CALL", "CALL", "FOLD", "CALL", "FOLD"], "opus_vote": "FOLD"}
+{"spot_id": "4WF-4-WAY-3--034", "consensus_state": "3-2+opus-disagree-OWNERARB", "consensus_action": null, "sonnet_votes": ["FOLD", "CHECK", "FOLD", "CHECK", "FOLD"], "opus_vote": "CHECK"}
+{"spot_id": "4WF-4-WAY-3--046", "consensus_state": "3-2+opus-disagree-OWNERARB", "consensus_action": null, "sonnet_votes": ["FOLD", "CHECK", "FOLD", "CHECK", "CHECK"], "opus_vote": "BET"}
