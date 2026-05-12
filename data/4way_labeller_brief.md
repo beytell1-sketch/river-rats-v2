@@ -16,6 +16,28 @@ Phase 1.5-D.3 pilot exposed FL4-style failure: one labeller wrote a Python rule-
 - ❌ NO citation of solver tools or equity calculators as label rationale; this is your reasoning, not solver-replay
 - ❌ NO equity thresholds in your reasoning prompt (per `feedback_bucket_first_labelling.md`: bucket assignment FIRST, then action; thresholds live in `spot_classifier.py`, not in labelling prose)
 
+## Action-space discipline: when each action is LEGAL (READ BEFORE LABELLING)
+
+The legal action space at the decision moment is determined by `facing_bet`. Predicting an action outside the legal space is a labelling defect — your label is REJECTED at consensus regardless of reasoning quality.
+
+**When `facing_bet == 0`** (no bet to call this street):
+- Legal actions: **BET** (you initiate aggression) or **CHECK** (you pass action)
+- ILLEGAL: FOLD (nothing to fold to), CALL (no bet to match), RAISE (no bet to raise)
+
+**When `facing_bet > 0`** (you are facing a bet/raise this street):
+- Legal actions: **FOLD** (give up), **CALL** (match), or **RAISE** (raise the existing bet)
+- ILLEGAL: BET (cannot bet when facing a bet — that's a raise), CHECK (cannot check when facing aggression)
+
+**Sizing fields**:
+- `predicted_action: BET` or `RAISE` → MUST specify `predicted_sizing_pct` (an integer % of pot for BET; integer bb amount for RAISE)
+- `predicted_action: CHECK` or `CALL` or `FOLD` → `predicted_sizing_pct: null`
+
+**Hard constraint**: Action-space is NOT a soft preference. Before writing any label, look at `facing_bet` in the input row. If `facing_bet == 0` and you find yourself reaching for FOLD or CALL, your reasoning has departed from the actual decision moment — that label is wrong before you even evaluate the poker. The same applies for BET/CHECK when `facing_bet > 0`.
+
+**FL5 failure class — illegal action vote**: voting an illegal action (e.g., FOLD when facing_bet=0) is a labelling defect distinct from FL4 rule-based drift. If your reasoning cites threshold-style logic to reach an illegal action, your label is wrong twice over (FL4 + FL5) and both your batch and your reasoning are rejected. Don't conflate "I would fold this hand preflop" reasoning with "FOLD on the flop spot in front of me" — re-read `facing_bet` before every label.
+
+Per `feedback_terminology_raise_vs_bet.md`: **bet** = first postflop action initiating aggression; **raise** = action that raises an existing bet (postflop) OR raises the preflop open. CHECK applies only when no bet faces you; CALL applies only when a bet faces you.
+
 **Required reasoning structure (every hand)**:
 1. **Pre-flop context**: opener position, intermediate flat/3-bet actions, hero's range at decision moment
 2. **Per-villain range chains**: for each of the 3 villains, narrow their range across action history (preflop open/flat/3-bet → flop response → turn → river)

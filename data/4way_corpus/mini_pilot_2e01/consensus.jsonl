@@ -1,0 +1,8 @@
+{"spot_id": "4WF-4-WAY-3--096", "state": "all-agree", "consensus_action": "CHECK", "sonnet_votes": ["CHECK", "CHECK", "CHECK", "CHECK", "CHECK"], "opus_vote": null}
+{"spot_id": "4WF-4-WAY-SR-636", "state": "all-agree", "consensus_action": "BET", "sonnet_votes": ["BET", "BET", "BET", "BET", "BET"], "opus_vote": null}
+{"spot_id": "4WF-4-WAY-SR-695", "state": "all-agree", "consensus_action": "BET", "sonnet_votes": ["BET", "BET", "BET", "BET", "BET"], "opus_vote": null}
+{"spot_id": "4WF-CLOSING--272", "state": "all-agree", "consensus_action": "CHECK", "sonnet_votes": ["CHECK", "CHECK", "CHECK", "CHECK", "CHECK"], "opus_vote": null}
+{"spot_id": "4WF-CLOSING--295", "state": "all-agree", "consensus_action": "BET", "sonnet_votes": ["BET", "BET", "BET", "BET", "BET"], "opus_vote": null}
+{"spot_id": "4WF-MULTIWAY-146", "state": "all-agree", "consensus_action": "BET", "sonnet_votes": ["BET", "BET", "BET", "BET", "BET"], "opus_vote": null}
+{"spot_id": "4WF-MW-AXIS-500", "state": "all-agree", "consensus_action": "CHECK", "sonnet_votes": ["CHECK", "CHECK", "CHECK", "CHECK", "CHECK"], "opus_vote": null}
+{"spot_id": "4WF-RANGE-AS-436", "state": "all-agree", "consensus_action": "BET", "sonnet_votes": ["BET", "BET", "BET", "BET", "BET"], "opus_vote": null}
