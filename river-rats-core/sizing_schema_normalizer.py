@@ -183,10 +183,17 @@ class NormalizedSizing:
 
 @dataclass(frozen=True)
 class NormalizedLabel:
-    """Full label after normalisation, including the source spot/labeller id."""
+    """Full label after normalisation, including the source spot/labeller id.
+
+    `labeller_id` is `int | str`: Sonnet labellers are numbered 1..N
+    (int), while the Opus tier-up labeller is identified by the string
+    sentinel ``"opus_tierup"`` (see `scripts/run_125i_mw40_verif_opus_tierup.py`).
+    Per A0.1.1 / QC A0.2 SHOULD_FIX-1, the field is preserved verbatim and
+    NEVER coerced — silent str→int coercion was the latent bug we're fixing.
+    """
 
     spot_id: str
-    labeller_id: int
+    labeller_id: int | str
     predicted_action: ActionStr
     predicted_bet_pct: Optional[int]
     predicted_raise_to_bb: Optional[int]
@@ -476,7 +483,19 @@ def normalize_label(
     the function emits status="no_op" with the existing fields preserved.
     """
     spot_id = label_dict.get("spot_id", "<unknown>")
-    labeller_id = int(label_dict.get("labeller_id", -1))
+    # A0.1.1 / QC A0.2 SHOULD_FIX-1: labeller_id is `int | str`. Sonnet
+    # labellers are integer IDs (1..N); the Opus tier-up label uses the
+    # string sentinel "opus_tierup". Preserve verbatim — DO NOT coerce
+    # (previous `int(...)` cast crashed on the Opus string).
+    raw_labeller_id = label_dict.get("labeller_id", -1)
+    labeller_id: int | str
+    if isinstance(raw_labeller_id, bool):
+        # bool is an int subclass; treat as integer ID.
+        labeller_id = int(raw_labeller_id)
+    elif isinstance(raw_labeller_id, str):
+        labeller_id = raw_labeller_id
+    else:
+        labeller_id = int(raw_labeller_id)
     action = label_dict.get("predicted_action", "")
 
     # Idempotence: detect v2-shaped input.

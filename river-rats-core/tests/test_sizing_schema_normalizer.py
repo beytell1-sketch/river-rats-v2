@@ -12,6 +12,11 @@ v2 reduces to v1 behaviour on these). Tests 13-15 are NEW in v2:
 Test 16 is a NEW invariant test exercising `validate_v2_label` (per QC
 SHOULD_FIX — function was defined but never called/tested in v1 PR #460).
 
+Test 17 (A0.1.1 follow-up per QC A0.2 SHOULD_FIX-1): `labeller_id` is
+`int | str` — the Opus tier-up labeller writes the string sentinel
+`"opus_tierup"`, which previously crashed `normalize_label()` at the
+`int(...)` cast on line 479. Verify the string is preserved verbatim.
+
 Run from repo root:
 
     python -m pytest river-rats-core/tests/test_sizing_schema_normalizer.py -v
@@ -520,6 +525,82 @@ class TestSizingSchemaNormalizer(unittest.TestCase):
         self.assertEqual(nl.status, "clean")
         self.assertEqual(nl.predicted_bet_pct, 66)
         self.assertNotIn("VALIDATION FAIL", nl.rationale)
+
+    # ────────────────────────────────────────────────────────────────────
+    # 17. A0.1.1 — labeller_id is int | str; "opus_tierup" must round-trip
+    # ────────────────────────────────────────────────────────────────────
+    def test_opus_tierup_string_labeller_id_does_not_crash(self) -> None:
+        """A0.1.1: labeller_id can be a string ("opus_tierup"), not just int.
+
+        Per QC A0.2 SHOULD_FIX-1: `normalize_label` previously cast
+        labeller_id via `int(...)` at line 479, which would raise
+        ValueError on the Opus tier-up sentinel. Fix widens the type to
+        `int | str` and preserves the string verbatim. This test exercises
+        both the legacy-v1-shaped path (predicted_sizing_pct present) and
+        the v2 idempotent passthrough path; both must accept the string
+        sentinel without coercion.
+
+        Real-world consumer: `scripts/run_125i_mw40_verif_opus_tierup.py`
+        emits records with `"labeller_id": "opus_tierup"`. Before this
+        fix, the A0.2 backfill driver had to intercept opus labels before
+        calling `normalize_label`; this fix removes the need for that
+        driver-side workaround.
+        """
+        context = {
+            "pot_bb": 12.5,
+            "to_call_bb": 0.0,
+            "facing_bet": 0,
+            "stack_size_bb": 100.0,
+            "street": "flop",
+        }
+
+        # Sub-case (a): legacy-v1-shaped Opus tier-up label (predicted_sizing_pct).
+        opus_legacy = {
+            "spot_id": "4WF-OPUS-TIERUP-001",
+            "labeller_id": "opus_tierup",
+            "predicted_action": "BET",
+            "predicted_sizing_pct": 66,
+        }
+        # Must NOT raise (previously raised ValueError: invalid literal for int()).
+        nl_legacy = ssn.normalize_label(opus_legacy, context)
+        self.assertEqual(nl_legacy.labeller_id, "opus_tierup")
+        self.assertIsInstance(nl_legacy.labeller_id, str)
+        self.assertEqual(nl_legacy.predicted_action, "BET")
+        self.assertEqual(nl_legacy.predicted_bet_pct, 66)
+        self.assertEqual(nl_legacy.status, "clean")
+
+        # Sub-case (b): v2-shaped Opus tier-up label (idempotent passthrough).
+        opus_v2 = {
+            "spot_id": "4WF-OPUS-TIERUP-002",
+            "labeller_id": "opus_tierup",
+            "predicted_action": "RAISE",
+            "predicted_bet_pct": None,
+            "predicted_raise_to_bb": 9,
+        }
+        nl_v2 = ssn.normalize_label(opus_v2, context)
+        self.assertEqual(nl_v2.labeller_id, "opus_tierup")
+        self.assertIsInstance(nl_v2.labeller_id, str)
+        self.assertEqual(nl_v2.status, "no_op")
+        self.assertEqual(nl_v2.predicted_raise_to_bb, 9)
+
+        # Sub-case (c): downstream serialisation paths must preserve string.
+        # _label_to_v2_dict + _audit_record both read .labeller_id verbatim.
+        out_dict = ssn._label_to_v2_dict(nl_legacy)
+        self.assertEqual(out_dict["labeller_id"], "opus_tierup")
+        audit = ssn._audit_record(nl_legacy, legacy_v=66)
+        self.assertEqual(audit["labeller_id"], "opus_tierup")
+
+        # Sub-case (d): integer labeller_id still flows through as int
+        # (no regression on the Sonnet labeller path).
+        sonnet_label = {
+            "spot_id": "4WF-SONNET-001",
+            "labeller_id": 3,
+            "predicted_action": "BET",
+            "predicted_sizing_pct": 66,
+        }
+        nl_sonnet = ssn.normalize_label(sonnet_label, context)
+        self.assertEqual(nl_sonnet.labeller_id, 3)
+        self.assertIsInstance(nl_sonnet.labeller_id, int)
 
 
 if __name__ == "__main__":
