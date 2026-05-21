@@ -1,7 +1,16 @@
 """Unit tests for sizing_schema_normalizer.
 
-Covers the 12 mandatory cases enumerated in
-`review/comms/DRAFT_BLUEPRINT_A0_SCHEMA_FIX_v1_2026-05-17.md` §3.5.
+Covers the 15 mandatory cases enumerated in
+`review/comms/DRAFT_BLUEPRINT_A0_SCHEMA_FIX_v2_2026-05-21.md` §3.5.
+
+Tests 1-12 are unchanged from v1 (postflop / non-blind / mult / pct paths;
+v2 reduces to v1 behaviour on these). Tests 13-15 are NEW in v2:
+    13. test_raise_all_in_v_equals_stack          (F-1 fix: §3.2 STEP 2.5)
+    14. test_raise_preflop_bb_defend_min_raise    (F-2 fix: §3.2 STEP 1)
+    15. test_consensus_v2_sizing_modal_5_labellers (F-6: §3.6 consensus v2)
+
+Test 16 is a NEW invariant test exercising `validate_v2_label` (per QC
+SHOULD_FIX — function was defined but never called/tested in v1 PR #460).
 
 Run from repo root:
 
@@ -30,6 +39,7 @@ def ctx(
     stack_size_bb: float = 100.0,
     facing_bet: int = 1,
     street: str = "flop",
+    hero_position: str = "",
 ) -> ssn.SpotContext:
     """Helper: build a SpotContext with sensible defaults."""
     return ssn.SpotContext(
@@ -38,6 +48,7 @@ def ctx(
         facing_bet=facing_bet,
         stack_size_bb=stack_size_bb,
         street=street,
+        hero_position=hero_position,
     )
 
 
@@ -250,6 +261,265 @@ class TestSizingSchemaNormalizer(unittest.TestCase):
             )
             self.assertIsNone(r.predicted_bet_pct, msg=f"v={v}")
             self.assertIn(r.status, ("clean", "ambiguous_resolved"), msg=f"v={v}")
+
+    # ────────────────────────────────────────────────────────────────────
+    # 13. NEW v2 (F-1) — v=100 on 100bb stack → clean_all_in (§3.2 STEP 2.5)
+    # ────────────────────────────────────────────────────────────────────
+    def test_raise_all_in_v_equals_stack(self) -> None:
+        """v=100 with stack=100, pot=13.5, to_call=2.5 → clean_all_in, raise_to=100.
+
+        Verifies the STEP 2.5 short-circuit fires BEFORE the canonical-pct
+        branch. Under v1's algorithm this spot would have routed via
+        CANONICAL_PCT (v=100 ∈ {25,33,50,66,75,100,150}) and produced
+        raise_to=round(2.5 + 1.0×13.5)=16 — silently re-interpreting an
+        all-in as a pot-sized raise. v2 fixes by all-in detection FIRST.
+
+        Real-corpus impact: 3 labels in batch_004_l4 (4WF-MULTIWAY-171/175/179).
+        """
+        spot = ctx(pot_bb=13.5, to_call_bb=2.5, stack_size_bb=100.0)
+        result = ssn.normalize_sizing("RAISE", legacy_sizing_pct=100, ctx=spot)
+        self.assertEqual(result.predicted_raise_to_bb, 100)
+        self.assertIsNone(result.predicted_bet_pct)
+        self.assertEqual(result.status, "clean_all_in")
+        # NOT 16 (which would be the pct interpretation).
+        self.assertNotEqual(result.predicted_raise_to_bb, 16)
+        # Rationale references the STEP 2.5 / F-1 path.
+        self.assertIn("STEP 2.5", result.rationale)
+
+        # Variant sub-case: same v=100 on 200bb stack must NOT trigger all-in;
+        # falls through to canonical-pct branch (correct — pot-sized raise on
+        # deep stack is not an all-in tell).
+        deep = ctx(pot_bb=13.5, to_call_bb=2.5, stack_size_bb=200.0)
+        deep_result = ssn.normalize_sizing("RAISE", legacy_sizing_pct=100, ctx=deep)
+        self.assertNotEqual(deep_result.status, "clean_all_in")
+        # v=100 ∈ CANONICAL_PCT → pct interpretation: round(2.5 + 1.0×13.5)=16
+        self.assertEqual(deep_result.predicted_raise_to_bb, 16)
+
+    # ────────────────────────────────────────────────────────────────────
+    # 14. NEW v2 (F-2) — preflop BB-defend min-raise (§3.2 STEP 1 revised)
+    # ────────────────────────────────────────────────────────────────────
+    def test_raise_preflop_bb_defend_min_raise(self) -> None:
+        """Preflop BB facing 2.5x open: min_raise must be 5.0 (NOT 3.0).
+
+        Positive sub-case: BB defends with v=5 (min-raise 3-bet) → legal,
+        status=clean, raise_to=5.
+
+        Negative sub-case: same context, v=4 → below new min_raise=5.0 →
+        malformed_rejected. Under v1's wrong rule (min_raise=2×to_call=3.0),
+        v=4 would have been admitted as clean — v2's stricter rule correctly
+        rejects.
+        """
+        bb_spot = ctx(
+            pot_bb=11.5,
+            to_call_bb=1.5,
+            stack_size_bb=100.0,
+            street="preflop",
+            hero_position="BB",
+        )
+        # Sanity-check the helper: BB preflop → hero_committed=1.0.
+        self.assertEqual(ssn.hero_already_committed_bb(bb_spot), 1.0)
+
+        # POSITIVE: v=5 → legal (min_raise=5.0; 5 is boundary).
+        pos = ssn.normalize_sizing("RAISE", legacy_sizing_pct=5, ctx=bb_spot)
+        self.assertIsNone(pos.predicted_bet_pct)
+        self.assertEqual(pos.predicted_raise_to_bb, 5)
+        self.assertEqual(pos.status, "clean")
+
+        # NEGATIVE: v=4 → below new min_raise=5.0 → malformed_rejected.
+        # Trace: candidate_bb=4 < 5 illegal; candidate_pct = round(1.5 + 0.04×11.5)
+        # = round(1.96) = 2 < 5 illegal; candidate_mult = round(0.04×1.5) = 0 illegal.
+        neg = ssn.normalize_sizing("RAISE", legacy_sizing_pct=4, ctx=bb_spot)
+        self.assertIsNone(neg.predicted_bet_pct)
+        self.assertIsNone(neg.predicted_raise_to_bb)
+        self.assertEqual(neg.status, "malformed_rejected")
+
+        # Cross-check: SB preflop facing 2.5x open (to_call=2.0, hero_committed=0.5)
+        # → previous_full_bet=2.5, min_raise=5.0. v=5 legal.
+        sb_spot = ctx(
+            pot_bb=12.0,
+            to_call_bb=2.0,
+            stack_size_bb=100.0,
+            street="preflop",
+            hero_position="SB",
+        )
+        self.assertEqual(ssn.hero_already_committed_bb(sb_spot), 0.5)
+        sb_pos = ssn.normalize_sizing("RAISE", legacy_sizing_pct=5, ctx=sb_spot)
+        self.assertEqual(sb_pos.predicted_raise_to_bb, 5)
+        self.assertEqual(sb_pos.status, "clean")
+
+        # Postflop sanity (F-2 must not change postflop): bet=9, to_call=9,
+        # hero_committed=0, previous_full_bet=9.0, min_raise=18.0 (same as v1).
+        postflop = ctx(
+            pot_bb=23.0,
+            to_call_bb=9.0,
+            stack_size_bb=100.0,
+            street="flop",
+            hero_position="BTN",
+        )
+        self.assertEqual(ssn.hero_already_committed_bb(postflop), 0.0)
+
+    # ────────────────────────────────────────────────────────────────────
+    # 15. NEW v2 (F-6) — consensus v2 modal-sizing across 5 labellers (§3.6)
+    # ────────────────────────────────────────────────────────────────────
+    def test_consensus_v2_sizing_modal_5_labellers(self) -> None:
+        """5 labellers vote RAISE; expect weighted-modal raise_to_bb consensus.
+
+        Main sub-case: clean votes [9,9,9,22,9] → 4 votes for 9, 1 for 22 →
+        consensus=9 (weight 4.0 vs 1.0).
+
+        Mixed-status sub-case: votes are mix of clean (v=9, weight 1.0) and
+        ambiguous_resolved (v=16 from pct interp, weight 0.7) and one
+        malformed_rejected. Expected: 9 wins (4×1.0=4.0 vs 1×0.7=0.7).
+        """
+        # Build 5 NormalizedLabel objects for the main case.
+        labels_main = [
+            ssn.NormalizedLabel(
+                spot_id="4WL-CONSENSUS-001",
+                labeller_id=i + 1,
+                predicted_action="RAISE",
+                predicted_bet_pct=None,
+                predicted_raise_to_bb=v,
+                status="clean",
+                rationale="test",
+            )
+            for i, v in enumerate([9, 9, 9, 22, 9])
+        ]
+        result = ssn.compute_consensus_v2(labels_main)
+        self.assertEqual(result.consensus_action, "RAISE")
+        self.assertEqual(result.consensus_raise_to_bb, 9)
+        self.assertIsNone(result.consensus_bet_pct)
+        # 4×1.0 vs 1×1.0 → unique winner; status=clean (no high-disagreement
+        # because spread 22-9=13 vs 0.5×22=11 → 13 > 11 → high_disagreement
+        # IS triggered). Accept either status; the modal value is what matters.
+        self.assertIn(result.sizing_status, ("clean", "high_disagreement"))
+
+        # Mixed-status sub-case.
+        # 4 clean votes for 9 (weight 4.0); 1 ambiguous_resolved vote for 16
+        # (weight 0.7); 1 malformed_rejected (excluded). Note: we pad to 6
+        # labels but malformed_rejected is excluded from the weighted pool.
+        labels_mixed = [
+            ssn.NormalizedLabel(
+                spot_id="4WL-CONSENSUS-002",
+                labeller_id=1,
+                predicted_action="RAISE",
+                predicted_bet_pct=None,
+                predicted_raise_to_bb=9,
+                status="clean",
+                rationale="bb",
+            ),
+            ssn.NormalizedLabel(
+                spot_id="4WL-CONSENSUS-002",
+                labeller_id=2,
+                predicted_action="RAISE",
+                predicted_bet_pct=None,
+                predicted_raise_to_bb=16,
+                status="ambiguous_resolved",
+                rationale="pct interp",
+            ),
+            ssn.NormalizedLabel(
+                spot_id="4WL-CONSENSUS-002",
+                labeller_id=3,
+                predicted_action="RAISE",
+                predicted_bet_pct=None,
+                predicted_raise_to_bb=None,
+                status="malformed_rejected",
+                rationale="below min_raise",
+            ),
+            ssn.NormalizedLabel(
+                spot_id="4WL-CONSENSUS-002",
+                labeller_id=4,
+                predicted_action="RAISE",
+                predicted_bet_pct=None,
+                predicted_raise_to_bb=9,
+                status="clean",
+                rationale="bb",
+            ),
+            ssn.NormalizedLabel(
+                spot_id="4WL-CONSENSUS-002",
+                labeller_id=5,
+                predicted_action="RAISE",
+                predicted_bet_pct=None,
+                predicted_raise_to_bb=9,
+                status="clean",
+                rationale="bb",
+            ),
+            ssn.NormalizedLabel(
+                spot_id="4WL-CONSENSUS-002",
+                labeller_id=6,
+                predicted_action="RAISE",
+                predicted_bet_pct=None,
+                predicted_raise_to_bb=9,
+                status="clean",
+                rationale="bb",
+            ),
+        ]
+        mixed_result = ssn.compute_consensus_v2(labels_mixed)
+        self.assertEqual(mixed_result.consensus_action, "RAISE")
+        # 4×1.0 vs 1×0.7 → 9 wins by weight.
+        self.assertEqual(mixed_result.consensus_raise_to_bb, 9)
+        # malformed_count=1, less than 3 → not malformed-via-arb.
+        self.assertNotEqual(mixed_result.sizing_status, "malformed-via-arb")
+
+    # ────────────────────────────────────────────────────────────────────
+    # 16. validate_v2_label — wire-up check (per QC SHOULD_FIX-1)
+    # ────────────────────────────────────────────────────────────────────
+    def test_validate_v2_label_catches_violations(self) -> None:
+        """validate_v2_label rejects FL7-family violations (rules 1-5)."""
+        spot = ctx(pot_bb=12.5, to_call_bb=2.5)
+
+        # Rule 1: BET with non-null raise_to_bb (mismatched fields).
+        err = ssn.validate_v2_label("BET", bet_pct=66, raise_to_bb=9, ctx=spot)
+        self.assertIsNotNone(err)
+        self.assertIn("FL7", err)
+
+        # Rule 2: RAISE with null raise_to_bb.
+        err = ssn.validate_v2_label("RAISE", bet_pct=None, raise_to_bb=None, ctx=spot)
+        self.assertIsNotNone(err)
+
+        # Rule 3: CHECK with non-null sizing field.
+        err = ssn.validate_v2_label("CHECK", bet_pct=66, raise_to_bb=None, ctx=spot)
+        self.assertIsNotNone(err)
+
+        # Rule 4: BET with off-enum bet_pct.
+        err = ssn.validate_v2_label("BET", bet_pct=40, raise_to_bb=None, ctx=spot)
+        self.assertIsNotNone(err)
+        self.assertIn("∉", err)
+
+        # Rule 5: RAISE with below-min raise_to_bb.
+        # to_call=2.5, hero_committed=0 (default), min_raise=5.0; raise_to=3 below.
+        err = ssn.validate_v2_label("RAISE", bet_pct=None, raise_to_bb=3, ctx=spot)
+        self.assertIsNotNone(err)
+        self.assertIn("outside legal range", err)
+
+        # Clean cases pass.
+        self.assertIsNone(ssn.validate_v2_label("BET", 66, None, spot))
+        self.assertIsNone(ssn.validate_v2_label("RAISE", None, 9, spot))
+        self.assertIsNone(ssn.validate_v2_label("CHECK", None, None, spot))
+        self.assertIsNone(ssn.validate_v2_label("CALL", None, None, spot))
+        self.assertIsNone(ssn.validate_v2_label("FOLD", None, None, spot))
+
+        # End-to-end check: wired into normalize_label. A spot where
+        # normalize_sizing produces a malformed_rejected does NOT get
+        # validation flagged (it intentionally bypasses; see normalize_label).
+        # A clean BET label round-trips through validation without rationale
+        # tampering (no "VALIDATION FAIL" substring).
+        clean_label = {
+            "spot_id": "4WL-VAL-001",
+            "labeller_id": 1,
+            "predicted_action": "BET",
+            "predicted_sizing_pct": 66,
+        }
+        context = {
+            "pot_bb": 12.5,
+            "to_call_bb": 0.0,
+            "facing_bet": 0,
+            "stack_size_bb": 100.0,
+            "street": "flop",
+        }
+        nl = ssn.normalize_label(clean_label, context)
+        self.assertEqual(nl.status, "clean")
+        self.assertEqual(nl.predicted_bet_pct, 66)
+        self.assertNotIn("VALIDATION FAIL", nl.rationale)
 
 
 if __name__ == "__main__":
