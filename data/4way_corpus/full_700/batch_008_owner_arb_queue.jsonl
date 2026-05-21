@@ -1,0 +1,5 @@
+{"spot_id": "4WF-RANGE-AS-368", "reason": "sizing-high_disagreement", "consensus_action": "RAISE", "consensus_state": "3-2+opus-agree", "rationale": "action votes={'RAISE': 3, 'CALL': 2}; modal='RAISE' | RAISE sizing weights={9: 3.0, 21: 1.0}; modal=9; spread=12 (high_disagree=True); tied_values=[9]."}
+{"spot_id": "4WF-RANGE-AS-369", "reason": "action-consensus-failure", "consensus_state": "3-2+opus-disagree", "sonnet_votes": ["RAISE", "RAISE", "CALL", "RAISE", "CALL"], "opus_vote": "CALL"}
+{"spot_id": "4WF-RANGE-AS-385", "reason": "action-consensus-failure", "consensus_state": "2-2-1+", "sonnet_votes": ["CALL", "RAISE", "FOLD", "CALL", "FOLD"], "opus_vote": "CALL"}
+{"spot_id": "4WF-RANGE-AS-392", "reason": "action-consensus-failure", "consensus_state": "3-2+opus-disagree", "sonnet_votes": ["RAISE", "CALL", "RAISE", "CALL", "RAISE"], "opus_vote": "CALL"}
+{"spot_id": "4WF-RANGE-AS-402", "reason": "sizing-high_disagreement", "consensus_action": "RAISE", "consensus_state": "4-of-5", "rationale": "action votes={'RAISE': 4, 'CALL': 1}; modal='RAISE' | RAISE sizing weights={9: 4.0, 21: 1.0}; modal=9; spread=12 (high_disagree=True); tied_values=[9]."}

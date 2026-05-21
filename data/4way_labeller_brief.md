@@ -28,13 +28,23 @@ The legal action space at the decision moment is determined by `facing_bet`. Pre
 - Legal actions: **FOLD** (give up), **CALL** (match), or **RAISE** (raise the existing bet)
 - ILLEGAL: BET (cannot bet when facing a bet — that's a raise), CHECK (cannot check when facing aggression)
 
-**Sizing fields**:
-- `predicted_action: BET` or `RAISE` → MUST specify `predicted_sizing_pct` (an integer % of pot for BET; integer bb amount for RAISE)
-- `predicted_action: CHECK` or `CALL` or `FOLD` → `predicted_sizing_pct: null`
+**Sizing fields** (TWO separate fields — read carefully):
+- `predicted_action: BET` → set `predicted_bet_pct: <int>` (% of pot, ∈ {25, 33, 50, 66, 75, 100, 150}); set `predicted_raise_to_bb: null`.
+- `predicted_action: RAISE` → set `predicted_raise_to_bb: <int>` (bb amount of the raise-TO size — the TOTAL chips you push, NOT the raise-by increment); set `predicted_bet_pct: null`.
+- `predicted_action: CHECK | CALL | FOLD` → BOTH fields null.
+
+**Worked phrasing — copy these EXACTLY**:
+- BET 66% of pot: `"predicted_action": "BET", "predicted_bet_pct": 66, "predicted_raise_to_bb": null`
+- RAISE to 9bb total: `"predicted_action": "RAISE", "predicted_bet_pct": null, "predicted_raise_to_bb": 9`
+- CHECK: `"predicted_action": "CHECK", "predicted_bet_pct": null, "predicted_raise_to_bb": null`
+
+**Why two fields**: BET sizes are naturally expressed as % of pot (solver convention). RAISE sizes are naturally expressed as bb-total raise-TO (because raise-by/raise-to confusion + % of pot ambiguity in multiway is unrecoverable). Do not write a % in `predicted_raise_to_bb` — that is field-mismatch FL7, and your label is REJECTED at consensus.
 
 **Hard constraint**: Action-space is NOT a soft preference. Before writing any label, look at `facing_bet` in the input row. If `facing_bet == 0` and you find yourself reaching for FOLD or CALL, your reasoning has departed from the actual decision moment — that label is wrong before you even evaluate the poker. The same applies for BET/CHECK when `facing_bet > 0`.
 
 **FL5 failure class — illegal action vote**: voting an illegal action (e.g., FOLD when facing_bet=0) is a labelling defect distinct from FL4 rule-based drift. If your reasoning cites threshold-style logic to reach an illegal action, your label is wrong twice over (FL4 + FL5) and both your batch and your reasoning are rejected. Don't conflate "I would fold this hand preflop" reasoning with "FOLD on the flop spot in front of me" — re-read `facing_bet` before every label.
+
+**FL7 failure class — sizing-field mismatch**: writing a % value in `predicted_raise_to_bb` (e.g., 75, 300, 360) or a bb value in `predicted_bet_pct` (e.g., 9, 18) is a labelling defect. If you cannot compute the raise-to in bb, use `confidence: LOW` and write the value you intended in the reasoning prose; owner-arb queue will adjudicate. Do NOT write a malformed value.
 
 Per `feedback_terminology_raise_vs_bet.md`: **bet** = first postflop action initiating aggression; **raise** = action that raises an existing bet (postflop) OR raises the preflop open. CHECK applies only when no bet faces you; CALL applies only when a bet faces you.
 
@@ -105,11 +115,16 @@ Do NOT use equity-percentage thresholds in your prompt or reasoning. Equity-vs-R
 ## Solver-aligned bet sizing (per `feedback_solver_aligned_sizing.md`)
 
 When you label a BET or RAISE action, use solver-aligned sizes:
-- **Flop**: 25% (small c-bet) or 66% (polarized; usually for value+protection on wet boards)
-- **Turn**: 33% (small) or 75% (polarized)
-- **River**: 33% / 75% / 150% (over-bet for polar value/bluff)
-
-Raises (raise-of-bet): 3-4x the bet size on flop; 2.5-3x on turn; 2.5-3.5x on river.
+- **BET sizing (% of pot, into `predicted_bet_pct`)**:
+  - Flop: 25 or 66
+  - Turn: 33 or 75
+  - River: 33 / 75 / 150
+- **RAISE sizing (bb raise-TO, into `predicted_raise_to_bb`)**:
+  - vs flop bet: 3.0–4.0× the bet size, converted to total raise-to bb.
+  - vs turn bet: 2.5–3.0× the bet size.
+  - vs river bet: 2.5–3.5× the bet size.
+  - **Preflop BB-defend min 3-bet**: facing a 2.5bb open, min-raise is to 5bb (i.e., raise-to ≥ 2 × open_size). A min-raise 3-bet from BB is `predicted_raise_to_bb: 5`, NOT 4.
+The `predicted_raise_to_bb` value must be the FINAL chip count put in by hero (raise-to), not the increment.
 
 ## Terminology (per `feedback_terminology_raise_vs_bet.md`)
 
@@ -175,7 +190,8 @@ Per spot to `data/4way_corpus/raw_labels_labeller_<N>.jsonl`:
   "spot_id": "4WL-<axis>-<N>",
   "labeller_id": <N>,
   "predicted_action": "FOLD|CHECK|CALL|BET|RAISE",
-  "predicted_sizing_pct": <int or null>,
+  "predicted_bet_pct": <int or null>,
+  "predicted_raise_to_bb": <int or null>,
   "confidence": "HIGH|MEDIUM|LOW",
   "bucket": "<spot-type classification>",
   "reasoning": "<250-400 word per-hand reasoning chain>",
@@ -184,7 +200,7 @@ Per spot to `data/4way_corpus/raw_labels_labeller_<N>.jsonl`:
 }
 ```
 
-Include `predicted_sizing_pct` ONLY for BET or RAISE actions.
+Set `predicted_bet_pct` ONLY for BET actions; set `predicted_raise_to_bb` ONLY for RAISE actions. Both null otherwise.
 
 Include `bucket` as your bucket-first classification (e.g., "4-way-SRP-closing-IP", "4-way-3-bet-pot-cold-call-flop", "multiway-cooler-top-set", "range-asymmetry-MP").
 
