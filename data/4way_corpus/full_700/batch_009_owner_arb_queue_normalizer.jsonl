@@ -1,0 +1,3 @@
+{"spot_id": "4WF-CHAIN-009-004", "reason": "opus disagrees", "sonnet_votes": ["CALL", "CALL", "CALL", "FOLD", "FOLD"], "opus_vote": "FOLD"}
+{"spot_id": "4WF-CHAIN-009-016", "reason": "opus disagrees", "sonnet_votes": ["FOLD", "FOLD", "CALL", "FOLD", "CALL"], "opus_vote": "CALL"}
+{"spot_id": "4WF-RANGE-AS-457", "reason": "opus disagrees", "sonnet_votes": ["CALL", "CALL", "CALL", "RAISE", "RAISE"], "opus_vote": "RAISE"}
