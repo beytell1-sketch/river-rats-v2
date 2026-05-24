@@ -1,0 +1,2 @@
+{"spot_id": "4WF-CHAIN-009-004", "reason": "opus disagrees with Sonnet modal", "sonnet_votes": ["CALL", "CALL", "CALL", "FOLD", "FOLD"], "opus_vote": "FOLD"}
+{"spot_id": "4WF-RANGE-AS-452", "reason": "opus disagrees with Sonnet modal", "sonnet_votes": ["FOLD", "CALL", "CALL", "CALL"], "opus_vote": "FOLD"}
