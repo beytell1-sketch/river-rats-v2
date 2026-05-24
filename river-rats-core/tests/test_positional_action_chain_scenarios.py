@@ -461,6 +461,104 @@ class TestT21CheckRaiseRegression:
 
 
 # =============================================================================
+# B1.1 — Fix 3 (orchestrator addendum): no-floor-regression guard
+# =============================================================================
+
+class TestNoFloorRegression:
+    """B1.1 / orchestrator addendum to QC SHOULD_FIX recommendations:
+    pin all 5 A1 mandatory floors against the canonical 24-spec output so any
+    future template change (template removal, chain_shape relabel, hero_pos
+    shift) that silently drops a floor count below the RATIFICATION_A1
+    threshold will fail at unit-test time.
+
+    Per QC finding §"Tightness of floors" (informational): facing-raise and
+    river floors sit AT-threshold (zero margin) on the current 24-spec
+    output. Without this guard, a future single-template edit could silently
+    break either floor.
+
+    Per QUOTA-1..6 (`TestQuota`), each floor has its own dedicated
+    threshold-only test; this test aggregates them into a single
+    snapshot-style guard with the as-of-B1.1 actual counts pinned, so any
+    drift (even within the threshold-passing range) surfaces at PR time.
+    """
+
+    def test_no_floor_regression(self):
+        FACING_RAISE = {'BET_RAISE', 'CHECK_RAISE', 'MULTI_AGGR'}
+        specs = generate_phase_2f_chain_quota(
+            rng_seed=20260522,
+            forbidden_fingerprints=set(),
+        )
+        assert len(specs) == 24, (
+            f"Expected 24 specs from generate_phase_2f_chain_quota, got "
+            f"{len(specs)}"
+        )
+
+        fingerprints = [compute_chain_fingerprint(s) for s in specs]
+        chain_shapes = [cfp.chain_shape for cfp in fingerprints]
+        streets = [cfp.street for cfp in fingerprints]
+        hero_positions = [cfp.hero_pos for cfp in fingerprints]
+
+        # Floor 1: facing-raise ≥10 (A1 threshold; current: 10)
+        facing_raise_count = sum(
+            1 for cs in chain_shapes if cs in FACING_RAISE
+        )
+        assert facing_raise_count >= 10, (
+            f"Facing-raise floor 10 broken: {facing_raise_count}"
+        )
+
+        # Floor 2: river ≥5 (A1 threshold; current: 5)
+        river_count = sum(1 for st in streets if st == 'river')
+        assert river_count >= 5, (
+            f"River floor 5 broken: {river_count}"
+        )
+
+        # Floor 3: sandwich ≥4 (A1 threshold; current: 5). Reuse the
+        # same definition as TestQuota.test_quota6_sandwich: hero seat
+        # has at least one actor seat before it AND at least one
+        # surviving villain seat after it in postflop seat order.
+        def is_sandwich(spec):
+            cfp = compute_chain_fingerprint(spec)
+            hero_idx = _seat_index(cfp.hero_pos)
+            actors_acted = set()
+            if cfp.aggressor_pos != 'NONE':
+                actors_acted.add(cfp.aggressor_pos)
+            actors_acted.update(cfp.callers_chain)
+            if cfp.raiser_pos != 'NONE':
+                actors_acted.add(cfp.raiser_pos)
+            villain_set = set(spec.villain_positions)
+            seats_acted_before = {
+                p for p in actors_acted if _seat_index(p) < hero_idx
+            }
+            seats_villain_after = {
+                p for p in villain_set if _seat_index(p) > hero_idx
+            }
+            return bool(seats_acted_before) and bool(seats_villain_after)
+
+        sandwich_count = sum(1 for s in specs if is_sandwich(s))
+        assert sandwich_count >= 4, (
+            f"Sandwich floor 4 broken: {sandwich_count}"
+        )
+
+        # Floor 4: position-balance — each of the 6 scorecard classes ≥1
+        scorecard_counter = Counter(
+            _scorecard_class(hp) for hp in hero_positions
+        )
+        for cls in ('UTG', 'MP', 'CO', 'BTN', 'SB', 'BB'):
+            assert scorecard_counter[cls] >= 1, (
+                f"Position-balance floor broken for scorecard class "
+                f"{cls}: count={scorecard_counter[cls]}"
+            )
+
+        # Floor 5: top-12 anchor coverage — all 12 anchors materialized
+        top12 = enumerate_top_12_chains()
+        materialized = set(fingerprints)
+        for anchor in top12:
+            assert anchor in materialized, (
+                f"Top-12 anchor {anchor} not in 24-spec output"
+            )
+
+
+# =============================================================================
 # VALIDATION-2: validate_chain_fingerprint raises AssertionError with precise diff
 # =============================================================================
 
