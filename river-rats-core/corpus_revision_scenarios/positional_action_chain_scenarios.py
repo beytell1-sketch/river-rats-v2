@@ -601,13 +601,18 @@ _CHAIN_FINGERPRINT_TEMPLATES: List[dict] = [
         'chain_fingerprint': ChainFingerprint(
             'river', 'BTN', 'CO', (), 'BB', 'CO', 'CHECK_RAISE'),
     },
-    # T21 — river CO facing BB-donk + BTN-raise (OOP-middle BB donks, BTN raises behind hero)
-    # Postflop seat order: SB, BB, UTG, HJ, CO, BTN. For hero=CO with BB-donk + BTN-raise:
-    # BB acts first (donks), then UTG/HJ folded postflop earlier, CO is next, then BTN.
-    # BTN can't raise BEFORE CO's decision — BTN acts after CO. So this would need hero to
-    # pre-check on river, then BB donks, CO calls/raises... but the chain we want is
-    # BB-bets + BTN-raises before CO acts. That needs CO to have already acted (checked) on river.
-    # Switch to: hero=CO pre-checks river, BB bets, BTN raises behind CO, action returns to CO.
+    # T21 — river CO facing BTN-bet + BB-check-raise (hero pre-checked river)
+    # Postflop seat order on river (SB/UTG/HJ folded earlier): BB, CO, BTN.
+    # Sequence: BB checks → CO (hero) checks → BTN bets → BB check-raises →
+    # action returns to CO for decision. Both BB and BTN acted before hero's
+    # decision moment; the raiser (BB) had a prior check on the street, so the
+    # canonical chain_shape is CHECK_RAISE (per blueprint §3 and the algorithm
+    # in _scenario_utils.compute_chain_fingerprint). CHECK_RAISE ∈ facing-raise
+    # set, so this still satisfies the facing-raise quota floor.
+    #
+    # B1.1: declared chain_shape was 'BET_RAISE' prior to the QC SHOULD_FIX-1
+    # finding (`findings/2026-05-23-pr468-b1-positional-chain-scenarios.md`);
+    # corrected here to match the action_history's computed fingerprint.
     {
         'hero_pos': 'CO',
         'villain_positions': ['BB', 'BTN'],
@@ -635,7 +640,7 @@ _CHAIN_FINGERPRINT_TEMPLATES: List[dict] = [
             ('river', 'BB', 'raise'),
         ],
         'chain_fingerprint': ChainFingerprint(
-            'river', 'CO', 'BTN', (), 'BB', 'BTN', 'BET_RAISE'),
+            'river', 'CO', 'BTN', (), 'BB', 'BTN', 'CHECK_RAISE'),
     },
     # ─────────────────────────────────────────────────────────────────────
     # SANDWICH ENFORCEMENT + POSITION BALANCE (T22..T23) — UTG and HJ heroes

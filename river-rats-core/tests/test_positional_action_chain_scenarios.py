@@ -403,6 +403,62 @@ class TestValidation1MatchingFingerprint:
                     f"Spec for {chain_fp} failed validation (expected True)"
                 )
 
+    def test_every_template_self_consistent(self):
+        """B1.1 / QC SHOULD_FIX-2: VALIDATION-1's anchor-only loop missed the
+        T21 chain_shape mismatch in the expansion templates (T12..T23). This
+        sibling test iterates ALL 24 templates and asserts each materialized
+        spec's computed chain_fingerprint equals the template's declared
+        fingerprint. Would have caught SHOULD_FIX-1 at unit-test time.
+
+        Per QC finding `findings/2026-05-23-pr468-b1-positional-chain-scenarios.md`
+        SHOULD_FIX-2.
+        """
+        from corpus_revision_scenarios.positional_action_chain_scenarios import (
+            _spec_from_template,
+        )
+        for i, tmpl in enumerate(_CHAIN_FINGERPRINT_TEMPLATES):
+            spec = _spec_from_template(tmpl)
+            declared = tmpl['chain_fingerprint']
+            assert validate_chain_fingerprint(spec, declared), (
+                f"Template T{i:02d} declared fingerprint does not match "
+                f"compute_chain_fingerprint(materialized spec). declared="
+                f"{declared}"
+            )
+
+
+# =============================================================================
+# B1.1 — SHOULD_FIX-1 regression: T21 is CHECK_RAISE (not BET_RAISE)
+# =============================================================================
+
+class TestT21CheckRaiseRegression:
+    """B1.1 / QC SHOULD_FIX-1: T21's declared chain_shape was 'BET_RAISE'
+    pre-fix; the action_history (BB check → CO check → BTN bet → BB raise)
+    correctly computes to CHECK_RAISE (raiser BB had a pre-bet check on the
+    street, per the canonical algorithm in _scenario_utils
+    compute_chain_fingerprint). Pin T21's chain_shape so a future template
+    edit can't silently re-introduce the mislabel.
+
+    Per QC finding `findings/2026-05-23-pr468-b1-positional-chain-scenarios.md`
+    SHOULD_FIX-1.
+    """
+
+    def test_t21_declared_chain_shape_is_check_raise(self):
+        # T21 is the river-CO template at index 21 (zero-indexed)
+        t21 = _CHAIN_FINGERPRINT_TEMPLATES[21]
+        cfp = t21['chain_fingerprint']
+        assert cfp.chain_shape == 'CHECK_RAISE', (
+            f"T21 chain_shape regressed: expected 'CHECK_RAISE' "
+            f"(post-B1.1 SHOULD_FIX-1 fix), got {cfp.chain_shape!r}"
+        )
+        # Pin the rest of the fingerprint too — any future template edit
+        # that alters the river-CO scenario will hit this test.
+        assert cfp.street == 'river'
+        assert cfp.hero_pos == 'CO'
+        assert cfp.aggressor_pos == 'BTN'
+        assert cfp.callers_chain == ()
+        assert cfp.raiser_pos == 'BB'
+        assert cfp.raise_target_pos == 'BTN'
+
 
 # =============================================================================
 # VALIDATION-2: validate_chain_fingerprint raises AssertionError with precise diff
