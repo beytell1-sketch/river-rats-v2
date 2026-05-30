@@ -11,7 +11,7 @@
 {"spot_id": "4WF-CHAIN-009-001", "consensus_state": "all-agree", "consensus_action": "CALL", "predicted_bet_pct": null, "predicted_raise_to_bb": null, "sonnet_modal": {"CALL": 5}, "opus_action": null}
 {"spot_id": "4WF-CHAIN-009-002", "consensus_state": "all-agree", "consensus_action": "CALL", "predicted_bet_pct": null, "predicted_raise_to_bb": null, "sonnet_modal": {"CALL": 5}, "opus_action": null}
 {"spot_id": "4WF-CHAIN-009-003", "consensus_state": "all-agree", "consensus_action": "CALL", "predicted_bet_pct": null, "predicted_raise_to_bb": null, "sonnet_modal": {"CALL": 5}, "opus_action": null}
-{"spot_id": "4WF-CHAIN-009-004", "consensus_state": "3-2+opus-disagree", "consensus_action": null, "predicted_bet_pct": null, "predicted_raise_to_bb": null, "sonnet_modal": {"CALL": 3, "FOLD": 2}, "opus_action": "FOLD"}
+{"spot_id": "4WF-CHAIN-009-004", "consensus_state": "debate-panel-adjudicated", "consensus_action": "FOLD", "predicted_bet_pct": null, "predicted_raise_to_bb": null, "sonnet_modal": {"CALL": 3, "FOLD": 2}, "opus_action": "FOLD"}
 {"spot_id": "4WF-CHAIN-009-005", "consensus_state": "all-agree", "consensus_action": "CHECK", "predicted_bet_pct": null, "predicted_raise_to_bb": null, "sonnet_modal": {"CHECK": 5}, "opus_action": null}
 {"spot_id": "4WF-CHAIN-009-006", "consensus_state": "all-agree", "consensus_action": "FOLD", "predicted_bet_pct": null, "predicted_raise_to_bb": null, "sonnet_modal": {"FOLD": 5}, "opus_action": null}
 {"spot_id": "4WF-CHAIN-009-007", "consensus_state": "all-agree", "consensus_action": "CALL", "predicted_bet_pct": null, "predicted_raise_to_bb": null, "sonnet_modal": {"CALL": 5}, "opus_action": null}
@@ -23,7 +23,7 @@
 {"spot_id": "4WF-CHAIN-009-013", "consensus_state": "all-agree", "consensus_action": "RAISE", "predicted_bet_pct": null, "predicted_raise_to_bb": 42, "sonnet_modal": {"RAISE": 5}, "opus_action": null}
 {"spot_id": "4WF-CHAIN-009-014", "consensus_state": "4-of-5", "consensus_action": "RAISE", "predicted_bet_pct": null, "predicted_raise_to_bb": 48, "sonnet_modal": {"RAISE": 4, "CALL": 1}, "opus_action": "RAISE"}
 {"spot_id": "4WF-CHAIN-009-015", "consensus_state": "all-agree", "consensus_action": "CALL", "predicted_bet_pct": null, "predicted_raise_to_bb": null, "sonnet_modal": {"CALL": 5}, "opus_action": null}
-{"spot_id": "4WF-CHAIN-009-016", "consensus_state": "3-2+opus-disagree", "consensus_action": null, "predicted_bet_pct": null, "predicted_raise_to_bb": null, "sonnet_modal": {"FOLD": 3, "CALL": 2}, "opus_action": "CALL"}
+{"spot_id": "4WF-CHAIN-009-016", "consensus_state": "debate-panel-adjudicated", "consensus_action": "FOLD", "predicted_bet_pct": null, "predicted_raise_to_bb": null, "sonnet_modal": {"FOLD": 3, "CALL": 2}, "opus_action": "CALL"}
 {"spot_id": "4WF-CHAIN-009-017", "consensus_state": "all-agree", "consensus_action": "FOLD", "predicted_bet_pct": null, "predicted_raise_to_bb": null, "sonnet_modal": {"FOLD": 5}, "opus_action": null}
 {"spot_id": "4WF-CHAIN-009-018", "consensus_state": "all-agree", "consensus_action": "CALL", "predicted_bet_pct": null, "predicted_raise_to_bb": null, "sonnet_modal": {"CALL": 5}, "opus_action": null}
 {"spot_id": "4WF-CHAIN-009-019", "consensus_state": "4-of-4-partial", "consensus_action": "CALL", "predicted_bet_pct": null, "predicted_raise_to_bb": null, "sonnet_modal": {"CALL": 4}, "opus_action": null}
@@ -46,5 +46,5 @@
 {"spot_id": "4WF-RANGE-AS-436", "consensus_state": "all-agree", "consensus_action": "BET", "predicted_bet_pct": 25, "predicted_raise_to_bb": null, "sonnet_modal": {"BET": 5}, "opus_action": null}
 {"spot_id": "4WF-RANGE-AS-446", "consensus_state": "all-agree", "consensus_action": "FOLD", "predicted_bet_pct": null, "predicted_raise_to_bb": null, "sonnet_modal": {"FOLD": 5}, "opus_action": null}
 {"spot_id": "4WF-RANGE-AS-452", "consensus_state": "3-2+opus-agree", "consensus_action": "CALL", "predicted_bet_pct": null, "predicted_raise_to_bb": null, "sonnet_modal": {"FOLD": 1, "CALL": 3}, "opus_action": "CALL"}
-{"spot_id": "4WF-RANGE-AS-457", "consensus_state": "3-2+opus-disagree", "consensus_action": null, "predicted_bet_pct": null, "predicted_raise_to_bb": null, "sonnet_modal": {"CALL": 3, "RAISE": 2}, "opus_action": "RAISE"}
+{"spot_id": "4WF-RANGE-AS-457", "consensus_state": "debate-panel-adjudicated", "consensus_action": "CALL", "predicted_bet_pct": null, "predicted_raise_to_bb": null, "sonnet_modal": {"CALL": 3, "RAISE": 2}, "opus_action": "RAISE"}
 {"spot_id": "4WF-RANGE-AS-459", "consensus_state": "4-of-5", "consensus_action": "CALL", "predicted_bet_pct": null, "predicted_raise_to_bb": null, "sonnet_modal": {"CALL": 4, "RAISE": 1}, "opus_action": "CALL"}

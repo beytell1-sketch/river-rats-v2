@@ -1,0 +1,13 @@
+{
+  "spot_id": "4WF-CHAIN-009-016",
+  "reviewer": "range_construction",
+  "round": 1,
+  "verdict_action": "CALL",
+  "verdict_sizing_pct": null,
+  "verdict_raise_to_bb": null,
+  "confidence": "MEDIUM",
+  "mix_frequency_estimate": "CALL ~70% / FOLD ~30%",
+  "reasoning": "Range-construction view of hero's BB continuing range at this 3-way turn-raise node. Preflop: CO opens 2.5bb, BTN flats, hero defends BB (range very wide; closing-defended). Flop Jc7s5d goes multiway; hero check-calls (or check-calls vs. CO with BTN overcall). Turn 2h, action chains to a RAISE in front of hero. The raiser's range is heavily condensed toward value: sets (JJ -- rare since often 3-bet pre, 77, 55), two-pair (J7s, J5s, 75s), occasionally slowplayed AJ or protected AJs raising for protection vs. the FD that just bricked but flush still live, and a small bluff frequency from busted gutshots with FD (e.g., 86s, 64s) or pure FD overcalls turning bluff-raise. In 3-way at turn the raiser polarises hard: bluff frequency is low because there are still two players to get through.\n\nHero's continuing range at this node is narrow: JJ (rare), 77, 55, J7s, J5s, 75s, AJs/AJo with redraw, sometimes K-high FD + gutshot, and the premium combo-draws (NFD+overcards). Marginal Jx (J9, JT no-FD) and bare 7x/5x mostly fold to the raise pressure. So the CALL range floor sits on combo-draws.\n\nAsKs is at the TOP of hero's draw-defending range. It has 9 NFD outs (clean -- no straight flush blockers reduce this materially) plus overcard equity that is partially clean (A and K give hero TPTK vs. sets/two-pair where it doesn't matter, but vs. AJ the A-high gives chop-or-better only on K). Realistically ~10-11 effective outs vs. the value-heavy raise range = ~22-24% raw equity on the turn, plus implied odds when the flush comes given villain has committed to a raised pot.\n\nBlocker effects matter heavily here. The As-blocker removes villain's NFD-with-A combos (AsTs, As9s for the protective raise) and removes the AsJx top-pair-top-kicker combos -- exactly the value combos that raise turn for protection. This range-construction lever is what pushes AsKs from marginal-fold to clear-call: without the As, this same shape (KhQh on a similar board) is closer to a fold.\n\nFrequency: CALL ~70% / FOLD ~30%. AsKs is clearly above the call-bar at the range level -- it is the nut redraw with the value-blocker. Raising as a semi-bluff is dominated because the third player (CO if BTN raised, or BTN if CO raised) is still live behind and can cold-call or 3-bet, killing fold equity. CALL realises NFD equity in position-equivalent terms and keeps villain's bluffs in.",
+  "num_opponents_at_decision": 2,
+  "primary_axis": "chain-turn-BB-BET_RAISE"
+}
