@@ -1,0 +1,12 @@
+{
+  "hand_id": "MW-51",
+  "reviewer": "multiway_specialist",
+  "round": 1,
+  "verdict_action": "CALL",
+  "verdict_sizing_pct": null,
+  "verdict_raise_to_bb": null,
+  "confidence": "MEDIUM",
+  "mix_frequency_estimate": "CALL ~65-75%, FOLD ~25-35%, RAISE ~0-5%",
+  "agreement_with_architect": "AGREE_WITH_RESERVATIONS",
+  "reasoning": "Per-villain decomposition first. CO is the bettor into four cold-checkers on Ks7d2c rainbow. A 25% probe into four players who all declined to lead is structurally a thin-value / range-merge sizing rather than a pure polarised barrel: CO cannot rep huge bluff frequency because three players are still live behind. CO's range here skews to weak-to-medium Kx (KQ, KJ, KT, K9s suited variants — already dominating hero's K9o), middling pairs trying to deny equity (88, 99, TT, JJ), occasional sets (KK, 77, 22), and a thin gutshot/A-high frequency (A5s, 65s, 86s). That construction lands hero behind on roughly half of CO's continue range. BB-UTG-MP cold-check chain compresses meaningfully: BB defended 5-way OOP with the widest range and then checked to four — capped, weak, mostly air or backdoor floats. UTG and MP cold-called preflop ranges (suited connectors, small pairs, broadways) then checked in turn — also capped, no strong Kx. So behind hero, the cold-checkers are unlikely to wake up with a raise on this flop but very likely to peel turn cards with backdoor equity. 5-way realisation factor on K9 no-BDFD: I put it at ~0.65-0.70. Hero closes flop action cleanly, but the turn opens hero to a full 4-villain decision space with reverse-implied-odds threats. Every A/Q/J turn card kills hero's kicker advantage and activates UTG/MP/BB floats; any 7x/2x backdoor two-pair (54s, 65s, 76s, 86s, A2s, A7s types live in those ranges) destroys hero on rivers. RAISE is dead — folds out the cold-checker air we beat, isolates us against CO's value-heavy continue range, inflates a 5-way pot when hero's hand class doesn't want stacks in. FOLD is the live alternative given dilution + reverse-implied-odds, but pot odds 19.4% are met against a probe-sized bet and hero's equity vs CO's bet-into-4 range clears that bar. CALL stands, MEDIUM confidence — the FOLD vote has real merit if CO's probe range proves more value-heavy than estimated."
+}
