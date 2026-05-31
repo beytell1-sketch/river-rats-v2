@@ -1,0 +1,15 @@
+{
+  "spot_id": "4WF-4-WAY-3--099",
+  "panel_method": "cluster_apply_from_072",
+  "cluster_anchor": "4WF-4-WAY-3--072",
+  "verdict_action": "CHECK",
+  "verdict_sizing_pct": null,
+  "confidence": "HIGH",
+  "agreement_with_consensus": "DISAGREE",
+  "structural_match_to_anchor": "IDENTICAL (suit-variant only)",
+  "board_delta_from_anchor": "072=QhJh3s (2-tone hearts); 099=QsJs3h (2-tone spades). Same rank structure (Q-J-3 connected high+broadway+low), different suit. Hero holds As instead of Ah — blocks 1 spade instead of 1 heart. Suit-variant only, no structural difference.",
+  "stack_delta_from_anchor": "Both 100bb? 072 is 75bb stack, 099 is 100bb stack. 099 is deeper, supports CHECK even more strongly.",
+  "verdict_application": "The CHECK verdict from 072 applies UNIFORMLY to 099. Suit-variant only — the board texture, range advantages, multiway dynamics, and blocker effects are mathematically identical. Hero As-blocker plays the same role as Ah-blocker (both block 1 nut FD card on a 2-tone board).",
+  "mix_frequency_estimate": "AA-class CHECK 85% / BET 15%; AsAh combo specifically CHECK 88% / BET 12%.",
+  "reasoning": "Per-reviewer R1 verdicts on 072: all 3 reviewers CHECK. Applying to 099: suit variant — board is QsJs3h vs QhJh3s. The flush draw is now in spades not hearts; hero holds As-blocker not Ah-blocker. All other variables identical. The cold-caller-checks-to-PFA protocol applies. The 100bb stack (vs 75bb in 072) supports CHECK even more strongly because turn check-raise has more leverage. Net verdict: CHECK at HIGH confidence."
+}
