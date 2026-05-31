@@ -1,0 +1,15 @@
+{
+  "spot_id": "4WF-4-WAY-3--109",
+  "panel_method": "cluster_apply_from_072",
+  "cluster_anchor": "4WF-4-WAY-3--072",
+  "verdict_action": "CHECK",
+  "verdict_sizing_pct": null,
+  "confidence": "HIGH",
+  "agreement_with_consensus": "DISAGREE",
+  "structural_match_to_anchor": "IDENTICAL (low-board variant)",
+  "board_delta_from_anchor": "072=QhJh3s; 109=2hJh3s. Same 2-tone hearts, hero AhAs blocks 1 heart. 109 is the DRYEST in the cluster (J-3-2 single broadway, no Q). On 109, hero AA is essentially an overpair to a J-3-2 board — top of range with maximum slowplay leverage.",
+  "stack_delta_from_anchor": "072=75bb; 109=100bb. Deeper, more leverage for slowplay-and-check-raise line.",
+  "verdict_application": "The CHECK verdict from 072 applies UNIFORMLY to 109. On 109 the slowplay-AA argument is THE STRONGEST in the cluster: J-3-2 with hero AhAs is the textbook 'overpair slowplay' candidate — villain CO will range-cbet small (60-70%) and hero check-raises for value. Donking a flop where hero is so dramatically ahead of villain range surrenders ~80% of the EV from the slowplay line.",
+  "mix_frequency_estimate": "AA-class CHECK 92% / BET 8%; AhAs combo specifically CHECK 95% / BET 5% (HIGHEST CHECK frequency in the cluster).",
+  "reasoning": "Per-reviewer R1 verdicts on 072: all 3 reviewers CHECK. Applying to 109: hero AhAs on J-3-2 2-tone hearts. The dry low board makes AA the top of hero's cold-call range with the largest equity advantage over villains' calling ranges (CO cold-call has TT-99, AQs, KQs — none hit J-3-2 well). The check-and-check-raise line vs CO range-cbet captures maximum value. Donking would polarize hero into face-up overpair territory. Net verdict: CHECK at HIGH confidence — this is the STRONGEST CHECK in the cluster."
+}

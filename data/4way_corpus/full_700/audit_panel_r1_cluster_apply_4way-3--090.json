@@ -1,0 +1,15 @@
+{
+  "spot_id": "4WF-4-WAY-3--090",
+  "panel_method": "cluster_apply_from_072",
+  "cluster_anchor": "4WF-4-WAY-3--072",
+  "verdict_action": "CHECK",
+  "verdict_sizing_pct": null,
+  "confidence": "HIGH",
+  "agreement_with_consensus": "DISAGREE",
+  "structural_match_to_anchor": "IDENTICAL",
+  "board_delta_from_anchor": "072=QhJh3s; 090=6hJh3s. Both 2-tone hearts. 090 is DRYER (J-6-3 vs Q-J-3) — no second broadway, less straight texture. The dryer board makes the slowplay-AA argument STRONGER (less protection EV needed). Hero AhAs blocks 1 heart in both.",
+  "stack_delta_from_anchor": "072=75bb (SPR ~1.8); 090=100bb (SPR ~2.8). 090 is deeper, which favors CHECK even more (turn/river play has more leverage; check-raise line preserves multi-street value).",
+  "verdict_application": "The CHECK verdict from 072 applies UNIFORMLY to 090. Both spots are: hero AA OOP-EP cold-caller of CO 3-bet, 4-way pot, 2-tone hearts board, Ah-blocker to nut FD. Structural posture (cold-caller-checks-to-PFA) is identical. Board differences (dryer 090) marginally INCREASE the check-frequency for 090 vs 072.",
+  "mix_frequency_estimate": "AA-class CHECK 90% / BET 10%; AhAs combo specifically CHECK 92% / BET 8% (slightly higher CHECK than 072 due to dryer board).",
+  "reasoning": "Per-reviewer R1 verdicts on 072: GTO Theoretician CHECK, Multiway Specialist CHECK, Range Construction CHECK. All 3 agree, no R2 needed. Applying to 090: dryer J-6-3 board reduces villains' equity (less FDs hit, no Q-J coordination), increases AA's relative strength, makes the slowplay line BETTER. Pot is identical (36bb). Cold-caller-checks-to-PFA still applies. Ah-blocker still reduces protection EV for the AhAs combo. Net verdict: CHECK at HIGH confidence."
+}
