@@ -1,0 +1,12 @@
+{
+  "hand_id": "MW-51",
+  "reviewer": "range_construction",
+  "round": 1,
+  "verdict_action": "CALL",
+  "verdict_sizing_pct": null,
+  "verdict_raise_to_bb": null,
+  "confidence": "MEDIUM",
+  "mix_frequency_estimate": "CALL 65% / FOLD 30% / RAISE 5%",
+  "agreement_with_architect": "AGREE_WITH_RESERVATIONS",
+  "reasoning": "Range-construction lens on Kh9h, BTN closing 5-way on Ks7d2c facing CO 25% c-bet. BTN's 4th-in cold-call preflop range is suited-dominated (suited connectors, suited gappers, suited Broadways including K9s, suited aces, small/mid pairs); offsuit K9o is borderline at best for cold-calling 3 players in (most solid cold-call charts drop K9o from this seat). So K9 in BTN's range is heavily weighted toward K9s — meaning many K9 combos here actually have BDFD support and play differently from our specific Kh9h (rainbow board, zero backdoor equity). Hero's exact combo is the WEAKEST K9 in BTN's continuing range: no flush draw, no backdoor flush draw, no straight draw, just K-top-pair-9-kicker raw. Within BTN's K-x continuing block (KQs, KJs, KTs, K9s, plus AK/KK if not 3-bet pre), Kh9h sits at the floor of the value section, above only marginal bluff-catchers like 88-TT and floaters. K-blocker analysis: Kh removes one combo each from CO's value Kx (AK, KQ, KJ, KT, K9 if CO calls it) — meaningful reduction in CO's value-tilted 5-way c-bet range, which marginally improves our equity vs the bet. The 9-blocker is negligible on this texture. Frequency-anchoring: BTN must continue ~70-75% to defend against 25% c-bet pot odds (MDF-style), and K9 sits squarely in the continue-block. Folding K-top-pair would over-fold the range; calling preserves balance with stronger Kx and pairs. RAISE is structurally wrong from range-construction: BTN has stronger Kx (KQs/KJs) plus sets (KK/77/22) as the natural raising block — K9 isn't needed for protection and only isolates vs dominating Kx. Reservation: 5-way value-tilt on CO's c-bet plus three un-acted villains behind may push pure-equity toward FOLD; if solver returns FOLD >50%, the range-narrowing is sharper than my 65/30/5 anchor. Verdict CALL aligns with architect; mix reflects close-decision nature."
+}
