@@ -1,14 +1,234 @@
 # 3-Way Postflop GTO Knowledge Base
 
-**Version:** 1.3
-**Date:** 10 April 2026
-**Purpose:** Reference document for the 3-way labelling agent.
+**Version:** 1.4
+**Date:** 31 May 2026
+**Purpose:** Reference document for the 3-way and 4-way labelling agent.
 Contains quantified facts (as reasoning inputs), a decision
 framework, preflop range construction, board texture interactions,
 and worked examples. NOT a set of threshold rules.
 **Sources:** 80+ references across GTO Wizard (solver), Upswing,
 Phil Galfond, Peter Clarke, MonkerSolver, PioSolver. Full source
 index in research/ directory.
+
+**v1.4 changes:** Added §0 board-reading reference (flush-draw
+thresholds, FD/BDFD/NFD taxonomy, suit-count worked examples,
+straight-draw enumeration procedure). Cross-referenced from §1.7
+(semi-bluff conditions), §1.10 (blocker features), and §3 (worked
+examples). The §0 section was added in response to systematic
+CONFLATED_BDFD_AS_FD and PHANTOM_GUTSHOT errors found in the
+batch_009 board-reading audit (2026-05-30).
+
+---
+
+## 0. Board-Reading Reference — READ FIRST
+
+**This section is mandatory pre-reading before applying any draw-based
+reasoning in §1–§5.** The most common labelling failure across batches
+001–009 was drawing wrong equity conclusions from misread board
+texture: treating a backdoor flush draw (BDFD) as a full flush draw
+(FD), or claiming a gutshot that does not exist by enumeration. Both
+errors inflate hero's perceived equity and drive incorrect action
+labels. This section gives you the exact procedures to avoid them.
+
+### 0.1 Flush-draw taxonomy and thresholds
+
+Three distinct flush-draw states exist. They are NOT interchangeable.
+
+| Status | Definition | Suits in combined hand+board | Equity contribution |
+|--------|-----------|-------------------------------|---------------------|
+| **NFD** (nut flush draw) | Hero holds A of the flush suit AND that suit has exactly 2 on the board (flop) or 3 on the board (turn) | Hero: 2 of suit. Board: 2 of suit (flop) or 3 (turn). Total: 4 | ~9 outs → ~18% equity to complete by river (flop) |
+| **FD** (flush draw, non-nut) | Hero holds 2 of the flush suit AND that suit has 2 on the board (flop) or 3 on board (turn), but hero's highest is not the A | Hero: 2 of suit. Board: 2 of suit (flop). Total: 4 | ~9 outs → ~18% equity (non-nut; dominated by nut combos) |
+| **BDFD** (backdoor flush draw) | Hero holds 2 of the flush suit AND that suit has exactly 1 card on the board (flop) | Hero: 2 of suit. Board: 1 of suit. Total: 3 | ~2-3 outs runner-runner → ~4-5% equity contribution |
+| **NONE** | Hero has 0 or 1 of the flush suit, OR the flush suit is not present at threshold on the board | Hero: 0-1 of suit, or board: 0 of that suit | 0 flush equity |
+
+**Critical threshold: 4 suited cards (hero + board) = FD/NFD. Only 3
+suited = BDFD. Do not conflate them.**
+
+The flush-draw equity difference is large: FD contributes ~18% equity;
+BDFD contributes ~4-5%. Mislabeling BDFD as FD overstates equity by
+~13pp — enough to flip close FOLD/CALL decisions incorrectly.
+
+**Flush status decision rule (apply to EVERY hand before writing
+rationale):**
+
+1. Identify which suits appear in hero's hole cards.
+2. For each of hero's suits, count total cards of that suit across
+   hero + board combined.
+3. If any suit reaches **4 total**: hero has FD (or NFD if hero holds
+   the Ace of that suit). The highest-suited board+hero combination
+   sets the `flush_status`.
+4. If the maximum for any suit is **3 total**: BDFD only.
+5. If the maximum for any suit is **2 or fewer**: NONE.
+
+**Label your flush_status in `board_read_attestation` before writing
+any draw-based rationale.** (See §0.3 for the attestation field.)
+
+#### 0.1.1 Worked example: AsKs on Jc7s5d2h (canonical CHAIN-009-016 error class)
+
+- Hero: As (spade), Ks (spade) — 2 spades in hand.
+- Board: Jc, 7s, 5d, 2h — 1 spade on board (the 7s).
+- Total spades (hero + board): As + Ks + 7s = **3 spades total**.
+- Threshold: 3 < 4 → **BDFD only. Not FD. Not NFD.**
+- flush_status = "BDFD"
+- Equity from spade draw: ~4-5% (runner-runner only; needs 2 more spades).
+
+This is the canonical CHAIN-009-016 error: all 5 labellers on that
+spot + the Opus tier-up claimed "NFD" or "flush draw" for AsKs on a
+board with only 1 spade. The correct reading is BDFD. The error
+propagated because labellers saw "As + spade board" and pattern-matched
+to NFD without counting suits. Count the suits explicitly every time.
+
+#### 0.1.2 Worked example: AhJh on Jh7h2c (batch_009 5-way reference; MW-51 related pattern)
+
+- Hero: Ah (heart), Jh (heart) — 2 hearts in hand.
+- Board: Jh (heart), 7h (heart), 2c — 2 hearts on board.
+- Total hearts (hero + board): Ah + Jh + Jh + 7h = **4 hearts total** (note: the Jh appears in both hero and board — it is ONE card held by hero; it IS on the board because hero holds it, but counting works as: hero contributes Ah + Jh = 2 hearts; board contributes Jh + 7h = 2 hearts; but the Jh in hero's hand IS the board card Jh only if that were possible — in fact hero HOLDS Jh so it is NOT separately on the board. Correct count: hero has Ah + Jh; board is Jh-7h-2c. Hero cannot hold a card that is simultaneously a board card. Assume the board Jh is a different card.)
+- Revised: Hero: Ah, Jh (2 hearts). Board: Jh is a different card from hero's Jh — this would be physically impossible (can't have two Jh in play). In practice MW-51 hero is Kh9h on Ks7d2c (rainbow board — 0 hearts on board, hero has 2 hearts but board has 0 → 2 total = NONE/BDFD threshold not met).
+
+**Corrected worked example for MW-51 (Kh9h on Ks7d2c):**
+
+- Hero: Kh (heart), 9h (heart) — 2 hearts in hand.
+- Board: Ks (spade), 7d (diamond), 2c (club) — 0 hearts on board.
+- Total hearts (hero + board): Kh + 9h + 0 = **2 total hearts**.
+- Threshold: 2 < 3 → **NONE. No flush draw of any kind.**
+- flush_status = "NONE"
+
+The debate panel confirmed MW-51 had "no BDFD" — the rainbow board
+has zero hearts. Hero Kh9h is a pure made-hand play with no flush
+equity. Multiple labellers claimed BDFD for this spot; the correct
+answer is NONE.
+
+### 0.2 Straight-draw enumeration procedure
+
+Claiming a gutshot or OESD requires naming the specific 5-card
+sequence that completes the straight. If you cannot name the sequence,
+you do not have the draw.
+
+**Procedure (mandatory for every straight-draw claim):**
+
+1. List hero's two hole cards and all board cards.
+2. For each rank from A down to 2, ask: "Does a 5-card window
+   containing this rank include 4 of the 5 ranks from hero+board, with
+   exactly 1 rank missing?"
+3. If yes: hero has a gutshot (1 out) or OESD (2 ends open, 8 outs).
+4. Name the specific completing rank(s) explicitly before writing any
+   straight-draw claim in the rationale.
+5. If the completing card requires two future cards (runner-runner),
+   it is a backdoor straight draw, NOT a gutshot. Do not count it as
+   straight outs.
+
+**OESD vs gutshot distinction:**
+- OESD: the 5-card straight can be completed by a card on either the
+  high end OR the low end. 8 outs total.
+- Gutshot: the completing rank is in the middle of the sequence. 4 outs.
+- Double gutshot: two separate gutshots fire to different ranks. 8 outs
+  total (same count as OESD, different structure).
+
+#### 0.2.1 Worked example: AdJh on Th6d4c — no gutshot (phantom gutshot class)
+
+Batch_009 5-way reference MW-54 architect rationale claimed a "gutshot"
+for Ah9h on Jh7h2c. The debate panel enumerated every candidate straight
+and found zero outs. This is the same enumeration procedure applied to
+a simpler example.
+
+- Hero: Ad, Jh
+- Board: Th, 6d, 4c
+- Combined ranks available: A, J, T, 6, 4
+
+Enumerate every 5-card straight window:
+- A-K-Q-J-T: need K, Q. Missing 2 ranks → runner-runner. NOT a gutshot.
+- K-Q-J-T-9: need K, Q, 9. Missing 3 ranks → impossible.
+- Q-J-T-9-8: need Q, 9, 8. Missing 3 ranks.
+- J-T-9-8-7: need 9, 8, 7. Missing 3 ranks.
+- T-9-8-7-6: need 9, 8, 7. Missing 3 ranks.
+- 9-8-7-6-5: need 9, 8, 7, 5. Missing 4 ranks.
+- 8-7-6-5-4: need 8, 7, 5. Missing 3 ranks.
+- 7-6-5-4-3: need 7, 5, 3. Missing 3 ranks.
+- 6-5-4-3-2: need 5, 3, 2. Missing 3 ranks.
+- 5-4-3-2-A: need 5, 3, 2. Missing 3 ranks.
+
+**Result: zero gutshot outs. AdJh on Th6d4c has NO straight draw.**
+
+Do not claim "gutshot to the Q" or "gutshot to the 8" without running
+this check. The check takes 30 seconds. The MW-54 phantom-gutshot error
+caused the architect to claim ~45% combo-draw equity when the actual
+equity was ~32-38% (NFD only + dirty overcards). The panel overrode the
+architect action recommendation as a direct consequence.
+
+#### 0.2.2 Worked example: Ah9h on Jh7h2c — NFD only, no gutshot (MW-54 canonical)
+
+- Hero: Ah, 9h
+- Board: Jh, 7h, 2c
+- Combined ranks available: A, 9, J, 7, 2
+
+Enumerate 5-card straight windows containing A or 9:
+- A-K-Q-J-T: need K, Q, T. Missing 3 ranks.
+- A-2-3-4-5 (wheel): need 3, 4, 5. Missing 3 ranks.
+- J-T-9-8-7: need T, 8. Missing 2 ranks → runner-runner. NOT a gutshot.
+- 9-8-7-6-5: need 8, 6, 5. Missing 3 ranks.
+
+**Result: zero gutshot outs. Ah9h on Jh7h2c has NO straight draw.**
+
+Hero's draw composition on this board: NFD (9 hearts outs) + 3 dirty
+overcards (Ah, 9h are not overcards to J... wait: A is overcard to J;
+9 is under J). Corrected: A is the only overcard. Equity: NFD 9 outs
++ 1 clean overcard ≈ ~32-38% vs the field after the bet+call, NOT the
+architect's claimed ~45%. CALL is correct at 16.3% pot odds; RAISE is
+a low-frequency mix that does not dominate.
+
+**The debate panel overrode the architect RAISE recommendation to
+CALL, driven directly by the gutshot-enumeration correction.**
+
+### 0.3 Board-read attestation — structured JSON field (schema v1.4)
+
+**Every label output must include a `board_read_attestation` object.
+This field must appear BEFORE `predicted_action` in the JSON output.**
+
+The attestation is NOT prose. It is a structured JSON object with three
+required keys that are mechanically validated by the consensus pipeline.
+
+```json
+"board_read_attestation": {
+  "total_by_suit": {
+    "s": <int>,
+    "h": <int>,
+    "d": <int>,
+    "c": <int>
+  },
+  "flush_status": "NFD" | "FD" | "BDFD" | "NONE",
+  "straight_outs": [<completing rank(s) as strings, e.g. "8", "Q", "A">]
+}
+```
+
+**Field definitions:**
+
+- `total_by_suit`: count of cards of each suit across hero's hole cards
+  AND the board cards combined. Example: AsKs on Jc7s5d2h →
+  `{"s": 3, "h": 0, "d": 1, "c": 1}`.
+- `flush_status`: derived from `total_by_suit` per the thresholds in
+  §0.1. If any suit reaches 4 total AND hero holds the Ace of that suit:
+  "NFD". If any suit reaches 4 total without the ace: "FD". If maximum
+  is 3: "BDFD". If maximum is ≤2: "NONE".
+- `straight_outs`: list of the specific rank(s) that complete a
+  straight for hero (gutshot or OESD). Must be derived by the
+  enumeration procedure in §0.2. If zero straight outs: empty list `[]`.
+  Do NOT list runner-runner completing ranks here.
+
+**Placement rule:** `board_read_attestation` must appear as the FIRST
+substantive field after `spot_id` and `labeller_id` in the output JSON.
+The consensus pipeline validates that this field exists and is non-null
+on every label; a missing or null attestation causes the label to be
+rejected at collection time.
+
+**Schema version:** This attestation field was introduced in brief v3.5
+/ KB v1.4 (2026-05-31). Existing consensus_v2 files (batches 001–009)
+do not contain this field and are NOT required to be migrated for this
+PR (separate ticket). The validation in `dispatch_4way_labelling_pilot.py`
+applies to new labels produced under brief v3.5 onwards.
+
+**Cross-references:** §0.1 (flush thresholds), §0.2 (straight
+enumeration), §1.7 (semi-bluff conditions that depend on FD/NFD
+distinction), §1.10 (blocker features that depend on flush-suit count).
 
 ---
 
