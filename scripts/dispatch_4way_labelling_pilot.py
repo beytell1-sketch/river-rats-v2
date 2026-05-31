@@ -104,6 +104,87 @@ from collections import Counter, defaultdict
 from typing import Dict, List, Tuple
 
 
+# ─── Schema constants ─────────────────────────────────────────────────
+
+_VALID_ACTIONS = {'BET', 'RAISE', 'CALL', 'CHECK', 'FOLD'}
+_VALID_CONFIDENCES = {'HIGH', 'MEDIUM', 'LOW'}
+_VALID_FLUSH_STATUSES = {'NFD', 'FD', 'BDFD', 'NONE'}
+
+# Schema version that introduced board_read_attestation.
+# Per brief v3.5 / KB v1.4 (2026-05-31). Labels from brief versions
+# earlier than this (batches 001-009) are exempt; validation only applies
+# to new labels produced under brief v3.5 onwards (batch_010 pilot +).
+ATTESTATION_BRIEF_VERSION = '3.5'
+
+
+def validate_attestation(label: dict) -> List[str]:
+    """Validate board_read_attestation per brief v3.5 schema (KB v1.4).
+
+    Returns a list of error strings. Empty list = valid.
+
+    Rules (from brief §Board-Read Attestation):
+    - 'board_read_attestation' must exist and be a non-null dict.
+    - Must contain keys: 'total_by_suit', 'flush_status', 'straight_outs'.
+    - 'total_by_suit': dict with keys 's', 'h', 'd', 'c', each an int.
+    - 'flush_status': one of NFD / FD / BDFD / NONE.
+    - 'straight_outs': list (may be empty).
+
+    A label that fails this validation is rejected at collection time —
+    not queued for owner-arb. The labeller must re-run with the
+    attestation field present and correct.
+    """
+    errors: List[str] = []
+    att = label.get('board_read_attestation')
+    if att is None:
+        errors.append('board_read_attestation: field missing or null — '
+                      'required by brief v3.5; see §Board-Read Attestation')
+        return errors  # sub-field checks pointless without the parent
+
+    if not isinstance(att, dict):
+        errors.append(
+            f'board_read_attestation: expected dict, got {type(att).__name__}')
+        return errors
+
+    # total_by_suit
+    tbs = att.get('total_by_suit')
+    if tbs is None:
+        errors.append('board_read_attestation.total_by_suit: missing')
+    elif not isinstance(tbs, dict):
+        errors.append(
+            f'board_read_attestation.total_by_suit: expected dict, '
+            f'got {type(tbs).__name__}')
+    else:
+        for suit in ('s', 'h', 'd', 'c'):
+            val = tbs.get(suit)
+            if val is None:
+                errors.append(
+                    f'board_read_attestation.total_by_suit.{suit}: missing')
+            elif not isinstance(val, int):
+                errors.append(
+                    f'board_read_attestation.total_by_suit.{suit}: '
+                    f'expected int, got {type(val).__name__}')
+
+    # flush_status
+    fs = att.get('flush_status')
+    if fs is None:
+        errors.append('board_read_attestation.flush_status: missing')
+    elif fs not in _VALID_FLUSH_STATUSES:
+        errors.append(
+            f'board_read_attestation.flush_status: invalid value "{fs}"; '
+            f'must be one of {sorted(_VALID_FLUSH_STATUSES)}')
+
+    # straight_outs
+    so = att.get('straight_outs')
+    if so is None:
+        errors.append('board_read_attestation.straight_outs: missing')
+    elif not isinstance(so, list):
+        errors.append(
+            f'board_read_attestation.straight_outs: expected list, '
+            f'got {type(so).__name__}')
+
+    return errors
+
+
 # ─── FL4-pattern drift detection heuristics ───────────────────────────
 
 FL4_PATTERNS = [
@@ -242,6 +323,16 @@ def collect(labeller_files: List[str], opus_file: str, out_path: str,
                     'spot_id': spot_id,
                     'labeller_id': ll_id,
                     'drift_patterns': hits,
+                })
+
+            # Attestation validation (brief v3.5+; batch_010 pilot and later)
+            att_errors = validate_attestation(lbl)
+            if att_errors:
+                drift_alerts.append({
+                    'spot_id': spot_id,
+                    'labeller_id': ll_id,
+                    'drift_patterns': att_errors,
+                    'rejection_reason': 'board_read_attestation_invalid',
                 })
 
         record = {
